@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2008-2017 Oracle Corporation
+ * Copyright (C) 2008-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -24,11 +24,12 @@
 #include "DBGPlugInCommonELF.h"
 #include <VBox/vmm/dbgf.h>
 #include <VBox/dis.h>
+#include <iprt/ctype.h>
 #include <iprt/file.h>
-#include <iprt/string.h>
+#include <iprt/err.h>
 #include <iprt/mem.h>
 #include <iprt/stream.h>
-#include <iprt/ctype.h>
+#include <iprt/string.h>
 #include <iprt/vfs.h>
 #include <iprt/zip.h>
 
@@ -169,6 +170,10 @@ typedef LNXPRINTKHDR const *PCLNXPRINTKHDR;
 /*********************************************************************************************************************************
 *   Defined Constants And Macros                                                                                                 *
 *********************************************************************************************************************************/
+/** First kernel map address for 32bit Linux hosts (__START_KERNEL_map). */
+#define LNX32_KERNEL_ADDRESS_START      UINT32_C(0xc0000000)
+/** First kernel map address for 64bit Linux hosts (__START_KERNEL_map). */
+#define LNX64_KERNEL_ADDRESS_START      UINT64_C(0xffffffff80000000)
 /** Validates a 32-bit linux kernel address */
 #define LNX32_VALID_ADDRESS(Addr)       ((Addr) > UINT32_C(0x80000000) && (Addr) < UINT32_C(0xfffff000))
 /** Validates a 64-bit linux kernel address */
@@ -436,6 +441,7 @@ static int dbgDiggerLinuxQueryAsciiLogBufferPtrs(PDBGDIGGERLINUX pThis, PUVM pUV
                         case OP_LEA:
                         case OP_AND:
                         case OP_CBW:
+                        case OP_DEC:
                             break;
                         case OP_RETN:
                             /* emit_log_char returned, abort disassembling. */
@@ -681,10 +687,10 @@ static int dbgDiggerLinuxLogBufferQueryAscii(PDBGDIGGERLINUX pThis, PUVM pUVM, R
                                aSymbols[i].pvVar,  aSymbols[i].cbGuest);
             if (RT_SUCCESS(rc))
                 continue;
-            Log(("dbgDiggerLinuxIDmsg_QueryKernelLog: Reading '%s' at %RGv: %Rrc\n", aSymbols[i].pszSymbol, Addr.FlatPtr, rc));
+            LogRel(("dbgDiggerLinuxIDmsg_QueryKernelLog: Reading '%s' at %RGv: %Rrc\n", aSymbols[i].pszSymbol, Addr.FlatPtr, rc));
         }
         else
-            Log(("dbgDiggerLinuxIDmsg_QueryKernelLog: Error looking up '%s': %Rrc\n", aSymbols[i].pszSymbol, rc));
+            LogRel(("dbgDiggerLinuxIDmsg_QueryKernelLog: Error looking up '%s': %Rrc\n", aSymbols[i].pszSymbol, rc));
         rc = VERR_NOT_FOUND;
         break;
     }
@@ -707,14 +713,14 @@ static int dbgDiggerLinuxLogBufferQueryAscii(PDBGDIGGERLINUX pThis, PUVM pUVM, R
      */
     if (pThis->f64Bit ? !LNX64_VALID_ADDRESS(GCPtrLogBuf) : !LNX32_VALID_ADDRESS(GCPtrLogBuf))
     {
-        Log(("dbgDiggerLinuxIDmsg_QueryKernelLog: 'log_buf' value %RGv is not valid.\n", GCPtrLogBuf));
+        LogRel(("dbgDiggerLinuxIDmsg_QueryKernelLog: 'log_buf' value %RGv is not valid.\n", GCPtrLogBuf));
         return VERR_NOT_FOUND;
     }
     if (   cbLogBuf < 4096
         || !RT_IS_POWER_OF_TWO(cbLogBuf)
         || cbLogBuf > 16*_1M)
     {
-        Log(("dbgDiggerLinuxIDmsg_QueryKernelLog: 'log_buf_len' value %#x is not valid.\n", cbLogBuf));
+        LogRel(("dbgDiggerLinuxIDmsg_QueryKernelLog: 'log_buf_len' value %#x is not valid.\n", cbLogBuf));
         return VERR_NOT_FOUND;
     }
 
@@ -724,15 +730,15 @@ static int dbgDiggerLinuxLogBufferQueryAscii(PDBGDIGGERLINUX pThis, PUVM pUVM, R
     uint8_t *pbLogBuf = (uint8_t *)RTMemAlloc(cbLogBuf);
     if (!pbLogBuf)
     {
-        Log(("dbgDiggerLinuxIDmsg_QueryKernelLog: Failed to allocate %#x bytes for log buffer\n", cbLogBuf));
+        LogRel(("dbgDiggerLinuxIDmsg_QueryKernelLog: Failed to allocate %#x bytes for log buffer\n", cbLogBuf));
         return VERR_NO_MEMORY;
     }
     DBGFADDRESS Addr;
     rc = DBGFR3MemRead(pUVM, 0 /*idCpu*/, DBGFR3AddrFromFlat(pUVM, &Addr, GCPtrLogBuf), pbLogBuf, cbLogBuf);
     if (RT_FAILURE(rc))
     {
-        Log(("dbgDiggerLinuxIDmsg_QueryKernelLog: Error reading %#x bytes of log buffer at %RGv: %Rrc\n",
-             cbLogBuf, Addr.FlatPtr, rc));
+        LogRel(("dbgDiggerLinuxIDmsg_QueryKernelLog: Error reading %#x bytes of log buffer at %RGv: %Rrc\n",
+                cbLogBuf, Addr.FlatPtr, rc));
         RTMemFree(pbLogBuf);
         return VERR_NOT_FOUND;
     }
@@ -799,10 +805,10 @@ static int dbgDiggerLinuxLogBufferQueryRecords(PDBGDIGGERLINUX pThis, PUVM pUVM,
                                aSymbols[i].pvVar,  aSymbols[i].cbGuest);
             if (RT_SUCCESS(rc))
                 continue;
-            Log(("dbgDiggerLinuxIDmsg_QueryKernelLog: Reading '%s' at %RGv: %Rrc\n", aSymbols[i].pszSymbol, Addr.FlatPtr, rc));
+            LogRel(("dbgDiggerLinuxIDmsg_QueryKernelLog: Reading '%s' at %RGv: %Rrc\n", aSymbols[i].pszSymbol, Addr.FlatPtr, rc));
         }
         else
-            Log(("dbgDiggerLinuxIDmsg_QueryKernelLog: Error looking up '%s': %Rrc\n", aSymbols[i].pszSymbol, rc));
+            LogRel(("dbgDiggerLinuxIDmsg_QueryKernelLog: Error looking up '%s': %Rrc\n", aSymbols[i].pszSymbol, rc));
         rc = VERR_NOT_FOUND;
         break;
     }
@@ -827,27 +833,27 @@ static int dbgDiggerLinuxLogBufferQueryRecords(PDBGDIGGERLINUX pThis, PUVM pUVM,
      */
     if (pThis->f64Bit ? !LNX64_VALID_ADDRESS(GCPtrLogBuf) : !LNX32_VALID_ADDRESS(GCPtrLogBuf))
     {
-        Log(("dbgDiggerLinuxIDmsg_QueryKernelLog: 'log_buf' value %RGv is not valid.\n", GCPtrLogBuf));
+        LogRel(("dbgDiggerLinuxIDmsg_QueryKernelLog: 'log_buf' value %RGv is not valid.\n", GCPtrLogBuf));
         return VERR_NOT_FOUND;
     }
     if (   cbLogBuf < 4096
         || !RT_IS_POWER_OF_TWO(cbLogBuf)
         || cbLogBuf > 16*_1M)
     {
-        Log(("dbgDiggerLinuxIDmsg_QueryKernelLog: 'log_buf_len' value %#x is not valid.\n", cbLogBuf));
+        LogRel(("dbgDiggerLinuxIDmsg_QueryKernelLog: 'log_buf_len' value %#x is not valid.\n", cbLogBuf));
         return VERR_NOT_FOUND;
     }
     uint32_t const cbLogAlign = 4;
     if (   idxFirst > cbLogBuf - sizeof(LNXPRINTKHDR)
         || (idxFirst & (cbLogAlign - 1)) != 0)
     {
-        Log(("dbgDiggerLinuxIDmsg_QueryKernelLog: 'log_first_idx' value %#x is not valid.\n", idxFirst));
+        LogRel(("dbgDiggerLinuxIDmsg_QueryKernelLog: 'log_first_idx' value %#x is not valid.\n", idxFirst));
         return VERR_NOT_FOUND;
     }
     if (   idxNext > cbLogBuf - sizeof(LNXPRINTKHDR)
         || (idxNext & (cbLogAlign - 1)) != 0)
     {
-        Log(("dbgDiggerLinuxIDmsg_QueryKernelLog: 'log_next_idx' value %#x is not valid.\n", idxNext));
+        LogRel(("dbgDiggerLinuxIDmsg_QueryKernelLog: 'log_next_idx' value %#x is not valid.\n", idxNext));
         return VERR_NOT_FOUND;
     }
 
@@ -857,15 +863,15 @@ static int dbgDiggerLinuxLogBufferQueryRecords(PDBGDIGGERLINUX pThis, PUVM pUVM,
     uint8_t *pbLogBuf = (uint8_t *)RTMemAlloc(cbLogBuf);
     if (!pbLogBuf)
     {
-        Log(("dbgDiggerLinuxIDmsg_QueryKernelLog: Failed to allocate %#x bytes for log buffer\n", cbLogBuf));
+        LogRel(("dbgDiggerLinuxIDmsg_QueryKernelLog: Failed to allocate %#x bytes for log buffer\n", cbLogBuf));
         return VERR_NO_MEMORY;
     }
     DBGFADDRESS Addr;
     rc = DBGFR3MemRead(pUVM, 0 /*idCpu*/, DBGFR3AddrFromFlat(pUVM, &Addr, GCPtrLogBuf), pbLogBuf, cbLogBuf);
     if (RT_FAILURE(rc))
     {
-        Log(("dbgDiggerLinuxIDmsg_QueryKernelLog: Error reading %#x bytes of log buffer at %RGv: %Rrc\n",
-             cbLogBuf, Addr.FlatPtr, rc));
+        LogRel(("dbgDiggerLinuxIDmsg_QueryKernelLog: Error reading %#x bytes of log buffer at %RGv: %Rrc\n",
+                cbLogBuf, Addr.FlatPtr, rc));
         RTMemFree(pbLogBuf);
         return VERR_NOT_FOUND;
     }
@@ -895,8 +901,8 @@ static int dbgDiggerLinuxLogBufferQueryRecords(PDBGDIGGERLINUX pThis, PUVM pUVM,
                         || (pHdr->cbTotal & (cbLogAlign - 1)) != 0
                         || pHdr->cbTotal < (uint32_t)pHdr->cbText + (uint32_t)pHdr->cbDict + sizeof(*pHdr) ))
         {
-            Log(("dbgDiggerLinuxIDmsg_QueryKernelLog: Invalid printk_log record at %#x: cbTotal=%#x cbText=%#x cbDict=%#x cbLogBuf=%#x cbLeft=%#x\n",
-                 offCur, pHdr->cbTotal, pHdr->cbText, pHdr->cbDict, cbLogBuf, cbLeft));
+            LogRel(("dbgDiggerLinuxIDmsg_QueryKernelLog: Invalid printk_log record at %#x: cbTotal=%#x cbText=%#x cbDict=%#x cbLogBuf=%#x cbLeft=%#x\n",
+                    offCur, pHdr->cbTotal, pHdr->cbText, pHdr->cbDict, cbLogBuf, cbLeft));
             rc = VERR_INVALID_STATE;
             break;
         }
@@ -986,8 +992,7 @@ static int dbgDiggerLinuxLogBufferQueryRecords(PDBGDIGGERLINUX pThis, PUVM pUVM,
 
     if (offDst <= cbBuf)
         return VINF_SUCCESS;
-    else
-        return VERR_BUFFER_OVERFLOW;
+    return VERR_BUFFER_OVERFLOW;
 }
 
 /**
@@ -1007,17 +1012,17 @@ static DECLCALLBACK(int) dbgDiggerLinuxIDmsg_QueryKernelLog(PDBGFOSIDMESG pThis,
     RTDBGAS  hAs = DBGFR3AsResolveAndRetain(pUVM, DBGF_AS_KERNEL);
     RTDBGMOD hMod;
     int rc = RTDbgAsModuleByName(hAs, "vmlinux", 0, &hMod);
+    RTDbgAsRelease(hAs);
     if (RT_FAILURE(rc))
         return VERR_NOT_FOUND;
-    RTDbgAsRelease(hAs);
 
-    size_t cbActual;
     /*
      * Check whether the kernel log buffer is a simple char buffer or the newer
      * record based implementation.
      * The record based implementation was presumably introduced with kernel 3.4,
      * see: http://thread.gmane.org/gmane.linux.kernel/1284184
      */
+    size_t cbActual;
     if (dbgDiggerLinuxLogBufferIsAsciiBuffer(pData, pUVM))
         rc = dbgDiggerLinuxLogBufferQueryAscii(pData, pUVM, hMod, fFlags, cMessages, pszBuf, cbBuf, &cbActual);
     else
@@ -1081,6 +1086,18 @@ static void dbgDiggerLinuxCfgDbDestroy(PDBGDIGGERLINUX pThis)
 
 
 /**
+ * @copydoc DBGFOSREG::pfnStackUnwindAssist
+ */
+static DECLCALLBACK(int) dbgDiggerLinuxStackUnwindAssist(PUVM pUVM, void *pvData, VMCPUID idCpu, PDBGFSTACKFRAME pFrame,
+                                                         PRTDBGUNWINDSTATE pState, PCCPUMCTX pInitialCtx, RTDBGAS hAs,
+                                                         uint64_t *puScratch)
+{
+    RT_NOREF(pUVM, pvData, idCpu, pFrame, pState, pInitialCtx, hAs, puScratch);
+    return VINF_SUCCESS;
+}
+
+
+/**
  * @copydoc DBGFOSREG::pfnQueryInterface
  */
 static DECLCALLBACK(void *) dbgDiggerLinuxQueryInterface(PUVM pUVM, void *pvData, DBGFOSINTERFACE enmIf)
@@ -1131,11 +1148,37 @@ static DECLCALLBACK(int)  dbgDiggerLinuxQueryVersion(PUVM pUVM, void *pvData, ch
  */
 static DECLCALLBACK(void)  dbgDiggerLinuxTerm(PUVM pUVM, void *pvData)
 {
-    RT_NOREF1(pUVM);
     PDBGDIGGERLINUX pThis = (PDBGDIGGERLINUX)pvData;
     Assert(pThis->fValid);
 
+    /*
+     * Destroy configuration database.
+     */
     dbgDiggerLinuxCfgDbDestroy(pThis);
+
+    /*
+     * Unlink and release our modules.
+     */
+    RTDBGAS hDbgAs = DBGFR3AsResolveAndRetain(pUVM, DBGF_AS_KERNEL);
+    if (hDbgAs != NIL_RTDBGAS)
+    {
+        uint32_t iMod = RTDbgAsModuleCount(hDbgAs);
+        while (iMod-- > 0)
+        {
+            RTDBGMOD hMod = RTDbgAsModuleByIndex(hDbgAs, iMod);
+            if (hMod != NIL_RTDBGMOD)
+            {
+                if (RTDbgModGetTag(hMod) == DIG_LNX_MOD_TAG)
+                {
+                    int rc = RTDbgAsModuleUnlink(hDbgAs, hMod);
+                    AssertRC(rc);
+                }
+                RTDbgModRelease(hMod);
+            }
+        }
+        RTDbgAsRelease(hDbgAs);
+    }
+
     pThis->fValid = false;
 }
 
@@ -1278,12 +1321,12 @@ static int dbgDiggerLinuxFindStartOfNamesAndSymbolCount(PUVM pUVM, PDBGDIGGERLIN
          */
         if (pThis->f64Bit)
         {
-            uint32_t i = cbBuf / sizeof(uint64_t);
+            uint32_t i = cbBuf / sizeof(uint64_t) - 1;
             while (i-- > 0)
                 if (   uBuf.au64[i] <= LNX_MAX_KALLSYMS_SYMBOLS
                     && uBuf.au64[i] >= LNX_MIN_KALLSYMS_SYMBOLS)
                 {
-                    uint8_t *pb = (uint8_t *)&uBuf.au64[i];
+                    uint8_t *pb = (uint8_t *)&uBuf.au64[i + 1];
                     if (   pb[0] <= LNX_MAX_KALLSYMS_ENC_LENGTH
                         && pb[0] >= LNX_MIN_KALLSYMS_ENC_LENGTH)
                     {
@@ -1326,12 +1369,12 @@ static int dbgDiggerLinuxFindStartOfNamesAndSymbolCount(PUVM pUVM, PDBGDIGGERLIN
         }
         else
         {
-            uint32_t i = cbBuf / sizeof(uint32_t);
+            uint32_t i = cbBuf / sizeof(uint32_t) - 1;
             while (i-- > 0)
                 if (   uBuf.au32[i] <= LNX_MAX_KALLSYMS_SYMBOLS
                     && uBuf.au32[i] >= LNX_MIN_KALLSYMS_SYMBOLS)
                 {
-                    uint8_t *pb = (uint8_t *)&uBuf.au32[i];
+                    uint8_t *pb = (uint8_t *)&uBuf.au32[i + 1];
                     if (   pb[0] <= LNX_MAX_KALLSYMS_ENC_LENGTH
                         && pb[0] >= LNX_MIN_KALLSYMS_ENC_LENGTH)
                     {
@@ -1887,11 +1930,171 @@ static int dbgDiggerLinuxLoadKernelSymbolsRelative(PUVM pUVM, PDBGDIGGERLINUX pT
  */
 static int dbgDiggerLinuxLoadKernelSymbols(PUVM pUVM, PDBGDIGGERLINUX pThis)
 {
+    /*
+     * First the kernel itself.
+     */
     if (pThis->fRelKrnlAddr)
         return dbgDiggerLinuxLoadKernelSymbolsRelative(pUVM, pThis);
-    else
-        return dbgDiggerLinuxLoadKernelSymbolsAbsolute(pUVM, pThis);
+    return dbgDiggerLinuxLoadKernelSymbolsAbsolute(pUVM, pThis);
 }
+
+
+/*
+ * The module structure changed it was easier to produce different code for
+ * each version of the structure.  The C preprocessor rules!
+ */
+#define LNX_TEMPLATE_HEADER "DBGPlugInLinuxModuleCodeTmpl.cpp.h"
+
+#define LNX_BIT_SUFFIX      _amd64
+#define LNX_PTR_T           uint64_t
+#define LNX_64BIT           1
+#include "DBGPlugInLinuxModuleVerTmpl.cpp.h"
+
+#define LNX_BIT_SUFFIX      _x86
+#define LNX_PTR_T           uint32_t
+#define LNX_64BIT           0
+#include "DBGPlugInLinuxModuleVerTmpl.cpp.h"
+
+#undef  LNX_TEMPLATE_HEADER
+
+static const struct
+{
+    uint32_t    uVersion;
+    bool        f64Bit;
+    uint64_t  (*pfnProcessModule)(PDBGDIGGERLINUX pThis, PUVM pUVM, PDBGFADDRESS pAddrModule);
+} g_aModVersions[] =
+{
+#define LNX_TEMPLATE_HEADER "DBGPlugInLinuxModuleTableEntryTmpl.cpp.h"
+
+#define LNX_BIT_SUFFIX      _amd64
+#define LNX_64BIT           1
+#include "DBGPlugInLinuxModuleVerTmpl.cpp.h"
+
+#define LNX_BIT_SUFFIX      _x86
+#define LNX_64BIT           0
+#include "DBGPlugInLinuxModuleVerTmpl.cpp.h"
+
+#undef  LNX_TEMPLATE_HEADER
+};
+
+
+/**
+ * Tries to find and process the module list.
+ *
+ * @returns VBox status code.
+ * @param   pThis               The Linux digger data.
+ * @param   pUVM                The user mode VM handle.
+ */
+static int dbgDiggerLinuxLoadModules(PDBGDIGGERLINUX pThis, PUVM pUVM)
+{
+    /*
+     * Locate the list head.
+     */
+    RTDBGAS     hAs = DBGFR3AsResolveAndRetain(pUVM, DBGF_AS_KERNEL);
+    RTDBGSYMBOL SymInfo;
+    int rc = RTDbgAsSymbolByName(hAs, "vmlinux!modules", &SymInfo, NULL);
+    RTDbgAsRelease(hAs);
+    if (RT_FAILURE(rc))
+        return VERR_NOT_FOUND;
+
+    if (RT_FAILURE(rc))
+    {
+        LogRel(("dbgDiggerLinuxLoadModules: Failed to locate the module list (%Rrc).\n", rc));
+        return VERR_NOT_FOUND;
+    }
+
+    /*
+     * Read the list anchor.
+     */
+    union
+    {
+        uint32_t volatile u32Pair[2];
+        uint64_t u64Pair[2];
+    } uListAnchor;
+    DBGFADDRESS Addr;
+    rc = DBGFR3MemRead(pUVM, 0 /*idCpu*/, DBGFR3AddrFromFlat(pUVM, &Addr, SymInfo.Value),
+                       &uListAnchor, pThis->f64Bit ? sizeof(uListAnchor.u64Pair) : sizeof(uListAnchor.u32Pair));
+    if (RT_FAILURE(rc))
+    {
+        LogRel(("dbgDiggerLinuxLoadModules: Error reading list anchor at %RX64: %Rrc\n", SymInfo.Value, rc));
+        return VERR_NOT_FOUND;
+    }
+    if (!pThis->f64Bit)
+    {
+        uListAnchor.u64Pair[1] = uListAnchor.u32Pair[1];
+        ASMCompilerBarrier();
+        uListAnchor.u64Pair[0] = uListAnchor.u32Pair[0];
+    }
+
+    /*
+     * Get a numerical version number.
+     */
+    char szVersion[256] = "Linux version 4.19.0";
+    bool fValid = pThis->fValid;
+    pThis->fValid = true;
+    dbgDiggerLinuxQueryVersion(pUVM, pThis, szVersion, sizeof(szVersion));
+    pThis->fValid = fValid;
+
+    const char *pszVersion = szVersion;
+    while (*pszVersion && !RT_C_IS_DIGIT(*pszVersion))
+        pszVersion++;
+
+    size_t   offVersion = 0;
+    uint32_t uMajor = 0;
+    while (pszVersion[offVersion] && RT_C_IS_DIGIT(pszVersion[offVersion]))
+        uMajor = uMajor * 10 + pszVersion[offVersion++] - '0';
+
+    if (pszVersion[offVersion] == '.')
+        offVersion++;
+
+    uint32_t uMinor = 0;
+    while (pszVersion[offVersion] && RT_C_IS_DIGIT(pszVersion[offVersion]))
+        uMinor = uMinor * 10 + pszVersion[offVersion++] - '0';
+
+    if (pszVersion[offVersion] == '.')
+        offVersion++;
+
+    uint32_t uBuild = 0;
+    while (pszVersion[offVersion] && RT_C_IS_DIGIT(pszVersion[offVersion]))
+        uBuild = uBuild * 10 + pszVersion[offVersion++] - '0';
+
+    uint32_t const uGuestVer = LNX_MK_VER(uMajor, uMinor, uBuild);
+    if (uGuestVer == 0)
+    {
+        LogRel(("dbgDiggerLinuxLoadModules: Failed to parse version string: %s\n", pszVersion));
+        return VERR_NOT_FOUND;
+    }
+
+    /*
+     * Find the g_aModVersion entry that fits the best.
+     * ASSUMES strict descending order by bitcount and version.
+     */
+    Assert(g_aModVersions[0].f64Bit == true);
+    unsigned i = 0;
+    if (!pThis->f64Bit)
+        while (i < RT_ELEMENTS(g_aModVersions) && g_aModVersions[i].f64Bit)
+            i++;
+    while (   i < RT_ELEMENTS(g_aModVersions)
+           && g_aModVersions[i].f64Bit == pThis->f64Bit
+           && uGuestVer < g_aModVersions[i].uVersion)
+        i++;
+    if (i >= RT_ELEMENTS(g_aModVersions))
+    {
+        LogRel(("dbgDiggerLinuxLoadModules: Failed to find anything matching version: %u.%u.%u (%s)\n",
+                uMajor, uMinor, uBuild, pszVersion));
+        return VERR_NOT_FOUND;
+    }
+
+    /*
+     * Walk the list.
+     */
+    uint64_t uModAddr = uListAnchor.u64Pair[0];
+    for (size_t iModule = 0; iModule < 4096 && uModAddr != SymInfo.Value && uModAddr != 0; iModule++)
+        uModAddr = g_aModVersions[i].pfnProcessModule(pThis, pUVM, DBGFR3AddrFromFlat(pUVM, &Addr, uModAddr));
+
+    return VINF_SUCCESS;
+}
+
 
 /**
  * Checks if there is a likely kallsyms_names fragment at pHitAddr.
@@ -1999,7 +2202,10 @@ static int dbgDiggerLinuxFindSymbolTableFromNeedle(PDBGDIGGERLINUX pThis, PUVM p
                 if (RT_SUCCESS(rc))
                     rc = dbgDiggerLinuxLoadKernelSymbols(pUVM, pThis);
                 if (RT_SUCCESS(rc))
+                {
+                    rc = dbgDiggerLinuxLoadModules(pThis, pUVM);
                     break;
+                }
             }
         }
 
@@ -2412,6 +2618,94 @@ static int dbgDiggerLinuxCfgFind(PDBGDIGGERLINUX pThis, PUVM pUVM)
 }
 
 /**
+ * Probes for a Linux kernel starting at the given address.
+ *
+ * @returns Flag whether something which looks like a valid Linux kernel was found.
+ * @param   pThis               The Linux digger data.
+ * @param   pUVM                The user mode VM handle.
+ * @param   uAddrStart          The address to start scanning at.
+ * @param   cbScan              How much to scan.
+ */
+static bool dbgDiggerLinuxProbeWithAddr(PDBGDIGGERLINUX pThis, PUVM pUVM, RTGCUINTPTR uAddrStart, size_t cbScan)
+{
+    /*
+     * Look for "Linux version " at the start of the rodata segment.
+     * Hope that this comes before any message buffer or other similar string.
+     */
+    DBGFADDRESS KernelAddr;
+    DBGFR3AddrFromFlat(pUVM, &KernelAddr, uAddrStart);
+    DBGFADDRESS HitAddr;
+    int rc = DBGFR3MemScan(pUVM, 0, &KernelAddr, cbScan, 1,
+                           g_abLinuxVersion, sizeof(g_abLinuxVersion) - 1, &HitAddr);
+    if (RT_SUCCESS(rc))
+    {
+        char szTmp[128];
+        char const *pszX = &szTmp[sizeof(g_abLinuxVersion) - 1];
+        rc = DBGFR3MemReadString(pUVM, 0, &HitAddr, szTmp, sizeof(szTmp));
+        if (    RT_SUCCESS(rc)
+            &&  (   (   pszX[0] == '2'  /* 2.x.y with x in {0..6} */
+                     && pszX[1] == '.'
+                     && pszX[2] >= '0'
+                     && pszX[2] <= '6')
+                 || (   pszX[0] >= '3'  /* 3.x, 4.x, ... 9.x */
+                     && pszX[0] <= '9'
+                     && pszX[1] == '.'
+                     && pszX[2] >= '0'
+                     && pszX[2] <= '9')
+                 )
+            )
+        {
+            pThis->AddrKernelBase  = KernelAddr;
+            pThis->AddrLinuxBanner = HitAddr;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+/**
+ * Probes for a Linux kernel which has KASLR enabled.
+ *
+ * @returns Flag whether a possible candidate location was found.
+ * @param   pThis               The Linux digger data.
+ * @param   pUVM                The user mode VM handle.
+ * @param   uAddrKernelStart    The first address the kernel is expected at.
+ */
+static bool dbgDiggerLinuxProbeKaslr(PDBGDIGGERLINUX pThis, PUVM pUVM, RTGCUINTPTR uAddrKernelStart)
+{
+    /**
+     * With KASLR the kernel is loaded at a different address at each boot making detection
+     * more difficult for us.
+     *
+     * The randomization is done in arch/x86/boot/compressed/kaslr.c:choose_random_location() (as of Nov 2017).
+     * At the end of the method a random offset is chosen using find_random_virt_addr() which is added to the
+     * kernel map start in the caller (the start of the kernel depends on the bit size, see LNX32_KERNEL_ADDRESS_START
+     * and LNX64_KERNEL_ADDRESS_START for 32bit and 64bit kernels respectively).
+     * The lowest offset possible is LOAD_PHYSICAL_ADDR which is defined in arch/x86/include/asm/boot.h
+     * using CONFIG_PHYSICAL_START aligned to CONFIG_PHYSICAL_ALIGN.
+     * The default CONFIG_PHYSICAL_START and CONFIG_PHYSICAL_ALIGN are both 0x1000000 no matter whether a 32bit
+     * or a 64bit kernel is used. So the lowest offset to the kernel start address is 0x1000000.
+     * The find_random_virt_addr() the number of possible slots where the kernel can be placed based on the image size
+     * is calculated using the following formula:
+     *    cSlots = ((KERNEL_IMAGE_SIZE - 0x1000000 (minimum) - image_size) / 0x1000000 (CONFIG_PHYSICAL_ALIGN)) + 1
+     *
+     * KERNEL_IMAGE_SIZE is 1GB for 64bit kernels and 512MB for 32bit kernels, so the maximum number of slots (resulting
+     * in the largest possible offset) can be achieved when image_size (which contains the real size of the kernel image
+     * which is unknown for us) goes to 0 and a 1GB KERNEL_IMAGE_SIZE is assumed. With that the biggest cSlots which can be
+     * achieved is 64. The chosen random offset is taken from a random long integer using kaslr_get_random_long() modulo the
+     * number of slots which selects a slot between 0 and 63. The final offset is calculated using:
+     *    offAddr = random_addr * 0x1000000 (CONFIG_PHYSICAL_ALIGN) + 0x1000000 (minimum)
+     *
+     * So the highest offset the kernel can start is 0x40000000 which is 1GB (plus the maximum kernel size we defined).
+     */
+    if (dbgDiggerLinuxProbeWithAddr(pThis, pUVM, uAddrKernelStart, _1G + LNX_MAX_KERNEL_SIZE))
+        return true;
+
+    return false;
+}
+
+/**
  * @copydoc DBGFOSREG::pfnInit
  */
 static DECLCALLBACK(int)  dbgDiggerLinuxInit(PUVM pUVM, void *pvData)
@@ -2462,41 +2756,19 @@ static DECLCALLBACK(bool)  dbgDiggerLinuxProbe(PUVM pUVM, void *pvData)
 {
     PDBGDIGGERLINUX pThis = (PDBGDIGGERLINUX)pvData;
 
-    /*
-     * Look for "Linux version " at the start of the rodata segment.
-     * Hope that this comes before any message buffer or other similar string.
-     */
     for (unsigned i = 0; i < RT_ELEMENTS(g_au64LnxKernelAddresses); i++)
     {
-        DBGFADDRESS KernelAddr;
-        DBGFR3AddrFromFlat(pUVM, &KernelAddr, g_au64LnxKernelAddresses[i]);
-        DBGFADDRESS HitAddr;
-        int rc = DBGFR3MemScan(pUVM, 0, &KernelAddr, LNX_MAX_KERNEL_SIZE, 1,
-                               g_abLinuxVersion, sizeof(g_abLinuxVersion) - 1, &HitAddr);
-        if (RT_SUCCESS(rc))
-        {
-            char szTmp[128];
-            char const *pszX = &szTmp[sizeof(g_abLinuxVersion) - 1];
-            rc = DBGFR3MemReadString(pUVM, 0, &HitAddr, szTmp, sizeof(szTmp));
-            if (    RT_SUCCESS(rc)
-                &&  (   (   pszX[0] == '2'  /* 2.x.y with x in {0..6} */
-                         && pszX[1] == '.'
-                         && pszX[2] >= '0'
-                         && pszX[2] <= '6')
-                     || (   pszX[0] >= '3'  /* 3.x, 4.x, ... 9.x */
-                         && pszX[0] <= '9'
-                         && pszX[1] == '.'
-                         && pszX[2] >= '0'
-                         && pszX[2] <= '9')
-                     )
-                )
-            {
-                pThis->AddrKernelBase  = KernelAddr;
-                pThis->AddrLinuxBanner = HitAddr;
-                return true;
-            }
-        }
+        if (dbgDiggerLinuxProbeWithAddr(pThis, pUVM, g_au64LnxKernelAddresses[i], LNX_MAX_KERNEL_SIZE))
+            return true;
     }
+
+    /* Maybe the kernel uses KASLR. */
+    if (dbgDiggerLinuxProbeKaslr(pThis, pUVM, LNX32_KERNEL_ADDRESS_START))
+        return true;
+
+    if (dbgDiggerLinuxProbeKaslr(pThis, pUVM, LNX64_KERNEL_ADDRESS_START))
+        return true;
+
     return false;
 }
 
@@ -2527,18 +2799,19 @@ static DECLCALLBACK(int)  dbgDiggerLinuxConstruct(PUVM pUVM, void *pvData)
 
 const DBGFOSREG g_DBGDiggerLinux =
 {
-    /* .u32Magic = */           DBGFOSREG_MAGIC,
-    /* .fFlags = */             0,
-    /* .cbData = */             sizeof(DBGDIGGERLINUX),
-    /* .szName = */             "Linux",
-    /* .pfnConstruct = */       dbgDiggerLinuxConstruct,
-    /* .pfnDestruct = */        dbgDiggerLinuxDestruct,
-    /* .pfnProbe = */           dbgDiggerLinuxProbe,
-    /* .pfnInit = */            dbgDiggerLinuxInit,
-    /* .pfnRefresh = */         dbgDiggerLinuxRefresh,
-    /* .pfnTerm = */            dbgDiggerLinuxTerm,
-    /* .pfnQueryVersion = */    dbgDiggerLinuxQueryVersion,
-    /* .pfnQueryInterface = */  dbgDiggerLinuxQueryInterface,
-    /* .u32EndMagic = */        DBGFOSREG_MAGIC
+    /* .u32Magic = */               DBGFOSREG_MAGIC,
+    /* .fFlags = */                 0,
+    /* .cbData = */                 sizeof(DBGDIGGERLINUX),
+    /* .szName = */                 "Linux",
+    /* .pfnConstruct = */           dbgDiggerLinuxConstruct,
+    /* .pfnDestruct = */            dbgDiggerLinuxDestruct,
+    /* .pfnProbe = */               dbgDiggerLinuxProbe,
+    /* .pfnInit = */                dbgDiggerLinuxInit,
+    /* .pfnRefresh = */             dbgDiggerLinuxRefresh,
+    /* .pfnTerm = */                dbgDiggerLinuxTerm,
+    /* .pfnQueryVersion = */        dbgDiggerLinuxQueryVersion,
+    /* .pfnQueryInterface = */      dbgDiggerLinuxQueryInterface,
+    /* .pfnStackUnwindAssist = */   dbgDiggerLinuxStackUnwindAssist,
+    /* .u32EndMagic = */            DBGFOSREG_MAGIC
 };
 

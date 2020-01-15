@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -15,23 +15,30 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
-#ifndef ___UIMediumSizeEditor_h___
-#define ___UIMediumSizeEditor_h___
+#ifndef FEQT_INCLUDED_SRC_widgets_UIMediumSizeEditor_h
+#define FEQT_INCLUDED_SRC_widgets_UIMediumSizeEditor_h
+#ifndef RT_WITHOUT_PRAGMA_ONCE
+# pragma once
+#endif
 
 /* Qt includes: */
+#include <QRegularExpression>
 #include <QWidget>
 
 /* GUI includes: */
 #include "QIWithRetranslateUI.h"
+#include "UIDefs.h"
+#include "UILibraryDefs.h"
 
 /* Forward declarations: */
 class QLabel;
 class QSlider;
+class QString;
+class QWidget;
 class QILineEdit;
 
-
 /** Medium size editor widget. */
-class UIMediumSizeEditor : public QIWithRetranslateUI<QWidget>
+class SHARED_LIBRARY_STUFF UIMediumSizeEditor : public QIWithRetranslateUI<QWidget>
 {
     Q_OBJECT;
 
@@ -47,7 +54,7 @@ public:
 
     /** Returns the medium size. */
     qulonglong mediumSize() const { return m_uSize; }
-    /** Defines the @a uSize. */
+    /** Sets the initial medium size as the widget is created. */
     void setMediumSize(qulonglong uSize);
 
 protected:
@@ -59,8 +66,8 @@ private slots:
 
     /** Handles size slider change. */
     void sltSizeSliderChanged(int iValue);
-    /** Handles size editor change. */
-    void sltSizeEditorChanged(const QString &strValue);
+    /** Handles size editor text edit finished signal. */
+    void sltSizeEditorTextChanged();
 
 private:
 
@@ -77,7 +84,12 @@ private:
     static qulonglong sliderToSizeMB(int uValue, int iSliderScale);
     /** Updates slider/editor tool-tips. */
     void updateSizeToolTips(qulonglong uSize);
+    /** Checks if the uSize is divisible by m_uSectorSize */
+    qulonglong checkSectorSizeAlignment(qulonglong uSize);
+    QString ensureSizeSuffix(const QString &strSizeString);
 
+    /* Holds the block size. We force m_uSize to be multiple of this number. */
+    static const qulonglong m_uSectorSize;
     /** Holds the minimum medium size. */
     const qulonglong  m_uSizeMin;
     /** Holds the maximum medium size. */
@@ -86,6 +98,7 @@ private:
     const int         m_iSliderScale;
     /** Holds the current medium size. */
     qulonglong        m_uSize;
+    SizeSuffix        m_enmSizeSuffix;
 
     /** Holds the size slider. */
     QSlider    *m_pSlider;
@@ -95,7 +108,9 @@ private:
     QLabel     *m_pLabelMaxSize;
     /** Holds the size editor. */
     QILineEdit *m_pEditor;
+
+    /* A regular expression used to remove any character from a QString which is neither a digit nor decimal separator. */
+    QRegularExpression m_regExNonDigitOrSeparator;
 };
 
-#endif /* !___UIMediumSizeEditor_h___ */
-
+#endif /* !FEQT_INCLUDED_SRC_widgets_UIMediumSizeEditor_h */

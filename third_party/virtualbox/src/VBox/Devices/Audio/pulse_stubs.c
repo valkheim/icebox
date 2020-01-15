@@ -19,7 +19,7 @@
 #include <iprt/assert.h>
 #include <iprt/ldr.h>
 #include <VBox/log.h>
-#include <iprt/err.h>
+#include <iprt/errcore.h>
 
 #include <pulse/pulseaudio.h>
 
@@ -345,3 +345,4 @@ int audioLoadPulseLib(void)
     isLibLoaded = YES;
     return rc;
 }
+

@@ -7,7 +7,7 @@ Test Manager Core - Web Server Abstraction Base Class.
 
 __copyright__ = \
 """
-Copyright (C) 2012-2017 Oracle Corporation
+Copyright (C) 2012-2019 Oracle Corporation
 
 This file is part of VirtualBox Open Source Edition (OSE), as
 available from http://www.virtualbox.org. This file is free software;
@@ -26,7 +26,7 @@ CDDL are applicable instead of those of the GPL.
 You may elect to license modified versions of this file under the
 terms and conditions of either the GPL or the CDDL or both.
 """
-__version__ = "$Revision: 118412 $"
+__version__ = "$Revision: 135520 $"
 
 
 # Standard python imports.
@@ -44,7 +44,7 @@ class WebServerGlueException(Exception):
     """
     For exceptions raised by glue code.
     """
-    pass;
+    pass;                               # pylint: disable=unnecessary-pass
 
 
 class WebServerGlueBase(object):
@@ -88,8 +88,12 @@ class WebServerGlueBase(object):
         self._cchBodyWrittenOut = 0;
 
         # Output.
-        self.oOutputRaw = sys.stdout;
-        self.oOutputText = codecs.getwriter('utf-8')(sys.stdout);
+        if sys.version_info[0] >= 3:
+            self.oOutputRaw = sys.stdout.detach();
+            sys.stdout = None; # Prevents flush_std_files() from complaining on stderr during sys.exit().
+        else:
+            self.oOutputRaw = sys.stdout;
+        self.oOutputText = codecs.getwriter('utf-8')(self.oOutputRaw);
 
 
     #
@@ -152,7 +156,7 @@ class WebServerGlueBase(object):
         Gets the hirarchical base path (relative to server) from the request URL.
         Note! This includes both a leading an trailing slash.
         """
-        sPath = self.getUrlPath();
+        sPath = self.getUrlPath();      # virtual method # pylint: disable=assignment-from-no-return
         iLastSlash = sPath.rfind('/');
         if iLastSlash >= 0:
             sPath = sPath[:iLastSlash];
@@ -545,7 +549,8 @@ class WebServerGlueBase(object):
         dInfo['sys.version']                = sys.version;
         dInfo['sys.hexversion']             = sys.hexversion;
         dInfo['sys.api_version']            = sys.api_version;
-        dInfo['sys.subversion']             = sys.subversion;
+        if hasattr(sys, 'subversion'):
+            dInfo['sys.subversion']         = sys.subversion;   # pylint: disable=no-member
         dInfo['sys.platform']               = sys.platform;
         dInfo['sys.executable']             = sys.executable;
         dInfo['sys.copyright']              = sys.copyright;

@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2008-2017 Oracle Corporation
+ * Copyright (C) 2008-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -15,22 +15,16 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
-#ifdef VBOX_WITH_PRECOMPILED_HEADERS
-# include <precomp.h>
-#else  /* !VBOX_WITH_PRECOMPILED_HEADERS */
-
 /* Qt includes */
-# include <QDir>
-# include <QPushButton>
+#include <QDir>
+#include <QPushButton>
 
 /* Other includes */
-# include "UIMachineSettingsSFDetails.h"
-# include "VBoxGlobal.h"
-
-#endif /* !VBOX_WITH_PRECOMPILED_HEADERS */
+#include "UIMachineSettingsSFDetails.h"
+#include "UICommon.h"
 
 
-UIMachineSettingsSFDetails::UIMachineSettingsSFDetails(DialogType type,
+UIMachineSettingsSFDetails::UIMachineSettingsSFDetails(SFDialogType type,
                                                        bool fEnableSelector, /* for "permanent" checkbox */
                                                        const QStringList &usedNames,
                                                        QWidget *pParent /* = 0 */)
@@ -48,11 +42,12 @@ UIMachineSettingsSFDetails::UIMachineSettingsSFDetails(DialogType type,
     mCbPermanent->setHidden(!fEnableSelector);
 
     /* Setup connections: */
-    connect(mPsPath, SIGNAL(currentIndexChanged(int)), this, SLOT(sltSelectPath()));
-    connect(mPsPath, SIGNAL(pathChanged(const QString &)), this, SLOT(sltSelectPath()));
-    connect(mLeName, SIGNAL(textChanged(const QString &)), this, SLOT(sltValidate()));
+    connect(mPsPath, static_cast<void(UIFilePathSelector::*)(int)>(&UIFilePathSelector::currentIndexChanged),
+            this, &UIMachineSettingsSFDetails::sltSelectPath);
+    connect(mPsPath, &UIFilePathSelector::pathChanged, this, &UIMachineSettingsSFDetails::sltSelectPath);
+    connect(mLeName, &QLineEdit::textChanged, this, &UIMachineSettingsSFDetails::sltValidate);
     if (fEnableSelector)
-        connect(mCbPermanent, SIGNAL(toggled(bool)), this, SLOT(sltValidate()));
+        connect(mCbPermanent, &QCheckBox::toggled, this, &UIMachineSettingsSFDetails::sltValidate);
 
      /* Applying language settings: */
     retranslateUi();
@@ -107,6 +102,16 @@ void UIMachineSettingsSFDetails::setAutoMount(bool fAutoMount)
 bool UIMachineSettingsSFDetails::isAutoMounted() const
 {
     return mCbAutoMount->isChecked();
+}
+
+void UIMachineSettingsSFDetails::setAutoMountPoint(const QString &strAutoMountPoint)
+{
+    mLeAutoMountPoint->setText(strAutoMountPoint);
+}
+
+QString UIMachineSettingsSFDetails::autoMountPoint() const
+{
+    return mLeAutoMountPoint->text();
 }
 
 void UIMachineSettingsSFDetails::setPermanent(bool fPermanent)
@@ -179,4 +184,3 @@ void UIMachineSettingsSFDetails::sltSelectPath()
     /* Validate the field values: */
     sltValidate();
 }
-

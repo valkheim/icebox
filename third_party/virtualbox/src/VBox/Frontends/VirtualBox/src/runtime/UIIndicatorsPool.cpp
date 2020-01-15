@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2010-2017 Oracle Corporation
+ * Copyright (C) 2010-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -15,50 +15,48 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
-#ifdef VBOX_WITH_PRECOMPILED_HEADERS
-# include <precomp.h>
-#else  /* !VBOX_WITH_PRECOMPILED_HEADERS */
-
 /* Qt includes: */
-# include <QAccessibleWidget>
-# include <QTimer>
-# include <QPainter>
-# include <QHBoxLayout>
+#include <QAccessibleWidget>
+#include <QHBoxLayout>
+#include <QPainter>
+#include <QStyle>
+#include <QTimer>
 
 /* GUI includes: */
-# include "UIIndicatorsPool.h"
-# include "QIWithRetranslateUI.h"
-# include "UIExtraDataManager.h"
-# include "UIMachineDefs.h"
-# include "UIConverter.h"
-# include "UIAnimationFramework.h"
-# include "UISession.h"
-# include "UIMedium.h"
-# include "UIIconPool.h"
-# include "UIHostComboEditor.h"
-# include "QIStatusBarIndicator.h"
-# include "VBoxGlobal.h"
+#include "UIIndicatorsPool.h"
+#include "QIWithRetranslateUI.h"
+#include "UIExtraDataManager.h"
+#include "UIMachineDefs.h"
+#include "UIConverter.h"
+#include "UIAnimationFramework.h"
+#include "UISession.h"
+#include "UIMedium.h"
+#include "UIIconPool.h"
+#include "UIHostComboEditor.h"
+#include "QIStatusBarIndicator.h"
+#include "UICommon.h"
 
 /* COM includes: */
-# include "CAudioAdapter.h"
-# include "CConsole.h"
-# include "CMachine.h"
-# include "CSystemProperties.h"
-# include "CMachineDebugger.h"
-# include "CGuest.h"
-# include "CStorageController.h"
-# include "CMediumAttachment.h"
-# include "CNetworkAdapter.h"
-# include "CUSBController.h"
-# include "CUSBDeviceFilters.h"
-# include "CUSBDevice.h"
-# include "CSharedFolder.h"
-# include "CVRDEServer.h"
+#include "CAudioAdapter.h"
+#include "CGraphicsAdapter.h"
+#include "CRecordingSettings.h"
+#include "CRecordingScreenSettings.h"
+#include "CConsole.h"
+#include "CMachine.h"
+#include "CSystemProperties.h"
+#include "CMachineDebugger.h"
+#include "CGuest.h"
+#include "CStorageController.h"
+#include "CMediumAttachment.h"
+#include "CNetworkAdapter.h"
+#include "CUSBController.h"
+#include "CUSBDeviceFilters.h"
+#include "CUSBDevice.h"
+#include "CSharedFolder.h"
+#include "CVRDEServer.h"
 
 /* Other VBox includes: */
-# include <iprt/time.h>
-
-#endif /* !VBOX_WITH_PRECOMPILED_HEADERS */
+#include <iprt/time.h>
 
 
 /** QIStateStatusBarIndicator extension for Runtime UI. */
@@ -221,7 +219,7 @@ private:
                 /* Append attachment data: */
                 strAttData += s_strTableRow4
                     .arg(gpConverter->toString(StorageSlot(controller.GetBus(), attachment.GetPort(), attachment.GetDevice())))
-                    .arg(UIMedium(attachment.GetMedium(), UIMediumType_HardDisk).location());
+                    .arg(UIMedium(attachment.GetMedium(), UIMediumDeviceType_HardDisk).location());
                 fAttachmentsPresent = true;
             }
             /* Append controller data: */
@@ -285,7 +283,7 @@ private:
                 if (attachment.GetType() != KDeviceType_DVD)
                     continue;
                 /* Append attachment data: */
-                UIMedium vboxMedium(attachment.GetMedium(), UIMediumType_DVD);
+                UIMedium vboxMedium(attachment.GetMedium(), UIMediumDeviceType_DVD);
                 strAttData += s_strTableRow4
                     .arg(gpConverter->toString(StorageSlot(controller.GetBus(), attachment.GetPort(), attachment.GetDevice())))
                     .arg(vboxMedium.isNull() || vboxMedium.isHostDrive() ? vboxMedium.name() : vboxMedium.location());
@@ -354,7 +352,7 @@ private:
                 if (attachment.GetType() != KDeviceType_Floppy)
                     continue;
                 /* Append attachment data: */
-                UIMedium vboxMedium(attachment.GetMedium(), UIMediumType_Floppy);
+                UIMedium vboxMedium(attachment.GetMedium(), UIMediumDeviceType_Floppy);
                 strAttData += s_strTableRow4
                     .arg(gpConverter->toString(StorageSlot(controller.GetBus(), attachment.GetPort(), attachment.GetDevice())))
                     .arg(vboxMedium.isNull() || vboxMedium.isHostDrive() ? vboxMedium.name() : vboxMedium.location());
@@ -426,14 +424,14 @@ private:
         {
             const bool fEnabledOutput = comAdapter.GetEnabledOut();
             const bool fEnabledInput = comAdapter.GetEnabledIn();
-            strFullData = QString(s_strTableRow2).arg(QApplication::translate("UIGDetails", "Audio Output", "details (audio)"),
+            strFullData = QString(s_strTableRow2).arg(QApplication::translate("UIDetails", "Audio Output", "details (audio)"),
                                                       fEnabledOutput ?
-                                                      QApplication::translate("UIGDetails", "Enabled", "details (audio/output)") :
-                                                      QApplication::translate("UIGDetails", "Disabled", "details (audio/output)"))
-                        + QString(s_strTableRow2).arg(QApplication::translate("UIGDetails", "Audio Input", "details (audio)"),
+                                                      QApplication::translate("UIDetails", "Enabled", "details (audio/output)") :
+                                                      QApplication::translate("UIDetails", "Disabled", "details (audio/output)"))
+                        + QString(s_strTableRow2).arg(QApplication::translate("UIDetails", "Audio Input", "details (audio)"),
                                                       fEnabledInput ?
-                                                      QApplication::translate("UIGDetails", "Enabled", "details (audio/input)") :
-                                                      QApplication::translate("UIGDetails", "Disabled", "details (audio/input)"));
+                                                      QApplication::translate("UIDetails", "Enabled", "details (audio/input)") :
+                                                      QApplication::translate("UIDetails", "Disabled", "details (audio/input)"));
             AudioState enmState = AudioState_AllOff;
             if (fEnabledOutput)
                 enmState = (AudioState)(enmState | AudioState_OutputOn);
@@ -471,10 +469,10 @@ public:
         setStateIcon(KDeviceActivity_Writing, UIIconPool::iconSet(":/nw_write_16px.png"));
         setStateIcon(KDeviceActivity_Null,    UIIconPool::iconSet(":/nw_disabled_16px.png"));
         /* Configure machine state-change listener: */
-        connect(m_pSession, SIGNAL(sigMachineStateChange()),
-                this, SLOT(sltHandleMachineStateChange()));
+        connect(m_pSession, &UISession::sigMachineStateChange,
+                this, &UIIndicatorNetwork::sltHandleMachineStateChange);
         /* Fetch maximum network adapters count: */
-        const CVirtualBox vbox = vboxGlobal().virtualBox();
+        const CVirtualBox vbox = uiCommon().virtualBox();
         const CMachine machine = m_pSession->machine();
         m_cMaxNetworkAdapters = vbox.GetSystemProperties().GetMaxNetworkAdapters(machine.GetChipsetType());
         /* Create auto-update timer: */
@@ -482,7 +480,7 @@ public:
         if (m_pTimerAutoUpdate)
         {
             /* Configure auto-update timer: */
-            connect(m_pTimerAutoUpdate, SIGNAL(timeout()), SLOT(sltUpdateNetworkIPs()));
+            connect(m_pTimerAutoUpdate, &QTimer::timeout, this, &UIIndicatorNetwork::sltUpdateNetworkIPs);
             /* Start timer immediately if machine is running: */
             sltHandleMachineStateChange();
         }
@@ -633,7 +631,7 @@ private:
             /* Enumerate all the USB devices: */
             const CConsole console = m_pSession->console();
             foreach (const CUSBDevice &usbDevice, console.GetUSBDevices())
-                strFullData += s_strTableRow1.arg(vboxGlobal().details(usbDevice));
+                strFullData += s_strTableRow1.arg(uiCommon().details(usbDevice));
             /* Handle 'no-usb-devices' case: */
             if (strFullData.isNull())
                 strFullData = s_strTableRow1
@@ -696,7 +694,7 @@ private:
         for (QMap<QString, QString>::const_iterator it = sfs.constBegin(); it != sfs.constEnd(); ++it)
         {
             /* Select slashes depending on the OS type: */
-            if (VBoxGlobal::isDOSType(guest.GetOSTypeId()))
+            if (UICommon::isDOSType(guest.GetOSTypeId()))
                 strFullData += s_strTableRow2.arg(QString("<b>\\\\vboxsvr\\%1</b>").arg(it.key()), it.value());
             else
                 strFullData += s_strTableRow2.arg(QString("<b>%1</b>").arg(it.key()), it.value());
@@ -744,14 +742,17 @@ private:
         /* Prepare tool-tip: */
         QString strFullData;
 
+        /* Get graphics adapter: */
+        CGraphicsAdapter comGraphics = machine.GetGraphicsAdapter();
+
         /* Video Memory: */
-        const ULONG uVRAMSize = machine.GetVRAMSize();
-        const QString strVRAMSize = VBoxGlobal::tr("<nobr>%1 MB</nobr>", "details report").arg(uVRAMSize);
+        const ULONG uVRAMSize = comGraphics.GetVRAMSize();
+        const QString strVRAMSize = UICommon::tr("<nobr>%1 MB</nobr>", "details report").arg(uVRAMSize);
         strFullData += s_strTableRow2
             .arg(QApplication::translate("UIIndicatorsPool", "Video memory", "Display tooltip"), strVRAMSize);
 
         /* Monitor Count: */
-        const ULONG uMonitorCount = machine.GetMonitorCount();
+        const ULONG uMonitorCount = comGraphics.GetMonitorCount();
         if (uMonitorCount > 1)
         {
             const QString strMonitorCount = QString::number(uMonitorCount);
@@ -760,12 +761,12 @@ private:
         }
 
         /* 3D acceleration: */
-        const bool fAcceleration3D = machine.GetAccelerate3DEnabled() && vboxGlobal().is3DAvailable();
+        const bool fAcceleration3D = comGraphics.GetAccelerate3DEnabled() && uiCommon().is3DAvailable();
         if (fAcceleration3D)
         {
             const QString strAcceleration3D = fAcceleration3D ?
-                VBoxGlobal::tr("Enabled", "details report (3D Acceleration)") :
-                VBoxGlobal::tr("Disabled", "details report (3D Acceleration)");
+                UICommon::tr("Enabled", "details report (3D Acceleration)") :
+                UICommon::tr("Disabled", "details report (3D Acceleration)");
             strFullData += s_strTableRow2
                 .arg(QApplication::translate("UIIndicatorsPool", "3D acceleration", "Display tooltip"), strAcceleration3D);
         }
@@ -778,34 +779,43 @@ private:
 };
 
 
-/** UISessionStateStatusBarIndicator extension for Runtime UI: Video-capture indicator. */
-class UIIndicatorVideoCapture : public UISessionStateStatusBarIndicator
+/** UISessionStateStatusBarIndicator extension for Runtime UI: Recording indicator. */
+class UIIndicatorRecording : public UISessionStateStatusBarIndicator
 {
     Q_OBJECT;
     Q_PROPERTY(double rotationAngleStart READ rotationAngleStart);
     Q_PROPERTY(double rotationAngleFinal READ rotationAngleFinal);
     Q_PROPERTY(double rotationAngle READ rotationAngle WRITE setRotationAngle);
 
-    /** Video-capture states. */
-    enum UIIndicatorStateVideoCapture
+    /** Recording states. */
+    enum UIIndicatorStateRecording
     {
-        UIIndicatorStateVideoCapture_Disabled = 0,
-        UIIndicatorStateVideoCapture_Enabled  = 1,
-        UIIndicatorStateVideoCapture_Paused   = 2
+        UIIndicatorStateRecording_Disabled = 0,
+        UIIndicatorStateRecording_Enabled  = 1,
+        UIIndicatorStateRecording_Paused   = 2
+    };
+
+    /** Recording modes. */
+    enum UIIndicatorStateRecordingMode
+    {
+        UIIndicatorStateRecordingMode_None  = RT_BIT(0),
+        UIIndicatorStateRecordingMode_Video = RT_BIT(1),
+        UIIndicatorStateRecordingMode_Audio = RT_BIT(2)
     };
 
 public:
 
     /** Constructor, passes @a pSession to the UISessionStateStatusBarIndicator constructor. */
-    UIIndicatorVideoCapture(UISession *pSession)
-        : UISessionStateStatusBarIndicator(IndicatorType_VideoCapture, pSession)
+    UIIndicatorRecording(UISession *pSession)
+        : UISessionStateStatusBarIndicator(IndicatorType_Recording, pSession)
         , m_pAnimation(0)
         , m_dRotationAngle(0)
+        , m_enmRecordingMode(UIIndicatorStateRecordingMode_None)
     {
         /* Assign state-icons: */
-        setStateIcon(UIIndicatorStateVideoCapture_Disabled, UIIconPool::iconSet(":/video_capture_16px.png"));
-        setStateIcon(UIIndicatorStateVideoCapture_Enabled,  UIIconPool::iconSet(":/movie_reel_16px.png"));
-        setStateIcon(UIIndicatorStateVideoCapture_Paused,   UIIconPool::iconSet(":/movie_reel_16px.png"));
+        setStateIcon(UIIndicatorStateRecording_Disabled, UIIconPool::iconSet(":/video_capture_16px.png"));
+        setStateIcon(UIIndicatorStateRecording_Enabled,  UIIconPool::iconSet(":/movie_reel_16px.png"));
+        setStateIcon(UIIndicatorStateRecording_Paused,   UIIconPool::iconSet(":/movie_reel_16px.png"));
         /* Create *enabled* state animation: */
         m_pAnimation = UIAnimationLoop::installAnimationLoop(this, "rotationAngle",
                                                                    "rotationAngleStart", "rotationAngleFinal",
@@ -822,14 +832,14 @@ private slots:
         /* Update animation state: */
         switch (iState)
         {
-            case UIIndicatorStateVideoCapture_Disabled:
+            case UIIndicatorStateRecording_Disabled:
                 m_pAnimation->stop();
                 m_dRotationAngle = 0;
                 break;
-            case UIIndicatorStateVideoCapture_Enabled:
+            case UIIndicatorStateRecording_Enabled:
                 m_pAnimation->start();
                 break;
-            case UIIndicatorStateVideoCapture_Paused:
+            case UIIndicatorStateRecording_Paused:
                 m_pAnimation->stop();
                 break;
             default:
@@ -847,7 +857,7 @@ private:
         /* Create new painter: */
         QPainter painter(this);
         /* Configure painter for *enabled* state: */
-        if (state() == UIIndicatorStateVideoCapture_Enabled)
+        if (state() == UIIndicatorStateRecording_Enabled)
         {
             /* Configure painter for smooth animation: */
             painter.setRenderHint(QPainter::Antialiasing);
@@ -867,33 +877,50 @@ private:
     void updateAppearance()
     {
         /* Get machine: */
-        const CMachine machine = m_pSession->machine();
+        const CMachine comMachine = m_pSession->machine();
         const bool fMachinePaused = m_pSession->isPaused();
 
         /* Update indicator state early: */
-        if (!machine.GetVideoCaptureEnabled())
-            setState(UIIndicatorStateVideoCapture_Disabled);
+        CRecordingSettings comRecordingSettings = comMachine.GetRecordingSettings();
+        Assert(comRecordingSettings.isOk());
+        if (!comRecordingSettings.GetEnabled())
+            setState(UIIndicatorStateRecording_Disabled);
         else if (!fMachinePaused)
-            setState(UIIndicatorStateVideoCapture_Enabled);
+            setState(UIIndicatorStateRecording_Enabled);
         else
-            setState(UIIndicatorStateVideoCapture_Paused);
+            setState(UIIndicatorStateRecording_Paused);
+
+        updateRecordingMode();
 
         /* Prepare tool-tip: */
         QString strFullData;
         switch (state())
         {
-            case UIIndicatorStateVideoCapture_Disabled:
+            case UIIndicatorStateRecording_Disabled:
             {
                 strFullData += s_strTableRow1
-                    .arg(QApplication::translate("UIIndicatorsPool", "Video capture disabled", "Video capture tooltip"));
+                    .arg(QApplication::translate("UIIndicatorsPool", "Recording disabled", "Recording tooltip"));
                 break;
             }
-            case UIIndicatorStateVideoCapture_Enabled:
-            case UIIndicatorStateVideoCapture_Paused:
+            case UIIndicatorStateRecording_Enabled:
+            case UIIndicatorStateRecording_Paused:
             {
+                QString strToolTip;
+                if (   m_enmRecordingMode & UIIndicatorStateRecordingMode_Audio
+                    && m_enmRecordingMode & UIIndicatorStateRecordingMode_Video)
+                    strToolTip = QApplication::translate("UIIndicatorsPool", "Video/audio recording file", "Recording tooltip");
+                else if (m_enmRecordingMode & UIIndicatorStateRecordingMode_Audio)
+                    strToolTip = QApplication::translate("UIIndicatorsPool", "Audio recording file", "Recording tooltip");
+                else if (m_enmRecordingMode & UIIndicatorStateRecordingMode_Video)
+                    strToolTip = QApplication::translate("UIIndicatorsPool", "Video recording file", "Recording tooltip");
+
+                /* For now all screens have the same config: */
+                CRecordingScreenSettings comRecordingScreen0Settings = comRecordingSettings.GetScreenSettings(0);
+                Assert(comRecordingScreen0Settings.isOk());
+
                 strFullData += s_strTableRow2
-                    .arg(QApplication::translate("UIIndicatorsPool", "Video capture file", "Video capture tooltip"))
-                    .arg(machine.GetVideoCaptureFile());
+                    .arg(strToolTip)
+                    .arg(comRecordingScreen0Settings.GetFilename());
                 break;
             }
             default:
@@ -913,10 +940,35 @@ private:
     /** Defines current rotation angle. */
     void setRotationAngle(double dRotationAngle) { m_dRotationAngle = dRotationAngle; update(); }
 
+    /* Parses RecordScreenSettings::Options and updates m_enmRecordingMode accordingly. */
+    void updateRecordingMode()
+    {
+        m_enmRecordingMode = UIIndicatorStateRecordingMode_None;
+
+        /* Get machine: */
+        if (!m_pSession)
+            return;
+        const CMachine comMachine = m_pSession->machine();
+        if (comMachine.isNull())
+            return;
+
+        CRecordingSettings comRecordingSettings = comMachine.GetRecordingSettings();
+        /* For now all screens have the same config: */
+        CRecordingScreenSettings recordingScreen0Settings = comRecordingSettings.GetScreenSettings(0);
+        if (recordingScreen0Settings.IsFeatureEnabled(KRecordingFeature_Video))
+            m_enmRecordingMode = (UIIndicatorStateRecordingMode)((int)m_enmRecordingMode | (int)UIIndicatorStateRecordingMode_Video);
+
+        if (recordingScreen0Settings.IsFeatureEnabled(KRecordingFeature_Audio))
+            m_enmRecordingMode = (UIIndicatorStateRecordingMode)((int)m_enmRecordingMode | (int)UIIndicatorStateRecordingMode_Audio);
+    }
+
     /** Holds the rotation animation instance. */
     UIAnimationLoop *m_pAnimation;
     /** Holds current rotation angle. */
     double m_dRotationAngle;
+
+    /** Holds the recording mode. */
+    UIIndicatorStateRecordingMode m_enmRecordingMode;
 };
 
 
@@ -930,12 +982,84 @@ public:
     /** Constructor, passes @a pSession to the UISessionStateStatusBarIndicator constructor. */
     UIIndicatorFeatures(UISession *pSession)
         : UISessionStateStatusBarIndicator(IndicatorType_Features, pSession)
+        , m_iCPULoadPercentage(0)
     {
         /* Assign state-icons: */
-        setStateIcon(0, UIIconPool::iconSet(":/vtx_amdv_disabled_16px.png"));
-        setStateIcon(1, UIIconPool::iconSet(":/vtx_amdv_16px.png"));
+        setStateIcon(KVMExecutionEngine_NotSet, UIIconPool::iconSet(":/vtx_amdv_disabled_16px.png"));
+        setStateIcon(KVMExecutionEngine_RawMode, UIIconPool::iconSet(":/vtx_amdv_disabled_16px.png"));
+        setStateIcon(KVMExecutionEngine_HwVirt, UIIconPool::iconSet(":/vtx_amdv_16px.png"));
+        /** @todo New indicator icon, vm_execution_engine_native_api_16px.png, V inside a turtle / tortoise.  @bugref{9044} */
+        setStateIcon(KVMExecutionEngine_NativeApi, UIIconPool::iconSet(":/vm_execution_engine_native_api_16px.png"));
+
+        /* Configure machine state-change listener: */
+        connect(m_pSession, &UISession::sigMachineStateChange,
+                this, &UIIndicatorFeatures::sltHandleMachineStateChange);
+        m_pTimerAutoUpdate = new QTimer(this);
+        if (m_pTimerAutoUpdate)
+        {
+            connect(m_pTimerAutoUpdate, &QTimer::timeout, this, &UIIndicatorFeatures::sltTimeout);
+            /* Start the timer immediately if the machine is running: */
+            sltHandleMachineStateChange();
+        }
         /* Translate finally: */
         retranslateUi();
+    }
+
+protected:
+
+    virtual void paintEvent(QPaintEvent *pEvent) /* override */
+    {
+        UISessionStateStatusBarIndicator::paintEvent(pEvent);
+        QPainter painter(this);
+
+        /* Draw a thin bar on th right hand side of the icon indication CPU load: */
+        QLinearGradient gradient(0, 0, 0, height());
+        gradient.setColorAt(1.0, Qt::green);
+        gradient.setColorAt(0.5, Qt::yellow);
+        gradient.setColorAt(0.0, Qt::red);
+
+        painter.setPen(Qt::NoPen);
+        painter.setBrush(gradient);
+        /* Use 20% of the icon width to draw the indicator bar: */
+        painter.drawRect(QRect(QPoint(0.8 * width(), (100 - m_iCPULoadPercentage) / 100.f * height()),
+                               QPoint(width(),  height())));
+        /* Draw an empty rect. around the CPU load bar: */
+        int iBorderThickness = 1;
+        QRect outRect(QPoint(0.8 * width(), 0),
+                      QPoint(width() - 2 * iBorderThickness,  height() - 2 * iBorderThickness));
+        painter.setPen(QPen(Qt::black, 1));
+        painter.setBrush(Qt::NoBrush);
+        painter.drawRect(outRect);
+    }
+
+private slots:
+
+    /** Updates auto-update timer depending on machine state. */
+    void sltHandleMachineStateChange()
+    {
+        if (m_pSession->machineState() == KMachineState_Running)
+        {
+            /* Start auto-update timer otherwise: */
+            m_pTimerAutoUpdate->start(1000);
+            return;
+        }
+        /* Stop auto-update timer otherwise: */
+        m_pTimerAutoUpdate->stop();
+    }
+
+    void sltTimeout()
+    {
+        if (!m_pSession)
+            return;
+        CMachineDebugger comMachineDebugger = m_pSession->debugger();
+        if (comMachineDebugger.isNull())
+            return;
+        ULONG aPctExecuting;
+        ULONG aPctHalted;
+        ULONG aPctOther;
+        comMachineDebugger.GetCPULoad(0x7fffffff, aPctExecuting, aPctHalted, aPctOther);
+        m_iCPULoadPercentage = aPctExecuting + aPctOther;
+        update();
     }
 
 private:
@@ -947,19 +1071,37 @@ private:
         const CMachine machine = m_pSession->machine();
 
         /* VT-x/AMD-V feature: */
-        const QString strVirtualization = m_pSession->isHWVirtExEnabled() ?
-                                          VBoxGlobal::tr("Active", "details report (VT-x/AMD-V)") :
-                                          VBoxGlobal::tr("Inactive", "details report (VT-x/AMD-V)");
+        KVMExecutionEngine enmEngine = m_pSession->getVMExecutionEngine();
+        QString strExecutionEngine;
+        switch (enmEngine)
+        {
+            case KVMExecutionEngine_HwVirt:
+                strExecutionEngine = "VT-x/AMD-V";  /* no translation */
+                break;
+            case KVMExecutionEngine_RawMode:
+                strExecutionEngine = "raw-mode";    /* no translation */
+                break;
+            case KVMExecutionEngine_NativeApi:
+                strExecutionEngine = "native API";  /* no translation */
+                break;
+            default:
+                AssertFailed();
+                enmEngine = KVMExecutionEngine_NotSet;
+                RT_FALL_THRU();
+            case KVMExecutionEngine_NotSet:
+                strExecutionEngine = UICommon::tr("not set", "details report (execution engine)");
+                break;
+        }
 
         /* Nested Paging feature: */
         const QString strNestedPaging = m_pSession->isHWVirtExNestedPagingEnabled() ?
-                                        VBoxGlobal::tr("Active", "details report (Nested Paging)") :
-                                        VBoxGlobal::tr("Inactive", "details report (Nested Paging)");
+                                        UICommon::tr("Active", "details report (Nested Paging)") :
+                                        UICommon::tr("Inactive", "details report (Nested Paging)");
 
         /* Unrestricted Execution feature: */
         const QString strUnrestrictExec = m_pSession->isHWVirtExUXEnabled() ?
-                                          VBoxGlobal::tr("Active", "details report (Unrestricted Execution)") :
-                                          VBoxGlobal::tr("Inactive", "details report (Unrestricted Execution)");
+                                          UICommon::tr("Active", "details report (Unrestricted Execution)") :
+                                          UICommon::tr("Inactive", "details report (Unrestricted Execution)");
 
         /* CPU Execution Cap feature: */
         QString strCPUExecCap = QString::number(machine.GetCPUExecutionCap());
@@ -969,20 +1111,24 @@ private:
 
         /* Prepare tool-tip: */
         QString strFullData;
-        strFullData += s_strTableRow2.arg(VBoxGlobal::tr("VT-x/AMD-V", "details report"),                   strVirtualization);
-        strFullData += s_strTableRow2.arg(VBoxGlobal::tr("Nested Paging"),                                  strNestedPaging);
-        strFullData += s_strTableRow2.arg(VBoxGlobal::tr("Unrestricted Execution"),                         strUnrestrictExec);
-        strFullData += s_strTableRow2.arg(VBoxGlobal::tr("Execution Cap", "details report"),                strCPUExecCap);
-        strFullData += s_strTableRow2.arg(VBoxGlobal::tr("Paravirtualization Interface", "details report"), strParavirt);
+        //strFullData += s_strTableRow2.arg(UICommon::tr("VT-x/AMD-V", "details report"),                   strVirtualization);
+        strFullData += s_strTableRow2.arg(UICommon::tr("Execution engine", "details report"),             strExecutionEngine);
+        strFullData += s_strTableRow2.arg(UICommon::tr("Nested Paging"),                                  strNestedPaging);
+        strFullData += s_strTableRow2.arg(UICommon::tr("Unrestricted Execution"),                         strUnrestrictExec);
+        strFullData += s_strTableRow2.arg(UICommon::tr("Execution Cap", "details report"),                strCPUExecCap);
+        strFullData += s_strTableRow2.arg(UICommon::tr("Paravirtualization Interface", "details report"), strParavirt);
         const int cpuCount = machine.GetCPUCount();
         if (cpuCount > 1)
-            strFullData += s_strTableRow2.arg(VBoxGlobal::tr("Processor(s)", "details report"), QString::number(cpuCount));
+            strFullData += s_strTableRow2.arg(UICommon::tr("Processors", "details report"), QString::number(cpuCount));
 
         /* Update tool-tip: */
         setToolTip(s_strTable.arg(strFullData));
         /* Update indicator state: */
-        setState(m_pSession->isHWVirtExEnabled());
+        setState(enmEngine);
     }
+
+    QTimer *m_pTimerAutoUpdate;
+    ULONG m_iCPULoadPercentage;
 };
 
 
@@ -1004,7 +1150,8 @@ public:
         setStateIcon(3, UIIconPool::iconSet(":/mouse_can_seamless_16px.png"));
         setStateIcon(4, UIIconPool::iconSet(":/mouse_can_seamless_uncaptured_16px.png"));
         /* Configure connection: */
-        connect(pSession, SIGNAL(sigMouseStateChange(int)), this, SLOT(setState(int)));
+        connect(pSession, &UISession::sigMouseStateChange,
+                this, static_cast<void(UIIndicatorMouse::*)(int)>(&UIIndicatorMouse::setState));
         setState(pSession->mouseState());
         /* Translate finally: */
         retranslateUi();
@@ -1077,8 +1224,13 @@ public:
         setStateIcon(1, UIIconPool::iconSet(":/hostkey_captured_16px.png"));
         setStateIcon(2, UIIconPool::iconSet(":/hostkey_pressed_16px.png"));
         setStateIcon(3, UIIconPool::iconSet(":/hostkey_captured_pressed_16px.png"));
+        setStateIcon(4, UIIconPool::iconSet(":/hostkey_checked_16px.png"));
+        setStateIcon(5, UIIconPool::iconSet(":/hostkey_captured_checked_16px.png"));
+        setStateIcon(6, UIIconPool::iconSet(":/hostkey_pressed_checked_16px.png"));
+        setStateIcon(7, UIIconPool::iconSet(":/hostkey_captured_pressed_checked_16px.png"));
         /* Configure connection: */
-        connect(pSession, SIGNAL(sigKeyboardStateChange(int)), this, SLOT(setState(int)));
+        connect(pSession, &UISession::sigKeyboardStateChange,
+                this, static_cast<void(UIIndicatorKeyboard::*)(int)>(&UIIndicatorKeyboard::setState));
         setState(pSession->keyboardState());
         /* Translate finally: */
         retranslateUi();
@@ -1117,8 +1269,8 @@ public:
     UIIndicatorKeyboardExtension()
     {
         /* Make sure host-combination label will be updated: */
-        connect(gEDataManager, SIGNAL(sigRuntimeUIHostKeyCombinationChange()),
-                this, SLOT(sltUpdateAppearance()));
+        connect(gEDataManager, &UIExtraDataManager::sigRuntimeUIHostKeyCombinationChange,
+                this, &UIIndicatorKeyboardExtension::sltUpdateAppearance);
         /* Translate finally: */
         retranslateUi();
     }
@@ -1192,10 +1344,17 @@ void UIIndicatorsPool::setAutoUpdateIndicatorStates(bool fEnabled)
         m_pTimerAutoUpdate->stop();
 }
 
-void UIIndicatorsPool::sltHandleConfigurationChange(const QString &strMachineID)
+QPoint UIIndicatorsPool::mapIndicatorPositionToGlobal(IndicatorType enmIndicatorType, const QPoint &indicatorPosition)
+{
+    if (m_pool.contains(enmIndicatorType))
+        return m_pool.value(enmIndicatorType)->mapToGlobal(indicatorPosition);
+    return QPoint(0, 0);
+}
+
+void UIIndicatorsPool::sltHandleConfigurationChange(const QUuid &uMachineID)
 {
     /* Skip unrelated machine IDs: */
-    if (vboxGlobal().managedVMUuid() != strMachineID)
+    if (uiCommon().managedVMUuid() != uMachineID)
         return;
 
     /* Update pool: */
@@ -1255,7 +1414,7 @@ void UIIndicatorsPool::sltContextMenuRequest(QIStatusBarIndicator *pIndicator, Q
         if (m_pool[indicatorType] == pIndicator)
         {
             /* Notify listener: */
-            emit sigContextMenuRequest(indicatorType, pEvent->globalPos());
+            emit sigContextMenuRequest(indicatorType, pEvent->pos());
             return;
         }
 }
@@ -1273,8 +1432,8 @@ void UIIndicatorsPool::prepare()
 void UIIndicatorsPool::prepareConnections()
 {
     /* Listen for the status-bar configuration changes: */
-    connect(gEDataManager, SIGNAL(sigStatusBarConfigurationChange(const QString&)),
-            this, SLOT(sltHandleConfigurationChange(const QString&)));
+    connect(gEDataManager, &UIExtraDataManager::sigStatusBarConfigurationChange,
+            this, &UIIndicatorsPool::sltHandleConfigurationChange);
 }
 
 void UIIndicatorsPool::prepareContents()
@@ -1302,8 +1461,8 @@ void UIIndicatorsPool::prepareUpdateTimer()
     AssertPtrReturnVoid(m_pTimerAutoUpdate);
     {
         /* Configure auto-update timer: */
-        connect(m_pTimerAutoUpdate, SIGNAL(timeout()),
-                this, SLOT(sltAutoUpdateIndicatorStates()));
+        connect(m_pTimerAutoUpdate, &QTimer::timeout,
+                this, &UIIndicatorsPool::sltAutoUpdateIndicatorStates);
         setAutoUpdateIndicatorStates(true);
     }
 }
@@ -1311,7 +1470,7 @@ void UIIndicatorsPool::prepareUpdateTimer()
 void UIIndicatorsPool::updatePool()
 {
     /* Acquire status-bar availability: */
-    m_fEnabled = gEDataManager->statusBarEnabled(vboxGlobal().managedVMUuid());
+    m_fEnabled = gEDataManager->statusBarEnabled(uiCommon().managedVMUuid());
     /* If status-bar is not enabled: */
     if (!m_fEnabled)
     {
@@ -1327,7 +1486,7 @@ void UIIndicatorsPool::updatePool()
     }
 
     /* Acquire status-bar restrictions: */
-    m_restrictions = gEDataManager->restrictedStatusBarIndicators(vboxGlobal().managedVMUuid());
+    m_restrictions = gEDataManager->restrictedStatusBarIndicators(uiCommon().managedVMUuid());
     /* Remove restricted indicators: */
     foreach (const IndicatorType &indicatorType, m_restrictions)
     {
@@ -1339,7 +1498,7 @@ void UIIndicatorsPool::updatePool()
     }
 
     /* Acquire status-bar order: */
-    m_order = gEDataManager->statusBarIndicatorOrder(vboxGlobal().managedVMUuid());
+    m_order = gEDataManager->statusBarIndicatorOrder(uiCommon().managedVMUuid());
     /* Make sure the order is complete taking restrictions into account: */
     for (int iType = IndicatorType_Invalid; iType < IndicatorType_Max; ++iType)
     {
@@ -1389,7 +1548,7 @@ void UIIndicatorsPool::updatePool()
                 case IndicatorType_USB:               m_pool[indicatorType] = new UIIndicatorUSB(m_pSession);           break;
                 case IndicatorType_SharedFolders:     m_pool[indicatorType] = new UIIndicatorSharedFolders(m_pSession); break;
                 case IndicatorType_Display:           m_pool[indicatorType] = new UIIndicatorDisplay(m_pSession);       break;
-                case IndicatorType_VideoCapture:      m_pool[indicatorType] = new UIIndicatorVideoCapture(m_pSession);  break;
+                case IndicatorType_Recording:         m_pool[indicatorType] = new UIIndicatorRecording(m_pSession);     break;
                 case IndicatorType_Features:          m_pool[indicatorType] = new UIIndicatorFeatures(m_pSession);      break;
                 case IndicatorType_Mouse:             m_pool[indicatorType] = new UIIndicatorMouse(m_pSession);         break;
                 case IndicatorType_Keyboard:          m_pool[indicatorType] = new UIIndicatorKeyboard(m_pSession);      break;
@@ -1397,8 +1556,8 @@ void UIIndicatorsPool::updatePool()
                 default: break;
             }
             /* Configure indicator: */
-            connect(m_pool.value(indicatorType), SIGNAL(sigContextMenuRequest(QIStatusBarIndicator*, QContextMenuEvent*)),
-                    this, SLOT(sltContextMenuRequest(QIStatusBarIndicator*, QContextMenuEvent*)));
+            connect(m_pool.value(indicatorType), &QIStatusBarIndicator::sigContextMenuRequest,
+                    this, &UIIndicatorsPool::sltContextMenuRequest);
             /* Insert indicator into main-layout at proper position: */
             m_pMainLayout->insertWidget(indicatorPosition(indicatorType), m_pool.value(indicatorType));
         }
@@ -1480,4 +1639,3 @@ void UIIndicatorsPool::updateIndicatorStateForDevice(QIStatusBarIndicator *pIndi
 }
 
 #include "UIIndicatorsPool.moc"
-

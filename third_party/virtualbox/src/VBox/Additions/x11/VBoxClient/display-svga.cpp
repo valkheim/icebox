@@ -5,7 +5,7 @@
  */
 
 /*
- * Copyright (C) 2016-2017 Oracle Corporation
+ * Copyright (C) 2016-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -43,7 +43,10 @@
 
 #include <iprt/assert.h>
 #include <iprt/file.h>
+#include <iprt/err.h>
 #include <iprt/string.h>
+
+#include <stdio.h>
 
 /** Maximum number of supported screens.  DRM and X11 both limit this to 32. */
 /** @todo if this ever changes, dynamically allocate resizeable arrays in the
@@ -98,7 +101,7 @@ static void drmConnect(struct DRMCONTEXT *pContext)
     RTFILE hDevice;
 
     if (pContext->hDevice != NIL_RTFILE)
-        VBClFatalError(("%s called with bad argument\n", __func__));
+        VBClLogFatalError("%s called with bad argument\n", __func__);
     /* Try to open the SVGA DRM device. */
     for (i = 0; i < 128; ++i)
     {
@@ -117,7 +120,7 @@ static void drmConnect(struct DRMCONTEXT *pContext)
         else
             rc = RTStrPrintf(szPath, sizeof(szPath), "/dev/dri/controlD%u", i / 2 + 64);
         if (RT_FAILURE(rc))
-            VBClFatalError(("RTStrPrintf of device path failed, rc=%Rrc\n", rc));
+            VBClLogFatalError("RTStrPrintf of device path failed, rc=%Rrc\n", rc);
         rc = RTFileOpen(&hDevice, szPath, RTFILE_O_READWRITE | RTFILE_O_OPEN | RTFILE_O_DENY_NONE);
         if (RT_FAILURE(rc))
             continue;
@@ -154,13 +157,18 @@ static void drmSendHints(struct DRMCONTEXT *pContext, struct DRMVMWRECT *paRects
     struct DRMVMWUPDATELAYOUT ioctlLayout;
 
     if (pContext->hDevice == NIL_RTFILE)
-        VBClFatalError(("%s bad device argument.\n", __func__));
+        VBClLogFatalError("%s bad device argument\n", __func__);
     ioctlLayout.cOutputs = cHeads;
     ioctlLayout.ptrRects = (uint64_t)paRects;
     rc = RTFileIoCtl(pContext->hDevice, DRM_IOCTL_VMW_UPDATE_LAYOUT,
                      &ioctlLayout, sizeof(ioctlLayout), NULL);
     if (RT_FAILURE(rc) && rc != VERR_INVALID_PARAMETER)
-        VBClFatalError(("Failure updating layout, rc=%Rrc\n", rc));
+        VBClLogFatalError("Failure updating layout, rc=%Rrc\n", rc);
+}
+
+static const char *getName()
+{
+    return "Display SVGA";
 }
 
 static const char *getPidFilePath()
@@ -173,83 +181,91 @@ static int run(struct VBCLSERVICE **ppInterface, bool fDaemonised)
     (void)ppInterface;
     (void)fDaemonised;
     struct DRMCONTEXT drmContext = { NIL_RTFILE };
-    unsigned i;
+    static struct VMMDevDisplayDef aMonitors[VMW_MAX_HEADS];
     int rc;
-    uint32_t acx[VMW_MAX_HEADS] = { 0 };
-    uint32_t acy[VMW_MAX_HEADS] = { 0 };
-    uint32_t adx[VMW_MAX_HEADS] = { 0 };
-    uint32_t ady[VMW_MAX_HEADS] = { 0 };
-    uint32_t afEnabled[VMW_MAX_HEADS] = { false };
-    struct DRMVMWRECT aRects[VMW_MAX_HEADS];
-    unsigned cHeads;
-
+    unsigned cEnabledMonitors;
+    /* Do not acknowledge the first event we query for to pick up old events,
+     * e.g. from before a guest reboot. */
+    bool fAck = false;
     drmConnect(&drmContext);
     if (drmContext.hDevice == NIL_RTFILE)
         return VINF_SUCCESS;
-    /* Initialise the guest library. */
-    rc = VbglR3InitUser();
-    if (RT_FAILURE(rc))
-        VBClFatalError(("Failed to connect to the VirtualBox kernel service, rc=%Rrc\n", rc));
     rc = VbglR3CtlFilterMask(VMMDEV_EVENT_DISPLAY_CHANGE_REQUEST, 0);
     if (RT_FAILURE(rc))
-        VBClFatalError(("Failed to request display change events, rc=%Rrc\n", rc));
+        VBClLogFatalError("Failed to request display change events, rc=%Rrc\n", rc);
     rc = VbglR3AcquireGuestCaps(VMMDEV_GUEST_SUPPORTS_GRAPHICS, 0, false);
     if (rc == VERR_RESOURCE_BUSY)  /* Someone else has already acquired it. */
         return VINF_SUCCESS;
     if (RT_FAILURE(rc))
-        VBClFatalError(("Failed to register resizing support, rc=%Rrc\n", rc));
+        VBClLogFatalError("Failed to register resizing support, rc=%Rrc\n", rc);
     for (;;)
     {
         uint32_t events;
-
-        rc = VbglR3WaitEvent(VMMDEV_EVENT_DISPLAY_CHANGE_REQUEST, RT_INDEFINITE_WAIT, &events);
+        struct VMMDevDisplayDef aDisplays[VMW_MAX_HEADS];
+        uint32_t cDisplaysOut;
+        /* Query the first size without waiting.  This lets us e.g. pick up
+         * the last event before a guest reboot when we start again after. */
+        rc = VbglR3GetDisplayChangeRequestMulti(VMW_MAX_HEADS, &cDisplaysOut, aDisplays, fAck);
+        fAck = true;
         if (RT_FAILURE(rc))
-            VBClFatalError(("Failure waiting for event, rc=%Rrc\n", rc));
-        while (rc != VERR_TIMEOUT)
+            VBClLogFatalError("Failed to get display change request, rc=%Rrc\n", rc);
+        if (cDisplaysOut > VMW_MAX_HEADS)
+            VBClLogFatalError("Display change request contained, rc=%Rrc\n", rc);
+        if (cDisplaysOut > 0)
         {
-            uint32_t cx, cy, cBits, dx, dy, idx;
-            bool fEnabled, fChangeOrigin;
-
-            rc = VbglR3GetDisplayChangeRequest(&cx, &cy, &cBits, &idx, &dx, &dy, &fEnabled, &fChangeOrigin, true);
-            if (RT_FAILURE(rc))
-                VBClFatalError(("Failed to get display change request, rc=%Rrc\n", rc));
-            if (idx < VMW_MAX_HEADS)
+            for (unsigned i = 0; i < cDisplaysOut && i < VMW_MAX_HEADS; ++i)
             {
-                acx[idx] = cx;
-                acy[idx] = cy;
-                if (fChangeOrigin)
-                    adx[idx] = dx < INT32_MAX ? dx : 0;
-                if (fChangeOrigin)
-                    ady[idx] = dy < INT32_MAX ? dy : 0;
-                afEnabled[idx] = fEnabled;
-            }
-            rc = VbglR3WaitEvent(VMMDEV_EVENT_DISPLAY_CHANGE_REQUEST, 0, &events);
-            if (RT_FAILURE(rc) && rc != VERR_TIMEOUT && rc != VERR_INTERRUPTED)
-                VBClFatalError(("Failure waiting for event, rc=%Rrc\n", rc));
-        }
-        for (i = 0, cHeads = 0; i < VMW_MAX_HEADS; ++i)
-        {
-            if (afEnabled[i])
-            {
-                if ((i == 0) || (adx[i] || ady[i]))
+                uint32_t idDisplay = aDisplays[i].idDisplay;
+                if (idDisplay >= VMW_MAX_HEADS)
+                    continue;
+                aMonitors[idDisplay].fDisplayFlags = aDisplays[i].fDisplayFlags;
+                if (!(aDisplays[i].fDisplayFlags & VMMDEV_DISPLAY_DISABLED))
                 {
-                    aRects[cHeads].x = (int32_t)adx[i];
-                    aRects[cHeads].y = (int32_t)ady[i];
-                } else {
-                    aRects[cHeads].x = (int32_t)(adx[i - 1] + acx[i - 1]);
-                    aRects[cHeads].y = (int32_t)ady[i - 1];
+                    if ((idDisplay == 0) || (aDisplays[i].fDisplayFlags & VMMDEV_DISPLAY_ORIGIN))
+                    {
+                        aMonitors[idDisplay].xOrigin = aDisplays[i].xOrigin;
+                        aMonitors[idDisplay].yOrigin = aDisplays[i].yOrigin;
+                    } else {
+                        aMonitors[idDisplay].xOrigin = aMonitors[idDisplay - 1].xOrigin + aMonitors[idDisplay - 1].cx;
+                        aMonitors[idDisplay].yOrigin = aMonitors[idDisplay - 1].yOrigin;
+                    }
+                    aMonitors[idDisplay].cx = aDisplays[i].cx;
+                    aMonitors[idDisplay].cy = aDisplays[i].cy;
                 }
-                aRects[cHeads].w = acx[i];
-                aRects[cHeads].h = acy[i];
-                ++cHeads;
             }
+            /* Create an dense (consisting of enabled monitors only) array to pass to DRM. */
+            cEnabledMonitors = 0;
+            struct DRMVMWRECT aEnabledMonitors[VMW_MAX_HEADS];
+            for (int j = 0; j < VMW_MAX_HEADS; ++j)
+            {
+                if (!(aMonitors[j].fDisplayFlags & VMMDEV_DISPLAY_DISABLED))
+                {
+                    aEnabledMonitors[cEnabledMonitors].x = aMonitors[j].xOrigin;
+                    aEnabledMonitors[cEnabledMonitors].y = aMonitors[j].yOrigin;
+                    aEnabledMonitors[cEnabledMonitors].w = aMonitors[j].cx;
+                    aEnabledMonitors[cEnabledMonitors].h = aMonitors[j].cy;
+                    if (cEnabledMonitors > 0)
+                        aEnabledMonitors[cEnabledMonitors].x = aEnabledMonitors[cEnabledMonitors - 1].x + aEnabledMonitors[cEnabledMonitors - 1].w;
+                    ++cEnabledMonitors;
+                }
+            }
+            for (unsigned i = 0; i < cEnabledMonitors; ++i)
+                printf("Monitor %u: %dx%d, (%d, %d)\n", i, (int)aEnabledMonitors[i].w, (int)aEnabledMonitors[i].h,
+                       (int)aEnabledMonitors[i].x, (int)aEnabledMonitors[i].y);
+            drmSendHints(&drmContext, aEnabledMonitors, cEnabledMonitors);
         }
-        drmSendHints(&drmContext, aRects, cHeads);
+        do
+        {
+            rc = VbglR3WaitEvent(VMMDEV_EVENT_DISPLAY_CHANGE_REQUEST, RT_INDEFINITE_WAIT, &events);
+        } while (rc == VERR_INTERRUPTED);
+        if (RT_FAILURE(rc))
+            VBClLogFatalError("Failure waiting for event, rc=%Rrc\n", rc);
     }
 }
 
 static struct VBCLSERVICE interface =
 {
+    getName,
     getPidFilePath,
     VBClServiceDefaultHandler, /* Init */
     run,

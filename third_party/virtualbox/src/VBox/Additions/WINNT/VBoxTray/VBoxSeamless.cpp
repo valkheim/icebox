@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -20,6 +20,7 @@
 
 #include <iprt/assert.h>
 #include <iprt/ldr.h>
+#include <iprt/system.h>
 
 #include <VBoxDisplay.h>
 #include <VBoxHook.h>
@@ -68,17 +69,14 @@ DECLCALLBACK(int) VBoxSeamlessInit(const PVBOXSERVICEENV pEnv, void **ppInstance
     pCtx->pEnv     = pEnv;
     pCtx->hModHook = NIL_RTLDRMOD;
 
-    OSVERSIONINFO OSinfo;
-    OSinfo.dwOSVersionInfoSize = sizeof (OSinfo);
-    GetVersionEx (&OSinfo);
-
     int rc;
 
     /* We have to jump out here when using NT4, otherwise it complains about
        a missing API function "UnhookWinEvent" used by the dynamically loaded VBoxHook.dll below */
-    if (OSinfo.dwMajorVersion <= 4)         /* Windows NT 4.0 or older */
+    uint64_t const uNtVersion = RTSystemGetNtVersion();
+    if (uNtVersion < RTSYSTEM_MAKE_NT_VERSION(5, 0, 0)) /* Windows NT 4.0 or older */
     {
-        Log(("VBoxTray: VBoxSeamlessInit: Windows NT 4.0 or older not supported!\n"));
+        LogRel(("Seamless: Windows NT 4.0 or older not supported!\n"));
         rc = VERR_NOT_SUPPORTED;
     }
     else
@@ -90,15 +88,24 @@ DECLCALLBACK(int) VBoxSeamlessInit(const PVBOXSERVICEENV pEnv, void **ppInstance
             *(PFNRT *)&pCtx->pfnVBoxHookInstallWindowTracker = RTLdrGetFunction(pCtx->hModHook, "VBoxHookInstallWindowTracker");
             *(PFNRT *)&pCtx->pfnVBoxHookRemoveWindowTracker  = RTLdrGetFunction(pCtx->hModHook, "VBoxHookRemoveWindowTracker");
 
-            /* rc should contain success status */
-            AssertRC(rc); /** @todo r=andy Makes no sense here!? */
+            if (   pCtx->pfnVBoxHookInstallWindowTracker
+                && pCtx->pfnVBoxHookRemoveWindowTracker)
+            {
+                VBoxSeamlessSetSupported(TRUE);
 
-            VBoxSeamlessSetSupported(TRUE);
-
-            *ppInstance = pCtx;
+                *ppInstance = pCtx;
+            }
+            else
+            {
+                LogRel(("Seamless: Not supported, skipping\n"));
+                rc = VERR_NOT_SUPPORTED;
+            }
         }
         else
-            LogFlowFunc(("Unable to load %s, rc=%Rrc\n", VBOXHOOK_DLL_NAME, rc));
+        {
+            LogRel(("Seamless: Could not load %s (%Rrc), skipping\n", VBOXHOOK_DLL_NAME, rc));
+            rc = VERR_NOT_SUPPORTED;
+        }
     }
 
     LogFlowFuncLeaveRC(rc);
@@ -208,7 +215,6 @@ BOOL CALLBACK VBoxEnumFunc(HWND hwnd, LPARAM lParam)
 
     char szWindowText[256];
     char szWindowClass[256];
-    OSVERSIONINFO OSinfo;
     HWND hStart = NULL;
 
     szWindowText[0] = 0;
@@ -217,10 +223,8 @@ BOOL CALLBACK VBoxEnumFunc(HWND hwnd, LPARAM lParam)
     GetWindowText(hwnd, szWindowText, sizeof(szWindowText));
     GetClassName(hwnd, szWindowClass, sizeof(szWindowClass));
 
-    OSinfo.dwOSVersionInfoSize = sizeof (OSinfo);
-    GetVersionEx (&OSinfo);
-
-    if (OSinfo.dwMajorVersion >= 6)
+    uint64_t const uNtVersion = RTSystemGetNtVersion();
+    if (uNtVersion >= RTSYSTEM_MAKE_NT_VERSION(6, 0, 0))
     {
         hStart = ::FindWindowEx(GetDesktopWindow(), NULL, "Button", "Start");
 
@@ -237,7 +241,7 @@ BOOL CALLBACK VBoxEnumFunc(HWND hwnd, LPARAM lParam)
 
     rectVisible = rectWindow;
 
-    /* Filter out Windows XP shadow windows
+    /* Filter out Windows XP shadow windows */
     /** @todo still shows inside the guest */
     if ( szWindowText[0] == 0 &&
             (dwStyle == (WS_POPUP | WS_VISIBLE | WS_CLIPSIBLINGS)

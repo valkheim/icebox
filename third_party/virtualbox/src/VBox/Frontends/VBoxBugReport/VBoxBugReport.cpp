@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -19,7 +19,6 @@
 #include <VBox/com/com.h>
 #include <VBox/com/string.h>
 #include <VBox/com/array.h>
-//#include <VBox/com/Guid.h>
 #include <VBox/com/ErrorInfo.h>
 #include <VBox/com/errorprint.h>
 #include <VBox/com/VirtualBox.h>
@@ -27,6 +26,7 @@
 #include <VBox/version.h>
 
 #include <iprt/buildconfig.h>
+#include <iprt/err.h>
 #include <iprt/env.h>
 #include <iprt/file.h>
 #include <iprt/getopt.h>
@@ -366,7 +366,7 @@ PRTSTREAM BugReportCommand::getStream(void)
     RTPROCESS hProcess;
     handleRtError(RTProcCreateEx(m_papszArgs[0], m_papszArgs, RTENV_DEFAULT, 0,
                                  NULL, &hStdOutErr, &hStdOutErr,
-                                 NULL, NULL, &hProcess),
+                                 NULL, NULL, NULL, &hProcess),
                   "Failed to create process '%s'", m_papszArgs[0]);
     RTPROCSTATUS status;
     handleRtError(RTProcWait(hProcess, RTPROCWAIT_FLAGS_BLOCK, &status),
@@ -443,7 +443,7 @@ PRTSTREAM BugReportCommandTemp::getStream(void)
     RTPROCESS hProcess;
     handleRtError(RTProcCreateEx(m_papszArgs[0], m_papszArgs, RTENV_DEFAULT, 0,
                                  NULL, &hStdOutErr, &hStdOutErr,
-                                 NULL, NULL, &hProcess),
+                                 NULL, NULL, NULL, &hProcess),
                   "Failed to create process '%s'", m_papszArgs[0]);
     RTPROCSTATUS status;
     handleRtError(RTProcWait(hProcess, RTPROCWAIT_FLAGS_BLOCK, &status),

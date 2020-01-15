@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2008-2017 Oracle Corporation
+ * Copyright (C) 2008-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -15,27 +15,21 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
-#ifdef VBOX_WITH_PRECOMPILED_HEADERS
-# include <precomp.h>
-#else  /* !VBOX_WITH_PRECOMPILED_HEADERS */
-
 /* Qt includes: */
-# include <QAccessibleWidget>
-# include <QAction>
-# include <QHeaderView>
-# include <QLayout>
-# include <QTabWidget>
-# include <QToolButton>
+#include <QAccessibleWidget>
+#include <QAction>
+#include <QHeaderView>
+#include <QLayout>
+#include <QTabWidget>
+#include <QToolButton>
 
 /* GUI includes: */
-# include "QITabWidget.h"
-# include "QITreeWidget.h"
-# include "UISettingsSelector.h"
-# include "UIIconPool.h"
-# include "UISettingsPage.h"
-# include "UIToolBar.h"
-
-#endif /* !VBOX_WITH_PRECOMPILED_HEADERS */
+#include "QITabWidget.h"
+#include "QITreeWidget.h"
+#include "UISettingsSelector.h"
+#include "UIIconPool.h"
+#include "UISettingsPage.h"
+#include "UIToolBar.h"
 
 
 /** QAccessibleWidget extension used as an accessibility interface for UIToolBar buttons. */
@@ -325,8 +319,8 @@ UISettingsSelectorTreeView::UISettingsSelectorTreeView(QWidget *pParent /* = 0 *
     m_pTreeWidget->hideColumn(TreeWidgetSection_Id);
     m_pTreeWidget->hideColumn(TreeWidgetSection_Link);
     /* Setup connections: */
-    connect(m_pTreeWidget, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
-             this, SLOT(sltSettingsGroupChanged(QTreeWidgetItem *, QTreeWidgetItem*)));
+    connect(m_pTreeWidget, &QITreeWidget::currentItemChanged,
+            this, &UISettingsSelectorTreeView::sltSettingsGroupChanged);
 }
 
 UISettingsSelectorTreeView::~UISettingsSelectorTreeView()
@@ -518,8 +512,8 @@ UISettingsSelectorToolBar::UISettingsSelectorToolBar(QWidget *pParent /* = 0 */)
     /* Prepare the action group: */
     m_pActionGroup = new QActionGroup(this);
     m_pActionGroup->setExclusive(true);
-    connect(m_pActionGroup, SIGNAL(triggered(QAction*)),
-            this, SLOT(sltSettingsGroupChanged(QAction*)));
+    connect(m_pActionGroup, &QActionGroup::triggered,
+            this, static_cast<void(UISettingsSelectorToolBar::*)(QAction*)>(&UISettingsSelectorToolBar::sltSettingsGroupChanged));
 }
 
 UISettingsSelectorToolBar::~UISettingsSelectorToolBar()
@@ -815,4 +809,3 @@ UISelectorActionItem *UISettingsSelectorToolBar::findActionItemByTabWidget(QTabW
     return pResult;
 
 }
-

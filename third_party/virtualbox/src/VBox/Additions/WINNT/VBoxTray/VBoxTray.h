@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -15,28 +15,13 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
-#ifndef ___VBOXTRAY_H
-#define ___VBOXTRAY_H
+#ifndef GA_INCLUDED_SRC_WINNT_VBoxTray_VBoxTray_h
+#define GA_INCLUDED_SRC_WINNT_VBoxTray_VBoxTray_h
+#ifndef RT_WITHOUT_PRAGMA_ONCE
+# pragma once
+#endif
 
-#       define _InterlockedExchange           _InterlockedExchange_StupidDDKVsCompilerCrap
-#       define _InterlockedExchangeAdd        _InterlockedExchangeAdd_StupidDDKVsCompilerCrap
-#       define _InterlockedCompareExchange    _InterlockedCompareExchange_StupidDDKVsCompilerCrap
-#       define _InterlockedAddLargeStatistic  _InterlockedAddLargeStatistic_StupidDDKVsCompilerCrap
-#       define _interlockedbittestandset      _interlockedbittestandset_StupidDDKVsCompilerCrap
-#       define _interlockedbittestandreset    _interlockedbittestandreset_StupidDDKVsCompilerCrap
-#       define _interlockedbittestandset64    _interlockedbittestandset64_StupidDDKVsCompilerCrap
-#       define _interlockedbittestandreset64  _interlockedbittestandreset64_StupidDDKVsCompilerCrap
-#       pragma warning(disable : 4163)
 #include <iprt/win/windows.h>
-#       pragma warning(default : 4163)
-#       undef  _InterlockedExchange
-#       undef  _InterlockedExchangeAdd
-#       undef  _InterlockedCompareExchange
-#       undef  _InterlockedAddLargeStatistic
-#       undef  _interlockedbittestandset
-#       undef  _interlockedbittestandreset
-#       undef  _interlockedbittestandset64
-#       undef  _interlockedbittestandreset64
 
 #include <tchar.h>
 #include <stdio.h>
@@ -135,7 +120,9 @@ typedef struct _VBOXSERVICEDESC
 } VBOXSERVICEDESC, *PVBOXSERVICEDESC;
 
 extern VBOXSERVICEDESC g_SvcDescDisplay;
+#ifdef VBOX_WITH_SHARED_CLIPBOARD
 extern VBOXSERVICEDESC g_SvcDescClipboard;
+#endif
 extern VBOXSERVICEDESC g_SvcDescSeamless;
 extern VBOXSERVICEDESC g_SvcDescVRDP;
 extern VBOXSERVICEDESC g_SvcDescIPC;
@@ -183,9 +170,11 @@ typedef struct _VBOXGLOBALMESSAGE
     UINT     uMsgID;
 } VBOXGLOBALMESSAGE, *PVBOXGLOBALMESSAGE;
 
-extern HWND         g_hwndToolWindow;
 extern HINSTANCE    g_hInstance;
+extern HWND         g_hwndToolWindow;
 extern uint32_t     g_fGuestDisplaysChanged;
 
-#endif /* !___VBOXTRAY_H */
+RTEXITCODE VBoxTrayShowError(const char *pszFormat, ...);
+
+#endif /* !GA_INCLUDED_SRC_WINNT_VBoxTray_VBoxTray_h */
 

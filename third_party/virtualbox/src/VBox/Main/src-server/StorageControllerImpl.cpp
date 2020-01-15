@@ -1,12 +1,10 @@
 /* $Id: StorageControllerImpl.cpp $ */
-
 /** @file
- *
  * Implementation of IStorageController.
  */
 
 /*
- * Copyright (C) 2008-2017 Oracle Corporation
+ * Copyright (C) 2008-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -17,6 +15,7 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
+#define LOG_GROUP LOG_GROUP_MAIN_STORAGECONTROLLER
 #include "StorageControllerImpl.h"
 #include "MachineImpl.h"
 #include "VirtualBoxImpl.h"
@@ -25,14 +24,14 @@
 #include <iprt/string.h>
 #include <iprt/cpp/utils.h>
 
-#include <VBox/err.h>
+#include <iprt/errcore.h>
 #include <VBox/settings.h>
 
 #include <algorithm>
 
 #include "AutoStateDep.h"
 #include "AutoCaller.h"
-#include "Logging.h"
+#include "LoggingNew.h"
 
 // defines
 /////////////////////////////////////////////////////////////////////////////
@@ -96,7 +95,7 @@ HRESULT StorageController::init(Machine *aParent,
 
     ComAssertRet(aParent && !aName.isEmpty(), E_INVALIDARG);
     if (   (aStorageBus <= StorageBus_Null)
-        || (aStorageBus >  StorageBus_PCIe))
+        || (aStorageBus >  StorageBus_VirtioSCSI))
         return setError(E_INVALIDARG,
                         tr("Invalid storage connection type"));
 
@@ -163,7 +162,14 @@ HRESULT StorageController::init(Machine *aParent,
             m->bd->ulPortCount = 1;
             m->bd->controllerType = StorageControllerType_NVMe;
             break;
+        case StorageBus_VirtioSCSI:
+            m->bd->ulPortCount = 1;
+            m->bd->controllerType = StorageControllerType_VirtioSCSI;
+            break;
         case StorageBus_Null: break; /* Shut up MSC. */
+#ifdef VBOX_WITH_XPCOM_CPP_ENUM_HACK
+        case StorageBus_32BitHack: break; /* Shut up GCC. */
+#endif
     }
 
     /* Confirm a successful initialization */
@@ -331,7 +337,7 @@ HRESULT StorageController::setName(const com::Utf8Str &aName)
         m->pParent->i_setModified(Machine::IsModified_Storage);
         alock.release();
 
-        m->pParent->i_onStorageControllerChange();
+        m->pParent->i_onStorageControllerChange(m->pParent->i_getId(), aName);
     }
 
     return S_OK;
@@ -412,6 +418,12 @@ HRESULT StorageController::setControllerType(StorageControllerType_T aController
                 rc = E_INVALIDARG;
             break;
         }
+        case StorageBus_VirtioSCSI:
+        {
+            if (aControllerType != StorageControllerType_VirtioSCSI)
+                rc = E_INVALIDARG;
+            break;
+        }
         default:
             AssertMsgFailed(("Invalid controller type %d\n", m->bd->storageBus));
             rc = E_INVALIDARG;
@@ -432,7 +444,7 @@ HRESULT StorageController::setControllerType(StorageControllerType_T aController
         m->pParent->i_setModified(Machine::IsModified_Storage);
         mlock.release();
 
-        m->pParent->i_onStorageControllerChange();
+        m->pParent->i_onStorageControllerChange(m->pParent->i_getId(), m->bd->strName);
     }
 
     return S_OK;
@@ -559,6 +571,17 @@ HRESULT StorageController::setPortCount(ULONG aPortCount)
                                 aPortCount, 1, 255);
             break;
         }
+        case StorageBus_VirtioSCSI:
+        {
+            /*
+             * virtio-scsi supports 256 targets (with 16384 LUNs each).
+             */
+            if (aPortCount < 1 || aPortCount > 256)
+                return setError(E_INVALIDARG,
+                                tr("Invalid port count: %lu (must be in range [%lu, %lu])"),
+                                aPortCount, 1, 256);
+            break;
+        }
         default:
             AssertMsgFailed(("Invalid controller type %d\n", m->bd->storageBus));
     }
@@ -573,7 +596,7 @@ HRESULT StorageController::setPortCount(ULONG aPortCount)
         m->pParent->i_setModified(Machine::IsModified_Storage);
         mlock.release();
 
-        m->pParent->i_onStorageControllerChange();
+        m->pParent->i_onStorageControllerChange(m->pParent->i_getId(), m->bd->strName);
     }
 
     return S_OK;
@@ -606,7 +629,7 @@ HRESULT StorageController::setInstance(ULONG aInstance)
         m->pParent->i_setModified(Machine::IsModified_Storage);
         mlock.release();
 
-        m->pParent->i_onStorageControllerChange();
+        m->pParent->i_onStorageControllerChange(m->pParent->i_getId(), m->bd->strName);
     }
 
     return S_OK;
@@ -639,7 +662,7 @@ HRESULT StorageController::setUseHostIOCache(BOOL fUseHostIOCache)
         m->pParent->i_setModified(Machine::IsModified_Storage);
         mlock.release();
 
-        m->pParent->i_onStorageControllerChange();
+        m->pParent->i_onStorageControllerChange(m->pParent->i_getId(), m->bd->strName);
     }
 
     return S_OK;

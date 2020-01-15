@@ -3,7 +3,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -23,8 +23,11 @@
  * terms and conditions of either the GPL or the CDDL or both.
  */
 
-#ifndef ___VBox_vd_image_backend_h
-#define ___VBox_vd_image_backend_h
+#ifndef VBOX_INCLUDED_vd_image_backend_h
+#define VBOX_INCLUDED_vd_image_backend_h
+#ifndef RT_WITHOUT_PRAGMA_ONCE
+# pragma once
+#endif
 
 #include <VBox/vd.h>
 #include <VBox/vd-common.h>
@@ -92,10 +95,11 @@ typedef struct VDIMAGEBACKEND
      * @param   pszFilename     Name of the image file.
      * @param   pVDIfsDisk      Pointer to the per-disk VD interface list.
      * @param   pVDIfsImage     Pointer to the per-image VD interface list.
+     * @param   enmDesiredType  The desired image type, VDTYPE_INVALID if anything goes.
      * @param   penmType        Returns the supported device type on success.
      */
     DECLR3CALLBACKMEMBER(int, pfnProbe, (const char *pszFilename, PVDINTERFACE pVDIfsDisk,
-                                         PVDINTERFACE pVDIfsImage, VDTYPE *penmType));
+                                         PVDINTERFACE pVDIfsImage, VDTYPE enmDesiredType, VDTYPE *penmType));
 
     /**
      * Open a disk image.
@@ -600,4 +604,4 @@ DECLCALLBACK(int) genericFileComposeLocation(PVDINTERFACE pConfig, char **pszLoc
 /** @copydoc VDIMAGEBACKEND::pfnComposeName */
 DECLCALLBACK(int) genericFileComposeName(PVDINTERFACE pConfig, char **pszName);
 
-#endif
+#endif /* !VBOX_INCLUDED_vd_image_backend_h */

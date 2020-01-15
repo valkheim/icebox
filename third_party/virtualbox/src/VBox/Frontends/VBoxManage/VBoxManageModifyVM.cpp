@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -81,6 +81,7 @@ enum
     MODIFYVM_L1D_FLUSH_ON_VM_ENTRY,
     MODIFYVM_MDS_CLEAR_ON_SCHED,
     MODIFYVM_MDS_CLEAR_ON_VM_ENTRY,
+    MODIFYVM_NESTED_HW_VIRT,
     MODIFYVM_CPUS,
     MODIFYVM_CPUHOTPLUG,
     MODIFYVM_CPU_PROFILE,
@@ -105,6 +106,7 @@ enum
     MODIFYVM_BIOSAPIC,
     MODIFYVM_BIOSSYSTEMTIMEOFFSET,
     MODIFYVM_BIOSPXEDEBUG,
+    MODIFYVM_SYSTEMUUIDLE,
     MODIFYVM_BOOT,
     MODIFYVM_HDA,                // deprecated
     MODIFYVM_HDB,                // deprecated
@@ -149,6 +151,7 @@ enum
     MODIFYVM_HIDPTR,
     MODIFYVM_HIDKBD,
     MODIFYVM_UARTMODE,
+    MODIFYVM_UARTTYPE,
     MODIFYVM_UART,
 #if defined(RT_OS_LINUX) || defined(RT_OS_WINDOWS)
     MODIFYVM_LPTMODE,
@@ -160,7 +163,12 @@ enum
     MODIFYVM_AUDIO,
     MODIFYVM_AUDIOIN,
     MODIFYVM_AUDIOOUT,
-    MODIFYVM_CLIPBOARD,
+#ifdef VBOX_WITH_SHARED_CLIPBOARD
+    MODIFYVM_CLIPBOARD_MODE,
+# ifdef VBOX_WITH_SHARED_CLIPBOARD_TRANSFERS
+    MODIFYVM_CLIPBOARD_FILE_TRANSFERS,
+# endif
+#endif
     MODIFYVM_DRAGANDDROP,
     MODIFYVM_VRDPPORT,                /* VRDE: deprecated */
     MODIFYVM_VRDPADDRESS,             /* VRDE: deprecated */
@@ -185,7 +193,7 @@ enum
     MODIFYVM_USBRENAME,
     MODIFYVM_USBXHCI,
     MODIFYVM_USBEHCI,
-    MODIFYVM_USB,
+    MODIFYVM_USBOHCI,
     MODIFYVM_SNAPSHOTFOLDER,
     MODIFYVM_TELEPORTER_ENABLED,
     MODIFYVM_TELEPORTER_PORT,
@@ -199,11 +207,6 @@ enum
     MODIFYVM_HPET,
     MODIFYVM_IOCACHE,
     MODIFYVM_IOCACHESIZE,
-    MODIFYVM_FAULT_TOLERANCE,
-    MODIFYVM_FAULT_TOLERANCE_ADDRESS,
-    MODIFYVM_FAULT_TOLERANCE_PORT,
-    MODIFYVM_FAULT_TOLERANCE_PASSWORD,
-    MODIFYVM_FAULT_TOLERANCE_SYNC_INTERVAL,
     MODIFYVM_CPU_EXECTUION_CAP,
     MODIFYVM_AUTOSTART_ENABLED,
     MODIFYVM_AUTOSTART_DELAY,
@@ -215,21 +218,23 @@ enum
 #ifdef VBOX_WITH_USB_CARDREADER
     MODIFYVM_USBCARDREADER,
 #endif
-#ifdef VBOX_WITH_VIDEOREC
-    MODIFYVM_VIDEOCAP,
-    MODIFYVM_VIDEOCAP_SCREENS,
-    MODIFYVM_VIDEOCAP_FILENAME,
-    MODIFYVM_VIDEOCAP_WIDTH,
-    MODIFYVM_VIDEOCAP_HEIGHT,
-    MODIFYVM_VIDEOCAP_RES,
-    MODIFYVM_VIDEOCAP_RATE,
-    MODIFYVM_VIDEOCAP_FPS,
-    MODIFYVM_VIDEOCAP_MAXTIME,
-    MODIFYVM_VIDEOCAP_MAXSIZE,
-    MODIFYVM_VIDEOCAP_OPTIONS,
+#ifdef VBOX_WITH_RECORDING
+    MODIFYVM_RECORDING,
+    MODIFYVM_RECORDING_FEATURES,
+    MODIFYVM_RECORDING_SCREENS,
+    MODIFYVM_RECORDING_FILENAME,
+    MODIFYVM_RECORDING_VIDEO_WIDTH,
+    MODIFYVM_RECORDING_VIDEO_HEIGHT,
+    MODIFYVM_RECORDING_VIDEO_RES,
+    MODIFYVM_RECORDING_VIDEO_RATE,
+    MODIFYVM_RECORDING_VIDEO_FPS,
+    MODIFYVM_RECORDING_MAXTIME,
+    MODIFYVM_RECORDING_MAXSIZE,
+    MODIFYVM_RECORDING_OPTIONS,
 #endif
     MODIFYVM_CHIPSET,
-    MODIFYVM_DEFAULTFRONTEND
+    MODIFYVM_DEFAULTFRONTEND,
+    MODIFYVM_VMPROC_PRIORITY
 };
 
 static const RTGETOPTDEF g_aModifyVMOptions[] =
@@ -268,6 +273,7 @@ static const RTGETOPTDEF g_aModifyVMOptions[] =
     { "--l1d-flush-on-vm-entry",    MODIFYVM_L1D_FLUSH_ON_VM_ENTRY,     RTGETOPT_REQ_BOOL_ONOFF },
     { "--mds-clear-on-sched",       MODIFYVM_MDS_CLEAR_ON_SCHED,        RTGETOPT_REQ_BOOL_ONOFF },
     { "--mds-clear-on-vm-entry",    MODIFYVM_MDS_CLEAR_ON_VM_ENTRY,     RTGETOPT_REQ_BOOL_ONOFF },
+    { "--nested-hw-virt",           MODIFYVM_NESTED_HW_VIRT,            RTGETOPT_REQ_BOOL_ONOFF },
     { "--cpuid-set",                MODIFYVM_SETCPUID,                  RTGETOPT_REQ_UINT32_OPTIONAL_PAIR | RTGETOPT_FLAG_HEX },
     { "--cpuid-remove",             MODIFYVM_DELCPUID,                  RTGETOPT_REQ_UINT32_OPTIONAL_PAIR | RTGETOPT_FLAG_HEX },
     { "--cpuidset",                 MODIFYVM_SETCPUID_OLD,              RTGETOPT_REQ_UINT32 | RTGETOPT_FLAG_HEX },
@@ -294,6 +300,7 @@ static const RTGETOPTDEF g_aModifyVMOptions[] =
     { "--biossystemtimeoffset",     MODIFYVM_BIOSSYSTEMTIMEOFFSET,      RTGETOPT_REQ_INT64 },
     { "--biosapic",                 MODIFYVM_BIOSAPIC,                  RTGETOPT_REQ_STRING },
     { "--biospxedebug",             MODIFYVM_BIOSPXEDEBUG,              RTGETOPT_REQ_BOOL_ONOFF },
+    { "--system-uuid-le",           MODIFYVM_SYSTEMUUIDLE,              RTGETOPT_REQ_BOOL_ONOFF },
     { "--boot",                     MODIFYVM_BOOT,                      RTGETOPT_REQ_STRING | RTGETOPT_FLAG_INDEX },
     { "--hda",                      MODIFYVM_HDA,                       RTGETOPT_REQ_STRING },
     { "--hdb",                      MODIFYVM_HDB,                       RTGETOPT_REQ_STRING },
@@ -339,6 +346,7 @@ static const RTGETOPTDEF g_aModifyVMOptions[] =
     { "--mouse",                    MODIFYVM_HIDPTR,                    RTGETOPT_REQ_STRING },
     { "--keyboard",                 MODIFYVM_HIDKBD,                    RTGETOPT_REQ_STRING },
     { "--uartmode",                 MODIFYVM_UARTMODE,                  RTGETOPT_REQ_STRING | RTGETOPT_FLAG_INDEX },
+    { "--uarttype",                 MODIFYVM_UARTTYPE,                  RTGETOPT_REQ_STRING | RTGETOPT_FLAG_INDEX },
     { "--uart",                     MODIFYVM_UART,                      RTGETOPT_REQ_STRING | RTGETOPT_FLAG_INDEX },
 #if defined(RT_OS_LINUX) || defined(RT_OS_WINDOWS)
     { "--lptmode",                  MODIFYVM_LPTMODE,                   RTGETOPT_REQ_STRING | RTGETOPT_FLAG_INDEX },
@@ -350,7 +358,12 @@ static const RTGETOPTDEF g_aModifyVMOptions[] =
     { "--audio",                    MODIFYVM_AUDIO,                     RTGETOPT_REQ_STRING },
     { "--audioin",                  MODIFYVM_AUDIOIN,                   RTGETOPT_REQ_BOOL_ONOFF },
     { "--audioout",                 MODIFYVM_AUDIOOUT,                  RTGETOPT_REQ_BOOL_ONOFF },
-    { "--clipboard",                MODIFYVM_CLIPBOARD,                 RTGETOPT_REQ_STRING },
+#ifdef VBOX_WITH_SHARED_CLIPBOARD
+    { "--clipboard-mode",           MODIFYVM_CLIPBOARD_MODE,            RTGETOPT_REQ_STRING },
+# ifdef VBOX_WITH_SHARED_CLIPBOARD_TRANSFERS
+    { "--clipboard-file-transfers", MODIFYVM_CLIPBOARD_FILE_TRANSFERS,  RTGETOPT_REQ_STRING },
+# endif
+#endif
     { "--draganddrop",              MODIFYVM_DRAGANDDROP,               RTGETOPT_REQ_STRING },
     { "--vrdpport",                 MODIFYVM_VRDPPORT,                  RTGETOPT_REQ_STRING },     /* deprecated */
     { "--vrdpaddress",              MODIFYVM_VRDPADDRESS,               RTGETOPT_REQ_STRING },     /* deprecated */
@@ -374,7 +387,8 @@ static const RTGETOPTDEF g_aModifyVMOptions[] =
     { "--usbrename",                MODIFYVM_USBRENAME,                 RTGETOPT_REQ_STRING },
     { "--usbxhci",                  MODIFYVM_USBXHCI,                   RTGETOPT_REQ_BOOL_ONOFF },
     { "--usbehci",                  MODIFYVM_USBEHCI,                   RTGETOPT_REQ_BOOL_ONOFF },
-    { "--usb",                      MODIFYVM_USB,                       RTGETOPT_REQ_BOOL_ONOFF },
+    { "--usbohci",                  MODIFYVM_USBOHCI,                   RTGETOPT_REQ_BOOL_ONOFF },
+    { "--usb",                      MODIFYVM_USBOHCI,                   RTGETOPT_REQ_BOOL_ONOFF }, /* deprecated */
     { "--snapshotfolder",           MODIFYVM_SNAPSHOTFOLDER,            RTGETOPT_REQ_STRING },
     { "--teleporter",               MODIFYVM_TELEPORTER_ENABLED,        RTGETOPT_REQ_BOOL_ONOFF },
     { "--teleporterenabled",        MODIFYVM_TELEPORTER_ENABLED,        RTGETOPT_REQ_BOOL_ONOFF }, /* deprecated */
@@ -389,32 +403,19 @@ static const RTGETOPTDEF g_aModifyVMOptions[] =
     { "--hpet",                     MODIFYVM_HPET,                      RTGETOPT_REQ_BOOL_ONOFF },
     { "--iocache",                  MODIFYVM_IOCACHE,                   RTGETOPT_REQ_BOOL_ONOFF },
     { "--iocachesize",              MODIFYVM_IOCACHESIZE,               RTGETOPT_REQ_UINT32 },
-    { "--faulttolerance",           MODIFYVM_FAULT_TOLERANCE,           RTGETOPT_REQ_STRING },
-    { "--faulttoleranceaddress",    MODIFYVM_FAULT_TOLERANCE_ADDRESS,   RTGETOPT_REQ_STRING },
-    { "--faulttoleranceport",       MODIFYVM_FAULT_TOLERANCE_PORT,      RTGETOPT_REQ_UINT32 },
-    { "--faulttolerancepassword",   MODIFYVM_FAULT_TOLERANCE_PASSWORD,  RTGETOPT_REQ_STRING },
-    { "--faulttolerancesyncinterval", MODIFYVM_FAULT_TOLERANCE_SYNC_INTERVAL, RTGETOPT_REQ_UINT32 },
     { "--chipset",                  MODIFYVM_CHIPSET,                   RTGETOPT_REQ_STRING },
-#ifdef VBOX_WITH_VIDEOREC
-    { "--videocap",                 MODIFYVM_VIDEOCAP,                  RTGETOPT_REQ_BOOL_ONOFF },
-    { "--vcpenabled",               MODIFYVM_VIDEOCAP,                  RTGETOPT_REQ_BOOL_ONOFF }, /* deprecated */
-    { "--videocapscreens",          MODIFYVM_VIDEOCAP_SCREENS,          RTGETOPT_REQ_STRING },
-    { "--vcpscreens",               MODIFYVM_VIDEOCAP_SCREENS,          RTGETOPT_REQ_STRING }, /* deprecated */
-    { "--videocapfile",             MODIFYVM_VIDEOCAP_FILENAME,         RTGETOPT_REQ_STRING },
-    { "--vcpfile",                  MODIFYVM_VIDEOCAP_FILENAME,         RTGETOPT_REQ_STRING }, /* deprecated */
-    { "--videocapres",              MODIFYVM_VIDEOCAP_RES,              RTGETOPT_REQ_STRING },
-    { "--vcpwidth",                 MODIFYVM_VIDEOCAP_WIDTH,            RTGETOPT_REQ_UINT32 }, /* deprecated */
-    { "--vcpheight",                MODIFYVM_VIDEOCAP_HEIGHT,           RTGETOPT_REQ_UINT32 }, /* deprecated */
-    { "--videocaprate",             MODIFYVM_VIDEOCAP_RATE,             RTGETOPT_REQ_UINT32 },
-    { "--vcprate",                  MODIFYVM_VIDEOCAP_RATE,             RTGETOPT_REQ_UINT32 }, /* deprecated */
-    { "--videocapfps",              MODIFYVM_VIDEOCAP_FPS,              RTGETOPT_REQ_UINT32 },
-    { "--vcpfps",                   MODIFYVM_VIDEOCAP_FPS,              RTGETOPT_REQ_UINT32 }, /* deprecated */
-    { "--videocapmaxtime",          MODIFYVM_VIDEOCAP_MAXTIME,          RTGETOPT_REQ_INT32  },
-    { "--vcpmaxtime",               MODIFYVM_VIDEOCAP_MAXTIME,          RTGETOPT_REQ_INT32  }, /* deprecated */
-    { "--videocapmaxsize",          MODIFYVM_VIDEOCAP_MAXSIZE,          RTGETOPT_REQ_INT32  },
-    { "--vcpmaxsize",               MODIFYVM_VIDEOCAP_MAXSIZE,          RTGETOPT_REQ_INT32  }, /* deprecated */
-    { "--videocapopts",             MODIFYVM_VIDEOCAP_OPTIONS,          RTGETOPT_REQ_STRING },
-    { "--vcpoptions",               MODIFYVM_VIDEOCAP_OPTIONS,          RTGETOPT_REQ_STRING }, /* deprecated */
+#ifdef VBOX_WITH_RECORDING
+    { "--recording",                MODIFYVM_RECORDING,                 RTGETOPT_REQ_BOOL_ONOFF },
+    { "--recordingscreens",         MODIFYVM_RECORDING_SCREENS,         RTGETOPT_REQ_STRING },
+    { "--recordingfile",            MODIFYVM_RECORDING_FILENAME,        RTGETOPT_REQ_STRING },
+    { "--recordingmaxtime",         MODIFYVM_RECORDING_MAXTIME,         RTGETOPT_REQ_INT32  },
+    { "--recordingmaxsize",         MODIFYVM_RECORDING_MAXSIZE,         RTGETOPT_REQ_INT32  },
+    { "--recordingopts",            MODIFYVM_RECORDING_OPTIONS,         RTGETOPT_REQ_STRING },
+    { "--recordingoptions",         MODIFYVM_RECORDING_OPTIONS,         RTGETOPT_REQ_STRING },
+    { "--recordingvideores",        MODIFYVM_RECORDING_VIDEO_RES,       RTGETOPT_REQ_STRING },
+    { "--recordingvideoresolution", MODIFYVM_RECORDING_VIDEO_RES,       RTGETOPT_REQ_STRING },
+    { "--recordingvideorate",       MODIFYVM_RECORDING_VIDEO_RATE,      RTGETOPT_REQ_UINT32 },
+    { "--recordingvideofps",        MODIFYVM_RECORDING_VIDEO_FPS,       RTGETOPT_REQ_UINT32 },
 #endif
     { "--autostart-enabled",        MODIFYVM_AUTOSTART_ENABLED,         RTGETOPT_REQ_BOOL_ONOFF },
     { "--autostart-delay",          MODIFYVM_AUTOSTART_DELAY,           RTGETOPT_REQ_UINT32 },
@@ -427,6 +428,7 @@ static const RTGETOPTDEF g_aModifyVMOptions[] =
     { "--usbcardreader",            MODIFYVM_USBCARDREADER,             RTGETOPT_REQ_BOOL_ONOFF },
 #endif
     { "--defaultfrontend",          MODIFYVM_DEFAULTFRONTEND,           RTGETOPT_REQ_STRING },
+    { "--vm-process-priority",      MODIFYVM_VMPROC_PRIORITY,           RTGETOPT_REQ_STRING },
 };
 
 static void vrdeWarningDeprecatedOption(const char *pszOption)
@@ -434,6 +436,7 @@ static void vrdeWarningDeprecatedOption(const char *pszOption)
     RTStrmPrintf(g_pStdErr, "Warning: '--vrdp%s' is deprecated. Use '--vrde%s'.\n", pszOption, pszOption);
 }
 
+#ifdef VBOX_WITH_PCI_PASSTHROUGH
 /** Parse PCI address in format 01:02.03 and convert it to the numeric representation. */
 static int32_t parsePci(const char* szPciAddr)
 {
@@ -455,6 +458,7 @@ static int32_t parsePci(const char* szPciAddr)
 
     return (aVals[0] << 8) | (aVals[1] << 3) | (aVals[2] << 0);
 }
+#endif
 
 void parseGroups(const char *pcszGroups, com::SafeArray<BSTR> *pGroups)
 {
@@ -474,7 +478,7 @@ void parseGroups(const char *pcszGroups, com::SafeArray<BSTR> *pGroups)
     }
 }
 
-#ifdef VBOX_WITH_VIDEOREC
+#ifdef VBOX_WITH_RECORDING
 static int parseScreens(const char *pcszScreens, com::SafeArray<BOOL> *pScreens)
 {
     while (pcszScreens && *pcszScreens)
@@ -509,6 +513,22 @@ static int parseNum(uint32_t uIndex, unsigned cMaxIndex, const char *pszName)
     return 0;
 }
 
+VMProcPriority_T nameToVMProcPriority(const char *pszName)
+{
+    if (!RTStrICmp(pszName, "default"))
+        return VMProcPriority_Default;
+    if (!RTStrICmp(pszName, "flat"))
+        return VMProcPriority_Flat;
+    if (!RTStrICmp(pszName, "low"))
+        return VMProcPriority_Low;
+    if (!RTStrICmp(pszName, "normal"))
+        return VMProcPriority_Normal;
+    if (!RTStrICmp(pszName, "high"))
+        return VMProcPriority_High;
+
+    return VMProcPriority_Invalid;
+}
+
 RTEXITCODE handleModifyVM(HandlerArg *a)
 {
     int c;
@@ -539,6 +559,9 @@ RTEXITCODE handleModifyVM(HandlerArg *a)
     ComPtr<IBIOSSettings> biosSettings;
     sessionMachine->COMGETTER(BIOSSettings)(biosSettings.asOutParam());
 
+    ComPtr<IGraphicsAdapter> pGraphicsAdapter;
+    sessionMachine->COMGETTER(GraphicsAdapter)(pGraphicsAdapter.asOutParam());
+
     RTGETOPTSTATE GetOptState;
     RTGetOptInit(&GetOptState, a->argc, a->argv, g_aModifyVMOptions,
                  RT_ELEMENTS(g_aModifyVMOptions), 1, RTGETOPTINIT_FLAGS_NO_STD_OPTS);
@@ -568,18 +591,7 @@ RTEXITCODE handleModifyVM(HandlerArg *a)
             }
             case MODIFYVM_OSTYPE:
             {
-                ComPtr<IGuestOSType> guestOSType;
-                CHECK_ERROR(a->virtualBox, GetGuestOSType(Bstr(ValueUnion.psz).raw(),
-                                                          guestOSType.asOutParam()));
-                if (SUCCEEDED(rc) && guestOSType)
-                {
-                    CHECK_ERROR(sessionMachine, COMSETTER(OSTypeId)(Bstr(ValueUnion.psz).raw()));
-                }
-                else
-                {
-                    errorArgument("Invalid guest OS type '%s'", ValueUnion.psz);
-                    rc = E_FAIL;
-                }
+                CHECK_ERROR(sessionMachine, COMSETTER(OSTypeId)(Bstr(ValueUnion.psz).raw()));
                 break;
             }
 
@@ -594,7 +606,7 @@ RTEXITCODE handleModifyVM(HandlerArg *a)
                     break;
                 }
                 uint64_t cbSize;
-                vrc = RTFileGetSize(iconFile, &cbSize);
+                vrc = RTFileQuerySize(iconFile, &cbSize);
                 if (RT_FAILURE(vrc))
                 {
                     RTMsgError("Cannot get size of file \"%s\": %Rrc", ValueUnion.psz, vrc);
@@ -634,7 +646,7 @@ RTEXITCODE handleModifyVM(HandlerArg *a)
 
             case MODIFYVM_VRAM:
             {
-                CHECK_ERROR(sessionMachine, COMSETTER(VRAMSize)(ValueUnion.u32));
+                CHECK_ERROR(pGraphicsAdapter, COMSETTER(VRAMSize)(ValueUnion.u32));
                 break;
             }
 
@@ -834,6 +846,10 @@ RTEXITCODE handleModifyVM(HandlerArg *a)
                 CHECK_ERROR(sessionMachine, SetCPUProperty(CPUPropertyType_MDSClearOnVMEntry, ValueUnion.f));
                 break;
 
+            case MODIFYVM_NESTED_HW_VIRT:
+                CHECK_ERROR(sessionMachine, SetCPUProperty(CPUPropertyType_HWVirt, ValueUnion.f));
+                break;
+
             case MODIFYVM_CPUS:
             {
                 CHECK_ERROR(sessionMachine, COMSETTER(CPUCount)(ValueUnion.u32));
@@ -880,16 +896,19 @@ RTEXITCODE handleModifyVM(HandlerArg *a)
             {
                 if (   !RTStrICmp(ValueUnion.psz, "none")
                     || !RTStrICmp(ValueUnion.psz, "disabled"))
-                    CHECK_ERROR(sessionMachine, COMSETTER(GraphicsControllerType)(GraphicsControllerType_Null));
+                    CHECK_ERROR(pGraphicsAdapter, COMSETTER(GraphicsControllerType)(GraphicsControllerType_Null));
                 else if (   !RTStrICmp(ValueUnion.psz, "vboxvga")
                          || !RTStrICmp(ValueUnion.psz, "vbox")
                          || !RTStrICmp(ValueUnion.psz, "vga")
                          || !RTStrICmp(ValueUnion.psz, "vesa"))
-                    CHECK_ERROR(sessionMachine, COMSETTER(GraphicsControllerType)(GraphicsControllerType_VBoxVGA));
+                    CHECK_ERROR(pGraphicsAdapter, COMSETTER(GraphicsControllerType)(GraphicsControllerType_VBoxVGA));
 #ifdef VBOX_WITH_VMSVGA
                 else if (   !RTStrICmp(ValueUnion.psz, "vmsvga")
                          || !RTStrICmp(ValueUnion.psz, "vmware"))
-                    CHECK_ERROR(sessionMachine, COMSETTER(GraphicsControllerType)(GraphicsControllerType_VMSVGA));
+                    CHECK_ERROR(pGraphicsAdapter, COMSETTER(GraphicsControllerType)(GraphicsControllerType_VMSVGA));
+                else if (   !RTStrICmp(ValueUnion.psz, "vboxsvga")
+                         || !RTStrICmp(ValueUnion.psz, "svga"))
+                    CHECK_ERROR(pGraphicsAdapter, COMSETTER(GraphicsControllerType)(GraphicsControllerType_VBoxSVGA));
 #endif
                 else
                 {
@@ -901,20 +920,20 @@ RTEXITCODE handleModifyVM(HandlerArg *a)
 
             case MODIFYVM_MONITORCOUNT:
             {
-                CHECK_ERROR(sessionMachine, COMSETTER(MonitorCount)(ValueUnion.u32));
+                CHECK_ERROR(pGraphicsAdapter, COMSETTER(MonitorCount)(ValueUnion.u32));
                 break;
             }
 
             case MODIFYVM_ACCELERATE3D:
             {
-                CHECK_ERROR(sessionMachine, COMSETTER(Accelerate3DEnabled)(ValueUnion.f));
+                CHECK_ERROR(pGraphicsAdapter, COMSETTER(Accelerate3DEnabled)(ValueUnion.f));
                 break;
             }
 
 #ifdef VBOX_WITH_VIDEOHWACCEL
             case MODIFYVM_ACCELERATE2DVIDEO:
             {
-                CHECK_ERROR(sessionMachine, COMSETTER(Accelerate2DVideoEnabled)(ValueUnion.f));
+                CHECK_ERROR(pGraphicsAdapter, COMSETTER(Accelerate2DVideoEnabled)(ValueUnion.f));
                 break;
             }
 #endif
@@ -998,6 +1017,12 @@ RTEXITCODE handleModifyVM(HandlerArg *a)
             case MODIFYVM_BIOSPXEDEBUG:
             {
                 CHECK_ERROR(biosSettings, COMSETTER(PXEDebugEnabled)(ValueUnion.f));
+                break;
+            }
+
+            case MODIFYVM_SYSTEMUUIDLE:
+            {
+                CHECK_ERROR(biosSettings, COMSETTER(SMBIOSUuidLittleEndian)(ValueUnion.f));
                 break;
             }
 
@@ -1448,6 +1473,10 @@ RTEXITCODE handleModifyVM(HandlerArg *a)
                 {
                     CHECK_ERROR(nic, COMSETTER(AdapterType)(NetworkAdapterType_Am79C973));
                 }
+                else if (!RTStrICmp(ValueUnion.psz, "Am79C960"))
+                {
+                    CHECK_ERROR(nic, COMSETTER(AdapterType)(NetworkAdapterType_Am79C960));
+                }
 #ifdef VBOX_WITH_E1000
                 else if (!RTStrICmp(ValueUnion.psz, "82540EM"))
                 {
@@ -1468,6 +1497,12 @@ RTEXITCODE handleModifyVM(HandlerArg *a)
                     CHECK_ERROR(nic, COMSETTER(AdapterType)(NetworkAdapterType_Virtio));
                 }
 #endif /* VBOX_WITH_VIRTIO */
+#ifdef VBOX_WITH_VIRTIO_NET_1_0
+                else if (!RTStrICmp(ValueUnion.psz, "virtio_1.0"))
+                {
+                    CHECK_ERROR(nic, COMSETTER(AdapterType)(NetworkAdapterType_Virtio_1_0));
+                }
+#endif /* VBOX_WITH_VIRTIO_NET_1_0 */
                 else
                 {
                     errorArgument("Invalid NIC type '%s' specified for NIC %u", ValueUnion.psz, GetOptState.uIndex);
@@ -2184,6 +2219,32 @@ RTEXITCODE handleModifyVM(HandlerArg *a)
                 break;
             }
 
+            case MODIFYVM_UARTTYPE:
+            {
+                ComPtr<ISerialPort> uart;
+
+                CHECK_ERROR_BREAK(sessionMachine, GetSerialPort(GetOptState.uIndex - 1, uart.asOutParam()));
+                ASSERT(uart);
+
+                if (!RTStrICmp(ValueUnion.psz, "16450"))
+                {
+                    CHECK_ERROR(uart, COMSETTER(UartType)(UartType_U16450));
+                }
+                else if (!RTStrICmp(ValueUnion.psz, "16550A"))
+                {
+                    CHECK_ERROR(uart, COMSETTER(UartType)(UartType_U16550A));
+                }
+                else if (!RTStrICmp(ValueUnion.psz, "16750"))
+                {
+                    CHECK_ERROR(uart, COMSETTER(UartType)(UartType_U16750));
+                }
+                else
+                    return errorSyntax(USAGE_MODIFYVM,
+                                       "Invalid argument to '%s'",
+                                       GetOptState.pDef->pszLong);
+                break;
+            }
+
             case MODIFYVM_UART:
             {
                 ComPtr<ISerialPort> uart;
@@ -2314,6 +2375,12 @@ RTEXITCODE handleModifyVM(HandlerArg *a)
                 ComPtr<IAudioAdapter> audioAdapter;
                 sessionMachine->COMGETTER(AudioAdapter)(audioAdapter.asOutParam());
                 ASSERT(audioAdapter);
+/** @todo r=klaus: don't unconditionally bolt together setting the audio driver
+ * and enabling the device. Doing this more cleverly allows changing the audio
+ * driver for VMs in saved state, which can be very useful when moving VMs
+ * between systems with different setup. The driver doesn't leave any traces in
+ * saved state. The GUI also might learn this trick if it doesn't use it
+ * already. */
 
                 /* disable? */
                 if (!RTStrICmp(ValueUnion.psz, "none"))
@@ -2395,7 +2462,8 @@ RTEXITCODE handleModifyVM(HandlerArg *a)
                 break;
             }
 
-            case MODIFYVM_CLIPBOARD:
+#ifdef VBOX_WITH_SHARED_CLIPBOARD
+            case MODIFYVM_CLIPBOARD_MODE:
             {
                 ClipboardMode_T mode = ClipboardMode_Disabled; /* Shut up MSC */
                 if (!RTStrICmp(ValueUnion.psz, "disabled"))
@@ -2408,7 +2476,7 @@ RTEXITCODE handleModifyVM(HandlerArg *a)
                     mode = ClipboardMode_Bidirectional;
                 else
                 {
-                    errorArgument("Invalid --clipboard argument '%s'", ValueUnion.psz);
+                    errorArgument("Invalid --clipboard-mode argument '%s'", ValueUnion.psz);
                     rc = E_FAIL;
                 }
                 if (SUCCEEDED(rc))
@@ -2417,6 +2485,28 @@ RTEXITCODE handleModifyVM(HandlerArg *a)
                 }
                 break;
             }
+
+# ifdef VBOX_WITH_SHARED_CLIPBOARD_TRANSFERS
+            case MODIFYVM_CLIPBOARD_FILE_TRANSFERS:
+            {
+                BOOL fEnabled = false; /* Shut up MSC */
+                if (!RTStrICmp(ValueUnion.psz, "enabled"))
+                    fEnabled = true;
+                else if (!RTStrICmp(ValueUnion.psz, "disabled"))
+                    fEnabled = false;
+                else
+                {
+                    errorArgument("Invalid --clipboard-file-transfers argument '%s'", ValueUnion.psz);
+                    rc = E_FAIL;
+                }
+                if (SUCCEEDED(rc))
+                {
+                    CHECK_ERROR(sessionMachine, COMSETTER(ClipboardFileTransfersEnabled)(fEnabled));
+                }
+                break;
+            }
+# endif /* VBOX_WITH_SHARED_CLIPBOARD_TRANSFERS */
+#endif /* VBOX_WITH_SHARED_CLIPBOARD */
 
             case MODIFYVM_DRAGANDDROP:
             {
@@ -2745,7 +2835,7 @@ RTEXITCODE handleModifyVM(HandlerArg *a)
                 break;
             }
 
-            case MODIFYVM_USB:
+            case MODIFYVM_USBOHCI:
             {
                 ULONG cOhciCtrls = 0;
                 rc = sessionMachine->GetUSBControllerCountByType(USBControllerType_OHCI, &cOhciCtrls);
@@ -2840,49 +2930,6 @@ RTEXITCODE handleModifyVM(HandlerArg *a)
                 break;
             }
 
-            case MODIFYVM_FAULT_TOLERANCE:
-            {
-                if (!RTStrICmp(ValueUnion.psz, "master"))
-                {
-                    CHECK_ERROR(sessionMachine, COMSETTER(FaultToleranceState(FaultToleranceState_Master)));
-                }
-                else
-                if (!RTStrICmp(ValueUnion.psz, "standby"))
-                {
-                    CHECK_ERROR(sessionMachine, COMSETTER(FaultToleranceState(FaultToleranceState_Standby)));
-                }
-                else
-                {
-                    errorArgument("Invalid --faulttolerance argument '%s'", ValueUnion.psz);
-                    rc = E_FAIL;
-                }
-                break;
-            }
-
-            case MODIFYVM_FAULT_TOLERANCE_ADDRESS:
-            {
-                CHECK_ERROR(sessionMachine, COMSETTER(FaultToleranceAddress)(Bstr(ValueUnion.psz).raw()));
-                break;
-            }
-
-            case MODIFYVM_FAULT_TOLERANCE_PORT:
-            {
-                CHECK_ERROR(sessionMachine, COMSETTER(FaultTolerancePort)(ValueUnion.u32));
-                break;
-            }
-
-            case MODIFYVM_FAULT_TOLERANCE_PASSWORD:
-            {
-                CHECK_ERROR(sessionMachine, COMSETTER(FaultTolerancePassword)(Bstr(ValueUnion.psz).raw()));
-                break;
-            }
-
-            case MODIFYVM_FAULT_TOLERANCE_SYNC_INTERVAL:
-            {
-                CHECK_ERROR(sessionMachine, COMSETTER(FaultToleranceSyncInterval)(ValueUnion.u32));
-                break;
-            }
-
             case MODIFYVM_HARDWARE_UUID:
             {
                 CHECK_ERROR(sessionMachine, COMSETTER(HardwareUUID)(Bstr(ValueUnion.psz).raw()));
@@ -2931,102 +2978,153 @@ RTEXITCODE handleModifyVM(HandlerArg *a)
                 }
                 break;
             }
-#ifdef VBOX_WITH_VIDEOREC
-            case MODIFYVM_VIDEOCAP:
+#ifdef VBOX_WITH_RECORDING
+            case MODIFYVM_RECORDING:
+                RT_FALL_THROUGH();
+            case MODIFYVM_RECORDING_SCREENS:
+                RT_FALL_THROUGH();
+            case MODIFYVM_RECORDING_FILENAME:
+                RT_FALL_THROUGH();
+            case MODIFYVM_RECORDING_VIDEO_WIDTH:
+                RT_FALL_THROUGH();
+            case MODIFYVM_RECORDING_VIDEO_HEIGHT:
+                RT_FALL_THROUGH();
+            case MODIFYVM_RECORDING_VIDEO_RES:
+                RT_FALL_THROUGH();
+            case MODIFYVM_RECORDING_VIDEO_RATE:
+                RT_FALL_THROUGH();
+            case MODIFYVM_RECORDING_VIDEO_FPS:
+                RT_FALL_THROUGH();
+            case MODIFYVM_RECORDING_MAXTIME:
+                RT_FALL_THROUGH();
+            case MODIFYVM_RECORDING_MAXSIZE:
+                RT_FALL_THROUGH();
+            case MODIFYVM_RECORDING_OPTIONS:
             {
-                CHECK_ERROR(sessionMachine, COMSETTER(VideoCaptureEnabled)(ValueUnion.f));
-                break;
-            }
-            case MODIFYVM_VIDEOCAP_SCREENS:
-            {
-                ULONG cMonitors = 64;
-                CHECK_ERROR(sessionMachine, COMGETTER(MonitorCount)(&cMonitors));
-                com::SafeArray<BOOL> screens(cMonitors);
-                if (parseScreens(ValueUnion.psz, &screens))
+                ComPtr<IRecordingSettings> recordingSettings;
+                CHECK_ERROR_BREAK(sessionMachine, COMGETTER(RecordingSettings)(recordingSettings.asOutParam()));
+                SafeIfaceArray <IRecordingScreenSettings> saRecordingScreenScreens;
+                CHECK_ERROR_BREAK(recordingSettings, COMGETTER(Screens)(ComSafeArrayAsOutParam(saRecordingScreenScreens)));
+
+                switch (c)
                 {
-                    errorArgument("Invalid list of screens specified\n");
-                    rc = E_FAIL;
-                    break;
-                }
-                CHECK_ERROR(sessionMachine, COMSETTER(VideoCaptureScreens)(ComSafeArrayAsInParam(screens)));
-                break;
-            }
-            case MODIFYVM_VIDEOCAP_FILENAME:
-            {
-                Bstr bstr;
-                /* empty string will fall through, leaving bstr empty */
-                if (*ValueUnion.psz)
-                {
-                    char szVCFileAbs[RTPATH_MAX] = "";
-                    int vrc = RTPathAbs(ValueUnion.psz, szVCFileAbs, sizeof(szVCFileAbs));
-                    if (RT_FAILURE(vrc))
+                    case MODIFYVM_RECORDING:
                     {
-                        errorArgument("Cannot convert filename \"%s\" to absolute path\n", ValueUnion.psz);
-                        rc = E_FAIL;
+                        CHECK_ERROR(recordingSettings, COMSETTER(Enabled)(ValueUnion.f));
                         break;
                     }
-                    bstr = szVCFileAbs;
+                    case MODIFYVM_RECORDING_SCREENS:
+                    {
+                        ULONG cMonitors = 64;
+                        CHECK_ERROR(pGraphicsAdapter, COMGETTER(MonitorCount)(&cMonitors));
+                        com::SafeArray<BOOL> screens(cMonitors);
+                        if (parseScreens(ValueUnion.psz, &screens))
+                        {
+                            errorArgument("Invalid list of screens specified\n");
+                            rc = E_FAIL;
+                            break;
+                        }
+
+                        if (cMonitors > saRecordingScreenScreens.size()) /* Paranoia. */
+                            cMonitors = (ULONG)saRecordingScreenScreens.size();
+
+                        for (size_t i = 0; i < cMonitors; ++i)
+                            CHECK_ERROR_BREAK(saRecordingScreenScreens[i], COMSETTER(Enabled)(screens[i]));
+                        break;
+                    }
+                    case MODIFYVM_RECORDING_FILENAME:
+                    {
+                        Bstr bstr;
+                        /* empty string will fall through, leaving bstr empty */
+                        if (*ValueUnion.psz)
+                        {
+                            char szVCFileAbs[RTPATH_MAX] = "";
+                            int vrc = RTPathAbs(ValueUnion.psz, szVCFileAbs, sizeof(szVCFileAbs));
+                            if (RT_FAILURE(vrc))
+                            {
+                                errorArgument("Cannot convert filename \"%s\" to absolute path\n", ValueUnion.psz);
+                                rc = E_FAIL;
+                                break;
+                            }
+                            bstr = szVCFileAbs;
+                        }
+
+                        for (size_t i = 0; i < saRecordingScreenScreens.size(); ++i)
+                            CHECK_ERROR(saRecordingScreenScreens[i], COMSETTER(Filename)(bstr.raw()));
+                        break;
+                    }
+                    case MODIFYVM_RECORDING_VIDEO_WIDTH:
+                    {
+                        for (size_t i = 0; i < saRecordingScreenScreens.size(); ++i)
+                            CHECK_ERROR(saRecordingScreenScreens[i], COMSETTER(VideoWidth)(ValueUnion.u32));
+                        break;
+                    }
+                    case MODIFYVM_RECORDING_VIDEO_HEIGHT:
+                    {
+                        for (size_t i = 0; i < saRecordingScreenScreens.size(); ++i)
+                            CHECK_ERROR(saRecordingScreenScreens[i], COMSETTER(VideoHeight)(ValueUnion.u32));
+                        break;
+                    }
+                    case MODIFYVM_RECORDING_VIDEO_RES:
+                    {
+                        uint32_t uWidth = 0;
+                        char *pszNext;
+                        int vrc = RTStrToUInt32Ex(ValueUnion.psz, &pszNext, 0, &uWidth);
+                        if (RT_FAILURE(vrc) || vrc != VWRN_TRAILING_CHARS || !pszNext || *pszNext != 'x')
+                        {
+                            errorArgument("Error parsing video resolution '%s' (expected <width>x<height>)", ValueUnion.psz);
+                            rc = E_FAIL;
+                            break;
+                        }
+                        uint32_t uHeight = 0;
+                        vrc = RTStrToUInt32Ex(pszNext+1, NULL, 0, &uHeight);
+                        if (vrc != VINF_SUCCESS)
+                        {
+                            errorArgument("Error parsing video resolution '%s' (expected <width>x<height>)", ValueUnion.psz);
+                            rc = E_FAIL;
+                            break;
+                        }
+
+                        for (size_t i = 0; i < saRecordingScreenScreens.size(); ++i)
+                        {
+                            CHECK_ERROR(saRecordingScreenScreens[i], COMSETTER(VideoWidth)(uWidth));
+                            CHECK_ERROR(saRecordingScreenScreens[i], COMSETTER(VideoHeight)(uHeight));
+                        }
+                        break;
+                    }
+                    case MODIFYVM_RECORDING_VIDEO_RATE:
+                    {
+                        for (size_t i = 0; i < saRecordingScreenScreens.size(); ++i)
+                            CHECK_ERROR(saRecordingScreenScreens[i], COMSETTER(VideoRate)(ValueUnion.u32));
+                        break;
+                    }
+                    case MODIFYVM_RECORDING_VIDEO_FPS:
+                    {
+                        for (size_t i = 0; i < saRecordingScreenScreens.size(); ++i)
+                            CHECK_ERROR(saRecordingScreenScreens[i], COMSETTER(VideoFPS)(ValueUnion.u32));
+                        break;
+                    }
+                    case MODIFYVM_RECORDING_MAXTIME:
+                    {
+                        for (size_t i = 0; i < saRecordingScreenScreens.size(); ++i)
+                            CHECK_ERROR(saRecordingScreenScreens[i], COMSETTER(MaxTime)(ValueUnion.u32));
+                        break;
+                    }
+                    case MODIFYVM_RECORDING_MAXSIZE:
+                    {
+                        for (size_t i = 0; i < saRecordingScreenScreens.size(); ++i)
+                            CHECK_ERROR(saRecordingScreenScreens[i], COMSETTER(MaxFileSize)(ValueUnion.u32));
+                        break;
+                    }
+                    case MODIFYVM_RECORDING_OPTIONS:
+                    {
+                        Bstr bstr(ValueUnion.psz);
+                        for (size_t i = 0; i < saRecordingScreenScreens.size(); ++i)
+                            CHECK_ERROR(saRecordingScreenScreens[i], COMSETTER(Options)(bstr.raw()));
+                        break;
+                    }
                 }
-                CHECK_ERROR(sessionMachine, COMSETTER(VideoCaptureFile)(bstr.raw()));
-                break;
-            }
-            case MODIFYVM_VIDEOCAP_WIDTH:
-            {
-                CHECK_ERROR(sessionMachine, COMSETTER(VideoCaptureWidth)(ValueUnion.u32));
-                break;
-            }
-            case MODIFYVM_VIDEOCAP_HEIGHT:
-            {
-                CHECK_ERROR(sessionMachine, COMSETTER(VideoCaptureHeight)(ValueUnion.u32));
-                break;
-            }
-            case MODIFYVM_VIDEOCAP_RES:
-            {
-                uint32_t uWidth = 0;
-                char *pszNext;
-                int vrc = RTStrToUInt32Ex(ValueUnion.psz, &pszNext, 0, &uWidth);
-                if (RT_FAILURE(vrc) || vrc != VWRN_TRAILING_CHARS || !pszNext || *pszNext != 'x')
-                {
-                    errorArgument("Error parsing geomtry '%s' (expected <width>x<height>)", ValueUnion.psz);
-                    rc = E_FAIL;
-                    break;
-                }
-                uint32_t uHeight = 0;
-                vrc = RTStrToUInt32Ex(pszNext+1, NULL, 0, &uHeight);
-                if (vrc != VINF_SUCCESS)
-                {
-                    errorArgument("Error parsing geomtry '%s' (expected <width>x<height>)", ValueUnion.psz);
-                    rc = E_FAIL;
-                    break;
-                }
-                CHECK_ERROR(sessionMachine, COMSETTER(VideoCaptureWidth)(uWidth));
-                CHECK_ERROR(sessionMachine, COMSETTER(VideoCaptureHeight)(uHeight));
-                break;
-            }
-            case MODIFYVM_VIDEOCAP_RATE:
-            {
-                CHECK_ERROR(sessionMachine, COMSETTER(VideoCaptureRate)(ValueUnion.u32));
-                break;
-            }
-            case MODIFYVM_VIDEOCAP_FPS:
-            {
-                CHECK_ERROR(sessionMachine, COMSETTER(VideoCaptureFPS)(ValueUnion.u32));
-                break;
-            }
-            case MODIFYVM_VIDEOCAP_MAXTIME:
-            {
-                CHECK_ERROR(sessionMachine, COMSETTER(VideoCaptureMaxTime)(ValueUnion.u32));
-                break;
-            }
-            case MODIFYVM_VIDEOCAP_MAXSIZE:
-            {
-                CHECK_ERROR(sessionMachine, COMSETTER(VideoCaptureMaxFileSize)(ValueUnion.u32));
-                break;
-            }
-            case MODIFYVM_VIDEOCAP_OPTIONS:
-            {
-                Bstr bstr(ValueUnion.psz);
-                CHECK_ERROR(sessionMachine, COMSETTER(VideoCaptureOptions)(bstr.raw()));
+
                 break;
             }
 #endif
@@ -3118,6 +3216,21 @@ RTEXITCODE handleModifyVM(HandlerArg *a)
                 if (bstr == "default")
                     bstr = Bstr::Empty;
                 CHECK_ERROR(sessionMachine, COMSETTER(DefaultFrontend)(bstr.raw()));
+                break;
+            }
+
+            case MODIFYVM_VMPROC_PRIORITY:
+            {
+                VMProcPriority_T enmPriority = nameToVMProcPriority(ValueUnion.psz);
+                if (enmPriority == VMProcPriority_Invalid)
+                {
+                    errorArgument("Invalid --vm-process-priority '%s'", ValueUnion.psz);
+                    rc = E_FAIL;
+                }
+                else
+                {
+                    CHECK_ERROR(sessionMachine, COMSETTER(VMProcessPriority)(enmPriority));
+                }
                 break;
             }
 

@@ -8,7 +8,7 @@ VirtualBox Validation Kit - Unit Tests.
 
 __copyright__ = \
 """
-Copyright (C) 2010-2017 Oracle Corporation
+Copyright (C) 2010-2019 Oracle Corporation
 
 This file is part of VirtualBox Open Source Edition (OSE), as
 available from http://www.virtualbox.org. This file is free software;
@@ -27,7 +27,7 @@ CDDL are applicable instead of those of the GPL.
 You may elect to license modified versions of this file under the
 terms and conditions of either the GPL or the CDDL or both.
 """
-__version__ = "$Revision: 118962 $"
+__version__ = "$Revision: 133105 $"
 
 
 # Standard Python imports.
@@ -73,7 +73,7 @@ class tdUnitTest1(vbox.TestDriver):
             'testcase/tstRTR0MemUserKernelDriver': '',  # Failes when kernel to kernel buffers.
             'testcase/tstRTSemRW': '',                  # line 338: RTSemRWReleaseRead(hSemRW): got VERR_ACCESS_DENIED
             'testcase/tstRTStrAlloc': '',               # VERR_NO_STR_MEMORY!
-            'testcase/tstRTFileGetSize-1': '',          # VERR_DEV_IO_ERROR on /dev/null!
+            'testcase/tstRTFileQuerySize-1': '',        # VERR_DEV_IO_ERROR on /dev/null!
         },
         'solaris.amd64': {
             'testcase/tstLdr-4': '',        # failed: Failed to get bits for '/home/vbox/test/tmp/bin/testcase/tstLdrObjR0.r0'/0,
@@ -98,7 +98,7 @@ class tdUnitTest1(vbox.TestDriver):
             'testcase/tstVMMR0CallHost-2': '',          # STATUS_STACK_OVERFLOW
             'testcase/tstX86-1': '',                    # Fails on win.x86.
             'tscpasswd': '',                            # ??
-            'tstVMREQ': '',                            # ?? Same as darwin.x86?
+            'tstVMREQ': '',                             # ?? Same as darwin.x86?
         },
         'win.x86': {
             'testcase/tstRTR0TimerDriver': '',          # See xTracker #8041.
@@ -356,6 +356,12 @@ class tdUnitTest1(vbox.TestDriver):
         sBinOrDist = 'dist' if utils.getHostOs() in [ 'darwin', ] else 'bin';
         asCandidates = [
             self.oBuild.sInstallPath,
+            os.path.join(self.sScratchPath, utils.getHostOsDotArch(), self.oBuild.sType, sBinOrDist),
+            os.path.join(self.sScratchPath, utils.getHostOsDotArch(), 'release', sBinOrDist),
+            os.path.join(self.sScratchPath, utils.getHostOsDotArch(), 'debug',   sBinOrDist),
+            os.path.join(self.sScratchPath, utils.getHostOsDotArch(), 'strict',  sBinOrDist),
+            os.path.join(self.sScratchPath, utils.getHostOsDotArch(), 'dbgopt',  sBinOrDist),
+            os.path.join(self.sScratchPath, utils.getHostOsDotArch(), 'profile', sBinOrDist),
             os.path.join(self.sScratchPath, sBinOrDist + '.' + utils.getHostArch()),
             os.path.join(self.sScratchPath, sBinOrDist, utils.getHostArch()),
             os.path.join(self.sScratchPath, sBinOrDist),
@@ -498,7 +504,7 @@ class tdUnitTest1(vbox.TestDriver):
             reporter.errorXcpt();
             return False;
         reporter.log('Exit code [sudo]: %s (%s)' % (iRc, asArgs));
-        return iRc is 0;
+        return iRc == 0;
 
     def _hardenedMkDir(self, sPath):
         """
@@ -506,7 +512,7 @@ class tdUnitTest1(vbox.TestDriver):
         """
         reporter.log('_hardenedMkDir: %s' % (sPath,));
         if utils.getHostOs() in [ 'win', 'os2' ]:
-            os.makedirs(sPath, 0755);
+            os.makedirs(sPath, 0o755);
         else:
             fRc = self._sudoExecuteSync(['/bin/mkdir', '-p', '-m', '0755', sPath]);
             if fRc is not True:
@@ -558,7 +564,7 @@ class tdUnitTest1(vbox.TestDriver):
                     raise Exception('Failed to remove "%s".' % (sPath,));
         return True;
 
-    def _executeTestCase(self, sName, sFullPath, sTestCaseSubDir, oDevNull): # pylint: disable=R0914
+    def _executeTestCase(self, sName, sFullPath, sTestCaseSubDir, oDevNull): # pylint: disable=too-many-locals
         """
         Executes a test case.
         """
@@ -583,7 +589,7 @@ class tdUnitTest1(vbox.TestDriver):
                 asDirsToRemove.append(sDstDir);
 
             sDst = os.path.join(sDstDir, os.path.basename(sFullPath));
-            self._hardenedCopyFile(sFullPath, sDst, 0755);
+            self._hardenedCopyFile(sFullPath, sDst, 0o755);
             asFilesToRemove.append(sDst);
 
             # Copy any associated .dll/.so/.dylib.
@@ -591,7 +597,7 @@ class tdUnitTest1(vbox.TestDriver):
                 sSrc = os.path.splitext(sFullPath)[0] + sSuff;
                 if os.path.exists(sSrc):
                     sDst = os.path.join(sDstDir, os.path.basename(sSrc));
-                    self._hardenedCopyFile(sSrc, sDst, 0644);
+                    self._hardenedCopyFile(sSrc, sDst, 0o644);
                     asFilesToRemove.append(sDst);
 
             # Copy any associated .r0, .rc and .gc modules.
@@ -601,7 +607,7 @@ class tdUnitTest1(vbox.TestDriver):
                     sSrc = sFullPath[:offDriver] + sSuff;
                     if os.path.exists(sSrc):
                         sDst = os.path.join(sDstDir, os.path.basename(sSrc));
-                        self._hardenedCopyFile(sSrc, sDst, 0644);
+                        self._hardenedCopyFile(sSrc, sDst, 0o644);
                         asFilesToRemove.append(sDst);
 
             sFullPath = os.path.join(sDstDir, os.path.basename(sFullPath));

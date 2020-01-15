@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -528,10 +528,6 @@ static inline struct mbuf *slirpServiceMbufAlloc(PNATState pData, uint8_t u8Serv
     return m;
 }
 
-static inline struct mbuf *slirpTftpMbufAlloc(PNATState pData)
-{
-    return slirpServiceMbufAlloc(pData, CTL_TFTP);
-}
 static inline struct mbuf *slirpDnsMbufAlloc(PNATState pData)
 {
     return slirpServiceMbufAlloc(pData, CTL_DNS);

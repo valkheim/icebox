@@ -7,7 +7,7 @@ Test Manager - VcsRevisions
 
 __copyright__ = \
 """
-Copyright (C) 2012-2017 Oracle Corporation
+Copyright (C) 2012-2019 Oracle Corporation
 
 This file is part of VirtualBox Open Source Edition (OSE), as
 available from http://www.virtualbox.org. This file is free software;
@@ -26,7 +26,7 @@ CDDL are applicable instead of those of the GPL.
 You may elect to license modified versions of this file under the
 terms and conditions of either the GPL or the CDDL or both.
 """
-__version__ = "$Revision: 118412 $"
+__version__ = "$Revision: 131247 $"
 
 
 # Standard python imports.
@@ -51,6 +51,7 @@ class VcsRevisionData(ModelDataBase):
 
     kasAllowNullAttributes      = [ ];
     kfAllowUnicode_sMessage     = True;
+    kcchMax_sMessage            = 8192;
 
     def __init__(self):
         ModelDataBase.__init__(self);
@@ -103,7 +104,7 @@ class VcsRevisionData(ModelDataBase):
         return self;
 
 
-class VcsRevisionLogic(ModelLogicBase): # pylint: disable=R0903
+class VcsRevisionLogic(ModelLogicBase): # pylint: disable=too-few-public-methods
     """
     VCS revisions database logic.
     """
@@ -232,7 +233,7 @@ class VcsRevisionLogic(ModelLogicBase): # pylint: disable=R0903
 # Unit testing.
 #
 
-# pylint: disable=C0111
+# pylint: disable=missing-docstring
 class VcsRevisionDataTestCase(ModelDataBaseTestCase):
     def setUp(self):
         self.aoSamples = [VcsRevisionData(),];

@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2010-2017 Oracle Corporation
+ * Copyright (C) 2010-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -30,63 +30,53 @@
  *   (noticeable through strange modifier key and capitals behaviour).
  */
 
-#ifdef VBOX_WITH_PRECOMPILED_HEADERS
-# include <precomp.h>
-#else  /* !VBOX_WITH_PRECOMPILED_HEADERS */
-
 /* Qt includes: */
-# include <QKeyEvent>
-# include <QTimer>
-# ifdef VBOX_WS_X11
-#  include <QX11Info>
-# endif
+#include <QKeyEvent>
+#include <QTimer>
+#ifdef VBOX_WS_X11
+# include <QX11Info>
+#endif
 
 /* GUI includes: */
-# include "VBoxGlobal.h"
-# include "UIExtraDataManager.h"
-# include "UIMessageCenter.h"
-# include "UIPopupCenter.h"
-# include "UIActionPool.h"
-# include "UISession.h"
-# include "UIMachineLogic.h"
-# include "UIMachineWindow.h"
-# include "UIMachineView.h"
-# include "UIHostComboEditor.h"
-# include "UIKeyboardHandlerNormal.h"
-# include "UIKeyboardHandlerFullscreen.h"
-# include "UIKeyboardHandlerSeamless.h"
-# include "UIKeyboardHandlerScale.h"
-# include "UIMouseHandler.h"
-# ifdef VBOX_WS_MAC
-#  include "UICocoaApplication.h"
-#  include "VBoxUtils-darwin.h"
-# endif /* VBOX_WS_MAC */
-
-/* COM includes: */
-# include "CKeyboard.h"
-
-/* Other VBox includes: */
-# ifdef VBOX_WS_MAC
-#  include "iprt/cpp/utils.h"
-# endif /* VBOX_WS_MAC */
-
-#endif /* !VBOX_WITH_PRECOMPILED_HEADERS */
-
-/* GUI includes: */
+#include "UICommon.h"
+#include "UIExtraDataManager.h"
+#include "UIMessageCenter.h"
+#include "UIPopupCenter.h"
+#include "UIActionPool.h"
+#include "UISession.h"
+#include "UIMachineLogic.h"
+#include "UIMachineWindow.h"
+#include "UIMachineView.h"
+#include "UIHostComboEditor.h"
+#include "UIKeyboardHandlerNormal.h"
+#include "UIKeyboardHandlerFullscreen.h"
+#include "UIKeyboardHandlerSeamless.h"
+#include "UIKeyboardHandlerScale.h"
+#include "UIMouseHandler.h"
 #ifdef VBOX_WS_MAC
+# include "UICocoaApplication.h"
+# include "VBoxUtils-darwin.h"
 # include "DarwinKeyboard.h"
-#endif /* VBOX_WS_MAC */
+#endif
 #ifdef VBOX_WS_WIN
 # include "WinKeyboard.h"
-#endif /* VBOX_WS_WIN */
+#endif
 #ifdef VBOX_WS_X11
 # include "XKeyboard.h"
-#endif /* VBOX_WS_X11 */
+#endif
+
+/* COM includes: */
+#include "CKeyboard.h"
+
+/* Other VBox includes: */
+#ifdef VBOX_WS_MAC
+# include "iprt/cpp/utils.h"
+#endif
 
 /* External includes: */
 #ifdef VBOX_WS_MAC
 # include <Carbon/Carbon.h>
-#endif /* VBOX_WS_MAC */
+#endif
 #ifdef VBOX_WS_X11
 # include <X11/XKBlib.h>
 # include <X11/keysym.h>
@@ -109,7 +99,7 @@ enum { IsKeyPressed = 0x01, IsExtKeyPressed = 0x02, IsKbdCaptured = 0x80 };
 
 
 #ifdef VBOX_WS_WIN
-UIKeyboardHandler* UIKeyboardHandler::m_spKeyboardHandler = 0;
+UIKeyboardHandler *UIKeyboardHandler::m_spKeyboardHandler = 0;
 #endif /* VBOX_WS_WIN */
 
 /* Factory function to create keyboard-handler: */
@@ -416,7 +406,7 @@ void UIKeyboardHandler::releaseAllPressedKeys(bool aReleaseHostKey /* = true */)
      * but this is a real key release code on Brazilian keyboards. Now we send
      * a sequence of all modifier keys contained in the host sequence, hoping
      * that the user will choose something which the guest does not interpret. */
-    for (uint i = 0; i < SIZEOF_ARRAY (m_pressedKeys); i++)
+    for (uint i = 0; i < RT_ELEMENTS(m_pressedKeys); i++)
     {
         if ((m_pressedKeys[i] & IsKeyPressed) || (m_pressedKeys[i] & IsExtKeyPressed))
         {
@@ -477,8 +467,9 @@ void UIKeyboardHandler::releaseAllPressedKeys(bool aReleaseHostKey /* = true */)
 /* Current keyboard state: */
 int UIKeyboardHandler::state() const
 {
-    return (m_fIsKeyboardCaptured ? UIViewStateType_KeyboardCaptured : 0) |
-           (m_bIsHostComboPressed ? UIViewStateType_HostKeyPressed : 0);
+    return (m_fIsKeyboardCaptured ? UIKeyboardStateType_KeyboardCaptured : 0) |
+           (m_bIsHostComboPressed ? UIKeyboardStateType_HostKeyPressed : 0) |
+           (m_fHostKeyComboPressInserted ? UIKeyboardStateType_HostKeyPressedInsertion : 0);
 }
 
 #ifdef VBOX_WITH_DEBUGGER_GUI
@@ -669,7 +660,7 @@ bool UIKeyboardHandler::nativeEventFilter(void *pMessage, ulong uScreenId)
             // WORKAROUND:
             // Can't do COM inter-process calls from a SendMessage handler,
             // see http://support.microsoft.com/kb/131056.
-            if (vboxGlobal().isSeparateProcess() && InSendMessage())
+            if (uiCommon().isSeparateProcess() && InSendMessage())
             {
                 PostMessage(pMsg->hwnd, pMsg->message, pMsg->wParam, pMsg->lParam);
                 fResult = true;
@@ -977,6 +968,7 @@ UIKeyboardHandler::UIKeyboardHandler(UIMachineLogic *pMachineLogic)
     , m_bIsHostComboAlone(false)
     , m_bIsHostComboProcessed(false)
     , m_fPassCADtoGuest(false)
+    , m_fHostKeyComboPressInserted(false)
     , m_fDebuggerActive(false)
     , m_iKeyboardHookViewIndex(-1)
 #if defined(VBOX_WS_MAC)
@@ -989,7 +981,6 @@ UIKeyboardHandler::UIKeyboardHandler(UIMachineLogic *pMachineLogic)
 #elif defined(VBOX_WS_X11)
     , m_hButtonGrabWindow(0)
 #endif /* VBOX_WS_X11 */
-    , m_cMonitors(1)
 {
     /* Prepare: */
     prepareCommon();
@@ -1016,12 +1007,10 @@ void UIKeyboardHandler::prepareCommon()
 #endif /* VBOX_WS_WIN */
 
     /* Machine state-change updater: */
-    connect(uisession(), SIGNAL(sigMachineStateChange()), this, SLOT(sltMachineStateChanged()));
+    connect(uisession(), &UISession::sigMachineStateChange, this, &UIKeyboardHandler::sltMachineStateChanged);
 
     /* Pressed keys: */
     ::memset(m_pressedKeys, 0, sizeof(m_pressedKeys));
-
-    m_cMonitors = uisession()->machine().GetMonitorCount();
 }
 
 void UIKeyboardHandler::loadSettings()
@@ -1040,7 +1029,7 @@ void UIKeyboardHandler::loadSettings()
     /* Extra data settings: */
     {
         /* CAD setting: */
-        m_fPassCADtoGuest = gEDataManager->passCADtoGuest(vboxGlobal().managedVMUuid());
+        m_fPassCADtoGuest = gEDataManager->passCADtoGuest(uiCommon().managedVMUuid());
     }
 }
 
@@ -1182,6 +1171,10 @@ bool UIKeyboardHandler::eventFilter(QObject *pWatchedObject, QEvent *pEvent)
             }
             case QEvent::FocusOut:
             {
+                /* If host key combo press has been inserted (with no release yet) insert a release now: */
+                if (m_fHostKeyComboPressInserted)
+                    machineLogic()->typeHostKeyComboPressRelease(false);
+
 #if defined(VBOX_WS_MAC)
 
                 /* If keyboard-hook is installed: */
@@ -1536,7 +1529,7 @@ void UIKeyboardHandler::keyEventHandleHostComboRelease(ulong uScreenId)
                         finaliseCaptureKeyboard();
                         if (fCaptureMouse)
                         {
-                            const MouseCapturePolicy mcp = gEDataManager->mouseCapturePolicy(vboxGlobal().managedVMUuid());
+                            const MouseCapturePolicy mcp = gEDataManager->mouseCapturePolicy(uiCommon().managedVMUuid());
                             if (mcp == MouseCapturePolicy_Default || mcp == MouseCapturePolicy_HostComboOnly)
                                 machineLogic()->mouseHandler()->captureMouse(uScreenId);
                         }
@@ -1632,13 +1625,13 @@ bool UIKeyboardHandler::keyEvent(int iKey, uint8_t uScan, int fFlags, ulong uScr
             {
                 static LONG PrintMake[] = { 0xE0, 0x2A, 0xE0, 0x37 };
                 pCodes = PrintMake;
-                uCodesCount = SIZEOF_ARRAY(PrintMake);
+                uCodesCount = RT_ELEMENTS(PrintMake);
             }
             else
             {
                 static LONG PrintBreak[] = { 0xE0, 0xB7, 0xE0, 0xAA };
                 pCodes = PrintBreak;
-                uCodesCount = SIZEOF_ARRAY(PrintBreak);
+                uCodesCount = RT_ELEMENTS(PrintBreak);
             }
         }
         /* Special flags handling (KeyPause): */
@@ -1648,7 +1641,7 @@ bool UIKeyboardHandler::keyEvent(int iKey, uint8_t uScan, int fFlags, ulong uScr
             {
                 static LONG Pause[] = { 0xE1, 0x1D, 0x45, 0xE1, 0x9D, 0xC5 };
                 pCodes = Pause;
-                uCodesCount = SIZEOF_ARRAY(Pause);
+                uCodesCount = RT_ELEMENTS(Pause);
             }
             else
             {
@@ -1863,7 +1856,7 @@ void UIKeyboardHandler::saveKeyStates()
 void UIKeyboardHandler::sendChangedKeyStates()
 {
     QVector <LONG> codes(2);
-    for (uint i = 0; i < SIZEOF_ARRAY(m_pressedKeys); ++ i)
+    for (uint i = 0; i < RT_ELEMENTS(m_pressedKeys); ++ i)
     {
         uint8_t os = m_pressedKeysCopy[i];
         uint8_t ns = m_pressedKeys[i];
@@ -1947,4 +1940,10 @@ UIMachineView* UIKeyboardHandler::isItListenedView(QObject *pWatchedObject) cons
         ++i;
     }
     return pResultView;
+}
+
+void UIKeyboardHandler::setHostKeyComboPressedFlag(bool bPressed)
+{
+    m_fHostKeyComboPressInserted = bPressed;
+    emit sigStateChange(state());
 }

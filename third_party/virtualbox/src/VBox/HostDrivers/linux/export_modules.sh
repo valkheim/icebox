@@ -5,7 +5,7 @@
 #
 
 #
-# Copyright (C) 2007-2017 Oracle Corporation
+# Copyright (C) 2007-2019 Oracle Corporation
 #
 # This file is part of VirtualBox Open Source Edition (OSE), as
 # available from http://www.virtualbox.org. This file is free software;
@@ -100,12 +100,26 @@ VBOX_VERSION_MAJOR=`sed -e "s/^ *VBOX_VERSION_MAJOR *= \+\([0-9]\+\)/\1/;t;d" $P
 VBOX_VERSION_MINOR=`sed -e "s/^ *VBOX_VERSION_MINOR *= \+\([0-9]\+\)/\1/;t;d" $PATH_ROOT/Version.kmk`
 VBOX_VERSION_BUILD=`sed -e "s/^ *VBOX_VERSION_BUILD *= \+\([0-9]\+\)/\1/;t;d" $PATH_ROOT/Version.kmk`
 VBOX_VERSION_STRING=$VBOX_VERSION_MAJOR.$VBOX_VERSION_MINOR.$VBOX_VERSION_BUILD
-VBOX_SVN_REV=`sed -e 's/^ *VBOX_SVN_REV_FALLBACK *:= \+\$(patsubst *%:,, *\$Rev: *\([0-9]\+\) *\$ *) */\1/;t;d' $PATH_ROOT/Config.kmk`                                                                                                        VBOX_VENDOR=`sed -e 's/^ *VBOX_VENDOR *= \+\(.\+\)/\1/;t;d' $PATH_ROOT/Config.kmk`                                     VBOX_VENDOR_SHORT=`sed -e 's/^ *VBOX_VENDOR_SHORT *= \+\(.\+\)/\1/;t;d' $PATH_ROOT/Config.kmk`                         VBOX_PRODUCT=`sed -e 's/^ *VBOX_PRODUCT *= \+\(.\+\)/\1/;t;d' $PATH_ROOT/Config.kmk`                                   VBOX_C_YEAR=`date +%Y`
+VBOX_VERSION_BUILD=`sed -e "s/^ *VBOX_VERSION_BUILD *= \+\([0-9]\+\)/\1/;t;d" $PATH_ROOT/Version.kmk`
+VBOX_SVN_CONFIG_REV=`sed -e 's/^ *VBOX_SVN_REV_CONFIG_FALLBACK *:= \+\$(patsubst *%:,, *\$Rev: *\([0-9]\+\) *\$ *) */\1/;t;d' $PATH_ROOT/Config.kmk`
+VBOX_SVN_VERSION_REV=`sed -e 's/^ *VBOX_SVN_REV_VERSION_FALLBACK *:= \+\$(patsubst *%:,, *\$Rev: *\([0-9]\+\) *\$ *) */\1/;t;d' $PATH_ROOT/Version.kmk`
+if [ "$VBOX_SVN_CONFIG_REV" -gt "$VBOX_SVN_VERSION_REV" ]; then
+    VBOX_SVN_REV=$VBOX_SVN_CONFIG_REV
+else
+    VBOX_SVN_REV=$VBOX_SVN_VERSION_REV
+fi
+VBOX_VENDOR=`sed -e 's/^ *VBOX_VENDOR *= \+\(.\+\)/\1/;t;d' $PATH_ROOT/Config.kmk`
+VBOX_VENDOR_SHORT=`sed -e 's/^ *VBOX_VENDOR_SHORT *= \+\(.\+\)/\1/;t;d' $PATH_ROOT/Config.kmk`
+VBOX_PRODUCT=`sed -e 's/^ *VBOX_PRODUCT *= \+\(.\+\)/\1/;t;d' $PATH_ROOT/Config.kmk`
+VBOX_C_YEAR=`date +%Y`
+VBOX_WITH_PCI_PASSTHROUGH=`sed -e "s/^ *VBOX_WITH_PCI_PASSTHROUGH *= *\(1\?\)/\1/;t;d" $PATH_ROOT/Config.kmk`
 
 . $PATH_VBOXDRV/linux/files_vboxdrv
 . $PATH_VBOXNET/linux/files_vboxnetflt
 . $PATH_VBOXADP/linux/files_vboxnetadp
-. $PATH_VBOXPCI/linux/files_vboxpci
+if [ "$VBOX_WITH_PCI_PASSTHROUGH" -eq "1" ]; then
+    . $PATH_VBOXPCI/linux/files_vboxpci
+fi
 
 # Temporary path for creating the modules, will be removed later
 rm -rf "$PATH_TMP"
@@ -154,13 +168,13 @@ for f in $FILES_VBOXDRV_BIN; do
     install -D -m 0755 `echo $f|cut -d'=' -f1` "$PATH_TMP/vboxdrv/`echo $f|cut -d'>' -f2`"
 done
 if [ -n "$VBOX_WITH_HARDENING" ]; then
-    sed -e "s;-DVBOX_WITH_EFLAGS_AC_SET_IN_VBOXDRV;;g" \
-        -e "s;-DIPRT_WITH_EFLAGS_AC_PRESERVING;;g" \
+    sed -e "s;VBOX_WITH_EFLAGS_AC_SET_IN_VBOXDRV;;g" \
+        -e "s;IPRT_WITH_EFLAGS_AC_PRESERVING;;g" \
         < $PATH_VBOXDRV/linux/Makefile > $PATH_TMP/vboxdrv/Makefile
 else
-    sed -e "s;-DVBOX_WITH_HARDENING;;g" \
-        -e "s;-DVBOX_WITH_EFLAGS_AC_SET_IN_VBOXDRV;;g" \
-        -e "s;-DIPRT_WITH_EFLAGS_AC_PRESERVING;;g" \
+    sed -e "s;VBOX_WITH_HARDENING;;g" \
+        -e "s;VBOX_WITH_EFLAGS_AC_SET_IN_VBOXDRV;;g" \
+        -e "s;IPRT_WITH_EFLAGS_AC_PRESERVING;;g" \
         < $PATH_VBOXDRV/linux/Makefile > $PATH_TMP/vboxdrv/Makefile
 fi
 
@@ -172,7 +186,7 @@ done
 if [ -n "$VBOX_WITH_HARDENING" ]; then
     cat                                   $PATH_VBOXNET/linux/Makefile > $PATH_TMP/vboxnetflt/Makefile
 else
-    sed -e "s;-DVBOX_WITH_HARDENING;;g" < $PATH_VBOXNET/linux/Makefile > $PATH_TMP/vboxnetflt/Makefile
+    sed -e "s;VBOX_WITH_HARDENING;;g" < $PATH_VBOXNET/linux/Makefile > $PATH_TMP/vboxnetflt/Makefile
 fi
 
 # vboxnetadp (VirtualBox network adapter kernel module)
@@ -183,18 +197,20 @@ done
 if [ -n "$VBOX_WITH_HARDENING" ]; then
     cat                                   $PATH_VBOXADP/linux/Makefile > $PATH_TMP/vboxnetadp/Makefile
 else
-    sed -e "s;-DVBOX_WITH_HARDENING;;g" < $PATH_VBOXADP/linux/Makefile > $PATH_TMP/vboxnetadp/Makefile
+    sed -e "s;VBOX_WITH_HARDENING;;g" < $PATH_VBOXADP/linux/Makefile > $PATH_TMP/vboxnetadp/Makefile
 fi
 
 # vboxpci (VirtualBox host PCI access kernel module)
-mkdir $PATH_TMP/vboxpci || exit 1
-for f in $VBOX_VBOXPCI_SOURCES; do
-    install -D -m 0644 `echo $f|cut -d'=' -f1` "$PATH_TMP/vboxpci/`echo $f|cut -d'>' -f2`"
-done
-if [ -n "$VBOX_WITH_HARDENING" ]; then
-    cat                                   $PATH_VBOXPCI/linux/Makefile > $PATH_TMP/vboxpci/Makefile
-else
-    sed -e "s;-DVBOX_WITH_HARDENING;;g" < $PATH_VBOXPCI/linux/Makefile > $PATH_TMP/vboxpci/Makefile
+if [ "$VBOX_WITH_PCI_PASSTHROUGH" -eq "1" ]; then
+    mkdir $PATH_TMP/vboxpci || exit 1
+    for f in $VBOX_VBOXPCI_SOURCES; do
+        install -D -m 0644 `echo $f|cut -d'=' -f1` "$PATH_TMP/vboxpci/`echo $f|cut -d'>' -f2`"
+    done
+    if [ -n "$VBOX_WITH_HARDENING" ]; then
+        cat                                   $PATH_VBOXPCI/linux/Makefile > $PATH_TMP/vboxpci/Makefile
+    else
+        sed -e "s;VBOX_WITH_HARDENING;;g" < $PATH_VBOXPCI/linux/Makefile > $PATH_TMP/vboxpci/Makefile
+    fi
 fi
 
 install -D -m 0644 $PATH_LINUX/Makefile $PATH_TMP/Makefile
@@ -206,7 +222,7 @@ rm $PATH_TMP/revision-generated.h
 rm $PATH_TMP/product-generated.h
 
 # If we are exporting to a folder then stop now.
-test -n "$FOLDER" && exit 0
+test -z "$FOLDER" || exit 0
 
 # Do a test build
 echo Doing a test build, this may take a while.

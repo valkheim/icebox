@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -26,7 +26,7 @@
 #include "MMInternal.h"
 #include <VBox/vmm/vm.h>
 #include <VBox/vmm/uvm.h>
-#include <VBox/err.h>
+#include <iprt/errcore.h>
 #include <VBox/param.h>
 #include <VBox/log.h>
 
@@ -85,6 +85,19 @@ int mmR3HeapCreateU(PUVM pUVM, PMMHEAP *ppHeap)
 
 
 /**
+ * MM heap statistics tree destroy callback.
+ */
+static DECLCALLBACK(int) mmR3HeapStatTreeDestroy(PAVLULNODECORE pCore, void *pvParam)
+{
+    RT_NOREF(pvParam);
+
+    /* Don't bother deregistering the stat samples as they get destroyed by STAM. */
+    RTMemFree(pCore);
+    return VINF_SUCCESS;
+}
+
+
+/**
  * Destroy a heap.
  *
  * @param   pHeap   Heap handle.
@@ -111,7 +124,7 @@ void mmR3HeapDestroy(PMMHEAP pHeap)
     /*
      * Free the stat nodes.
      */
-    /** @todo free all nodes in a AVL tree. */
+    RTAvlULDestroy(&pHeap->pStatTree, mmR3HeapStatTreeDestroy, NULL);
     RTMemFree(pHeap);
 }
 

@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2010-2017 Oracle Corporation
+ * Copyright (C) 2010-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -15,31 +15,25 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
-#ifdef VBOX_WITH_PRECOMPILED_HEADERS
-# include <precomp.h>
-#else  /* !VBOX_WITH_PRECOMPILED_HEADERS */
-
 /* Qt includes: */
-# include <QMenu>
-# include <QTimer>
-# include <QSpacerItem>
-# include <QResizeEvent>
+#include <QMenu>
+#include <QTimer>
+#include <QSpacerItem>
+#include <QResizeEvent>
 
 /* GUI includes: */
-# include "VBoxGlobal.h"
-# include "UIDesktopWidgetWatchdog.h"
-# include "UIExtraDataManager.h"
-# include "UISession.h"
-# include "UIMachineLogic.h"
-# include "UIMachineWindowScale.h"
-# include "UIMachineView.h"
-# ifdef VBOX_WS_MAC
-#  include "VBoxUtils.h"
-#  include "UIImageTools.h"
-#  include "UICocoaApplication.h"
-# endif /* VBOX_WS_MAC */
-
-#endif /* !VBOX_WITH_PRECOMPILED_HEADERS */
+#include "UICommon.h"
+#include "UIDesktopWidgetWatchdog.h"
+#include "UIExtraDataManager.h"
+#include "UISession.h"
+#include "UIMachineLogic.h"
+#include "UIMachineWindowScale.h"
+#include "UIMachineView.h"
+#ifdef VBOX_WS_MAC
+# include "VBoxUtils.h"
+# include "UIImageTools.h"
+# include "UICocoaApplication.h"
+#endif
 
 
 UIMachineWindowScale::UIMachineWindowScale(UIMachineLogic *pMachineLogic, ulong uScreenId)
@@ -66,14 +60,14 @@ void UIMachineWindowScale::prepareVisualState()
     UIMachineWindow::prepareVisualState();
 
     /* Beta label? */
-    if (vboxGlobal().isBeta())
+    if (uiCommon().isBeta())
     {
         QPixmap betaLabel = ::betaLabel(QSize(100, 16));
         ::darwinLabelWindow(this, &betaLabel, true);
     }
 
     /* For 'Yosemite' and above: */
-    if (vboxGlobal().osRelease() >= MacOSXRelease_Yosemite)
+    if (uiCommon().osRelease() >= MacOSXRelease_Yosemite)
     {
         /* Enable fullscreen support for every screen which requires it: */
         if (darwinScreensHaveSeparateSpaces() || m_uScreenId == 0)
@@ -94,18 +88,18 @@ void UIMachineWindowScale::loadSettings()
     {
         /* Load extra-data: */
         QRect geo = gEDataManager->machineWindowGeometry(machineLogic()->visualStateType(),
-                                                         m_uScreenId, vboxGlobal().managedVMUuid());
+                                                         m_uScreenId, uiCommon().managedVMUuid());
 
         /* If we do have proper geometry: */
         if (!geo.isNull())
         {
             /* Restore window geometry: */
             m_normalGeometry = geo;
-            VBoxGlobal::setTopLevelGeometry(this, m_normalGeometry);
+            UICommon::setTopLevelGeometry(this, m_normalGeometry);
 
             /* Maximize (if necessary): */
             if (gEDataManager->machineWindowShouldBeMaximized(machineLogic()->visualStateType(),
-                                                              m_uScreenId, vboxGlobal().managedVMUuid()))
+                                                              m_uScreenId, uiCommon().managedVMUuid()))
                 setWindowState(windowState() | Qt::WindowMaximized);
         }
         /* If we do NOT have proper geometry: */
@@ -120,7 +114,7 @@ void UIMachineWindowScale::loadSettings()
             /* Move newly created window to the screen-center: */
             m_normalGeometry = geometry();
             m_normalGeometry.moveCenter(availableGeo.center());
-            VBoxGlobal::setTopLevelGeometry(this, m_normalGeometry);
+            UICommon::setTopLevelGeometry(this, m_normalGeometry);
         }
 
         /* Normalize to the optimal size: */
@@ -138,7 +132,7 @@ void UIMachineWindowScale::saveSettings()
     {
         gEDataManager->setMachineWindowGeometry(machineLogic()->visualStateType(),
                                                 m_uScreenId, m_normalGeometry,
-                                                isMaximizedChecked(), vboxGlobal().managedVMUuid());
+                                                isMaximizedChecked(), uiCommon().managedVMUuid());
     }
 
     /* Call to base-class: */
@@ -149,7 +143,7 @@ void UIMachineWindowScale::saveSettings()
 void UIMachineWindowScale::cleanupVisualState()
 {
     /* Unregister 'Zoom' button from using our full-screen since Yosemite: */
-    if (vboxGlobal().osRelease() >= MacOSXRelease_Yosemite)
+    if (uiCommon().osRelease() >= MacOSXRelease_Yosemite)
         UICocoaApplication::instance()->unregisterCallbackForStandardWindowButton(this, StandardWindowButtonType_Zoom);
 }
 #endif /* VBOX_WS_MAC */
@@ -198,10 +192,10 @@ void UIMachineWindowScale::normalizeGeometry(bool fAdjustPosition)
 
     /* Adjust position if necessary: */
     if (fAdjustPosition)
-        frGeo = VBoxGlobal::normalizeGeometry(frGeo, gpDesktop->overallAvailableRegion());
+        frGeo = UICommon::normalizeGeometry(frGeo, gpDesktop->overallAvailableRegion());
 
     /* Finally, set the frame geometry: */
-    VBoxGlobal::setTopLevelGeometry(this, frGeo.left() + dl, frGeo.top() + dt,
+    UICommon::setTopLevelGeometry(this, frGeo.left() + dl, frGeo.top() + dt,
                                     frGeo.width() - dl - dr, frGeo.height() - dt - db);
 #else /* VBOX_GUI_WITH_CUSTOMIZATIONS1 */
     /* Customer request: There should no be

@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2008-2017 Oracle Corporation
+ * Copyright (C) 2008-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -15,8 +15,11 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
-#ifndef __UIMachineSettingsSFDetails_h__
-#define __UIMachineSettingsSFDetails_h__
+#ifndef FEQT_INCLUDED_SRC_settings_machine_UIMachineSettingsSFDetails_h
+#define FEQT_INCLUDED_SRC_settings_machine_UIMachineSettingsSFDetails_h
+#ifndef RT_WITHOUT_PRAGMA_ONCE
+# pragma once
+#endif
 
 /* Includes */
 #include "UIMachineSettingsSFDetails.gen.h"
@@ -25,20 +28,20 @@
 #include "UIMachineSettingsSF.h"
 
 /* Shared folders details dialog: */
-class UIMachineSettingsSFDetails : public QIWithRetranslateUI2<QIDialog>,
-                                   public Ui::UIMachineSettingsSFDetails
+class SHARED_LIBRARY_STUFF UIMachineSettingsSFDetails : public QIWithRetranslateUI2<QIDialog>,
+                                                        public Ui::UIMachineSettingsSFDetails
 {
     Q_OBJECT;
 
 public:
 
-    enum DialogType
+    enum SFDialogType
     {
         AddType,
         EditType
     };
 
-    UIMachineSettingsSFDetails(DialogType type,
+    UIMachineSettingsSFDetails(SFDialogType type,
                                bool fEnableSelector, /* for "permanent" checkbox */
                                const QStringList &usedNames,
                                QWidget *pParent = 0);
@@ -55,6 +58,9 @@ public:
     void setAutoMount(bool fAutoMount);
     bool isAutoMounted() const;
 
+    void setAutoMountPoint(const QString &strAutoMountPoint);
+    QString autoMountPoint() const;
+
     void setPermanent(bool fPermanent);
     bool isPermanent() const;
 
@@ -69,10 +75,9 @@ private slots:
 
 private:
 
-    DialogType   m_type;
-    bool         m_fUsePermanent;
-    QStringList  m_usedNames;
+    SFDialogType  m_type;
+    bool          m_fUsePermanent;
+    QStringList   m_usedNames;
 };
 
-#endif // __UIMachineSettingsSFDetails_h__
-
+#endif /* !FEQT_INCLUDED_SRC_settings_machine_UIMachineSettingsSFDetails_h */

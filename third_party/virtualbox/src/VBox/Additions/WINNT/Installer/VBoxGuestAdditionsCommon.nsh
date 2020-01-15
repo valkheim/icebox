@@ -4,7 +4,7 @@
 ;
 
 ;
-; Copyright (C) 2006-2017 Oracle Corporation
+; Copyright (C) 2006-2019 Oracle Corporation
 ;
 ; This file is part of VirtualBox Open Source Edition (OSE), as
 ; available from http://www.virtualbox.org. This file is free software;
@@ -61,87 +61,33 @@ Function ExtractFiles
 !endif
   FILE "$%PATH_OUT%\bin\additions\VBoxDisp.dll"
 
-!if $%VBOX_WITH_CROGL% == "1"
-  ; crOpenGL
-  FILE "$%PATH_OUT%\bin\additions\VBoxOGL.dll"
-
-  SetOutPath "$0\VBoxVideo\OpenGL"
-  FILE "$%PATH_OUT%\bin\additions\d3d8.dll"
-  FILE "$%PATH_OUT%\bin\additions\d3d9.dll"
-  FILE "$%PATH_OUT%\bin\additions\VBoxD3D8.dll"
-  FILE "$%PATH_OUT%\bin\additions\VBoxD3D9.dll"
-  FILE "$%PATH_OUT%\bin\additions\wined3d.dll"
-
-  !if $%BUILD_TARGET_ARCH% == "amd64"
-    ; Only 64-bit installer: Also copy 32-bit DLLs on 64-bit target
-    SetOutPath "$0\VBoxVideo\OpenGL\SysWow64"
-    FILE "$%VBOX_PATH_ADDITIONS_WIN_X86%\d3d8.dll"
-    FILE "$%VBOX_PATH_ADDITIONS_WIN_X86%\d3d9.dll"
-    FILE "$%VBOX_PATH_ADDITIONS_WIN_X86%\VBoxOGL.dll"
-    FILE "$%VBOX_PATH_ADDITIONS_WIN_X86%\VBoxD3D8.dll"
-    FILE "$%VBOX_PATH_ADDITIONS_WIN_X86%\VBoxD3D9.dll"
-    FILE "$%VBOX_PATH_ADDITIONS_WIN_X86%\wined3d.dll"
-  !endif
-!endif
-
 !if $%VBOX_WITH_WDDM% == "1"
-  ; WDDM Video driver for Vista and 7
-  SetOutPath "$0\VBoxVideoWddm"
+  ; WDDM Video driver
+  SetOutPath "$0\VBoxWddm"
 
   !ifdef VBOX_SIGN_ADDITIONS
-    FILE "$%PATH_OUT%\bin\additions\VBoxVideoWddm.cat"
+    FILE "$%PATH_OUT%\bin\additions\VBoxWddm.cat"
   !endif
-  FILE "$%PATH_OUT%\bin\additions\VBoxVideoWddm.sys"
-  FILE "$%PATH_OUT%\bin\additions\VBoxVideoWddm.inf"
+  FILE "$%PATH_OUT%\bin\additions\VBoxWddm.sys"
+  FILE "$%PATH_OUT%\bin\additions\VBoxWddm.inf"
   FILE "$%PATH_OUT%\bin\additions\VBoxDispD3D.dll"
-
-  !if $%VBOX_WITH_CROGL% == "1"
-    FILE "$%PATH_OUT%\bin\additions\VBoxOGL.dll"
-
-    FILE "$%PATH_OUT%\bin\additions\VBoxD3D9wddm.dll"
-    FILE "$%PATH_OUT%\bin\additions\wined3dwddm.dll"
-  !endif ; $%VBOX_WITH_CROGL% == "1"
+  !if $%VBOX_WITH_MESA3D% == "1"
+    FILE "$%PATH_OUT%\bin\additions\VBoxNine.dll"
+    FILE "$%PATH_OUT%\bin\additions\VBoxSVGA.dll"
+    FILE "$%PATH_OUT%\bin\additions\VBoxICD.dll"
+    FILE "$%PATH_OUT%\bin\additions\VBoxGL.dll"
+  !endif
 
   !if $%BUILD_TARGET_ARCH% == "amd64"
     FILE "$%PATH_OUT%\bin\additions\VBoxDispD3D-x86.dll"
-
-    !if $%VBOX_WITH_CROGL% == "1"
-      FILE "$%PATH_OUT%\bin\additions\VBoxOGL-x86.dll"
-
-      FILE "$%PATH_OUT%\bin\additions\VBoxD3D9wddm-x86.dll"
-      FILE "$%PATH_OUT%\bin\additions\wined3dwddm-x86.dll"
-    !endif ; $%VBOX_WITH_CROGL% == "1"
-  !endif ; $%BUILD_TARGET_ARCH% == "amd64"
-
-  !if $%VBOX_WITH_WDDM_W8% == "1"
-  ; WDDM Video driver for Win8
-  SetOutPath "$0\VBoxVideoW8"
-
-    !ifdef VBOX_SIGN_ADDITIONS
-      FILE "$%PATH_OUT%\bin\additions\VBoxVideoW8.cat"
+    !if $%VBOX_WITH_MESA3D% == "1"
+      FILE "$%PATH_OUT%\bin\additions\VBoxNine-x86.dll"
+      FILE "$%PATH_OUT%\bin\additions\VBoxSVGA-x86.dll"
+      FILE "$%PATH_OUT%\bin\additions\VBoxICD-x86.dll"
+      FILE "$%PATH_OUT%\bin\additions\VBoxGL-x86.dll"
     !endif
-    FILE "$%PATH_OUT%\bin\additions\VBoxVideoW8.sys"
-    FILE "$%PATH_OUT%\bin\additions\VBoxVideoW8.inf"
-    FILE "$%PATH_OUT%\bin\additions\VBoxDispD3D.dll"
 
-    !if $%VBOX_WITH_CROGL% == "1"
-      FILE "$%PATH_OUT%\bin\additions\VBoxOGL.dll"
-
-      FILE "$%PATH_OUT%\bin\additions\VBoxD3D9wddm.dll"
-      FILE "$%PATH_OUT%\bin\additions\wined3dwddm.dll"
-    !endif ; $%VBOX_WITH_CROGL% == "1"
-
-    !if $%BUILD_TARGET_ARCH% == "amd64"
-      FILE "$%PATH_OUT%\bin\additions\VBoxDispD3D-x86.dll"
-
-      !if $%VBOX_WITH_CROGL% == "1"
-        FILE "$%PATH_OUT%\bin\additions\VBoxOGL-x86.dll"
-
-        FILE "$%PATH_OUT%\bin\additions\VBoxD3D9wddm-x86.dll"
-        FILE "$%PATH_OUT%\bin\additions\wined3dwddm-x86.dll"
-      !endif ; $%VBOX_WITH_CROGL% == "1"
-    !endif ; $%BUILD_TARGET_ARCH% == "amd64"
-  !endif ; $%VBOX_WITH_WDDM_W8% == "1"
+  !endif ; $%BUILD_TARGET_ARCH% == "amd64"
 !endif ; $%VBOX_WITH_WDDM% == "1"
 
   ; Mouse driver
@@ -168,17 +114,9 @@ Function ExtractFiles
   FILE "$%PATH_OUT%\bin\additions\VBoxHook.dll"
   FILE "$%PATH_OUT%\bin\additions\VBoxControl.exe"
 
-!if $%BUILD_TARGET_ARCH% == "x86"
-  SetOutPath "$0\VBoxGuest\NT4"
-  FILE "$%PATH_OUT%\bin\additions\VBoxGuestNT.sys"
-!endif
-
   ; VBoxService
   SetOutPath "$0\Bin"
   FILE "$%PATH_OUT%\bin\additions\VBoxService.exe"
-!if $%BUILD_TARGET_ARCH% == "x86"
-  FILE "$%PATH_OUT%\bin\additions\VBoxServiceNT.exe"
-!endif
 
   ; Shared Folders
   SetOutPath "$0\VBoxSF"
@@ -387,11 +325,7 @@ exe_stop_loop:
   ${LogVerbose} "Stopping attempt #$3"
 !endif
 
-  ${If} $g_strWinVersion == "NT4"
-    StrCpy $2 "VBoxServiceNT.exe"
-  ${Else}
-    StrCpy $2 "VBoxService.exe"
-  ${EndIf}
+  StrCpy $2 "VBoxService.exe"
 
   ${nsProcess::FindProcess} $2 $0
   StrCmp $0 0 0 exit
@@ -636,9 +570,15 @@ Function ${un}GetFileArchitecture
 
 found:
 
+  ${LogVerbose} "Getting architecture of file $\"$0$\" ..."
+
   VBoxGuestInstallHelper::FileGetArchitecture "$0"
+
   ; Stack: <architecture> $1 $0
   Pop  $0 ; Get architecture string
+
+  ${LogVerbose} "Architecture is: $0"
+
   Pop  $1 ; Restore $1
   Exch $0 ; Restore $0, push vendor on top of stack
   Goto end
@@ -677,8 +617,25 @@ Function ${un}VerifyFile
   Exch $2 ; Architecture; S: old$2 old$1 old$0
   Push $3 ;               S: old$3 old$2 old$1 old$0
 
-  IfFileExists "$0" check_vendor
+  ${LogVerbose} "Verifying file $\"$0$\" (vendor: $1, arch: $2) ..."
+
+  IfFileExists "$0" check_arch
   Goto not_found
+
+check_arch:
+
+  ${LogVerbose} "File $\"$0$\" found"
+
+  Push $0
+  Call ${un}GetFileArchitecture
+  Pop $3
+
+  ${LogVerbose} "Architecture is: $3"
+
+  ${If} $3 == $2
+    Goto check_vendor
+  ${EndIf}
+  Goto invalid
 
 check_vendor:
 
@@ -686,26 +643,29 @@ check_vendor:
   Call ${un}GetFileVendor
   Pop $3
 
+  ${LogVerbose} "Vendor is: $3"
+
   ${If} $3 == $1
-    Goto check_arch
+    Goto valid
   ${EndIf}
+
+invalid:
+
+  ${LogVerbose} "File $\"$0$\" is invalid"
+
   StrCpy $3 "1" ; Invalid
   Goto end
 
-check_arch:
+valid:
 
-  Push $0
-  Call ${un}GetFileArchitecture
-  Pop $3
+  ${LogVerbose} "File $\"$0$\" is valid"
 
-  ${If} $3 == $2
-    StrCpy $3 "0" ; Valid
-  ${Else}
-    StrCpy $3 "1" ; Invalid
-  ${EndIf}
+  StrCpy $3 "0" ; Valid
   Goto end
 
 not_found:
+
+  ${LogVerbose} "File $\"$0$\" was not found"
 
   StrCpy $3 "2" ; Not found
   Goto end
@@ -740,7 +700,6 @@ FunctionEnd
   Push "${Architecture}"
   Push "${Vendor}"
   Push "${File}"
-  ${LogVerbose} "Verifying file $\"${File}$\" ..."
   Call ${un}VerifyFile
   Pop $0
   ${If} $0 == "0"
@@ -898,162 +857,9 @@ FunctionEnd
 !macroend
 !define PrepareWRPFileEx "!insertmacro PrepareWRPFileEx"
 
-;
-; Validates backed up and replaced Direct3D files; either the d3d*.dll have
-; to be from Microsoft or the (already) backed up msd3d*.dll files. If both
-; don't match we have a corrupted / invalid installation.
-; @return  Stack: "0" if files are valid; otherwise "1".
-;
-!macro ValidateFilesDirect3D un
-Function ${un}ValidateD3DFiles
-
-  Push $0
-
-  ; We need to switch to 64-bit app mode to handle the "real" 64-bit files in
-  ; "system32" on a 64-bit guest
-  Call ${un}SetAppMode64
-
-  ; Note: Not finding a file (like *d3d8.dll) on Windows Vista/7 is fine;
-  ;       it simply is not present there.
-
-  ; Note 2: On 64-bit systems there are no 64-bit *d3d8 DLLs, only 32-bit ones
-  ;         in SysWOW64 (or in system32 on 32-bit systems).
-
-!if $%BUILD_TARGET_ARCH% == "x86"
-  ${VerifyFileEx} "${un}" "$SYSDIR\d3d8.dll" "Microsoft Corporation" "$%BUILD_TARGET_ARCH%"
-  Pop $0
-  ${If} $0 == "1"
-    Goto verify_msd3d
-  ${EndIf}
-!endif
-
-  ${VerifyFileEx} "${un}" "$SYSDIR\d3d9.dll" "Microsoft Corporation" "$%BUILD_TARGET_ARCH%"
-  Pop $0
-  ${If} $0 == "1"
-    Goto verify_msd3d
-  ${EndIf}
-
-  ${If} $g_bCapDllCache == "true"
-!if $%BUILD_TARGET_ARCH% == "x86"
-    ${VerifyFileEx} "${un}" "$SYSDIR\dllcache\d3d8.dll" "Microsoft Corporation" "$%BUILD_TARGET_ARCH%"
-    Pop $0
-    ${If} $0 == "1"
-      Goto verify_msd3d
-    ${EndIf}
-!endif
-    ${VerifyFileEx} "${un}" "$SYSDIR\dllcache\d3d9.dll" "Microsoft Corporation" "$%BUILD_TARGET_ARCH%"
-    Pop $0
-    ${If} $0 == "1"
-      Goto verify_msd3d
-    ${EndIf}
-  ${EndIf}
-
-!if $%BUILD_TARGET_ARCH% == "amd64"
-  ${VerifyFileEx} "${un}" "$g_strSysWow64\d3d8.dll" "Microsoft Corporation" "x86"
-  Pop $0
-  ${If} $0 == "1"
-    Goto verify_msd3d
-  ${EndIf}
-  ${VerifyFileEx} "${un}" "$g_strSysWow64\d3d9.dll" "Microsoft Corporation" "x86"
-  Pop $0
-  ${If} $0 == "1"
-    Goto verify_msd3d
-  ${EndIf}
-
-  ${If} $g_bCapDllCache == "true"
-    ${VerifyFileEx} "${un}" "$g_strSysWow64\dllcache\d3d8.dll" "Microsoft Corporation" "x86"
-    Pop $0
-    ${If} $0 == "1"
-      Goto verify_msd3d
-    ${EndIf}
-    ${VerifyFileEx} "${un}" "$g_strSysWow64\dllcache\d3d9.dll" "Microsoft Corporation" "x86"
-    Pop $0
-    ${If} $0 == "1"
-      Goto verify_msd3d
-    ${EndIf}
-  ${EndIf}
-
-!endif
-
-  Goto valid
-
-verify_msd3d:
-
-!if $%BUILD_TARGET_ARCH% == "x86"
-  ${VerifyFileEx} "${un}" "$SYSDIR\msd3d8.dll" "Microsoft Corporation" "$%BUILD_TARGET_ARCH%"
-  Pop $0
-  ${If} $0 == "1"
-    Goto invalid
-  ${EndIf}
-!endif
-  ${VerifyFileEx} "${un}" "$SYSDIR\msd3d9.dll" "Microsoft Corporation" "$%BUILD_TARGET_ARCH%"
-  Pop $0
-  ${If} $0 == "1"
-    Goto invalid
-  ${EndIf}
-
-  ${If} $g_bCapDllCache == "true"
-!if $%BUILD_TARGET_ARCH% == "x86"
-    ${VerifyFileEx} "${un}" "$SYSDIR\dllcache\msd3d8.dll" "Microsoft Corporation" "$%BUILD_TARGET_ARCH%"
-    Pop $0
-    ${If} $0 == "1"
-      Goto invalid
-    ${EndIf}
-!endif
-    ${VerifyFileEx} "${un}" "$SYSDIR\dllcache\msd3d9.dll" "Microsoft Corporation" "$%BUILD_TARGET_ARCH%"
-    Pop $0
-    ${If} $0 == "1"
-      Goto invalid
-    ${EndIf}
-  ${EndIf}
-
-!if $%BUILD_TARGET_ARCH% == "amd64"
-  ${VerifyFileEx} "${un}" "$g_strSysWow64\msd3d8.dll" "Microsoft Corporation" "x86"
-  Pop $0
-  ${If} $0 == "1"
-    Goto invalid
-  ${EndIf}
-  ${VerifyFileEx} "${un}" "$g_strSysWow64\msd3d9.dll" "Microsoft Corporation" "x86"
-  Pop $0
-  ${If} $0 == "1"
-    Goto invalid
-  ${EndIf}
-
-  ${If} $g_bCapDllCache == "true"
-    ${VerifyFileEx} "${un}" "$g_strSysWow64\dllcache\msd3d8.dll" "Microsoft Corporation" "x86"
-    Pop $0
-    ${If} $0 == "1"
-      Goto invalid
-    ${EndIf}
-    ${VerifyFileEx} "${un}" "$g_strSysWow64\dllcache\msd3d9.dll" "Microsoft Corporation" "x86"
-    Pop $0
-    ${If} $0 == "1"
-      Goto invalid
-    ${EndIf}
-  ${EndIf}
-!endif
-
-  Goto valid
-
-valid:
-
-  StrCpy $0 "0" ; Installation valid
-  Goto end
-
-invalid:
-
-  StrCpy $0 "1" ; Installation invalid / corrupted
-  Goto end
-
-end:
-
-  Exch $0
-
-FunctionEnd
-!macroend
-!insertmacro ValidateFilesDirect3D ""
-!insertmacro ValidateFilesDirect3D "un."
-
+; Note: We don't ship modified Direct3D files anymore, but we need to (try to)
+;       restore the original (backed up) DLLs when upgrading from an old(er)
+;       installation.
 ;
 ; Restores formerly backed up Direct3D original files, which were replaced by
 ; a VBox XPDM driver installation before. This might be necessary for upgrading a
@@ -1106,15 +912,7 @@ Function ${un}RestoreFilesDirect3D
   ${EndIf}
 !endif
 
-  ; Do a re-validation afterwards.
-  Call ${un}ValidateD3DFiles
   Pop $0
-  ${If} $0 == "1" ; D3D files are invalid
-    ${LogVerbose} $(VBOX_UNINST_UNABLE_TO_RESTORE_D3D)
-    MessageBox MB_ICONSTOP|MB_OK $(VBOX_UNINST_UNABLE_TO_RESTORE_D3D) /SD IDOK
-  ${EndIf}
-
-  Exch $0
 
 FunctionEnd
 !macroend

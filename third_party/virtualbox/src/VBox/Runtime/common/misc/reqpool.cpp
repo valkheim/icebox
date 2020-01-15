@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -34,6 +34,7 @@
 #include <iprt/assert.h>
 #include <iprt/asm.h>
 #include <iprt/critsect.h>
+#include <iprt/err.h>
 #include <iprt/list.h>
 #include <iprt/log.h>
 #include <iprt/mem.h>
@@ -283,6 +284,7 @@ static int rtReqPoolThreadExit(PRTREQPOOLINT pPool, PRTREQPOOLTHREAD pThread, bo
 
     RTCritSectLeave(&pPool->CritSect);
 
+    RTMemFree(pThread);
     return VINF_SUCCESS;
 }
 
@@ -1035,6 +1037,7 @@ RTDECL(uint32_t) RTReqPoolRelease(RTREQPOOL hPool)
         }
 
         /* Finally, free the critical section and pool instance. */
+        RTSemEventMultiDestroy(pPool->hThreadTermEvt);
         RTCritSectLeave(&pPool->CritSect);
         RTCritSectDelete(&pPool->CritSect);
         RTMemFree(pPool);

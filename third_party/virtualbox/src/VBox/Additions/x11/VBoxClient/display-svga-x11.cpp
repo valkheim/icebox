@@ -5,7 +5,7 @@
  */
 
 /*
- * Copyright (C) 2017 Oracle Corporation
+ * Copyright (C) 2017-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -42,6 +42,7 @@
 #include <VBox/VBoxGuestLib.h>
 
 #include <iprt/assert.h>
+#include <iprt/err.h>
 #include <iprt/file.h>
 #include <iprt/string.h>
 
@@ -61,7 +62,7 @@ static bool checkRecentLinuxKernel(void)
     struct utsname name;
 
     if (uname(&name) == -1)
-        VBClFatalError(("Failed to get kernel name.\n"));
+        VBClLogFatalError("Failed to get kernel name\n");
     if (strcmp(name.sysname, "Linux"))
         return false;
     return (RTStrVersionCompare(name.release, "4.6") >= 0);
@@ -79,7 +80,7 @@ static void x11Connect(struct X11CONTEXT *pContext)
     int dummy;
 
     if (pContext->pDisplay != NULL)
-        VBClFatalError(("%s called with bad argument\n", __func__));
+        VBClLogFatalError("%s called with bad argument\n", __func__);
     pContext->pDisplay = XOpenDisplay(NULL);
     if (pContext->pDisplay == NULL)
         return;
@@ -154,9 +155,9 @@ static void x11GetRequest(struct X11CONTEXT *pContext, uint8_t hMajor,
     if (pContext->pDisplay->bufptr + cb > pContext->pDisplay->bufmax)
         _XFlush(pContext->pDisplay);
     if (pContext->pDisplay->bufptr + cb > pContext->pDisplay->bufmax)
-        VBClFatalError(("%s display buffer overflow.\n", __func__));
+        VBClLogFatalError("%s display buffer overflow\n", __func__);
     if (cb % 4 != 0)
-        VBClFatalError(("%s bad parameter.\n", __func__));
+        VBClLogFatalError("%s bad parameter\n", __func__);
     pContext->pDisplay->last_req = pContext->pDisplay->bufptr;
     *ppReq = (struct X11REQHEADER *)pContext->pDisplay->bufptr;
     (*ppReq)->hMajor = hMajor;
@@ -176,7 +177,7 @@ static void x11SendHints(struct X11CONTEXT *pContext, struct X11VMWRECT *pRects,
     uint8_t                       repResolution[X11_VMW_RESOLUTION_REPLY_SIZE];
 
     if (!VALID_PTR(pContext->pDisplay))
-        VBClFatalError(("%s bad display argument.\n", __func__));
+        VBClLogFatalError("%s bad display argument\n", __func__);
     if (cRects == 0)
         return;
     /* Try a topology (multiple screen) request. */
@@ -203,7 +204,7 @@ static void x11SendHints(struct X11CONTEXT *pContext, struct X11VMWRECT *pRects,
     if (_XReply(pContext->pDisplay, (xReply *)&repResolution, 0, xTrue))
         return;
     /* What now? */
-    VBClFatalError(("%s failed to set resolution\n", __func__));
+    VBClLogFatalError("%s failed to set resolution\n", __func__);
 }
 
 /** Call RRGetScreenInfo to wake up the server to the new modes. */
@@ -213,14 +214,19 @@ static void x11GetScreenInfo(struct X11CONTEXT *pContext)
     uint8_t                      repGetScreen[X11_RANDR_GET_SCREEN_REPLY_SIZE];
 
     if (!VALID_PTR(pContext->pDisplay))
-        VBClFatalError(("%s bad display argument.\n", __func__));
+        VBClLogFatalError("%s bad display argument\n", __func__);
     x11GetRequest(pContext, pContext->hRandRMajor, X11_RANDR_GET_SCREEN_REQUEST,
                     sizeof(struct X11RANDRGETSCREENREQ),
                   (struct X11REQHEADER **)&pReqGetScreen);
     pReqGetScreen->hWindow = DefaultRootWindow(pContext->pDisplay);
     _XSend(pContext->pDisplay, NULL, 0);
     if (!_XReply(pContext->pDisplay, (xReply *)&repGetScreen, 0, xTrue))
-        VBClFatalError(("%s failed to set resolution\n", __func__));
+        VBClLogFatalError("%s failed to set resolution\n", __func__);
+}
+
+static const char *getName()
+{
+    return "Display SVGA X11";
 }
 
 static const char *getPidFilePath()
@@ -235,11 +241,6 @@ static int run(struct VBCLSERVICE **ppInterface, bool fDaemonised)
     struct X11CONTEXT x11Context = { NULL };
     unsigned i;
     int rc;
-    uint32_t acx[VMW_MAX_HEADS] = { 0 };
-    uint32_t acy[VMW_MAX_HEADS] = { 0 };
-    uint32_t adx[VMW_MAX_HEADS] = { 0 };
-    uint32_t ady[VMW_MAX_HEADS] = { 0 };
-    uint32_t afEnabled[VMW_MAX_HEADS] = { false };
     struct X11VMWRECT aRects[VMW_MAX_HEADS];
     unsigned cHeads;
 
@@ -248,65 +249,57 @@ static int run(struct VBCLSERVICE **ppInterface, bool fDaemonised)
     x11Connect(&x11Context);
     if (x11Context.pDisplay == NULL)
         return VINF_SUCCESS;
-    /* Initialise the guest library. */
-    rc = VbglR3InitUser();
-    if (RT_FAILURE(rc))
-        VBClFatalError(("Failed to connect to the VirtualBox kernel service, rc=%Rrc\n", rc));
     rc = VbglR3CtlFilterMask(VMMDEV_EVENT_DISPLAY_CHANGE_REQUEST, 0);
     if (RT_FAILURE(rc))
-        VBClFatalError(("Failed to request display change events, rc=%Rrc\n", rc));
+        VBClLogFatalError("Failed to request display change events, rc=%Rrc\n", rc);
     rc = VbglR3AcquireGuestCaps(VMMDEV_GUEST_SUPPORTS_GRAPHICS, 0, false);
     if (rc == VERR_RESOURCE_BUSY)  /* Someone else has already acquired it. */
         return VINF_SUCCESS;
     if (RT_FAILURE(rc))
-        VBClFatalError(("Failed to register resizing support, rc=%Rrc\n", rc));
+        VBClLogFatalError("Failed to register resizing support, rc=%Rrc\n", rc);
     for (;;)
     {
         uint32_t events;
+        struct VMMDevDisplayDef aDisplays[VMW_MAX_HEADS];
+        uint32_t cDisplaysOut;
 
-        rc = VbglR3WaitEvent(VMMDEV_EVENT_DISPLAY_CHANGE_REQUEST, RT_INDEFINITE_WAIT, &events);
+        /* Query the first size without waiting.  This lets us e.g. pick up
+         * the last event before a guest reboot when we start again after. */
+        rc = VbglR3GetDisplayChangeRequestMulti(VMW_MAX_HEADS, &cDisplaysOut, aDisplays, true);
         if (RT_FAILURE(rc))
-            VBClFatalError(("Failure waiting for event, rc=%Rrc\n", rc));
-        while (rc != VERR_TIMEOUT)
+            VBClLogFatalError("Failed to get display change request, rc=%Rrc\n", rc);
+        if (cDisplaysOut > VMW_MAX_HEADS)
+            VBClLogFatalError("Display change request contained, rc=%Rrc\n", rc);
+        for (i = 0, cHeads = 0; i < cDisplaysOut && i < VMW_MAX_HEADS; ++i)
         {
-            uint32_t cx, cy, cBits, dx, dy, idx;
-            bool fEnabled, fChangeOrigin;
-
-            rc = VbglR3GetDisplayChangeRequest(&cx, &cy, &cBits, &idx, &dx, &dy, &fEnabled, &fChangeOrigin, true);
-            if (RT_FAILURE(rc))
-                VBClFatalError(("Failed to get display change request, rc=%Rrc\n", rc));
-            if (idx < VMW_MAX_HEADS)
+            if (!(aDisplays[i].fDisplayFlags & VMMDEV_DISPLAY_DISABLED))
             {
-                acx[idx] = cx;
-                acy[idx] = cy;
-                if (fChangeOrigin)
-                    adx[idx] = dx < INT32_MAX ? dx : 0;
-                if (fChangeOrigin)
-                    ady[idx] = dy < INT32_MAX ? dy : 0;
-                afEnabled[idx] = fEnabled;
-            }
-            rc = VbglR3WaitEvent(VMMDEV_EVENT_DISPLAY_CHANGE_REQUEST, 0, &events);
-            if (RT_FAILURE(rc) && rc != VERR_TIMEOUT && rc != VERR_INTERRUPTED)
-                VBClFatalError(("Failure waiting for event, rc=%Rrc\n", rc));
-        }
-        for (i = 0, cHeads = 0; i < VMW_MAX_HEADS; ++i)
-        {
-            if (afEnabled[i])
-            {
-                aRects[cHeads].x = (int16_t)adx[i];
-                aRects[cHeads].y = (int16_t)ady[i];
-                aRects[cHeads].w = (uint16_t)acx[i];
-                aRects[cHeads].h = (uint16_t)acy[i];
+                if ((i == 0) || (aDisplays[i].fDisplayFlags & VMMDEV_DISPLAY_ORIGIN))
+                {
+                    aRects[cHeads].x =   aDisplays[i].xOrigin < INT16_MAX
+                                       ? (int16_t)aDisplays[i].xOrigin : 0;
+                    aRects[cHeads].y =   aDisplays[i].yOrigin < INT16_MAX
+                                       ? (int16_t)aDisplays[i].yOrigin : 0;
+                } else {
+                    aRects[cHeads].x = aRects[cHeads - 1].x + aRects[cHeads - 1].w;
+                    aRects[cHeads].y = aRects[cHeads - 1].y;
+                }
+                aRects[cHeads].w = (int16_t)RT_MIN(aDisplays[i].cx, INT16_MAX);
+                aRects[cHeads].h = (int16_t)RT_MIN(aDisplays[i].cy, INT16_MAX);
                 ++cHeads;
             }
         }
         x11SendHints(&x11Context, aRects, cHeads);
         x11GetScreenInfo(&x11Context);
+        rc = VbglR3WaitEvent(VMMDEV_EVENT_DISPLAY_CHANGE_REQUEST, RT_INDEFINITE_WAIT, &events);
+        if (RT_FAILURE(rc))
+            VBClLogFatalError("Failure waiting for event, rc=%Rrc\n", rc);
     }
 }
 
 static struct VBCLSERVICE interface =
 {
+    getName,
     getPidFilePath,
     VBClServiceDefaultHandler, /* Init */
     run,

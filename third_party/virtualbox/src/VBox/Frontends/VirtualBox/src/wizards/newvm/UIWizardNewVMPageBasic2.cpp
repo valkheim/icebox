@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -15,26 +15,20 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
-#ifdef VBOX_WITH_PRECOMPILED_HEADERS
-# include <precomp.h>
-#else  /* !VBOX_WITH_PRECOMPILED_HEADERS */
-
 /* Qt includes: */
-# include <QIntValidator>
-# include <QVBoxLayout>
-# include <QGridLayout>
-# include <QSpacerItem>
-# include <QLabel>
-# include <QSpinBox>
+#include <QIntValidator>
+#include <QVBoxLayout>
+#include <QGridLayout>
+#include <QSpacerItem>
+#include <QLabel>
+#include <QSpinBox>
 
 /* GUI includes: */
-# include "UIWizardNewVMPageBasic2.h"
-# include "UIWizardNewVM.h"
-# include "VBoxGlobal.h"
-# include "VBoxGuestRAMSlider.h"
-# include "QIRichTextLabel.h"
-
-#endif /* !VBOX_WITH_PRECOMPILED_HEADERS */
+#include "UIWizardNewVMPageBasic2.h"
+#include "UIWizardNewVM.h"
+#include "UICommon.h"
+#include "UIBaseMemorySlider.h"
+#include "QIRichTextLabel.h"
 
 
 UIWizardNewVMPage2::UIWizardNewVMPage2()
@@ -65,16 +59,16 @@ UIWizardNewVMPageBasic2::UIWizardNewVMPageBasic2()
         m_pLabel = new QIRichTextLabel(this);
         QGridLayout *pMemoryLayout = new QGridLayout;
         {
-            m_pRamSlider = new VBoxGuestRAMSlider(this);
+            m_pRamSlider = new UIBaseMemorySlider(this);
             {
                 m_pRamSlider->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
                 m_pRamSlider->setOrientation(Qt::Horizontal);
             }
             m_pRamEditor = new QSpinBox(this);
             {
-                m_pRamEditor->setMinimum(m_pRamSlider->minRAM());
-                m_pRamEditor->setMaximum(m_pRamSlider->maxRAM());
-                vboxGlobal().setMinimumWidthAccordingSymbolCount(m_pRamEditor, 5);
+                m_pRamEditor->setMinimum(m_pRamSlider->minimum());
+                m_pRamEditor->setMaximum(m_pRamSlider->maximum());
+                uiCommon().setMinimumWidthAccordingSymbolCount(m_pRamEditor, 5);
             }
             m_pRamUnits = new QLabel(this);
             {
@@ -101,8 +95,10 @@ UIWizardNewVMPageBasic2::UIWizardNewVMPageBasic2()
     }
 
     /* Setup connections: */
-    connect(m_pRamSlider, SIGNAL(valueChanged(int)), this, SLOT(sltRamSliderValueChanged()));
-    connect(m_pRamEditor, SIGNAL(valueChanged(int)), this, SLOT(sltRamEditorValueChanged()));
+    connect(m_pRamSlider, &UIBaseMemorySlider::valueChanged,
+            this, &UIWizardNewVMPageBasic2::sltRamSliderValueChanged);
+    connect(m_pRamEditor, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+            this, &UIWizardNewVMPageBasic2::sltRamEditorValueChanged);
 
     /* Register fields: */
     registerField("ram", m_pRamSlider, "value", SIGNAL(valueChanged(int)));
@@ -138,9 +134,9 @@ void UIWizardNewVMPageBasic2::retranslateUi()
                                         "to be allocated to the virtual machine.</p>"
                                         "<p>The recommended memory size is <b>%1</b> MB.</p>")
                                         .arg(strRecommendedRAM));
-    m_pRamUnits->setText(VBoxGlobal::tr("MB", "size suffix MBytes=1024 KBytes"));
-    m_pRamMin->setText(QString("%1 %2").arg(m_pRamSlider->minRAM()).arg(VBoxGlobal::tr("MB", "size suffix MBytes=1024 KBytes")));
-    m_pRamMax->setText(QString("%1 %2").arg(m_pRamSlider->maxRAM()).arg(VBoxGlobal::tr("MB", "size suffix MBytes=1024 KBytes")));
+    m_pRamUnits->setText(UICommon::tr("MB", "size suffix MBytes=1024 KBytes"));
+    m_pRamMin->setText(QString("%1 %2").arg(m_pRamSlider->minRAM()).arg(UICommon::tr("MB", "size suffix MBytes=1024 KBytes")));
+    m_pRamMax->setText(QString("%1 %2").arg(m_pRamSlider->maxRAM()).arg(UICommon::tr("MB", "size suffix MBytes=1024 KBytes")));
 }
 
 void UIWizardNewVMPageBasic2::initializePage()
@@ -163,4 +159,3 @@ bool UIWizardNewVMPageBasic2::isComplete() const
     return m_pRamSlider->value() >= qMax(1, (int)m_pRamSlider->minRAM()) &&
            m_pRamSlider->value() <= (int)m_pRamSlider->maxRAM();
 }
-

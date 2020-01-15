@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -15,10 +15,11 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
+#define LOG_GROUP LOG_GROUP_MAIN_NETWORKADAPTER
 #include "NetworkAdapterImpl.h"
 #include "NATEngineImpl.h"
 #include "AutoCaller.h"
-#include "Logging.h"
+#include "LoggingNew.h"
 #include "MachineImpl.h"
 #include "GuestOSTypeImpl.h"
 #include "HostImpl.h"
@@ -29,7 +30,7 @@
 #include <iprt/string.h>
 #include <iprt/cpp/utils.h>
 
-#include <VBox/err.h>
+#include <iprt/errcore.h>
 #include <VBox/settings.h>
 
 #include "AutoStateDep.h"
@@ -235,6 +236,7 @@ HRESULT NetworkAdapter::setAdapterType(NetworkAdapterType_T aAdapterType)
     {
         case NetworkAdapterType_Am79C970A:
         case NetworkAdapterType_Am79C973:
+        case NetworkAdapterType_Am79C960:
 #ifdef VBOX_WITH_E1000
         case NetworkAdapterType_I82540EM:
         case NetworkAdapterType_I82543GC:
@@ -242,6 +244,9 @@ HRESULT NetworkAdapter::setAdapterType(NetworkAdapterType_T aAdapterType)
 #endif
 #ifdef VBOX_WITH_VIRTIO
         case NetworkAdapterType_Virtio:
+#endif
+#ifdef VBOX_WITH_VIRTIO_NET_1_0
+        case NetworkAdapterType_Virtio_1_0:
 #endif /* VBOX_WITH_VIRTIO */
             break;
         default:
@@ -512,7 +517,8 @@ HRESULT NetworkAdapter::setBridgedInterface(const com::Utf8Str &aBridgedInterfac
     {
         /* if an empty/null string is to be set, bridged interface must be
          * turned off */
-        if (canonicalName.isEmpty()
+        if (   canonicalName.isEmpty()
+            && mData->fEnabled
             && mData->mode == NetworkAttachmentType_Bridged)
         {
             return setError(E_FAIL,
@@ -559,8 +565,9 @@ HRESULT NetworkAdapter::setHostOnlyInterface(const com::Utf8Str &aHostOnlyInterf
     {
         /* if an empty/null string is to be set, host only interface must be
          * turned off */
-        if ( aHostOnlyInterface.isEmpty()
-             && mData->mode == NetworkAttachmentType_HostOnly)
+        if (   aHostOnlyInterface.isEmpty()
+            && mData->fEnabled
+            && mData->mode == NetworkAttachmentType_HostOnly)
         {
             return setError(E_FAIL,
                             tr("Empty or null host only interface name is not valid"));
@@ -607,7 +614,9 @@ HRESULT NetworkAdapter::setInternalNetwork(const com::Utf8Str &aInternalNetwork)
     {
         /* if an empty/null string is to be set, internal networking must be
          * turned off */
-        if (aInternalNetwork.isEmpty() && mData->mode == NetworkAttachmentType_Internal)
+        if (   aInternalNetwork.isEmpty()
+            && mData->fEnabled
+            && mData->mode == NetworkAttachmentType_Internal)
         {
             return setError(E_FAIL,
                             tr("Empty or null internal network name is not valid"));
@@ -653,7 +662,8 @@ HRESULT NetworkAdapter::setNATNetwork(const com::Utf8Str &aNATNetwork)
     {
         /* if an empty/null string is to be set, host only interface must be
          * turned off */
-        if (aNATNetwork.isEmpty()
+        if (   aNATNetwork.isEmpty()
+            && mData->fEnabled
             && mData->mode == NetworkAttachmentType_NATNetwork)
             return setError(E_FAIL,
                             tr("Empty or null NAT network name is not valid"));
@@ -714,6 +724,68 @@ HRESULT NetworkAdapter::setGenericDriver(const com::Utf8Str &aGenericDriver)
     }
 
     return S_OK;
+}
+
+
+HRESULT NetworkAdapter::getCloudNetwork(com::Utf8Str &aCloudNetwork)
+{
+#ifdef VBOX_WITH_CLOUD_NET
+   AutoReadLock alock(this COMMA_LOCKVAL_SRC_POS);
+
+    aCloudNetwork = mData->strCloudNetworkName;
+
+    return S_OK;
+#else /* !VBOX_WITH_CLOUD_NET */
+    NOREF(aCloudNetwork);
+    return E_NOTIMPL;
+#endif /* !VBOX_WITH_CLOUD_NET */
+}
+
+HRESULT NetworkAdapter::setCloudNetwork(const com::Utf8Str &aCloudNetwork)
+{
+#ifdef VBOX_WITH_CLOUD_NET
+    /* the machine needs to be mutable */
+    AutoMutableOrSavedOrRunningStateDependency adep(mParent);
+    if (FAILED(adep.rc())) return adep.rc();
+
+    AutoWriteLock alock(this COMMA_LOCKVAL_SRC_POS);
+
+    if (mData->strCloudNetworkName != aCloudNetwork)
+    {
+        /* if an empty/null string is to be set, Cloud networking must be
+         * turned off */
+        if (   aCloudNetwork.isEmpty()
+            && mData->fEnabled
+            && mData->mode == NetworkAttachmentType_Cloud)
+        {
+            return setError(E_FAIL,
+                            tr("Empty or null Cloud network name is not valid"));
+        }
+        mData.backup();
+        mData->strCloudNetworkName = aCloudNetwork;
+
+        // leave the lock before informing callbacks
+        alock.release();
+
+#if 0
+        /// @todo Implement dynamic re-attachment of cloud network
+        AutoWriteLock mlock(mParent COMMA_LOCKVAL_SRC_POS);       // mParent is const, no need to lock
+        mParent->i_setModified(Machine::IsModified_NetworkAdapters);
+        mlock.release();
+
+        /* When changing the internal network, adapt the CFGM logic to make this
+         * change immediately effect and to notify the guest that the network
+         * might have changed, therefore changeAdapter=TRUE. */
+        mParent->i_onNetworkAdapterChange(this, TRUE);
+#else
+        mParent->i_onNetworkAdapterChange(this, FALSE);
+#endif
+    }
+    return S_OK;
+#else /* !VBOX_WITH_CLOUD_NET */
+    NOREF(aCloudNetwork);
+    return E_NOTIMPL;
+#endif /* !VBOX_WITH_CLOUD_NET */
 }
 
 
@@ -1122,12 +1194,12 @@ HRESULT NetworkAdapter::i_saveSettings(settings::NetworkAdapter &data)
  * Returns true if any setter method has modified settings of this instance.
  * @return
  */
-bool NetworkAdapter::i_isModified() {
-
+bool NetworkAdapter::i_isModified()
+{
     AutoWriteLock alock(this COMMA_LOCKVAL_SRC_POS);
 
     bool fChanged = mData.isBackedUp();
-    fChanged |= (mData->type == NetworkAttachmentType_NAT? mNATEngine->i_isModified() : false);
+    fChanged     |= mNATEngine->i_isModified();
     return fChanged;
 }
 
@@ -1227,9 +1299,18 @@ void NetworkAdapter::i_applyDefaults(GuestOSType *aOsType)
     e1000enabled = true;
 #endif // VBOX_WITH_E1000
 
-    NetworkAdapterType_T defaultType = NetworkAdapterType_Am79C973;
+    NetworkAdapterType_T defaultType;
     if (aOsType)
         defaultType = aOsType->i_networkAdapterType();
+    else
+    {
+#ifdef VBOX_WITH_E1000
+        defaultType = NetworkAdapterType_I82540EM;
+#else
+        defaultType = NetworkAdapterType_Am79C973A;
+#endif
+    }
+
 
     /* Set default network adapter for this OS type */
     if (defaultType == NetworkAdapterType_I82540EM ||

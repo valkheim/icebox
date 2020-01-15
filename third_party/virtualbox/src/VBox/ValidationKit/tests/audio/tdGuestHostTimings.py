@@ -7,7 +7,7 @@
 
 __copyright__ = \
 """
-Copyright (C) 2012-2017 Oracle Corporation
+Copyright (C) 2012-2019 Oracle Corporation
 
 This file is part of VirtualBox Open Source Edition (OSE), as
 available from http://www.virtualbox.org. This file is free software;
@@ -26,7 +26,7 @@ CDDL are applicable instead of those of the GPL.
 You may elect to license modified versions of this file under the
 terms and conditions of either the GPL or the CDDL or both.
 """
-__version__ = "$Revision: 118787 $"
+__version__ = "$Revision: 131247 $"
 
 
 import os
@@ -49,18 +49,19 @@ from testdriver import vbox
 from testdriver import vboxcon
 from testdriver import vboxtestvms
 
-class tdGuestHostTimings(vbox.TestDriver):                                         # pylint: disable=R0902
+class tdGuestHostTimings(vbox.TestDriver):                                         # pylint: disable=too-many-instance-attributes
 
     def __init__(self):
         vbox.TestDriver.__init__(self);
         self.sSessionTypeDef = 'gui';
 
-        self.oTestVmSet = self.oTestVmManager.getStandardVmSet('nat')
+        self.oTestVmSet = self.oTestVmManager.getStandardVmSet('nat') ## ???
 
         # Use the command line "--test-vms mw7x64 execute" to run the only "mw7x64" VM
-        oTestVm = vboxtestvms.TestVm(self.oTestVmSet, 'mw7x64', sHd = 'mw7x64.vdi',
-                         sKind = 'Windows7', acCpusSup = range(1, 2), fIoApic = True, sFirmwareType = 'bios',
-                            asParavirtModesSup = ['hyperv'], asVirtModesSup = ['hwvirt-np'], sHddControllerType = 'SATA Controller');
+        oTestVm = vboxtestvms.TestVm('mw7x64', oSet = self.oTestVmSet, sHd = 'mw7x64.vdi',
+                                     sKind = 'Windows7', acCpusSup = range(1, 2), fIoApic = True, sFirmwareType = 'bios',
+                                     asParavirtModesSup = ['hyperv'], asVirtModesSup = ['hwvirt-np'],
+                                     sHddControllerType = 'SATA Controller');
 
         self.oTestVmSet.aoTestVms.append(oTestVm);
 
@@ -73,7 +74,7 @@ class tdGuestHostTimings(vbox.TestDriver):                                      
         reporter.log(' --runningvmname <vmname>');
         return rc;
 
-    def parseOption(self, asArgs, iArg):                                        # pylint: disable=R0912,R0915
+    def parseOption(self, asArgs, iArg):                                        # pylint: disable=too-many-branches,too-many-statements
         if asArgs[iArg] == '--runningvmname':
             iArg += 1
             if iArg >= len(asArgs):

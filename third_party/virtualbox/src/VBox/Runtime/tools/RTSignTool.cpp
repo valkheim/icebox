@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -780,7 +780,7 @@ static RTEXITCODE SignToolPkcs7Exe_WriteSignatureToFile(PSIGNTOOLPKCS7EXE pThis,
                              */
                             uint32_t const  cbWinCert = RT_UOFFSETOF(WIN_CERTIFICATE, bCertificate);
                             uint64_t        offCur    = 0;
-                            rc = RTFileGetSize(hFile, &offCur);
+                            rc = RTFileQuerySize(hFile, &offCur);
                             if (   RT_SUCCESS(rc)
                                 && offCur < _2G)
                             {
@@ -859,7 +859,7 @@ static RTEXITCODE SignToolPkcs7Exe_WriteSignatureToFile(PSIGNTOOLPKCS7EXE pThis,
                             else if (RT_SUCCESS(rc))
                                 RTMsgError("File to big: %'RU64 bytes", offCur);
                             else
-                                RTMsgError("RTFileGetSize failed: %Rrc", rc);
+                                RTMsgError("RTFileQuerySize failed: %Rrc", rc);
                         }
                     }
                     else if (RT_SUCCESS(rc))

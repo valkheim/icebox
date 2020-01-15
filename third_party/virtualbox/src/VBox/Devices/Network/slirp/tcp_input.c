@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -721,7 +721,7 @@ findso:
 /*          sorwakeup(so); */
 
             /*
-             * If this is a short packet, then ACK now - with Nagel
+             * If this is a short packet, then ACK now - with Nagle
              *      congestion avoidance sender won't send more until
              *      he gets an ACK.
              *

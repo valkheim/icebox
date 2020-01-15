@@ -340,6 +340,12 @@ static void shader_glsl_dump_shader_source(const struct wined3d_gl_info *gl_info
     WDLOG(("    GL_OBJECT_COMPILE_STATUS_ARB: %d.\n", tmp));
     WDLOG(("\n"));
 
+    if (tmp == 0)
+    {
+        /* Compilation error, print the compiler's error messages. */
+        print_glsl_info_log(gl_info, shader);
+    }
+
     ptr = source;
     cbPtr = source_size;
     GL_EXTCALL(glGetShaderSourceARB(shader, source_size, NULL, source));
@@ -1072,7 +1078,19 @@ static void shader_generate_glsl_declarations(const struct wined3d_context *cont
         }
         else
         {
+#ifndef VBOX_WITH_VMSVGA
             if(This->baseShader.reg_maps.usesrelconstF) {
+#else
+            /* If GL supports only 256 constants (seen on macOS drivers for compatibility profile, which we use),
+             * then ignore the need for potential uniforms and always declare VC[256].
+             * This allows to compile Windows 10 shader which use hardcoded constants at 250+ index range.
+             * Fixes drawing problems on Windows 10 desktop.
+             *
+             * This hack is normally active only on macOS, because Windows and Linux OpenGL drivers
+             * have a more usable limit for GL compatibility context (1024+).
+             */
+            if (This->baseShader.reg_maps.usesrelconstF && gl_info->limits.glsl_vs_float_constants > 256) {
+#endif
                 /* Subtract the other potential uniforms from the max available (bools, ints, and 1 row of projection matrix).
                  * Subtract another uniform for immediate values, which have to be loaded via uniform by the driver as well.
                  * The shader code only uses 0.5, 2.0, 1.0, 128 and -128 in vertex shader code, so one vec4 should be enough
@@ -3183,6 +3201,8 @@ static void shader_glsl_tex(const struct wined3d_shader_instruction *ins)
      * 2.0+: Use provided sampler source. */
     if (shader_version < WINED3D_SHADER_VERSION(2,0)) sampler_idx = ins->dst[0].reg.idx;
     else sampler_idx = ins->src[1].reg.idx;
+
+    AssertReturnVoid(sampler_idx < RT_ELEMENTS(ins->ctx->reg_maps->sampler_type));
     sampler_type = ins->ctx->reg_maps->sampler_type[sampler_idx];
 
     if (shader_version < WINED3D_SHADER_VERSION(1,4))
@@ -3278,6 +3298,8 @@ static void shader_glsl_texldd(const struct wined3d_shader_instruction *ins)
     }
 
     sampler_idx = ins->src[1].reg.idx;
+    AssertReturnVoid(sampler_idx < RT_ELEMENTS(ins->ctx->reg_maps->sampler_type));
+
     sampler_type = ins->ctx->reg_maps->sampler_type[sampler_idx];
     if(deviceImpl->stateBlock->textures[sampler_idx] &&
        IWineD3DBaseTexture_GetTextureDimensions(deviceImpl->stateBlock->textures[sampler_idx]) == GL_TEXTURE_RECTANGLE_ARB) {
@@ -3306,6 +3328,8 @@ static void shader_glsl_texldl(const struct wined3d_shader_instruction *ins)
     DWORD swizzle = ins->src[1].swizzle;
 
     sampler_idx = ins->src[1].reg.idx;
+    AssertReturnVoid(sampler_idx < RT_ELEMENTS(ins->ctx->reg_maps->sampler_type));
+
     sampler_type = ins->ctx->reg_maps->sampler_type[sampler_idx];
     if(deviceImpl->stateBlock->textures[sampler_idx] &&
        IWineD3DBaseTexture_GetTextureDimensions(deviceImpl->stateBlock->textures[sampler_idx]) == GL_TEXTURE_RECTANGLE_ARB) {

@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -205,6 +205,38 @@ void tstASMCpuId(void)
     CHECKVAL(uEDX2, s.uEDX, "%x");
 
     /*
+     * Check the extended APIC stuff.
+     */
+    uint32_t idExtApic;
+    if (ASMCpuId_EAX(0) >= 0xb)
+    {
+        uint8_t idApic = ASMGetApicId();
+        do
+        {
+            uEAX2 = uEBX2 = uECX2 = uEDX2 = UINT32_C(0x50486744);
+            ASMCpuIdExSlow(0xb, 0, 0, 0, &uEAX2, &uEBX2, &uECX2, &uEDX2);
+            idExtApic = ASMGetApicIdExt0B();
+        } while (ASMGetApicId() != idApic);
+
+        CHECKVAL(uEDX2, idExtApic, "%x");
+        if (idApic != (uint8_t)idExtApic && uECX2 != 0)
+            RTTestIFailed("ASMGetApicIdExt0B() -> %#x vs ASMGetApicId() -> %#x", idExtApic, idApic);
+    }
+    if (ASMCpuId_EAX(UINT32_C(0x80000000)) >= UINT32_C(0x8000001E))
+    {
+        uint8_t idApic = ASMGetApicId();
+        do
+        {
+            uEAX2 = uEBX2 = uECX2 = uEDX2 = UINT32_C(0x50486744);
+            ASMCpuIdExSlow(0x8000001e, 0, 0, 0, &uEAX2, &uEBX2, &uECX2, &uEDX2);
+            idExtApic = ASMGetApicIdExt8000001E();
+        } while (ASMGetApicId() != idApic);
+        CHECKVAL(uEAX2, idExtApic, "%x");
+        if (idApic != (uint8_t)idExtApic)
+            RTTestIFailed("ASMGetApicIdExt8000001E() -> %#x vs ASMGetApicId() -> %#x", idExtApic, idApic);
+    }
+
+    /*
      * Done testing, dump the information.
      */
     RTTestIPrintf(RTTESTLVL_ALWAYS, "CPUID Dump\n");
@@ -257,9 +289,12 @@ void tstASMCpuId(void)
                 RTTestIPrintf(RTTESTLVL_ALWAYS, "    [%02x]  %08x %08x %08x %08x\n", uECX, s.uEAX, s.uEBX, s.uECX, s.uEDX);
                 RTTESTI_CHECK_BREAK(uECX < 128);
             }
-        else if (   iStd == 0x0f /* Platform qualifity of service monitoring (PQM)  */
-                 || iStd == 0x10 /* Platform qualifity of service enforcement (PQE) */
-                 || iStd == 0x14 /* Trace Enumeration Leafs */)
+        else if (   iStd == 0x0f /* Platform quality of service monitoring (PQM)  */
+                 || iStd == 0x10 /* Platform quality of service enforcement (PQE) */
+                 || iStd == 0x12 /* SGX Enumeration */
+                 || iStd == 0x14 /* Processor Trace Enumeration */
+                 || iStd == 0x17 /* SoC Vendor Attribute Enumeration */
+                 || iStd == 0x18 /* Deterministic Address Translation Parameters */)
         {
             /** @todo  */
         }
@@ -1870,12 +1905,16 @@ void tstASMBench(void)
     BENCH(ASMAtomicUoDecU32(&s_u32),             "ASMAtomicUoDecU32");
     BENCH(ASMAtomicUoAndU32(&s_u32, 0xffffffff), "ASMAtomicUoAndU32");
     BENCH(ASMAtomicUoOrU32(&s_u32, 0xffffffff),  "ASMAtomicUoOrU32");
+#if defined(RT_ARCH_AMD64) || defined(RT_ARCH_X86)
     BENCH_TSC(ASMSerializeInstructionCpuId(),    "ASMSerializeInstructionCpuId");
     BENCH_TSC(ASMSerializeInstructionIRet(),     "ASMSerializeInstructionIRet");
+#endif
 
     /* The Darwin gcc does not like this ... */
 #if !defined(RT_OS_DARWIN) && !defined(GCC44_32BIT_PIC) && (defined(RT_ARCH_AMD64) || defined(RT_ARCH_X86))
     BENCH(s_u8 = ASMGetApicId(),                "ASMGetApicId");
+    BENCH(s_u32 = ASMGetApicIdExt0B(),          "ASMGetApicIdExt0B");
+    BENCH(s_u32 = ASMGetApicIdExt8000001E(),    "ASMGetApicIdExt8000001E");
 #endif
 #if !defined(GCC44_32BIT_PIC) && (defined(RT_ARCH_AMD64) || defined(RT_ARCH_X86))
     uint32_t uAux;

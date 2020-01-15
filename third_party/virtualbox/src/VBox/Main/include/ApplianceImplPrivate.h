@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -15,8 +15,11 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
-#ifndef ____H_APPLIANCEIMPLPRIVATE
-#define ____H_APPLIANCEIMPLPRIVATE
+#ifndef MAIN_INCLUDED_ApplianceImplPrivate_h
+#define MAIN_INCLUDED_ApplianceImplPrivate_h
+#ifndef RT_WITHOUT_PRAGMA_ONCE
+# pragma once
+#endif
 
 
 class VirtualSystemDescription;
@@ -53,6 +56,7 @@ struct LocationInfo
     LocationInfo()
       : storageType(VFSType_File) {}
     VFSType_T storageType; /* Which type of storage should be handled */
+    Utf8Str strProvider;   /* cloud provider name in case of export/import to Cloud */
     Utf8Str strPath;       /* File path for the import/export */
     Utf8Str strHostname;   /* Hostname on remote storage locations (could be empty) */
     Utf8Str strUsername;   /* Username on remote storage locations (could be empty) */
@@ -62,11 +66,10 @@ struct LocationInfo
 // opaque private instance data of Appliance class
 struct Appliance::Data
 {
-    enum ApplianceState { ApplianceIdle, ApplianceImporting, ApplianceExporting };
     enum digest_T {SHA1, SHA256};
 
     Data()
-      : state(ApplianceIdle)
+      : state(Appliance::ApplianceIdle)
       , fDigestTypes(0)
       , hOurManifest(NIL_RTMANIFEST)
       , fManifest(true)
@@ -146,7 +149,7 @@ struct Appliance::Data
         strCertError.setNull();
     }
 
-    ApplianceState      state;
+    Appliance::ApplianceState      state;
 
     LocationInfo        locInfo;        // location info for the currently processed OVF
     /** The digests types to calculate (RTMANIFEST_ATTR_XXX) for the manifest.
@@ -287,6 +290,97 @@ public:
     }
 };
 
+class Appliance::TaskOPC : public ThreadTask
+{
+public:
+    enum TaskType
+    {
+        Export
+    };
+
+    TaskOPC(Appliance *aThat,
+            TaskType aType,
+            LocationInfo aLocInfo,
+            ComObjPtr<Progress> &aProgress)
+      : ThreadTask("TaskOPC"),
+        pAppliance(aThat),
+        taskType(aType),
+        locInfo(aLocInfo),
+        pProgress(aProgress),
+        rc(S_OK)
+    {
+        m_strTaskName = "OPCExpt";
+    }
+
+    ~TaskOPC()
+    {
+    }
+
+    static DECLCALLBACK(int) updateProgress(unsigned uPercent, void *pvUser);
+
+    Appliance *pAppliance;
+    TaskType taskType;
+    const LocationInfo locInfo;
+    ComObjPtr<Progress> pProgress;
+
+    HRESULT rc;
+
+    void handler()
+    {
+        Appliance::i_exportOPCThreadTask(this);
+    }
+};
+
+
+class Appliance::TaskCloud : public ThreadTask
+{
+public:
+    enum TaskType
+    {
+        Export,
+        Import,
+        ReadData
+    };
+
+    TaskCloud(Appliance *aThat,
+            TaskType aType,
+            LocationInfo aLocInfo,
+            ComObjPtr<Progress> &aProgress)
+      : ThreadTask("TaskCloud"),
+        pAppliance(aThat),
+        taskType(aType),
+        locInfo(aLocInfo),
+        pProgress(aProgress),
+        rc(S_OK)
+    {
+        switch (taskType)
+        {
+            case TaskCloud::Export:    m_strTaskName = "CloudExpt"; break;
+            case TaskCloud::Import:    m_strTaskName = "CloudImpt"; break;
+            case TaskCloud::ReadData:  m_strTaskName = "CloudRead"; break;
+            default:                   m_strTaskName = "CloudTask"; break;
+        }
+    }
+
+    ~TaskCloud()
+    {
+    }
+
+    static DECLCALLBACK(int) updateProgress(unsigned uPercent, void *pvUser);
+
+    Appliance *pAppliance;
+    TaskType taskType;
+    const LocationInfo locInfo;
+    ComObjPtr<Progress> pProgress;
+
+    HRESULT rc;
+
+    void handler()
+    {
+        Appliance::i_importOrExportCloudThreadTask(this);
+    }
+};
+
 struct MyHardDiskAttachment
 {
     ComPtr<IMachine>    pMachine;
@@ -309,13 +403,16 @@ struct Appliance::ImportStack
 
     // input parameters from VirtualSystemDescriptions
     Utf8Str                         strNameVBox;        // VM name
-    Utf8Str                         strMachineFolder;   // FQ host folder where the VirtualBox machine would be created
+    Utf8Str                         strSettingsFilename; // Absolute path to VM config file
+    Utf8Str                         strMachineFolder;   // Absolute path to VM folder (derived from strSettingsFilename)
     Utf8Str                         strOsTypeVBox;      // VirtualBox guest OS type as string
+    Utf8Str                         strPrimaryGroup;    // VM primary group as string
     Utf8Str                         strDescription;
     uint32_t                        cCPUs;              // CPU count
     bool                            fForceHWVirt;       // if true, we force enabling hardware virtualization
     bool                            fForceIOAPIC;       // if true, we force enabling the IOAPIC
     uint32_t                        ulMemorySizeMB;     // virtual machine RAM in megabytes
+    Utf8Str                         strFirmwareType;    //Firmware - BIOS or EFI
 #ifdef VBOX_WITH_USB
     bool                            fUSBEnabled;
 #endif
@@ -422,5 +519,5 @@ ovf::CIMOSType_T convertVBoxOSType2CIMOSType(const char *pcszVBox, BOOL fLongMod
 Utf8Str convertNetworkAttachmentTypeToString(NetworkAttachmentType_T type);
 
 
-#endif // !____H_APPLIANCEIMPLPRIVATE
+#endif /* !MAIN_INCLUDED_ApplianceImplPrivate_h */
 

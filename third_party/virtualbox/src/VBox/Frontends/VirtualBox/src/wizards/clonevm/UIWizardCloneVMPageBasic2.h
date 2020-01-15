@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2011-2017 Oracle Corporation
+ * Copyright (C) 2011-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -15,8 +15,11 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
-#ifndef __UIWizardCloneVMPageBasic2_h__
-#define __UIWizardCloneVMPageBasic2_h__
+#ifndef FEQT_INCLUDED_SRC_wizards_clonevm_UIWizardCloneVMPageBasic2_h
+#define FEQT_INCLUDED_SRC_wizards_clonevm_UIWizardCloneVMPageBasic2_h
+#ifndef RT_WITHOUT_PRAGMA_ONCE
+# pragma once
+#endif
 
 /* Local includes: */
 #include "UIWizardPage.h"
@@ -35,7 +38,7 @@ protected:
     UIWizardCloneVMPage2(bool fAdditionalInfo);
 
     /* Stuff for 'linkedClone' field: */
-    bool isLinkedClone() const;
+    bool linkedClone() const;
 
     /* Variables: */
     bool m_fAdditionalInfo;
@@ -50,7 +53,7 @@ protected:
 class UIWizardCloneVMPageBasic2 : public UIWizardPage, public UIWizardCloneVMPage2
 {
     Q_OBJECT;
-    Q_PROPERTY(bool linkedClone READ isLinkedClone);
+    Q_PROPERTY(bool linkedClone READ linkedClone);
 
 public:
 
@@ -80,5 +83,5 @@ private:
     QIRichTextLabel *m_pLabel;
 };
 
-#endif // __UIWizardCloneVMPageBasic2_h__
+#endif /* !FEQT_INCLUDED_SRC_wizards_clonevm_UIWizardCloneVMPageBasic2_h */
 

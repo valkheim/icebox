@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -58,6 +58,7 @@
 # include <fcntl.h>
 #endif
 #ifdef RT_OS_WINDOWS
+# include <iprt/utf16.h>
 # include <iprt/win/windows.h>
 #else
 # include <termios.h>
@@ -901,7 +902,7 @@ static int rtStrmWriteLocked(PRTSTREAM pStream, const void *pvBuf, size_t cbWrit
     {
         char       *pszSrcFree = NULL;
         const char *pszSrc     = (const char *)pvBuf;
-        if (pszSrc[cbWrite])
+        if (pszSrc[cbWrite - 1])
         {
             pszSrc = pszSrcFree = RTStrDupN(pszSrc, cbWrite);
             if (pszSrc == NULL)

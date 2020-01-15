@@ -3,7 +3,7 @@
 # Linux kernel module init script
 
 #
-# Copyright (C) 2006-2017 Oracle Corporation
+# Copyright (C) 2006-2019 Oracle Corporation
 #
 # This file is part of VirtualBox Open Source Edition (OSE), as
 # available from http://www.virtualbox.org. This file is free software;
@@ -85,6 +85,27 @@ else
     GROUP=vboxusers
     DEVICE_MODE=0660
 fi
+
+KERN_VER=`uname -r`
+if test -e "${MODULE_SRC}/vboxpci"; then
+    MODULE_LIST="vboxdrv vboxnetflt vboxnetadp vboxpci"
+else
+    MODULE_LIST="vboxdrv vboxnetflt vboxnetadp"
+fi
+# Secure boot state.
+case "`mokutil --sb-state 2>/dev/null`" in
+    *"disabled in shim"*) unset HAVE_SEC_BOOT;;
+    *"SecureBoot enabled"*) HAVE_SEC_BOOT=true;;
+    *) unset HAVE_SEC_BOOT;;
+esac
+# So far we can only sign modules on Ubuntu and on Debian 10 and later.
+DEB_PUB_KEY=/var/lib/shim-signed/mok/MOK.der
+DEB_PRIV_KEY=/var/lib/shim-signed/mok/MOK.priv
+unset HAVE_DEB_KEY
+case "`mokutil --test-key "$DEB_PUB_KEY" 2>/dev/null`" in
+    *"is already"*) DEB_KEY_ENROLLED=true;;
+    *) unset DEB_KEY_ENROLLED;;
+esac
 
 [ -r /etc/default/virtualbox ] && . /etc/default/virtualbox
 
@@ -252,6 +273,15 @@ start()
     if [ -d /proc/xen ]; then
         failure "Running VirtualBox in a Xen environment is not supported"
     fi
+    if test -n "$HAVE_SEC_BOOT" && test -z "$DEB_KEY_ENROLLED"; then
+        if test -n "$HAVE_DEB_KEY"; then
+            begin_msg "You must re-start your system to finish Debian secure boot set-up." console
+        else
+            begin_msg "You must sign these kernel modules before using VirtualBox:
+  $MODULE_LIST
+See the documenatation for your Linux distribution." console
+        fi
+    fi
     if ! running vboxdrv; then
         if ! rm -f $DEVICE; then
             failure "Cannot remove $DEVICE"
@@ -298,7 +328,7 @@ start()
     if ! $MODPROBE vboxnetadp > /dev/null 2>&1; then
         failure "modprobe vboxnetadp failed. Please use 'dmesg' to find out why"
     fi
-    if ! $MODPROBE vboxpci > /dev/null 2>&1; then
+    if test -e "${MODULE_SRC}/vboxpci" && ! $MODPROBE vboxpci > /dev/null 2>&1; then
         failure "modprobe vboxpci failed. Please use 'dmesg' to find out why"
     fi
     # Create the /dev/vboxusb directory if the host supports that method
@@ -409,6 +439,7 @@ cleanup()
                   "${i}/misc/vboxnetflt.ko" "${i}/misc/vboxpci.ko"
             version=`expr "${i}" : "/lib/modules/\(.*\)"`
             depmod -a "${version}"
+            sync
         fi
         # Remove the kernel version folder if it was empty except for us.
         test   "`echo ${i}/misc/* ${i}/misc/.?* ${i}/* ${i}/.?*`" \
@@ -449,18 +480,41 @@ setup()
         module_build_log "$myerr"
         failure "Look at $LOG to find out what went wrong"
     fi
-    log "Building the PCI pass-through module."
-    if ! myerr=`$BUILDINTMP \
-        --use-module-symvers /tmp/vboxdrv-Module.symvers \
-        --module-source "$MODULE_SRC/vboxpci" \
-        --no-print-directory install 2>&1`; then
-        log "Error building the module:"
-        module_build_log "$myerr"
-        failure "Look at $LOG to find out what went wrong"
+    if test -e "$MODULE_SRC/vboxpci"; then
+        log "Building the PCI pass-through module."
+        if ! myerr=`$BUILDINTMP \
+            --use-module-symvers /tmp/vboxdrv-Module.symvers \
+            --module-source "$MODULE_SRC/vboxpci" \
+            --no-print-directory install 2>&1`; then
+            log "Error building the module:"
+            module_build_log "$myerr"
+            failure "Look at $LOG to find out what went wrong"
+        fi
     fi
     rm -f /etc/vbox/module_not_compiled
     depmod -a
+    sync
     succ_msg "VirtualBox kernel modules built"
+    # Secure boot on Ubuntu and Debian.
+    if test -n "$HAVE_SEC_BOOT" &&
+        type update-secureboot-policy >/dev/null 2>&1; then
+        SHIM_NOTRIGGER=y update-secureboot-policy --new-key
+    fi
+    if test -f "$DEB_PUB_KEY" && test -f "$DEB_PRIV_KEY"; then
+        HAVE_DEB_KEY=true
+        for i in $MODULE_LIST; do
+            kmodsign sha512 /var/lib/shim-signed/mok/MOK.priv \
+                /var/lib/shim-signed/mok/MOK.der \
+                /lib/modules/"$KERN_VER"/misc/"$i".ko
+        done
+        # update-secureboot-policy "expects" DKMS modules.
+        # Work around this and talk to the authors as soon
+        # as possible to fix it.
+        mkdir -p /var/lib/dkms/vbox-temp
+        update-secureboot-policy --enroll-key 2>/dev/null ||
+            begin_msg "Failed to enroll secure boot key." console
+        rmdir -p /var/lib/dkms/vbox-temp 2>/dev/null
+    fi
 }
 
 dmnstatus()

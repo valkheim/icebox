@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2008-2017 Oracle Corporation
+ * Copyright (C) 2008-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -15,8 +15,11 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
-#ifndef ___UIMachineSettingsSystem_h___
-#define ___UIMachineSettingsSystem_h___
+#ifndef FEQT_INCLUDED_SRC_settings_machine_UIMachineSettingsSystem_h
+#define FEQT_INCLUDED_SRC_settings_machine_UIMachineSettingsSystem_h
+#ifndef RT_WITHOUT_PRAGMA_ONCE
+# pragma once
+#endif
 
 /* GUI includes: */
 #include "UISettingsPage.h"
@@ -25,11 +28,11 @@
 /* Forward declarations: */
 struct UIDataSettingsMachineSystem;
 typedef UISettingsCache<UIDataSettingsMachineSystem> UISettingsCacheMachineSystem;
-
+class CMachine;
 
 /** Machine settings: System page. */
-class UIMachineSettingsSystem : public UISettingsPageMachine,
-                                public Ui::UIMachineSettingsSystem
+class SHARED_LIBRARY_STUFF UIMachineSettingsSystem : public UISettingsPageMachine,
+                                                     public Ui::UIMachineSettingsSystem
 {
     Q_OBJECT;
 
@@ -40,8 +43,20 @@ public:
     /** Destructs System settings page. */
     ~UIMachineSettingsSystem();
 
+    /** Returns whether the HW Virt Ex is supported. */
+    bool isHWVirtExSupported() const;
     /** Returns whether the HW Virt Ex is enabled. */
     bool isHWVirtExEnabled() const;
+
+    /** Returns whether the Nested Paging is supported. */
+    bool isNestedPagingSupported() const;
+    /** Returns whether the Nested Paging is enabled. */
+    bool isNestedPagingEnabled() const;
+
+    /** Returns whether the Nested HW Virt Ex is supported. */
+    bool isNestedHWVirtExSupported() const;
+    /** Returns whether the Nested HW Virt Ex is enabled. */
+    bool isNestedHWVirtExEnabled() const;
 
     /** Returns whether the HID is enabled. */
     bool isHIDEnabled() const;
@@ -83,18 +98,7 @@ protected:
     /** Performs final page polishing. */
     virtual void polishPage() /* override */;
 
-    /** Preprocesses any Qt @a pEvent for passed @a pObject. */
-    virtual bool eventFilter(QObject *pObject, QEvent *pEvent) /* override */;
-
 private slots:
-
-    /** Handles memory size slider change. */
-    void sltHandleMemorySizeSliderChange();
-    /** Handles memory size editor change. */
-    void sltHandleMemorySizeEditorChange();
-
-    /** Handle current boot item change to @a iCurrentIndex. */
-    void sltHandleCurrentBootItemChange(int iCurrentIndex);
 
     /** Handles CPU count slider change. */
     void sltHandleCPUCountSliderChange();
@@ -104,6 +108,9 @@ private slots:
     void sltHandleCPUExecCapSliderChange();
     /** Handles CPU execution cap editor change. */
     void sltHandleCPUExecCapEditorChange();
+
+    /** Handles HW Virt Ex check-box toggling. */
+    void sltHandleHwVirtExToggle();
 
 private:
 
@@ -120,8 +127,12 @@ private:
     /** Cleanups all. */
     void cleanup();
 
+    /** Repopulates Chipset type combo-box. */
+    void repopulateComboChipsetType();
     /** Repopulates Pointing HID type combo-box. */
     void repopulateComboPointingHIDType();
+    /** Repopulates Paravirtualization Provider type combo-box. */
+    void repopulateComboParavirtProviderType();
 
     /** Retranslates Chipset type combo-box. */
     void retranslateComboChipsetType();
@@ -129,9 +140,6 @@ private:
     void retranslateComboPointingHIDType();
     /** Retranslates Paravirtualization providers combo-box. */
     void retranslateComboParavirtProvider();
-
-    /** Adjusts boot-order tree-widget size. */
-    void adjustBootOrderTWSize();
 
     /** Saves existing system data from the cache. */
     bool saveSystemData();
@@ -141,9 +149,6 @@ private:
     bool saveProcessorData();
     /** Saves existing 'Acceleration' data from the cache. */
     bool saveAccelerationData();
-
-    /** Holds the list of all possible boot items. */
-    QList<KDeviceType>  m_possibleBootItems;
 
     /** Holds the minimum guest CPU count. */
     uint  m_uMinGuestCPU;
@@ -163,5 +168,4 @@ private:
     UISettingsCacheMachineSystem *m_pCache;
 };
 
-#endif /* !___UIMachineSettingsSystem_h___ */
-
+#endif /* !FEQT_INCLUDED_SRC_settings_machine_UIMachineSettingsSystem_h */

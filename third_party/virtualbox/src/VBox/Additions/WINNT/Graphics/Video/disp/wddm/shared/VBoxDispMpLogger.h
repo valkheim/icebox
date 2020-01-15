@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2012-2017 Oracle Corporation
+ * Copyright (C) 2012-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -20,22 +20,16 @@
  * this is why we use miniport escape functionality to issue backdoor log string to the miniport
  * and submit it to host via standard r0 backdoor logging api accordingly */
 
-#ifndef ___VBoxDispMpLogger_h__
-#define ___VBoxDispMpLogger_h__
+#ifndef GA_INCLUDED_SRC_WINNT_Graphics_Video_disp_wddm_shared_VBoxDispMpLogger_h
+#define GA_INCLUDED_SRC_WINNT_Graphics_Video_disp_wddm_shared_VBoxDispMpLogger_h
+#ifndef RT_WITHOUT_PRAGMA_ONCE
+# pragma once
+#endif
 
 #include <iprt/cdefs.h>
 
-#if 0
-/* enable this in case we include this in a dll*/
-# ifdef IN_VBOXCRHGSMI
-#  define VBOXDISPMPLOGGER_DECL(a_Type) DECLEXPORT(a_Type) RTCALL
-# else
-#  define VBOXDISPMPLOGGER_DECL(a_Type) DECLIMPORT(a_Type) RTCALL
-# endif
-#else
 /*enable this in case we include this in a static lib*/
 # define VBOXDISPMPLOGGER_DECL(a_Type) a_Type RTCALL
-#endif
 
 RT_C_DECLS_BEGIN
 
@@ -51,5 +45,5 @@ DECLCALLBACK(void) VBoxWddmUmLog(const char *pszString);
 
 RT_C_DECLS_END
 
-#endif /* #ifndef ___VBoxDispMpLogger_h__ */
+#endif /* !GA_INCLUDED_SRC_WINNT_Graphics_Video_disp_wddm_shared_VBoxDispMpLogger_h */
 

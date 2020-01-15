@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2011-2017 Oracle Corporation
+ * Copyright (C) 2011-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -15,14 +15,13 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
-#ifndef ___VBoxMPWddm_h___
-#define ___VBoxMPWddm_h___
-
-#ifdef VBOX_WDDM_WIN8
-# define VBOX_WDDM_DRIVERNAME L"VBoxVideoW8"
-#else
-# define VBOX_WDDM_DRIVERNAME L"VBoxVideoWddm"
+#ifndef GA_INCLUDED_SRC_WINNT_Graphics_Video_mp_wddm_VBoxMPWddm_h
+#define GA_INCLUDED_SRC_WINNT_Graphics_Video_mp_wddm_VBoxMPWddm_h
+#ifndef RT_WITHOUT_PRAGMA_ONCE
+# pragma once
 #endif
+
+#define VBOX_WDDM_DRIVERNAME L"VBoxWddm"
 
 #ifndef DEBUG_misha
 # ifdef Assert
@@ -193,20 +192,7 @@ DECLINLINE(int) vboxWddmScreenInfoInit(VBVAINFOSCREEN RT_UNTRUSTED_VOLATILE_HOST
 
 bool vboxWddmGhDisplayCheckSetInfoFromSource(PVBOXMP_DEVEXT pDevExt, PVBOXWDDM_SOURCE pSource);
 
-#ifdef VBOX_WITH_CROGL
-#define VBOXWDDMENTRY_2_SWAPCHAIN(_pE) ((PVBOXWDDM_SWAPCHAIN)((uint8_t*)(_pE) - RT_UOFFSETOF(VBOXWDDM_SWAPCHAIN, DevExtListEntry)))
-
-BOOLEAN DxgkDdiInterruptRoutineNew(
-    IN CONST PVOID MiniportDeviceContext,
-    IN ULONG MessageNumber
-    );
-#endif
-
-#ifdef VBOX_WDDM_WIN8
-# define VBOXWDDM_IS_DISPLAYONLY() (g_VBoxDisplayOnly)
-#else
-# define VBOXWDDM_IS_DISPLAYONLY() (FALSE)
-#endif
+#define VBOXWDDM_IS_DISPLAYONLY() (g_VBoxDisplayOnly)
 
 # define VBOXWDDM_IS_FB_ALLOCATION(_pDevExt, _pAlloc) ((_pAlloc)->bAssigned)
 
@@ -223,5 +209,11 @@ BOOLEAN DxgkDdiInterruptRoutineNew(
         KeReleaseSpinLock(&(_p)->ContextLock, _ctxLockOldIrql); \
     } while (0)
 
-#endif /* #ifndef ___VBoxMPWddm_h___ */
+DECLINLINE(PVBOXWDDM_ALLOCATION) vboxWddmGetAllocationFromAllocList(DXGK_ALLOCATIONLIST *pAllocList)
+{
+    PVBOXWDDM_OPENALLOCATION pOa = (PVBOXWDDM_OPENALLOCATION)pAllocList->hDeviceSpecificAllocation;
+    return pOa->pAllocation;
+}
+
+#endif /* !GA_INCLUDED_SRC_WINNT_Graphics_Video_mp_wddm_VBoxMPWddm_h */
 

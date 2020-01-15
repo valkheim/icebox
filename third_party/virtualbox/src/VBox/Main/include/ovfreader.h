@@ -6,7 +6,7 @@
  */
 
 /*
- * Copyright (C) 2008-2017 Oracle Corporation
+ * Copyright (C) 2008-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -17,8 +17,11 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
-#ifndef ____H_OVFREADER
-#define ____H_OVFREADER
+#ifndef MAIN_INCLUDED_ovfreader_h
+#define MAIN_INCLUDED_ovfreader_h
+#ifndef RT_WITHOUT_PRAGMA_ONCE
+# pragma once
+#endif
 
 #include "iprt/cpp/xml.h"
 #include <map>
@@ -173,10 +176,21 @@ enum CIMOSType_T
     CIMOSType_CIMOS_Windows7 = 105,
     CIMOSType_CIMOS_CentOS = 106,
     CIMOSType_CIMOS_CentOS_64 = 107,
-    CIMOSType_CIMOS_OracleEnterpriseLinux = 108,
-    CIMOSType_CIMOS_OracleEnterpriseLinux_64 = 109,
-    CIMOSType_CIMOS_eComStation = 110
+    CIMOSType_CIMOS_OracleLinux = 108,
+    CIMOSType_CIMOS_OracleLinux_64 = 109,
+    CIMOSType_CIMOS_eComStation = 110,
     // no new types added with CIM 2.26.0
+    CIMOSType_CIMOS_WindowsServer2011 = 111,
+    CIMOSType_CIMOS_WindowsServer2012 = 112,
+    CIMOSType_CIMOS_Windows8 = 113,
+    CIMOSType_CIMOS_Windows8_64 = 114,
+    CIMOSType_CIMOS_WindowsServer2012R2 = 115,
+    CIMOSType_CIMOS_Windows8_1 = 116,
+    CIMOSType_CIMOS_Windows8_1_64 = 117,
+    CIMOSType_CIMOS_WindowsServer2016 = 118,
+    CIMOSType_CIMOS_Windows10 = 119,
+    CIMOSType_CIMOS_Windows10_64 = 120,
+    // the above covers up to CIM 2.52.0, without checking when it was added
 };
 
 enum OVFVersion_T
@@ -660,6 +674,7 @@ struct VirtualSystem
 class OVFReader
 {
 public:
+    OVFReader();
     OVFReader(const void *pvBuf, size_t cbSize, const RTCString &path);
     OVFReader(const RTCString &path);
 
@@ -681,5 +696,5 @@ private:
 
 } // end namespace ovf
 
-#endif // !____H_OVFREADER
+#endif /* !MAIN_INCLUDED_ovfreader_h */
 

@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -42,11 +42,11 @@
 /* iconv prototype changed with 165+ (thanks to PSARC/2010/160 Bugster 7037400) */
 #if defined(RT_OS_SOLARIS)
 # if !defined(_XPG6)
-#  define VBOX_XPG6_TMP_DEF
+#  define IPRT_XPG6_TMP_DEF
 #  define _XPG6
 # endif
 # if defined(__USE_LEGACY_PROTOTYPES__)
-#  define VBOX_LEGACY_PROTO_TMP_DEF
+#  define IPRT_LEGACY_PROTO_TMP_DEF
 #  undef __USE_LEGACY_PROTOTYPES__
 # endif
 #endif /* RT_OS_SOLARIS */
@@ -54,13 +54,13 @@
 # include <iconv.h>
 
 #if defined(RT_OS_SOLARIS)
-# if defined(VBOX_XPG6_TMP_DEF)
+# if defined(IPRT_XPG6_TMP_DEF)
 #  undef _XPG6
-#  undef VBOX_XPG6_TMP_DEF
+#  undef IPRT_XPG6_TMP_DEF
 # endif
-# if defined(VBOX_LEGACY_PROTO_TMP_DEF)
+# if defined(IPRT_LEGACY_PROTO_TMP_DEF)
 #  define __USE_LEGACY_PROTOTYPES__
-#  undef VBOX_LEGACY_PROTO_TMP_DEF
+#  undef IPRT_LEGACY_PROTO_TMP_DEF
 # endif
 #endif /* RT_OS_SOLARIS */
 
@@ -87,6 +87,13 @@ AssertCompile(sizeof(iconv_t) <= sizeof(void *));
 #  define NON_CONST_ICONV_INPUT
 # else
 # error __FreeBSD_version__
+# endif
+#endif
+#ifdef RT_OS_NETBSD
+/* iconv constness was changed on 2019-10-24, shortly after 9.99.17 */
+# include <sys/param.h>
+# if __NetBSD_Prereq__(9,99,18)
+#  define NON_CONST_ICONV_INPUT
 # endif
 #endif
 
@@ -486,6 +493,28 @@ RTR3DECL(int)  RTStrUtf8ToCurrentCPTag(char **ppszString, const char *pszString,
         return VERR_NO_TMP_MEMORY;
     }
     return rtStrConvertWrapper(pszString, cch, "UTF-8", ppszString, 0, "", 1, RTSTRICONV_UTF8_TO_LOCALE);
+}
+
+
+RTR3DECL(int)  RTStrUtf8ToCurrentCPExTag(char **ppszString, const char *pszString, size_t cchString, const char *pszTag)
+{
+    Assert(ppszString);
+    Assert(pszString);
+    *ppszString = NULL;
+
+    /*
+     * Assume result string length is not longer than UTF-8 string.
+     */
+    cchString = RTStrNLen(pszString, cchString);
+    if (cchString < 1)
+    {
+        /* zero length string passed. */
+        *ppszString = (char *)RTMemTmpAllocZTag(sizeof(char), pszTag);
+        if (*ppszString)
+            return VINF_SUCCESS;
+        return VERR_NO_TMP_MEMORY;
+    }
+    return rtStrConvertWrapper(pszString, cchString, "UTF-8", ppszString, 0, "", 1, RTSTRICONV_UTF8_TO_LOCALE);
 }
 
 

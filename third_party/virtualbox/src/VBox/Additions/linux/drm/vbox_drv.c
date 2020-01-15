@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2013-2017 Oracle Corporation
+ * Copyright (C) 2013-2019 Oracle Corporation
  * This file is based on ast_drv.c
  * Copyright 2012 Red Hat Inc.
  *
@@ -32,11 +32,6 @@
  *          Michael Thayer <michael.thayer@oracle.com,
  *          Hans de Goede <hdegoede@redhat.com>
  */
-#include "vbox_drv.h"
-
-#include "version-generated.h"
-#include "revision-generated.h"
-
 #include <linux/module.h>
 #include <linux/console.h>
 #include <linux/vt_kern.h>
@@ -44,11 +39,16 @@
 #include <drm/drmP.h>
 #include <drm/drm_crtc_helper.h>
 
-int vbox_modeset = -1;
+#include "vbox_drv.h"
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 1, 0) || defined(RHEL_81)
 #include <drm/drm_probe_helper.h>
 #endif
+
+#include "version-generated.h"
+#include "revision-generated.h"
+
+static int vbox_modeset = -1;
 
 MODULE_PARM_DESC(modeset, "Disable/Enable modesetting");
 module_param_named(modeset, vbox_modeset, int, 0400);
@@ -63,37 +63,84 @@ MODULE_DEVICE_TABLE(pci, pciidlist);
 
 static int vbox_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 {
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 19, 0)
 	return drm_get_pci_dev(pdev, ent, &driver);
+#else
+	struct drm_device *dev = NULL;
+	int ret = 0;
+
+	dev = drm_dev_alloc(&driver, &pdev->dev);
+	if (IS_ERR(dev)) {
+		ret = PTR_ERR(dev);
+		goto err_drv_alloc;
+	}
+	dev->pdev = pdev;
+	pci_set_drvdata(pdev, dev);
+
+	ret = vbox_driver_load(dev);
+	if (ret)
+		goto err_vbox_driver_load;
+
+	ret = drm_dev_register(dev, 0);
+	if (ret)
+		goto err_drv_dev_register;
+	return ret;
+
+err_drv_dev_register:
+	vbox_driver_unload(dev);
+err_vbox_driver_load:
+	drm_dev_put(dev);
+err_drv_alloc:
+	return ret;
+#endif
 }
 
 static void vbox_pci_remove(struct pci_dev *pdev)
 {
 	struct drm_device *dev = pci_get_drvdata(pdev);
 
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 19, 0)
 	drm_put_dev(dev);
+#else
+	drm_dev_unregister(dev);
+	vbox_driver_unload(dev);
+	drm_dev_put(dev);
+#endif
 }
+
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 9, 0) && !defined(RHEL_74)
+static void drm_fb_helper_set_suspend_unlocked(struct drm_fb_helper *fb_helper,
+					bool suspend)
+{
+	if (!fb_helper || !fb_helper->fbdev)
+		return;
+
+	console_lock();
+	fb_set_suspend(fb_helper->fbdev, suspend);
+	console_unlock();
+}
+#endif
 
 static int vbox_drm_freeze(struct drm_device *dev)
 {
+	struct vbox_private *vbox = dev->dev_private;
+
 	drm_kms_helper_poll_disable(dev);
 
 	pci_save_state(dev->pdev);
 
-	console_lock();
-	vbox_fbdev_set_suspend(dev, 1);
-	console_unlock();
+	drm_fb_helper_set_suspend_unlocked(&vbox->fbdev->helper, true);
 
 	return 0;
 }
 
 static int vbox_drm_thaw(struct drm_device *dev)
 {
+	struct vbox_private *vbox = dev->dev_private;
+
 	drm_mode_config_reset(dev);
 	drm_helper_resume_force_mode(dev);
-
-	console_lock();
-	vbox_fbdev_set_suspend(dev, 0);
-	console_unlock();
+	drm_fb_helper_set_suspend_unlocked(&vbox->fbdev->helper, false);
 
 	return 0;
 }
@@ -258,20 +305,27 @@ static void vbox_master_drop(struct drm_device *dev, struct drm_file *file_priv)
 }
 
 static struct drm_driver driver = {
+#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 4, 0)
 	.driver_features =
 	    DRIVER_MODESET | DRIVER_GEM | DRIVER_HAVE_IRQ |
-#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 1, 0) && !defined(RHEL_81)
+# if LINUX_VERSION_CODE < KERNEL_VERSION(5, 1, 0) && !defined(RHEL_81)
 	    DRIVER_IRQ_SHARED |
-#endif
+# endif /* < KERNEL_VERSION(5, 1, 0) && !defined(RHEL_81) */
 	    DRIVER_PRIME,
+#else /* >= KERNEL_VERSION(5, 4, 0) */
+        .driver_features = DRIVER_MODESET | DRIVER_GEM | DRIVER_HAVE_IRQ,
+#endif /* < KERNEL_VERSION(5, 4, 0) */
 	.dev_priv_size = 0,
 
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 19, 0)
+    /* Legacy hooks, but still supported. */
 	.load = vbox_driver_load,
 	.unload = vbox_driver_unload,
+#endif
 	.lastclose = vbox_driver_lastclose,
 	.master_set = vbox_master_set,
 	.master_drop = vbox_master_drop,
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 18, 0) || defined(RHEL_73)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 18, 0) || defined(RHEL_72)
 # if LINUX_VERSION_CODE < KERNEL_VERSION(4, 14, 0) && !defined(RHEL_75) \
   && !defined(OPENSUSE_151)
 	.set_busid = drm_pci_set_busid,
@@ -287,7 +341,11 @@ static struct drm_driver driver = {
 	.minor = DRIVER_MINOR,
 	.patchlevel = DRIVER_PATCHLEVEL,
 
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 7, 0)
 	.gem_free_object = vbox_gem_free_object,
+#else
+	.gem_free_object_unlocked = vbox_gem_free_object,
+#endif
 	.dumb_create = vbox_dumb_create,
 	.dumb_map_offset = vbox_dumb_mmap_offset,
 #if LINUX_VERSION_CODE < KERNEL_VERSION(3, 12, 0) && !defined(RHEL_73)
@@ -318,12 +376,20 @@ static int __init vbox_init(void)
 	if (vbox_modeset == 0)
 		return -EINVAL;
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 18, 0) || defined(RHEL_73)
 	return pci_register_driver(&vbox_pci_driver);
+#else
+	return drm_pci_init(&driver, &vbox_pci_driver);
+#endif
 }
 
 static void __exit vbox_exit(void)
 {
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 18, 0) || defined(RHEL_73)
 	pci_unregister_driver(&vbox_pci_driver);
+#else
+	drm_pci_exit(&driver, &vbox_pci_driver);
+#endif
 }
 
 module_init(vbox_init);

@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -15,38 +15,23 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
-#ifdef VBOX_WITH_PRECOMPILED_HEADERS
-# include <precomp.h>
-#else  /* !VBOX_WITH_PRECOMPILED_HEADERS */
-
 /* Qt includes: */
-# include <QDir>
-# include <QHeaderView>
-# include <QPainter>
-# include <QTranslator>
+#include <QDir>
+#include <QHeaderView>
+#include <QPainter>
+#include <QTranslator>
 
 /* GUI includes: */
-# include "UIGlobalSettingsLanguage.h"
-# include "UIExtraDataManager.h"
-# include "UIMessageCenter.h"
-# include "VBoxGlobal.h"
+#include "UIGlobalSettingsLanguage.h"
+#include "UIExtraDataManager.h"
+#include "UIMessageCenter.h"
+#include "UICommon.h"
 
 /* Other VBox includes: */
-# include <iprt/param.h>
-# include <iprt/path.h>
-# include <VBox/version.h>
-
-#endif /* !VBOX_WITH_PRECOMPILED_HEADERS */
-
-/* Other VBox includes: */
-#include <iprt/err.h>
-
-
-extern const char *gVBoxLangSubDir;
-extern const char *gVBoxLangFileBase;
-extern const char *gVBoxLangFileExt;
-extern const char *gVBoxLangIDRegExp;
-extern const char *gVBoxBuiltInLangName;
+#include <iprt/errcore.h>
+#include <iprt/param.h>
+#include <iprt/path.h>
+#include <VBox/version.h>
 
 
 /** Global settings: Language page data structure. */
@@ -78,6 +63,8 @@ struct UIDataSettingsGlobalLanguage
 /* Language item: */
 class UILanguageItem : public QITreeWidgetItem
 {
+    Q_OBJECT;
+
 public:
 
     /* Language item constructor: */
@@ -88,7 +75,7 @@ public:
         Assert (!strId.isEmpty());
 
         /* Note: context/source/comment arguments below must match strings
-         * used in VBoxGlobal::languageName() and friends (the latter are the
+         * used in UICommon::languageName() and friends (the latter are the
          * source of information for the lupdate tool that generates
          * translation files) */
 
@@ -118,8 +105,8 @@ public:
         }
         else
         {
-            strItemName += UIGlobalSettingsLanguage::tr(" (built-in)", "Language");
-            strLanguageName += UIGlobalSettingsLanguage::tr(" (built-in)", "Language");
+            strItemName += tr(" (built-in)", "Language");
+            strLanguageName += tr(" (built-in)", "Language");
         }
 
         setText(0, strItemName);
@@ -128,7 +115,7 @@ public:
         setText(3, strTranslatorsName);
 
         /* Current language appears in bold: */
-        if (text(1) == VBoxGlobal::languageId())
+        if (text(1) == UICommon::languageId())
         {
             QFont fnt = font(0);
             fnt.setBold(true);
@@ -145,8 +132,8 @@ public:
 
         setText(0, QString("<%1>").arg(strId));
         setText(1, strId);
-        setText(2, UIGlobalSettingsLanguage::tr("<unavailable>", "Language"));
-        setText(3, UIGlobalSettingsLanguage::tr("<unknown>", "Author(s)"));
+        setText(2, tr("<unavailable>", "Language"));
+        setText(3, tr("<unknown>", "Author(s)"));
 
         /* Invalid language appears in italic: */
         QFont fnt = font(0);
@@ -159,7 +146,7 @@ public:
     UILanguageItem(QITreeWidget *pParent)
         : QITreeWidgetItem(pParent), m_fBuiltIn(false)
     {
-        setText(0, UIGlobalSettingsLanguage::tr("Default", "Language"));
+        setText(0, tr("Default", "Language"));
         setText(1, QString::null);
         /* Empty strings of some reasonable length to prevent the info part
          * from being shrinked too much when the list wants to be wider */
@@ -282,7 +269,7 @@ void UIGlobalSettingsLanguage::retranslateUi()
     Ui::UIGlobalSettingsLanguage::retranslateUi(this);
 
     /* Reload language tree: */
-    reloadLanguageTree(VBoxGlobal::languageId());
+    reloadLanguageTree(UICommon::languageId());
 }
 
 void UIGlobalSettingsLanguage::showEvent(QShowEvent *pEvent)
@@ -359,10 +346,10 @@ void UIGlobalSettingsLanguage::prepare()
             m_pLanguageTree->hideColumn(2);
             m_pLanguageTree->hideColumn(3);
             m_pLanguageTree->setMinimumHeight(150);
-            connect(m_pLanguageTree, SIGNAL(painted(QTreeWidgetItem *, QPainter *)),
-                    this, SLOT(sltHandleItemPainting(QTreeWidgetItem *, QPainter *)));
-            connect(m_pLanguageTree, SIGNAL(currentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)),
-                    this, SLOT(sltHandleCurrentItemChange(QTreeWidgetItem *)));
+            connect(m_pLanguageTree, &QITreeWidget::painted,
+                    this, &UIGlobalSettingsLanguage::sltHandleItemPainting);
+            connect(m_pLanguageTree, &QITreeWidget::currentItemChanged,
+                    this, &UIGlobalSettingsLanguage::sltHandleCurrentItemChange);
         }
 
         /* Rich-text label created in the .ui file. */
@@ -394,20 +381,22 @@ void UIGlobalSettingsLanguage::reloadLanguageTree(const QString &strLanguageId)
     char szNlsPath[RTPATH_MAX];
     int rc = RTPathAppPrivateNoArch(szNlsPath, sizeof(szNlsPath));
     AssertRC(rc);
-    QString strNlsPath = QString(szNlsPath) + gVBoxLangSubDir;
+    QString strNlsPath = QString(szNlsPath) + UICommon::vboxLanguageSubDirectory();
     QDir nlsDir(strNlsPath);
-    QStringList files = nlsDir.entryList(QStringList(QString("%1*%2").arg(gVBoxLangFileBase, gVBoxLangFileExt)), QDir::Files);
+    QStringList files = nlsDir.entryList(QStringList(QString("%1*%2").arg(UICommon::vboxLanguageFileBase(),
+                                                                          UICommon::vboxLanguageFileExtension())),
+                                         QDir::Files);
 
     QTranslator translator;
     /* Add the default language: */
     new UILanguageItem(m_pLanguageTree);
     /* Add the built-in language: */
-    new UILanguageItem(m_pLanguageTree, translator, gVBoxBuiltInLangName, true /* built-in */);
+    new UILanguageItem(m_pLanguageTree, translator, UICommon::vboxBuiltInLanguageName(), true /* built-in */);
     /* Add all existing languages */
     for (QStringList::Iterator it = files.begin(); it != files.end(); ++it)
     {
         QString strFileName = *it;
-        QRegExp regExp(QString(gVBoxLangFileBase) + gVBoxLangIDRegExp);
+        QRegExp regExp(UICommon::vboxLanguageFileBase() + UICommon::vboxLanguageIdRegExp());
         int iPos = regExp.indexIn(strFileName);
         if (iPos == -1)
             continue;
@@ -464,3 +453,5 @@ bool UIGlobalSettingsLanguage::saveLanguageData()
     return fSuccess;
 }
 
+
+#include "UIGlobalSettingsLanguage.moc"

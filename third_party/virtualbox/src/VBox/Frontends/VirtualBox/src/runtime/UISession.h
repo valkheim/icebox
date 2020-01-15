@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2010-2017 Oracle Corporation
+ * Copyright (C) 2010-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -15,18 +15,23 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
-#ifndef ___UISession_h___
-#define ___UISession_h___
+#ifndef FEQT_INCLUDED_SRC_runtime_UISession_h
+#define FEQT_INCLUDED_SRC_runtime_UISession_h
+#ifndef RT_WITHOUT_PRAGMA_ONCE
+# pragma once
+#endif
 
 /* Qt includes: */
 #include <QObject>
 #include <QCursor>
 #include <QEvent>
 #include <QMap>
+#include <QPixmap>
 
 /* GUI includes: */
 #include "UIExtraDataDefs.h"
 #include "UIMediumDefs.h"
+#include "UIMousePointerShapeData.h"
 
 /* COM includes: */
 #include "COMEnums.h"
@@ -38,12 +43,14 @@
 #include "CMouse.h"
 #include "CKeyboard.h"
 #include "CMachineDebugger.h"
+#include "CMedium.h"
 
 /* Forward declarations: */
 class QMenu;
 class UIFrameBuffer;
 class UIMachine;
 class UIMachineLogic;
+class UIMachineWindow;
 class UIActionPool;
 class CUSBDevice;
 class CNetworkAdapter;
@@ -125,7 +132,18 @@ public:
     UIMachineLogic* machineLogic() const;
     QWidget* mainMachineWindow() const;
     WId mainMachineWindowId() const;
-    QCursor cursor() const { return m_cursor; }
+    UIMachineWindow *activeMachineWindow() const;
+
+    /** Returns currently cached mouse cursor shape pixmap. */
+    QPixmap cursorShapePixmap() const { return m_cursorShapePixmap; }
+    /** Returns currently cached mouse cursor mask pixmap. */
+    QPixmap cursorMaskPixmap() const { return m_cursorMaskPixmap; }
+    /** Returns currently cached mouse cursor size. */
+    QSize cursorSize() const { return m_cursorSize; }
+    /** Returns currently cached mouse cursor hotspot. */
+    QPoint cursorHotspot() const { return m_cursorHotspot; }
+    /** Returns currently cached mouse cursor position. */
+    QPoint cursorPosition() const { return m_cursorPosition; }
 
     /** @name Branding stuff.
      ** @{ */
@@ -209,6 +227,8 @@ public:
     bool isMouseIntegrated() const { return m_fIsMouseIntegrated; }
     bool isValidPointerShapePresent() const { return m_fIsValidPointerShapePresent; }
     bool isHidingHostPointer() const { return m_fIsHidingHostPointer; }
+    /** Returns whether the @a cursorPosition() is valid and could be used by the GUI now. */
+    bool isValidCursorPositionPresent() const { return m_fIsValidCursorPositionPresent; }
 
     /* Common setters: */
     bool pause() { return setPause(true); }
@@ -254,8 +274,8 @@ public:
 
     /** Updates VRDE Server action state. */
     void updateStatusVRDE() { sltVRDEChange(); }
-    /** Updates Video Capture action state. */
-    void updateStatusVideoCapture() { sltVideoCaptureChange(); }
+    /** Updates Recording action state. */
+    void updateStatusRecording() { sltRecordingChange(); }
     /** Updates Audio output action state. */
     void updateAudioOutput() { sltAudioAdapterChange(); }
     /** Updates Audio input action state. */
@@ -264,7 +284,7 @@ public:
     /** @name CPU hardware virtualization features for VM.
      ** @{ */
     /** Returns whether CPU hardware virtualization extension is enabled. */
-    bool isHWVirtExEnabled() const { return m_fIsHWVirtExEnabled; }
+    KVMExecutionEngine getVMExecutionEngine() const { return m_enmVMExecutionEngine; }
     /** Returns whether nested-paging CPU hardware virtualization extension is enabled. */
     bool isHWVirtExNestedPagingEnabled() const { return m_fIsHWVirtExNestedPagingEnabled; }
     /** Returns whether the VM is currently making use of the unrestricted execution feature of VT-x. */
@@ -273,6 +293,12 @@ public:
 
     /** Returns VM's effective paravirtualization provider. */
     KParavirtProvider paraVirtProvider() const { return m_paraVirtProvider; }
+
+    /** Returns the list of visible guest windows. */
+    QList<int> listOfVisibleWindows() const;
+
+    /** Returns a vector of media attached to the machine. */
+    CMediumVector machineMedia() const;
 
 signals:
 
@@ -284,8 +310,12 @@ signals:
     void sigKeyboardStateChange(int iState);
     /** Notifies listeners about mouse state-change. */
     void sigMouseStateChange(int iState);
+    /** Notifies listeners about mouse pointer shape change. */
     void sigMousePointerShapeChange();
+    /** Notifies listeners about mouse capability change. */
     void sigMouseCapabilityChange();
+    /** Notifies listeners about cursor position change. */
+    void sigCursorPositionChange();
     void sigKeyboardLedsChange();
     void sigMachineStateChange();
     void sigAdditionsStateChange();
@@ -295,7 +325,7 @@ signals:
     void sigStorageDeviceChange(const CMediumAttachment &attachment, bool fRemoved, bool fSilent);
     void sigMediumChange(const CMediumAttachment &mediumAttachment);
     void sigVRDEChange();
-    void sigVideoCaptureChange();
+    void sigRecordingChange();
     void sigUSBControllerChange();
     void sigUSBDeviceStateChange(const CUSBDevice &device, bool bIsAttached, const CVirtualBoxErrorInfo &error);
     void sigSharedFolderChange();
@@ -306,6 +336,8 @@ signals:
     void sigCPUExecutionCapChange();
     void sigGuestMonitorChange(KGuestMonitorChangedEventType changeType, ulong uScreenId, QRect screenGeo);
     void sigAudioAdapterChange();
+    void sigClipboardModeChange(KClipboardMode enmMode);
+    void sigDnDModeChange(KDnDMode enmMode);
 
     /** Notifies about host-screen count change. */
     void sigHostScreenCountChange();
@@ -337,22 +369,31 @@ private slots:
 
 #ifdef RT_OS_DARWIN
     /** Mac OS X: Handles menu-bar configuration-change. */
-    void sltHandleMenuBarConfigurationChange(const QString &strMachineID);
+    void sltHandleMenuBarConfigurationChange(const QUuid &uMachineID);
 #endif /* RT_OS_DARWIN */
 
     /* Console events slots */
-    void sltMousePointerShapeChange(bool fVisible, bool fAlpha, QPoint hotCorner, QSize size, QVector<uint8_t> shape);
+    /** Handles signal about mouse pointer @a shapeData change. */
+    void sltMousePointerShapeChange(const UIMousePointerShapeData &shapeData);
+    /** Handles signal about mouse capability change to @a fSupportsAbsolute, @a fSupportsRelative, @a fSupportsMultiTouch and @a fNeedsHostCursor. */
     void sltMouseCapabilityChange(bool fSupportsAbsolute, bool fSupportsRelative, bool fSupportsMultiTouch, bool fNeedsHostCursor);
+    /** Handles signal about guest request to change the cursor position to @a uX * @a uY.
+      * @param  fContainsData  Brings whether the @a uX and @a uY values are valid and could be used by the GUI now. */
+    void sltCursorPositionChange(bool fContainsData, unsigned long uX, unsigned long uY);
     void sltKeyboardLedsChangeEvent(bool fNumLock, bool fCapsLock, bool fScrollLock);
     void sltStateChange(KMachineState state);
     void sltAdditionsChange();
     void sltVRDEChange();
-    void sltVideoCaptureChange();
+    void sltRecordingChange();
     void sltGuestMonitorChange(KGuestMonitorChangedEventType changeType, ulong uScreenId, QRect screenGeo);
     /** Handles storage device change for @a attachment, which was @a fRemoved and it was @a fSilent for guest. */
     void sltHandleStorageDeviceChange(const CMediumAttachment &attachment, bool fRemoved, bool fSilent);
     /** Handles audio adapter change. */
     void sltAudioAdapterChange();
+    /** Handles clip board mode change. */
+    void sltClipboardModeChange(KClipboardMode enmMode);
+    /** Handles drag and drop mode change. */
+    void sltDnDModeChange(KDnDMode enmMode);
 
     /* Handlers: Display reconfiguration stuff: */
 #ifdef RT_OS_DARWIN
@@ -402,10 +443,12 @@ private:
     void updateMenu();
 #endif /* VBOX_WS_MAC */
 
+    /** Updates mouse pointer shape. */
+    void updateMousePointerShape();
+
     /* Common helpers: */
-    void setPointerShape(const uchar *pShapeData, bool fHasAlpha, uint uXHot, uint uYHot, uint uWidth, uint uHeight);
     bool preprocessInitialization();
-    bool mountAdHocImage(KDeviceType enmDeviceType, UIMediumType enmMediumType, const QString &strMediumName);
+    bool mountAdHocImage(KDeviceType enmDeviceType, UIMediumDeviceType enmMediumType, const QString &strMediumName);
     bool postprocessInitialization();
     int countOfVisibleWindows();
     /** Loads VM settings. */
@@ -463,7 +506,17 @@ private:
     /* Common variables: */
     KMachineState m_machineStatePrevious;
     KMachineState m_machineState;
-    QCursor m_cursor;
+
+    /** Holds cached mouse cursor shape pixmap. */
+    QPixmap  m_cursorShapePixmap;
+    /** Holds cached mouse cursor mask pixmap. */
+    QPixmap  m_cursorMaskPixmap;
+    /** Holds cached mouse cursor size. */
+    QSize    m_cursorSize;
+    /** Holds cached mouse cursor hotspot. */
+    QPoint   m_cursorHotspot;
+    /** Holds cached mouse cursor position. */
+    QPoint   m_cursorPosition;
 
     /** @name Branding variables.
      ** @{ */
@@ -536,11 +589,16 @@ private:
     bool m_fIsMouseIntegrated : 1;
     bool m_fIsValidPointerShapePresent : 1;
     bool m_fIsHidingHostPointer : 1;
+    /** Holds whether the @a m_cursorPosition is valid and could be used by the GUI now. */
+    bool m_fIsValidCursorPositionPresent : 1;
+    /** Holds the mouse pointer shape data. */
+    UIMousePointerShapeData  m_shapeData;
+
+    /** Copy of IMachineDebugger::ExecutionEngine */
+    KVMExecutionEngine m_enmVMExecutionEngine;
 
     /** @name CPU hardware virtualization features for VM.
      ** @{ */
-    /** Holds whether CPU hardware virtualization extension is enabled. */
-    bool m_fIsHWVirtExEnabled;
     /** Holds whether nested-paging CPU hardware virtualization extension is enabled. */
     bool m_fIsHWVirtExNestedPagingEnabled;
     /** Holds whether the VM is currently making use of the unrestricted execution feature of VT-x. */
@@ -551,5 +609,4 @@ private:
     KParavirtProvider m_paraVirtProvider;
 };
 
-#endif /* !___UISession_h___ */
-
+#endif /* !FEQT_INCLUDED_SRC_runtime_UISession_h */

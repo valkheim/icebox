@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -72,9 +72,6 @@
 #define LOG_GROUP LOG_GROUP_DBGF
 #include <VBox/vmm/dbgf.h>
 #include <VBox/vmm/selm.h>
-#ifdef VBOX_WITH_REM
-# include <VBox/vmm/rem.h>
-#endif
 #include <VBox/vmm/em.h>
 #include <VBox/vmm/hm.h>
 #include "DBGFInternal.h"
@@ -185,9 +182,15 @@ VMMR3_INT_DECL(int) DBGFR3Init(PVM pVM)
                             rc = dbgfR3PlugInInit(pUVM);
                             if (RT_SUCCESS(rc))
                             {
-                                return VINF_SUCCESS;
+                                rc = dbgfR3BugCheckInit(pVM);
+                                if (RT_SUCCESS(rc))
+                                {
+                                    return VINF_SUCCESS;
+                                }
+                                dbgfR3PlugInTerm(pUVM);
                             }
-                            dbgfR3OSTerm(pUVM);
+                            dbgfR3OSTermPart1(pUVM);
+                            dbgfR3OSTermPart2(pUVM);
                         }
                     }
                     dbgfR3AsTerm(pUVM);
@@ -212,8 +215,9 @@ VMMR3_INT_DECL(int) DBGFR3Term(PVM pVM)
 {
     PUVM pUVM = pVM->pUVM;
 
+    dbgfR3OSTermPart1(pUVM);
     dbgfR3PlugInTerm(pUVM);
-    dbgfR3OSTerm(pUVM);
+    dbgfR3OSTermPart2(pUVM);
     dbgfR3AsTerm(pUVM);
     dbgfR3RegTerm(pUVM);
     dbgfR3TraceTerm(pVM);
@@ -290,8 +294,8 @@ VMMR3_INT_DECL(void) DBGFR3PowerOff(PVM pVM)
                     /* Wait for new command, processing pending priority requests
                        first.  The request processing is a bit crazy, but
                        unfortunately required by plugin unloading. */
-                    if (   VM_FF_IS_PENDING(pVM, VM_FF_REQUEST)
-                        || VMCPU_FF_IS_PENDING(pVCpu, VMCPU_FF_REQUEST))
+                    if (   VM_FF_IS_SET(pVM, VM_FF_REQUEST)
+                        || VMCPU_FF_IS_SET(pVCpu, VMCPU_FF_REQUEST))
                     {
                         LogFlow(("DBGFR3PowerOff: Processes priority requests...\n"));
                         rc = VMR3ReqProcessU(pVM->pUVM, VMCPUID_ANY, true /*fPriorityOnly*/);
@@ -301,7 +305,7 @@ VMMR3_INT_DECL(void) DBGFR3PowerOff(PVM pVM)
                         cPollHack = 1;
                     }
                     /* Need to handle rendezvous too, for generic debug event management. */
-                    else if (VM_FF_IS_PENDING(pVM, VM_FF_EMT_RENDEZVOUS))
+                    else if (VM_FF_IS_SET(pVM, VM_FF_EMT_RENDEZVOUS))
                     {
                         rc = VMMR3EmtRendezvousFF(pVM, pVCpu);
                         AssertLogRel(rc == VINF_SUCCESS);
@@ -359,10 +363,10 @@ bool dbgfR3WaitForAttach(PVM pVM, PVMCPU pVCpu, DBGFEVENTTYPE enmEvent)
      */
 #ifndef RT_OS_L4
 
-# if !defined(DEBUG) || defined(DEBUG_sandervl) || defined(DEBUG_frank) || defined(IEM_VERIFICATION_MODE)
+# if !defined(DEBUG) || defined(DEBUG_sandervl) || defined(DEBUG_frank)
     int cWait = 10;
 # else
-    int cWait = HMIsEnabled(pVM)
+    int cWait = !VM_IS_RAW_MODE_ENABLED(pVM)
              && (   enmEvent == DBGFEVENT_ASSERTION_HYPER
                  || enmEvent == DBGFEVENT_FATAL_ERROR)
              && !RTEnvExist("VBOX_DBGF_WAIT_FOR_ATTACH")
@@ -383,8 +387,8 @@ bool dbgfR3WaitForAttach(PVM pVM, PVMCPU pVCpu, DBGFEVENTTYPE enmEvent)
         }
 
         /* Process priority stuff. */
-        if (   VM_FF_IS_PENDING(pVM, VM_FF_REQUEST)
-            || VMCPU_FF_IS_PENDING(pVCpu, VMCPU_FF_REQUEST))
+        if (   VM_FF_IS_SET(pVM, VM_FF_REQUEST)
+            || VMCPU_FF_IS_SET(pVCpu, VMCPU_FF_REQUEST))
         {
             int rc = VMR3ReqProcessU(pVM->pUVM, VMCPUID_ANY, true /*fPriorityOnly*/);
             if (rc == VINF_SUCCESS)
@@ -499,7 +503,7 @@ static void dbgfR3EventSetStoppedInHyperFlag(PVM pVM, DBGFEVENTTYPE enmEvent)
 static DBGFEVENTCTX dbgfR3FigureEventCtx(PVM pVM)
 {
     /** @todo SMP support! */
-    PVMCPU pVCpu = &pVM->aCpus[0];
+    PVMCPU pVCpu = pVM->apCpusR3[0];
 
     switch (EMGetState(pVCpu))
     {
@@ -545,13 +549,9 @@ static int dbgfR3EventPrologue(PVM pVM, DBGFEVENTTYPE enmEvent)
     }
 
     /*
-     * Sync back the state from the REM.
+     * Set flag.
      */
     dbgfR3EventSetStoppedInHyperFlag(pVM, enmEvent);
-#ifdef VBOX_WITH_REM
-    if (!pVM->dbgf.s.fStoppedInHyper)
-        REMR3StateUpdate(pVM, pVCpu);
-#endif
 
     /*
      * Look thru pending commands and finish those which make sense now.
@@ -826,8 +826,8 @@ static int dbgfR3VMMWait(PVM pVM)
         for (;;)
         {
             int rc;
-            if (    !VM_FF_IS_PENDING(pVM, VM_FF_EMT_RENDEZVOUS | VM_FF_REQUEST)
-                &&  !VMCPU_FF_IS_PENDING(pVCpu, VMCPU_FF_REQUEST))
+            if (    !VM_FF_IS_ANY_SET(pVM, VM_FF_EMT_RENDEZVOUS | VM_FF_REQUEST)
+                &&  !VMCPU_FF_IS_SET(pVCpu, VMCPU_FF_REQUEST))
             {
                 rc = RTSemPingWait(&pVM->dbgf.s.PingPong, cPollHack);
                 if (RT_SUCCESS(rc))
@@ -839,13 +839,13 @@ static int dbgfR3VMMWait(PVM pVM)
                 }
             }
 
-            if (VM_FF_IS_PENDING(pVM, VM_FF_EMT_RENDEZVOUS))
+            if (VM_FF_IS_SET(pVM, VM_FF_EMT_RENDEZVOUS))
             {
                 rc = VMMR3EmtRendezvousFF(pVM, pVCpu);
                 cPollHack = 1;
             }
-            else if (   VM_FF_IS_PENDING(pVM, VM_FF_REQUEST)
-                     || VMCPU_FF_IS_PENDING(pVCpu, VMCPU_FF_REQUEST))
+            else if (   VM_FF_IS_SET(pVM, VM_FF_REQUEST)
+                     || VMCPU_FF_IS_SET(pVCpu, VMCPU_FF_REQUEST))
             {
                 LogFlow(("dbgfR3VMMWait: Processes requests...\n"));
                 rc = VMR3ReqProcessU(pVM->pUVM, VMCPUID_ANY, false /*fPriorityOnly*/);
@@ -1346,11 +1346,9 @@ static DBGFSTEPINSTRTYPE dbgfStepGetCurInstrType(PVM pVM, PVMCPU pVCpu)
     /*
      * Read the instruction.
      */
-    bool     fIsHyper = dbgfR3FigureEventCtx(pVM) == DBGFEVENTCTX_HYPER;
     size_t   cbRead   = 0;
     uint8_t  abOpcode[16] = { 0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0 };
-    int rc = PGMR3DbgReadGCPtr(pVM, abOpcode, !fIsHyper ? CPUMGetGuestFlatPC(pVCpu) : CPUMGetHyperRIP(pVCpu),
-                               sizeof(abOpcode) - 1, 0 /*fFlags*/, &cbRead);
+    int rc = PGMR3DbgReadGCPtr(pVM, abOpcode, CPUMGetGuestFlatPC(pVCpu), sizeof(abOpcode) - 1, 0 /*fFlags*/, &cbRead);
     if (RT_SUCCESS(rc))
     {
         /*
@@ -1399,8 +1397,6 @@ static DBGFSTEPINSTRTYPE dbgfStepGetCurInstrType(PVM pVM, PVMCPU pVCpu)
                 /* Must handle some REX prefixes. So we do all normal prefixes. */
                 case 0x40: case 0x41: case 0x42: case 0x43: case 0x44: case 0x45: case 0x46: case 0x47:
                 case 0x48: case 0x49: case 0x4a: case 0x4b: case 0x4c: case 0x4d: case 0x4e: case 0x4f:
-                    if (fIsHyper) /* ASSUMES 32-bit raw-mode! */
-                        return DBGFSTEPINSTRTYPE_OTHER;
                     if (!CPUMIsGuestIn64BitCode(pVCpu))
                         return DBGFSTEPINSTRTYPE_OTHER;
                     break;
@@ -1456,13 +1452,11 @@ static bool dbgfStepAreWeThereYet(PVM pVM, PVMCPU pVCpu)
                  */
                 if (pVM->dbgf.s.SteppingFilter.fFlags & (DBGF_STEP_F_STOP_ON_ADDRESS | DBGF_STEP_F_STOP_ON_STACK_POP))
                 {
-                    bool fIsHyper = dbgfR3FigureEventCtx(pVM) == DBGFEVENTCTX_HYPER;
                     if (   (pVM->dbgf.s.SteppingFilter.fFlags & DBGF_STEP_F_STOP_ON_ADDRESS)
-                        && pVM->dbgf.s.SteppingFilter.AddrPc == (!fIsHyper ? CPUMGetGuestFlatPC(pVCpu) : CPUMGetHyperRIP(pVCpu)))
+                        && pVM->dbgf.s.SteppingFilter.AddrPc == CPUMGetGuestFlatPC(pVCpu))
                         return true;
                     if (   (pVM->dbgf.s.SteppingFilter.fFlags & DBGF_STEP_F_STOP_ON_STACK_POP)
-                        &&     (!fIsHyper ? CPUMGetGuestFlatSP(pVCpu) : (uint64_t)CPUMGetHyperESP(pVCpu))
-                             - pVM->dbgf.s.SteppingFilter.AddrStackPop
+                        &&   CPUMGetGuestFlatSP(pVCpu) - pVM->dbgf.s.SteppingFilter.AddrStackPop
                            < pVM->dbgf.s.SteppingFilter.cbStackPop)
                         return true;
                 }
@@ -2102,10 +2096,11 @@ VMMR3DECL(int) DBGFR3InjectNMI(PUVM pUVM, VMCPUID idCpu)
     AssertReturn(idCpu < pVM->cCpus, VERR_INVALID_CPU_ID);
 
     /** @todo Implement generic NMI injection. */
+    /** @todo NEM: NMI injection   */
     if (!HMIsEnabled(pVM))
-        return VERR_NOT_SUP_IN_RAW_MODE;
+        return VERR_NOT_SUP_BY_NEM;
 
-    VMCPU_FF_SET(&pVM->aCpus[idCpu], VMCPU_FF_INTERRUPT_NMI);
+    VMCPU_FF_SET(pVM->apCpusR3[idCpu], VMCPU_FF_INTERRUPT_NMI);
     return VINF_SUCCESS;
 }
 

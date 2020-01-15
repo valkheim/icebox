@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2010-2017 Oracle Corporation
+ * Copyright (C) 2010-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -15,8 +15,11 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
-#ifndef ___UIMachineView_h___
-#define ___UIMachineView_h___
+#ifndef FEQT_INCLUDED_SRC_runtime_UIMachineView_h
+#define FEQT_INCLUDED_SRC_runtime_UIMachineView_h
+#ifndef RT_WITHOUT_PRAGMA_ONCE
+# pragma once
+#endif
 
 /* Qt includes: */
 #include <QAbstractScrollArea>
@@ -66,6 +69,8 @@ class UIMachineView : public QAbstractScrollArea
 
 signals:
 
+    /** Notifies about mouse pointer shape change. */
+    void sigMousePointerShapeChange();
     /** Notifies about frame-buffer resize. */
     void sigFrameBufferResize();
 
@@ -126,19 +131,15 @@ protected slots:
     void sltDesktopResized();
 
     /** Handles the scale-factor change. */
-    void sltHandleScaleFactorChange(const QString &strMachineID);
+    void sltHandleScaleFactorChange(const QUuid &uMachineID);
 
     /** Handles the scaling-optimization change. */
-    void sltHandleScalingOptimizationChange(const QString &strMachineID);
-
-    /** Handles the HiDPI-optimization change. */
-    void sltHandleHiDPIOptimizationChange(const QString &strMachineID);
-
-    /** Handles the unscaled HiDPI output mode change. */
-    void sltHandleUnscaledHiDPIOutputModeChange(const QString &strMachineID);
+    void sltHandleScalingOptimizationChange(const QUuid &uMachineID);
 
     /* Console callback handlers: */
     virtual void sltMachineStateChanged();
+    /** Handles guest request to change the mouse pointer shape. */
+    void sltMousePointerShapeChange();
 
 protected:
 
@@ -233,6 +234,9 @@ protected:
     void takePausePixmapSnapshot();
     /** Updates the scaled pause-pixmap. */
     void updateScaledPausePixmap();
+
+    /** Returns cached mouse cursor. */
+    QCursor cursor() const { return m_cursor; }
 
     /** The available area on the current screen for application windows. */
     virtual QRect workingArea() const = 0;
@@ -340,6 +344,9 @@ protected:
     /** Scales passed size backward. */
     QSize scaledBackward(QSize size) const;
 
+    /** Updates mouse pointer @a pixmap, @a uXHot and @a uYHot according to scaling attributes. */
+    void updateMousePointerPixmapScaling(QPixmap &pixmap, uint &uXHot, uint &uYHot);
+
     /* Protected members: */
     UIMachineWindow *m_pMachineWindow;
     ulong m_uScreenId;
@@ -350,10 +357,8 @@ protected:
      * Not explicitly initialised (i.e. invalid by default). */
     QSize m_sizeHintOverride;
 
-#ifdef VBOX_WS_MAC
     /** Holds current host-screen number. */
     int m_iHostScreenNumber;
-#endif /* VBOX_WS_MAC */
 
     /** The policy for calculating the maximum guest resolution which we wish
      * to handle. */
@@ -379,6 +384,9 @@ protected:
     QPixmap m_pausePixmap;
     /** Holds the scaled pause-pixmap. */
     QPixmap m_pausePixmapScaled;
+
+    /** Holds cached mouse cursor. */
+    QCursor  m_cursor;
 
 #ifdef VBOX_WITH_DRAG_AND_DROP
     /** Pointer to drag and drop handler instance. */
@@ -445,4 +453,4 @@ protected:
     int m_iTimerId;
 };
 
-#endif // !___UIMachineView_h___
+#endif /* !FEQT_INCLUDED_SRC_runtime_UIMachineView_h */

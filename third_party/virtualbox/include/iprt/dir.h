@@ -3,7 +3,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -23,8 +23,11 @@
  * terms and conditions of either the GPL or the CDDL or both.
  */
 
-#ifndef ___iprt_dir_h
-#define ___iprt_dir_h
+#ifndef IPRT_INCLUDED_dir_h
+#define IPRT_INCLUDED_dir_h
+#ifndef RT_WITHOUT_PRAGMA_ONCE
+# pragma once
+#endif
 
 #include <iprt/cdefs.h>
 #include <iprt/types.h>
@@ -62,8 +65,10 @@ RTDECL(bool) RTDirExists(const char *pszPath);
 #define RTDIRCREATE_FLAGS_NOT_CONTENT_INDEXED_SET           UINT32_C(0)
 /** Ignore errors setting the not-content-indexed flag.  Windows only atm. */
 #define RTDIRCREATE_FLAGS_NOT_CONTENT_INDEXED_NOT_CRITICAL  RT_BIT(2)
+/** Ignore umask when applying the mode. */
+#define RTDIRCREATE_FLAGS_IGNORE_UMASK                      RT_BIT(3)
 /** Valid mask. */
-#define RTDIRCREATE_FLAGS_VALID_MASK                        UINT32_C(0x00000007)
+#define RTDIRCREATE_FLAGS_VALID_MASK                        UINT32_C(0x0000000f)
 /** @} */
 
 /**
@@ -77,14 +82,23 @@ RTDECL(bool) RTDirExists(const char *pszPath);
 RTDECL(int) RTDirCreate(const char *pszPath, RTFMODE fMode, uint32_t fCreate);
 
 /**
- * Creates a directory including all parent directories in the path
- * if they don't exist.
+ * Creates a directory including all non-existing parent directories.
  *
  * @returns iprt status code.
  * @param   pszPath     Path to the directory to create.
  * @param   fMode       The mode of the new directories.
  */
 RTDECL(int) RTDirCreateFullPath(const char *pszPath, RTFMODE fMode);
+
+/**
+ * Creates a directory including all non-existing parent directories.
+ *
+ * @returns iprt status code.
+ * @param   pszPath     Path to the directory to create.
+ * @param   fMode       The mode of the new directories.
+ * @param   fFlags      Create flags, RTDIRCREATE_FLAGS_*.
+ */
+RTDECL(int) RTDirCreateFullPathEx(const char *pszPath, RTFMODE fMode, uint32_t fFlags);
 
 /**
  * Creates a new directory with a unique name using the given template.
@@ -182,8 +196,10 @@ RTDECL(int) RTDirRemoveRecursive(const char *pszPath, uint32_t fFlags);
 #define RTDIRRMREC_F_CONTENT_AND_DIR    UINT32_C(0)
 /** Only delete the content of the directory, omit the directory it self. */
 #define RTDIRRMREC_F_CONTENT_ONLY       RT_BIT_32(0)
+/** Long path hack: Don't apply RTPathAbs to the path. */
+#define RTDIRRMREC_F_NO_ABS_PATH        RT_BIT_32(1)
 /** Mask of valid flags. */
-#define RTDIRRMREC_F_VALID_MASK         UINT32_C(0x00000001)
+#define RTDIRRMREC_F_VALID_MASK         UINT32_C(0x00000003)
 /** @} */
 
 /**
@@ -351,19 +367,30 @@ RTDECL(int) RTDirOpen(RTDIR *phDir, const char *pszPath);
 #define RTDIR_F_NO_SYMLINKS     RT_BIT_32(0)
 /** Deny relative opening of anything above this directory. */
 #define RTDIR_F_DENY_ASCENT     RT_BIT_32(1)
+/** Don't follow symbolic links in the final component. */
+#define RTDIR_F_NO_FOLLOW       RT_BIT_32(2)
+/** Long path hack: Don't apply RTPathAbs to the path. */
+#define RTDIR_F_NO_ABS_PATH     RT_BIT_32(3)
 /** Valid flag mask.   */
-#define RTDIR_F_VALID_MASK      UINT32_C(0x00000003)
+#define RTDIR_F_VALID_MASK      UINT32_C(0x0000000f)
 /** @} */
 
 /**
  * Opens a directory with flags and optional filtering.
  *
- * @returns iprt status code.
+ * @returns IPRT status code.
+ * @retval  VERR_IS_A_SYMLINK if RTDIR_F_NO_FOLLOW is set, @a enmFilter is
+ *          RTDIRFILTER_NONE and @a pszPath points to a symbolic link and does
+ *          not end with a slash.  Note that on Windows this does not apply to
+ *          file symlinks, only directory symlinks, for the file variant
+ *          VERR_NOT_A_DIRECTORY will be returned.
+ *
  * @param   phDir       Where to store the open directory handle.
  * @param   pszPath     Path to the directory to search, this must include wildcards.
  * @param   enmFilter   The kind of filter to apply. Setting this to RTDIRFILTER_NONE makes
  *                      this function behave like RTDirOpen.
  * @param   fFlags      Open flags, RTDIR_F_XXX.
+ *
  */
 RTDECL(int) RTDirOpenFiltered(RTDIR *phDir, const char *pszPath, RTDIRFILTER enmFilter, uint32_t fFlags);
 
@@ -519,6 +546,14 @@ RTDECL(bool) RTDirEntryIsStdDotLink(PRTDIRENTRY pDirEntry);
 RTDECL(bool) RTDirEntryExIsStdDotLink(PCRTDIRENTRYEX pDirEntryEx);
 
 /**
+ * Rewind and restart the directory reading.
+ *
+ * @returns IRPT status code.
+ * @param   hDir            The directory handle to rewind.
+ */
+RTDECL(int) RTDirRewind(RTDIR hDir);
+
+/**
  * Renames a file.
  *
  * Identical to RTPathRename except that it will ensure that the source is a directory.
@@ -574,6 +609,19 @@ RTR3DECL(int) RTDirSetTimes(RTDIR hDir, PCRTTIMESPEC pAccessTime, PCRTTIMESPEC p
                             PCRTTIMESPEC pChangeTime, PCRTTIMESPEC pBirthTime);
 
 
+/**
+ * Changes the mode flags of an open directory.
+ *
+ * The API requires at least one of the mode flag sets (Unix/Dos) to
+ * be set. The type is ignored.
+ *
+ * @returns iprt status code.
+ * @param   hDir                Handle to the open directory.
+ * @param   fMode               The new file mode, see @ref grp_rt_fs for details.
+ */
+RTDECL(int) RTDirSetMode(RTDIR hDir, RTFMODE fMode);
+
+
 /** @defgroup grp_rt_dir_rel    Directory relative APIs
  *
  * This group of APIs allows working with paths that are relative to an open
@@ -622,6 +670,12 @@ RTDECL(int) RTDirRelDirOpen(RTDIR hDir, const char *pszDir, RTDIR *phDir);
  * Opens a directory relative to @a hDir, with flags and optional filtering.
  *
  * @returns IPRT status code.
+ * @retval  VERR_IS_A_SYMLINK if RTDIR_F_NO_FOLLOW is set, @a enmFilter is
+ *          RTDIRFILTER_NONE and @a pszPath points to a symbolic link and does
+ *          not end with a slash.  Note that on Windows this does not apply to
+ *          file symlinks, only directory symlinks, for the file variant
+ *          VERR_NOT_A_DIRECTORY will be returned.
+ *
  * @param   hDir            The directory to open relative to.
  * @param   pszDirAndFilter The relative path to the directory to search, this
  *                          must include wildcards.
@@ -826,5 +880,5 @@ RTDECL(int) RTDirRelSymlinkRead(RTDIR hDir, const char *pszSymlink, char *pszTar
 
 RT_C_DECLS_END
 
-#endif
+#endif /* !IPRT_INCLUDED_dir_h */
 

@@ -3,7 +3,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -23,8 +23,11 @@
  * terms and conditions of either the GPL or the CDDL or both.
  */
 
-#ifndef ___iprt_avl_h
-#define ___iprt_avl_h
+#ifndef IPRT_INCLUDED_avl_h
+#define IPRT_INCLUDED_avl_h
+#ifndef RT_WITHOUT_PRAGMA_ONCE
+# pragma once
+#endif
 
 #include <iprt/cdefs.h>
 #include <iprt/types.h>
@@ -37,7 +40,7 @@ RT_C_DECLS_BEGIN
  */
 
 
-/** AVL tree of void pointers.
+/** @name AVL tree of void pointers.
  * @{
  */
 
@@ -82,7 +85,7 @@ RTDECL(int)             RTAvlPVDestroy(PAVLPVTREE ppTree, PAVLPVCALLBACK pfnCall
 /** @} */
 
 
-/** AVL tree of unsigned long.
+/** @name AVL tree of unsigned long.
  * @{
  */
 
@@ -125,7 +128,7 @@ RTDECL(int)             RTAvlULDestroy(PPAVLULNODECORE pTree, PAVLULCALLBACK pfn
 
 
 
-/** AVL tree of void pointer ranges.
+/** @name AVL tree of void pointer ranges.
  * @{
  */
 
@@ -174,7 +177,7 @@ RTDECL(int)             RTAvlrPVDestroy(PAVLRPVTREE ppTree, PAVLRPVCALLBACK pfnC
 
 
 
-/** AVL tree of uint32_t
+/** @name AVL tree of uint32_t
  * @{
  */
 
@@ -190,9 +193,9 @@ typedef struct _AVLU32NodeCore
     unsigned char           uchHeight;  /**< Height of this tree: max(height(left), height(right)) + 1 */
 } AVLU32NODECORE, *PAVLU32NODECORE, **PPAVLU32NODECORE;
 
-/** A tree with void pointer keys. */
+/** A tree with uint32_t keys. */
 typedef PAVLU32NODECORE     AVLU32TREE;
-/** Pointer to a tree with void pointer keys. */
+/** Pointer to a tree with uint32_t keys. */
 typedef PPAVLU32NODECORE    PAVLU32TREE;
 
 /** Callback function for AVLU32DoWithAll() & AVLU32Destroy().
@@ -214,6 +217,10 @@ RTDECL(int)             RTAvlU32DoWithAll(PAVLU32TREE pTree, int fFromLeft, PAVL
 RTDECL(int)             RTAvlU32Destroy(PAVLU32TREE pTree, PAVLU32CALLBACK pfnCallBack, void *pvParam);
 
 /** @} */
+
+/** @name AVL tree of uint32_t, offset based
+ * @{
+ */
 
 /**
  * AVL uint32_t type for the relative offset pointer scheme.
@@ -263,7 +270,7 @@ RTDECL(int)                   RTAvloU32Destroy(PAVLOU32TREE pTree, PAVLOU32CALLB
 /** @} */
 
 
-/** AVL tree of uint32_t, list duplicates.
+/** @name AVL tree of uint32_t, list duplicates.
  * @{
  */
 
@@ -302,8 +309,49 @@ RTDECL(int)                 RTAvllU32Destroy(PPAVLLU32NODECORE pTree, PAVLLU32CA
 /** @} */
 
 
+/** @name AVL tree of uint64_t
+ * @{
+ */
 
-/** AVL tree of uint64_t ranges.
+/** AVL key type. */
+typedef uint64_t    AVLU64KEY;
+
+/** AVL Core node. */
+typedef struct _AVLU64NodeCore
+{
+    struct _AVLU64NodeCore *pLeft;      /**< Pointer to left leaf node. */
+    struct _AVLU64NodeCore *pRight;     /**< Pointer to right leaf node. */
+    AVLU64KEY               Key;        /**< Key value. */
+    unsigned char           uchHeight;  /**< Height of this tree: max(height(left), height(right)) + 1 */
+} AVLU64NODECORE, *PAVLU64NODECORE, **PPAVLU64NODECORE;
+
+/** A tree with uint64_t keys. */
+typedef PAVLU64NODECORE     AVLU64TREE;
+/** Pointer to a tree with uint64_t keys. */
+typedef PPAVLU64NODECORE    PAVLU64TREE;
+
+/** Callback function for AVLU64DoWithAll() & AVLU64Destroy().
+ *  @returns IPRT status codes. */
+typedef DECLCALLBACK(int) AVLU64CALLBACK(PAVLU64NODECORE, void*);
+/** Pointer to callback function for AVLU64DoWithAll() & AVLU64Destroy(). */
+typedef AVLU64CALLBACK *PAVLU64CALLBACK;
+
+
+/*
+ * Functions.
+ */
+RTDECL(bool)            RTAvlU64Insert(PAVLU64TREE pTree, PAVLU64NODECORE pNode);
+RTDECL(PAVLU64NODECORE) RTAvlU64Remove(PAVLU64TREE pTree, AVLU64KEY Key);
+RTDECL(PAVLU64NODECORE) RTAvlU64Get(PAVLU64TREE pTree, AVLU64KEY Key);
+RTDECL(PAVLU64NODECORE) RTAvlU64GetBestFit(PAVLU64TREE pTree, AVLU64KEY Key, bool fAbove);
+RTDECL(PAVLU64NODECORE) RTAvlU64RemoveBestFit(PAVLU64TREE pTree, AVLU64KEY Key, bool fAbove);
+RTDECL(int)             RTAvlU64DoWithAll(PAVLU64TREE pTree, int fFromLeft, PAVLU64CALLBACK pfnCallBack, void *pvParam);
+RTDECL(int)             RTAvlU64Destroy(PAVLU64TREE pTree, PAVLU64CALLBACK pfnCallBack, void *pvParam);
+
+/** @} */
+
+
+/** @name AVL tree of uint64_t ranges.
  * @{
  */
 
@@ -324,9 +372,9 @@ typedef struct AVLRU64NodeCore
     unsigned char            uchHeight;  /**< Height of this tree: max(height(left), height(right)) + 1 */
 } AVLRU64NODECORE, *PAVLRU64NODECORE, **PPAVLRU64NODECORE;
 
-/** A tree with void pointer keys. */
+/** A tree with uint64_t keys. */
 typedef PAVLRU64NODECORE    AVLRU64TREE;
-/** Pointer to a tree with void pointer keys. */
+/** Pointer to a tree with uint64_t keys. */
 typedef PPAVLRU64NODECORE   PAVLRU64TREE;
 
 /** Callback function for AVLRU64DoWithAll().
@@ -352,7 +400,7 @@ RTDECL(int)              RTAvlrU64Destroy(PAVLRU64TREE ppTree, PAVLRU64CALLBACK 
 
 
 
-/** AVL tree of RTGCPHYSes - using relative offsets internally.
+/** @name AVL tree of RTGCPHYSes - using relative offsets internally.
  * @{
  */
 
@@ -404,7 +452,7 @@ RTDECL(int)                     RTAvloGCPhysDestroy(PAVLOGCPHYSTREE pTree, PAVLO
 /** @} */
 
 
-/** AVL tree of RTGCPHYS ranges - using relative offsets internally.
+/** @name AVL tree of RTGCPHYS ranges - using relative offsets internally.
  * @{
  */
 
@@ -462,7 +510,7 @@ RTDECL(PAVLROGCPHYSNODECORE)    RTAvlroGCPhysGetRight(PAVLROGCPHYSNODECORE pNode
 /** @} */
 
 
-/** AVL tree of RTGCPTRs.
+/** @name AVL tree of RTGCPTRs.
  * @{
  */
 
@@ -503,7 +551,7 @@ RTDECL(int)                     RTAvlGCPtrDestroy(PAVLGCPTRTREE pTree, PAVLGCPTR
 /** @} */
 
 
-/** AVL tree of RTGCPTRs - using relative offsets internally.
+/** @name AVL tree of RTGCPTRs - using relative offsets internally.
  * @{
  */
 
@@ -554,7 +602,7 @@ RTDECL(int)                     RTAvloGCPtrDestroy(PAVLOGCPTRTREE pTree, PAVLOGC
 /** @} */
 
 
-/** AVL tree of RTGCPTR ranges.
+/** @name AVL tree of RTGCPTR ranges.
  * @{
  */
 
@@ -605,7 +653,7 @@ RTDECL(PAVLRGCPTRNODECORE)     RTAvlrGCPtrGetRight(     PAVLRGCPTRNODECORE pNode
 /** @} */
 
 
-/** AVL tree of RTGCPTR ranges - using relative offsets internally.
+/** @name AVL tree of RTGCPTR ranges - using relative offsets internally.
  * @{
  */
 
@@ -662,7 +710,8 @@ RTDECL(PAVLROGCPTRNODECORE)     RTAvlroGCPtrGetRight(PAVLROGCPTRNODECORE pNode);
 /** @} */
 
 
-/** AVL tree of RTGCPTR ranges (overlapping supported) - using relative offsets internally.
+/** @name AVL tree of RTGCPTR ranges (overlapping supported) - using relative
+ *        offsets internally.
  * @{
  */
 
@@ -721,7 +770,7 @@ RTDECL(PAVLROOGCPTRNODECORE)    RTAvlrooGCPtrGetNextEqual(PAVLROOGCPTRNODECORE p
 /** @} */
 
 
-/** AVL tree of RTUINTPTR.
+/** @name AVL tree of RTUINTPTR.
  * @{
  */
 
@@ -770,7 +819,7 @@ RTDECL(PAVLUINTPTRNODECORE)     RTAvlUIntPtrGetRight(  PAVLUINTPTRNODECORE pNode
 /** @} */
 
 
-/** AVL tree of RTUINTPTR ranges.
+/** @name AVL tree of RTUINTPTR ranges.
  * @{
  */
 
@@ -823,7 +872,7 @@ RTDECL(PAVLRUINTPTRNODECORE)   RTAvlrUIntPtrGetRight(   PAVLRUINTPTRNODECORE pNo
 /** @} */
 
 
-/** AVL tree of RTHCPHYSes - using relative offsets internally.
+/** @name AVL tree of RTHCPHYSes - using relative offsets internally.
  * @{
  */
 
@@ -877,7 +926,7 @@ RTDECL(int)                     RTAvloHCPhysDestroy(PAVLOHCPHYSTREE pTree, PAVLO
 
 
 
-/** AVL tree of RTIOPORTs - using relative offsets internally.
+/** @name AVL tree of RTIOPORTs - using relative offsets internally.
  * @{
  */
 
@@ -927,7 +976,7 @@ RTDECL(int)                     RTAvloIOPortDestroy(PAVLOIOPORTTREE pTree, PAVLO
 /** @} */
 
 
-/** AVL tree of RTIOPORT ranges - using relative offsets internally.
+/** @name AVL tree of RTIOPORT ranges - using relative offsets internally.
  * @{
  */
 
@@ -979,7 +1028,7 @@ RTDECL(int)                     RTAvlroIOPortDestroy(PAVLROIOPORTTREE pTree, PAV
 /** @} */
 
 
-/** AVL tree of RTHCPHYSes.
+/** @name AVL tree of RTHCPHYSes.
  * @{
  */
 
@@ -1028,7 +1077,7 @@ RTDECL(int)                     RTAvlHCPhysDestroy(PAVLHCPHYSTREE pTree, PAVLHCP
 
 /** @} */
 
-/** AVL tree of RTGCPHYSes.
+/** @name AVL tree of RTGCPHYSes.
  * @{
  */
 
@@ -1078,7 +1127,7 @@ RTDECL(int)                     RTAvlGCPhysDestroy(PAVLGCPHYSTREE pTree, PAVLGCP
 /** @} */
 
 
-/** AVL tree of RTFOFF ranges.
+/** @name AVL tree of RTFOFF ranges.
  * @{
  */
 
@@ -1132,5 +1181,5 @@ RTDECL(PAVLRFOFFNODECORE)     RTAvlrFileOffsetGetRight(     PAVLRFOFFNODECORE pN
 
 RT_C_DECLS_END
 
-#endif
+#endif /* !IPRT_INCLUDED_avl_h */
 

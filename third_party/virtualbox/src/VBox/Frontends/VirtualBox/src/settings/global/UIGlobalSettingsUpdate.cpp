@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -15,17 +15,11 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
-#ifdef VBOX_WITH_PRECOMPILED_HEADERS
-# include <precomp.h>
-#else  /* !VBOX_WITH_PRECOMPILED_HEADERS */
-
 /* GUI includes: */
-# include "UIGlobalSettingsUpdate.h"
-# include "UIExtraDataManager.h"
-# include "UIMessageCenter.h"
-# include "VBoxGlobal.h"
-
-#endif /* !VBOX_WITH_PRECOMPILED_HEADERS */
+#include "UIGlobalSettingsUpdate.h"
+#include "UIExtraDataManager.h"
+#include "UIMessageCenter.h"
+#include "UICommon.h"
 
 
 /** Global settings: Update page data structure. */
@@ -214,8 +208,9 @@ void UIGlobalSettingsUpdate::prepare()
     AssertPtrReturnVoid(m_pComboBoxUpdatePeriod);
     {
         /* Configure widgets: */
-        connect(m_pCheckBoxUpdate, SIGNAL(toggled(bool)), this, SLOT(sltHandleUpdateToggle(bool)));
-        connect(m_pComboBoxUpdatePeriod, SIGNAL(activated(int)), this, SLOT(sltHandleUpdatePeriodChange()));
+        connect(m_pCheckBoxUpdate, &QCheckBox::toggled, this, &UIGlobalSettingsUpdate::sltHandleUpdateToggle);
+        connect(m_pComboBoxUpdatePeriod, static_cast<void(QComboBox::*)(int)>(&QComboBox::activated),
+                this, &UIGlobalSettingsUpdate::sltHandleUpdatePeriodChange);
     }
 
     /* Apply language settings: */
@@ -265,4 +260,3 @@ bool UIGlobalSettingsUpdate::saveUpdateData()
     /* Return result: */
     return fSuccess;
 }
-

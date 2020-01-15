@@ -7,7 +7,7 @@ Test Manager - Database Interface.
 
 __copyright__ = \
 """
-Copyright (C) 2012-2017 Oracle Corporation
+Copyright (C) 2012-2019 Oracle Corporation
 
 This file is part of VirtualBox Open Source Edition (OSE), as
 available from http://www.virtualbox.org. This file is free software;
@@ -26,7 +26,7 @@ CDDL are applicable instead of those of the GPL.
 You may elect to license modified versions of this file under the
 terms and conditions of either the GPL or the CDDL or both.
 """
-__version__ = "$Revision: 118412 $"
+__version__ = "$Revision: 131252 $"
 
 
 # Standard python imports.
@@ -44,6 +44,9 @@ from testmanager                        import config;
 if sys.version_info[0] < 3:
     psycopg2.extensions.register_type(psycopg2.extensions.UNICODE);
     psycopg2.extensions.register_type(psycopg2.extensions.UNICODEARRAY);
+else:
+    unicode = str;  # pylint: disable=redefined-builtin,invalid-name
+
 
 
 def isDbTimestampInfinity(tsValue):
@@ -62,7 +65,7 @@ def isDbTimestamp(oValue):
     if utils.isString(oValue):
         ## @todo detect strings as well.
         return False;
-    return getattr(oValue, 'pydatetime', None) != None;
+    return getattr(oValue, 'pydatetime', None) is not None;
 
 def dbTimestampToDatetime(oValue):
     """
@@ -123,7 +126,7 @@ class TMDatabaseIntegrityException(Exception):
     Do NOT use directly, only thru TMDatabaseConnection.integrityException.
     Otherwise, we won't be able to log the issue.
     """
-    pass;
+    pass;                               # pylint: disable=unnecessary-pass
 
 
 class TMDatabaseCursor(object):
@@ -210,13 +213,13 @@ class TMDatabaseConnection(object):
             dArgs['host'] = config.g_ksDatabaseAddress;
         if config.g_ksDatabasePort is not None:
             dArgs['port'] = config.g_ksDatabasePort;
-        self._oConn             = psycopg2.connect(**dArgs); # pylint: disable=W0142
+        self._oConn             = psycopg2.connect(**dArgs); # pylint: disable=star-args
         self._oConn.set_client_encoding('UTF-8');
         self._oCursor           = self._oConn.cursor();
         self._oExplainConn      = None;
         self._oExplainCursor    = None;
         if config.g_kfWebUiSqlTraceExplain and config.g_kfWebUiSqlTrace:
-            self._oExplainConn  = psycopg2.connect(**dArgs); # pylint: disable=W0142
+            self._oExplainConn  = psycopg2.connect(**dArgs); # pylint: disable=star-args
             self._oExplainConn.set_client_encoding('UTF-8');
             self._oExplainCursor = self._oExplainConn.cursor();
         self._fTransaction      = False;
@@ -346,7 +349,7 @@ class TMDatabaseConnection(object):
             sBound = unicode(sOperation);
 
         if sys.version_info[0] >= 3 and not isinstance(sBound, str):
-            sBound = sBound.decode('utf-8');
+            sBound = sBound.decode('utf-8'); # pylint: disable=redefined-variable-type
 
         aasExplain = None;
         if self._oExplainCursor is not None and not sBound.startswith('DROP'):
@@ -697,7 +700,7 @@ class TMDatabaseConnection(object):
                 dArgs['host'] = config.g_ksDatabaseAddress;
             if config.g_ksDatabasePort is not None:
                 dArgs['port'] = config.g_ksDatabasePort;
-            self._oExplainConn  = psycopg2.connect(**dArgs); # pylint: disable=W0142
+            self._oExplainConn  = psycopg2.connect(**dArgs); # pylint: disable=star-args
             self._oExplainCursor = self._oExplainConn.cursor();
         return True;
 

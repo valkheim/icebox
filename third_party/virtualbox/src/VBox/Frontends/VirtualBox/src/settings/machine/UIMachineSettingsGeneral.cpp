@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -15,30 +15,25 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
-#ifdef VBOX_WITH_PRECOMPILED_HEADERS
-# include <precomp.h>
-#else  /* !VBOX_WITH_PRECOMPILED_HEADERS */
-
 /* Qt includes: */
-# include <QDir>
-# include <QLineEdit>
+#include <QDir>
+#include <QLineEdit>
 
 /* GUI includes: */
-# include "QIWidgetValidator.h"
-# include "UIConverter.h"
-# include "UIMachineSettingsGeneral.h"
-# include "UIErrorString.h"
-# include "UIModalWindowManager.h"
-# include "UIProgressDialog.h"
+#include "QIWidgetValidator.h"
+#include "UICommon.h"
+#include "UIConverter.h"
+#include "UIErrorString.h"
+#include "UIMachineSettingsGeneral.h"
+#include "UIModalWindowManager.h"
+#include "UIProgressDialog.h"
 
 /* COM includes: */
-# include "CExtPack.h"
-# include "CExtPackManager.h"
-# include "CMedium.h"
-# include "CMediumAttachment.h"
-# include "CProgress.h"
-
-#endif /* !VBOX_WITH_PRECOMPILED_HEADERS */
+#include "CExtPack.h"
+#include "CExtPackManager.h"
+#include "CMedium.h"
+#include "CMediumAttachment.h"
+#include "CProgress.h"
 
 
 /** Machine settings: General page data structure. */
@@ -91,7 +86,7 @@ struct UIDataSettingsMachineGeneral
     QString         m_strSnapshotsFolder;
     /** Holds the default VM snapshot folder. */
     QString         m_strSnapshotsHomeDir;
-    /** Holds the VM shared clipboard mode. */
+    /** Holds the VM clipboard mode. */
     KClipboardMode  m_clipboardMode;
     /** Holds the VM drag&drop mode. */
     KDnDMode        m_dndMode;
@@ -110,7 +105,7 @@ struct UIDataSettingsMachineGeneral
     /** Holds the encryption password. */
     QString                m_strEncryptionPassword;
     /** Holds the encrypted medium ids. */
-    EncryptedMediumMap     m_encryptedMediums;
+    EncryptedMediumMap     m_encryptedMedia;
     /** Holds the encryption passwords. */
     EncryptionPasswordMap  m_encryptionPasswords;
 };
@@ -141,14 +136,16 @@ CGuestOSType UIMachineSettingsGeneral::guestOSType() const
 bool UIMachineSettingsGeneral::is64BitOSTypeSelected() const
 {
     AssertPtrReturn(m_pNameAndSystemEditor, false);
-    return m_pNameAndSystemEditor->type().GetIs64Bit();
+    return   m_pNameAndSystemEditor->type().isNotNull()
+           ? m_pNameAndSystemEditor->type().GetIs64Bit()
+           : false;
 }
 
 #ifdef VBOX_WITH_VIDEOHWACCEL
 bool UIMachineSettingsGeneral::isWindowsOSTypeSelected() const
 {
     AssertPtrReturn(m_pNameAndSystemEditor, false);
-    return m_pNameAndSystemEditor->type().GetFamilyId() == "Windows";
+    return m_pNameAndSystemEditor->familyId() == "Windows";
 }
 #endif /* VBOX_WITH_VIDEOHWACCEL */
 
@@ -197,8 +194,8 @@ void UIMachineSettingsGeneral::loadToCacheFrom(QVariant &data)
     /* Gather old 'Encryption' data: */
     QString strCipher;
     bool fEncryptionCipherCommon = true;
-    /* Prepare the map of the encrypted mediums: */
-    EncryptedMediumMap encryptedMediums;
+    /* Prepare the map of the encrypted media: */
+    EncryptedMediumMap encryptedMedia;
     foreach (const CMediumAttachment &attachment, m_machine.GetMediumAttachments())
     {
         /* Check hard-drive attachments only: */
@@ -211,7 +208,7 @@ void UIMachineSettingsGeneral::loadToCacheFrom(QVariant &data)
             const QString strCurrentPasswordId = comMedium.GetEncryptionSettings(strCurrentCipher);
             if (comMedium.isOk())
             {
-                encryptedMediums.insert(strCurrentPasswordId, comMedium.GetId());
+                encryptedMedia.insert(strCurrentPasswordId, comMedium.GetId());
                 if (strCurrentCipher != strCipher)
                 {
                     if (strCipher.isNull())
@@ -222,14 +219,14 @@ void UIMachineSettingsGeneral::loadToCacheFrom(QVariant &data)
             }
         }
     }
-    oldGeneralData.m_fEncryptionEnabled = !encryptedMediums.isEmpty();
+    oldGeneralData.m_fEncryptionEnabled = !encryptedMedia.isEmpty();
     oldGeneralData.m_fEncryptionCipherChanged = false;
     oldGeneralData.m_fEncryptionPasswordChanged = false;
     if (fEncryptionCipherCommon)
         oldGeneralData.m_iEncryptionCipherIndex = m_encryptionCiphers.indexOf(strCipher);
     if (oldGeneralData.m_iEncryptionCipherIndex == -1)
         oldGeneralData.m_iEncryptionCipherIndex = 0;
-    oldGeneralData.m_encryptedMediums = encryptedMediums;
+    oldGeneralData.m_encryptedMedia = encryptedMedia;
 
     /* Cache old general data: */
     m_pCache->cacheInitialData(oldGeneralData);
@@ -243,10 +240,15 @@ void UIMachineSettingsGeneral::getFromCache()
     /* Get old general data from the cache: */
     const UIDataSettingsMachineGeneral &oldGeneralData = m_pCache->base();
 
+    /* We are doing that *now* because these combos have
+     * dynamical content which depends on cashed value: */
+    repopulateComboClipboardMode();
+    repopulateComboDnDMode();
+
     /* Load old 'Basic' data from the cache: */
     AssertPtrReturnVoid(m_pNameAndSystemEditor);
     m_pNameAndSystemEditor->setName(oldGeneralData.m_strName);
-    m_pNameAndSystemEditor->setType(vboxGlobal().vmGuestOSType(oldGeneralData.m_strGuestOsTypeId));
+    m_pNameAndSystemEditor->setTypeId(oldGeneralData.m_strGuestOsTypeId);
 
     /* Load old 'Advanced' data from the cache: */
     AssertPtrReturnVoid(mPsSnapshot);
@@ -254,8 +256,10 @@ void UIMachineSettingsGeneral::getFromCache()
     AssertPtrReturnVoid(mCbDragAndDrop);
     mPsSnapshot->setPath(oldGeneralData.m_strSnapshotsFolder);
     mPsSnapshot->setHomeDir(oldGeneralData.m_strSnapshotsHomeDir);
-    mCbClipboard->setCurrentIndex(oldGeneralData.m_clipboardMode);
-    mCbDragAndDrop->setCurrentIndex(oldGeneralData.m_dndMode);
+    const int iClipboardModePosition = mCbClipboard->findData(oldGeneralData.m_clipboardMode);
+    mCbClipboard->setCurrentIndex(iClipboardModePosition == -1 ? 0 : iClipboardModePosition);
+    const int iDnDModePosition = mCbDragAndDrop->findData(oldGeneralData.m_dndMode);
+    mCbDragAndDrop->setCurrentIndex(iDnDModePosition == -1 ? 0 : iDnDModePosition);
 
     /* Load old 'Description' data from the cache: */
     AssertPtrReturnVoid(mTeDescription);
@@ -284,15 +288,15 @@ void UIMachineSettingsGeneral::putToCache()
     /* Gather new 'Basic' data: */
     AssertPtrReturnVoid(m_pNameAndSystemEditor);
     newGeneralData.m_strName = m_pNameAndSystemEditor->name();
-    newGeneralData.m_strGuestOsTypeId = m_pNameAndSystemEditor->type().GetId();
+    newGeneralData.m_strGuestOsTypeId = m_pNameAndSystemEditor->typeId();
 
     /* Gather new 'Advanced' data: */
     AssertPtrReturnVoid(mPsSnapshot);
     AssertPtrReturnVoid(mCbClipboard);
     AssertPtrReturnVoid(mCbDragAndDrop);
     newGeneralData.m_strSnapshotsFolder = mPsSnapshot->path();
-    newGeneralData.m_clipboardMode = (KClipboardMode)mCbClipboard->currentIndex();
-    newGeneralData.m_dndMode = (KDnDMode)mCbDragAndDrop->currentIndex();
+    newGeneralData.m_clipboardMode = mCbClipboard->currentData().value<KClipboardMode>();
+    newGeneralData.m_dndMode = mCbDragAndDrop->currentData().value<KDnDMode>();
 
     /* Gather new 'Description' data: */
     AssertPtrReturnVoid(mTeDescription);
@@ -308,21 +312,21 @@ void UIMachineSettingsGeneral::putToCache()
     newGeneralData.m_fEncryptionPasswordChanged = m_fEncryptionPasswordChanged;
     newGeneralData.m_iEncryptionCipherIndex = m_pComboCipher->currentIndex();
     newGeneralData.m_strEncryptionPassword = m_pEditorEncryptionPassword->text();
-    newGeneralData.m_encryptedMediums = m_pCache->base().m_encryptedMediums;
+    newGeneralData.m_encryptedMedia = m_pCache->base().m_encryptedMedia;
     /* If encryption status, cipher or password is changed: */
     if (newGeneralData.m_fEncryptionEnabled != m_pCache->base().m_fEncryptionEnabled ||
         newGeneralData.m_fEncryptionCipherChanged != m_pCache->base().m_fEncryptionCipherChanged ||
         newGeneralData.m_fEncryptionPasswordChanged != m_pCache->base().m_fEncryptionPasswordChanged)
     {
         /* Ask for the disk encryption passwords if necessary: */
-        if (!m_pCache->base().m_encryptedMediums.isEmpty())
+        if (!m_pCache->base().m_encryptedMedia.isEmpty())
         {
             /* Create corresponding dialog: */
             QWidget *pDlgParent = windowManager().realParentWindow(window());
             QPointer<UIAddDiskEncryptionPasswordDialog> pDlg =
                  new UIAddDiskEncryptionPasswordDialog(pDlgParent,
                                                        newGeneralData.m_strName,
-                                                       newGeneralData.m_encryptedMediums);
+                                                       newGeneralData.m_encryptedMedia);
             /* Execute it and acquire the result: */
             if (pDlg->exec() == QDialog::Accepted)
                 newGeneralData.m_encryptionPasswords = pDlg->encryptionPasswords();
@@ -357,7 +361,7 @@ bool UIMachineSettingsGeneral::validate(QList<UIValidationMessage> &messages)
     UIValidationMessage message;
 
     /* 'Basic' tab validations: */
-    message.first = VBoxGlobal::removeAccelMark(mTwGeneral->tabText(0));
+    message.first = UICommon::removeAccelMark(mTwGeneral->tabText(0));
     message.second.clear();
 
     /* VM name validation: */
@@ -381,7 +385,7 @@ bool UIMachineSettingsGeneral::validate(QList<UIValidationMessage> &messages)
         messages << message;
 
     /* 'Encryption' tab validations: */
-    message.first = VBoxGlobal::removeAccelMark(mTwGeneral->tabText(3));
+    message.first = UICommon::removeAccelMark(mTwGeneral->tabText(3));
     message.second.clear();
 
     /* Encryption validation: */
@@ -390,7 +394,7 @@ bool UIMachineSettingsGeneral::validate(QList<UIValidationMessage> &messages)
     {
 #ifdef VBOX_WITH_EXTPACK
         /* Encryption Extension Pack presence test: */
-        const CExtPack extPack = vboxGlobal().virtualBox().GetExtensionPackManager().Find(GUI_ExtPackName);
+        const CExtPack extPack = uiCommon().virtualBox().GetExtensionPackManager().Find(GUI_ExtPackName);
         if (extPack.isNull() || !extPack.GetUsable())
         {
             message.second << tr("You are trying to enable disk encryption for this virtual machine. "
@@ -468,18 +472,22 @@ void UIMachineSettingsGeneral::retranslateUi()
     mPsSnapshot->setWhatsThis(tr("Holds the path where snapshots of this "
                                  "virtual machine will be stored. Be aware that "
                                  "snapshots can take quite a lot of storage space."));
-    /* Translate Shared Clipboard mode combo: */
+
+    /* Translate Clipboard mode combo: */
     AssertPtrReturnVoid(mCbClipboard);
-    mCbClipboard->setItemText(0, gpConverter->toString(KClipboardMode_Disabled));
-    mCbClipboard->setItemText(1, gpConverter->toString(KClipboardMode_HostToGuest));
-    mCbClipboard->setItemText(2, gpConverter->toString(KClipboardMode_GuestToHost));
-    mCbClipboard->setItemText(3, gpConverter->toString(KClipboardMode_Bidirectional));
+    for (int iIndex = 0; iIndex < mCbClipboard->count(); ++iIndex)
+    {
+        const KClipboardMode enmType = mCbClipboard->currentData().value<KClipboardMode>();
+        mCbClipboard->setItemText(iIndex, gpConverter->toString(enmType));
+    }
+
     /* Translate Drag'n'drop mode combo: */
     AssertPtrReturnVoid(mCbDragAndDrop);
-    mCbDragAndDrop->setItemText(0, gpConverter->toString(KDnDMode_Disabled));
-    mCbDragAndDrop->setItemText(1, gpConverter->toString(KDnDMode_HostToGuest));
-    mCbDragAndDrop->setItemText(2, gpConverter->toString(KDnDMode_GuestToHost));
-    mCbDragAndDrop->setItemText(3, gpConverter->toString(KDnDMode_Bidirectional));
+    for (int iIndex = 0; iIndex < mCbDragAndDrop->count(); ++iIndex)
+    {
+        const KDnDMode enmType = mCbDragAndDrop->currentData().value<KDnDMode>();
+        mCbDragAndDrop->setItemText(iIndex, gpConverter->toString(enmType));
+    }
 
     /* Translate Cipher type combo: */
     AssertPtrReturnVoid(m_pComboCipher);
@@ -530,8 +538,6 @@ void UIMachineSettingsGeneral::prepare()
     {
         /* Prepare 'Basic' tab: */
         prepareTabBasic();
-        /* Prepare 'Advanced' tab: */
-        prepareTabAdvanced();
         /* Prepare 'Description' tab: */
         prepareTabDescription();
         /* Prepare 'Encryption' tab: */
@@ -552,33 +558,7 @@ void UIMachineSettingsGeneral::prepareTabBasic()
         AssertPtrReturnVoid(m_pNameAndSystemEditor);
         {
             /* Configure widget: */
-            m_pNameAndSystemEditor->nameEditor()->setValidator(new QRegExpValidator(QRegExp(".+"), this));
-        }
-    }
-}
-
-void UIMachineSettingsGeneral::prepareTabAdvanced()
-{
-    /* Tab and it's layout created in the .ui file. */
-    {
-        /* Shared Clipboard Mode combo-box created in the .ui file. */
-        AssertPtrReturnVoid(mCbClipboard);
-        {
-            /* Configure combo-box: */
-            mCbClipboard->addItem(""); /* KClipboardMode_Disabled */
-            mCbClipboard->addItem(""); /* KClipboardMode_HostToGuest */
-            mCbClipboard->addItem(""); /* KClipboardMode_GuestToHost */
-            mCbClipboard->addItem(""); /* KClipboardMode_Bidirectional */
-        }
-
-        /* Drag&drop Mode combo-box created in the .ui file. */
-        AssertPtrReturnVoid(mCbDragAndDrop);
-        {
-            /* Configure combo-box: */
-            mCbDragAndDrop->addItem(""); /* KDnDMode_Disabled */
-            mCbDragAndDrop->addItem(""); /* KDnDMode_HostToGuest */
-            mCbDragAndDrop->addItem(""); /* KDnDMode_GuestToHost */
-            mCbDragAndDrop->addItem(""); /* KDnDMode_Bidirectional */
+            m_pNameAndSystemEditor->setNameFieldValidator(".+");
         }
     }
 }
@@ -631,26 +611,26 @@ void UIMachineSettingsGeneral::prepareTabEncryption()
 void UIMachineSettingsGeneral::prepareConnections()
 {
     /* Configure 'Basic' connections: */
-    connect(m_pNameAndSystemEditor, SIGNAL(sigOsTypeChanged()),
-            this, SLOT(revalidate()));
-    connect(m_pNameAndSystemEditor, SIGNAL(sigNameChanged(const QString &)),
-            this, SLOT(revalidate()));
+    connect(m_pNameAndSystemEditor, &UINameAndSystemEditor::sigOsTypeChanged,
+            this, &UIMachineSettingsGeneral::revalidate);
+    connect(m_pNameAndSystemEditor, &UINameAndSystemEditor::sigNameChanged,
+            this, &UIMachineSettingsGeneral::revalidate);
 
     /* Configure 'Encryption' connections: */
-    connect(m_pCheckBoxEncryption, SIGNAL(toggled(bool)),
-            this, SLOT(revalidate()));
-    connect(m_pComboCipher, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(sltMarkEncryptionCipherChanged()));
-    connect(m_pComboCipher, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(revalidate()));
-    connect(m_pEditorEncryptionPassword, SIGNAL(textEdited(const QString&)),
-            this, SLOT(sltMarkEncryptionPasswordChanged()));
-    connect(m_pEditorEncryptionPassword, SIGNAL(textEdited(const QString&)),
-            this, SLOT(revalidate()));
-    connect(m_pEditorEncryptionPasswordConfirm, SIGNAL(textEdited(const QString&)),
-            this, SLOT(sltMarkEncryptionPasswordChanged()));
-    connect(m_pEditorEncryptionPasswordConfirm, SIGNAL(textEdited(const QString&)),
-            this, SLOT(revalidate()));
+    connect(m_pCheckBoxEncryption, &QCheckBox::toggled,
+            this, &UIMachineSettingsGeneral::revalidate);
+    connect(m_pComboCipher, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+            this, &UIMachineSettingsGeneral::sltMarkEncryptionCipherChanged);
+    connect(m_pComboCipher, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+            this, &UIMachineSettingsGeneral::revalidate);
+    connect(m_pEditorEncryptionPassword, &QLineEdit::textEdited,
+            this, &UIMachineSettingsGeneral::sltMarkEncryptionPasswordChanged);
+    connect(m_pEditorEncryptionPassword, &QLineEdit::textEdited,
+            this, &UIMachineSettingsGeneral::revalidate);
+    connect(m_pEditorEncryptionPasswordConfirm, &QLineEdit::textEdited,
+            this, &UIMachineSettingsGeneral::sltMarkEncryptionPasswordChanged);
+    connect(m_pEditorEncryptionPasswordConfirm, &QLineEdit::textEdited,
+            this, &UIMachineSettingsGeneral::revalidate);
 }
 
 void UIMachineSettingsGeneral::cleanup()
@@ -658,6 +638,50 @@ void UIMachineSettingsGeneral::cleanup()
     /* Cleanup cache: */
     delete m_pCache;
     m_pCache = 0;
+}
+
+void UIMachineSettingsGeneral::repopulateComboClipboardMode()
+{
+    /* Clipboard mode combo-box created in the .ui file. */
+    AssertPtrReturnVoid(mCbClipboard);
+    {
+        /* Clear combo first of all: */
+        mCbClipboard->clear();
+
+        /* Load currently supported Clipboard modes: */
+        CSystemProperties comProperties = uiCommon().virtualBox().GetSystemProperties();
+        QVector<KClipboardMode> clipboardModes = comProperties.GetSupportedClipboardModes();
+        /* Take into account currently cached value: */
+        const KClipboardMode enmCachedValue = m_pCache->base().m_clipboardMode;
+        if (!clipboardModes.contains(enmCachedValue))
+            clipboardModes.prepend(enmCachedValue);
+
+        /* Populate combo finally: */
+        foreach (const KClipboardMode &enmMode, clipboardModes)
+            mCbClipboard->addItem(gpConverter->toString(enmMode), QVariant::fromValue(enmMode));
+    }
+}
+
+void UIMachineSettingsGeneral::repopulateComboDnDMode()
+{
+    /* DnD mode combo-box created in the .ui file. */
+    AssertPtrReturnVoid(mCbDragAndDrop);
+    {
+        /* Clear combo first of all: */
+        mCbDragAndDrop->clear();
+
+        /* Load currently supported DnD modes: */
+        CSystemProperties comProperties = uiCommon().virtualBox().GetSystemProperties();
+        QVector<KDnDMode> dndModes = comProperties.GetSupportedDnDModes();
+        /* Take into account currently cached value: */
+        const KDnDMode enmCachedValue = m_pCache->base().m_dndMode;
+        if (!dndModes.contains(enmCachedValue))
+            dndModes.prepend(enmCachedValue);
+
+        /* Populate combo finally: */
+        foreach (const KDnDMode &enmMode, dndModes)
+            mCbDragAndDrop->addItem(gpConverter->toString(enmMode), QVariant::fromValue(enmMode));
+    }
 }
 
 bool UIMachineSettingsGeneral::saveGeneralData()
@@ -707,7 +731,7 @@ bool UIMachineSettingsGeneral::saveBasicData()
             if (fSuccess)
             {
                 // Must update long mode CPU feature bit when os type changed:
-                CVirtualBox vbox = vboxGlobal().virtualBox();
+                CVirtualBox vbox = uiCommon().virtualBox();
                 // Should we check global object getters?
                 const CGuestOSType &comNewType = vbox.GetGuestOSType(newGeneralData.m_strGuestOsTypeId);
                 m_machine.SetCPUProperty(KCPUPropertyType_LongMode, comNewType.GetIs64Bit());
@@ -867,10 +891,10 @@ bool UIMachineSettingsGeneral::saveEncryptionData()
                         continue;
 
                     /* Get medium id for further activities: */
-                    QString strMediumId;
+                    QUuid uMediumId;
                     if (fSuccess)
                     {
-                        strMediumId = comMedium.GetId();
+                        uMediumId = comMedium.GetId();
                         fSuccess = comMedium.isOk();
                     }
 
@@ -897,12 +921,12 @@ bool UIMachineSettingsGeneral::saveEncryptionData()
                                                strMachineName : QString();
                         }
 
-                        /* Get the maps of encrypted mediums and their passwords: */
-                        const EncryptedMediumMap &encryptedMedium = newGeneralData.m_encryptedMediums;
+                        /* Get the maps of encrypted media and their passwords: */
+                        const EncryptedMediumMap &encryptedMedium = newGeneralData.m_encryptedMedia;
                         const EncryptionPasswordMap &encryptionPasswords = newGeneralData.m_encryptionPasswords;
 
                         /* Check if old password exists/provided: */
-                        const QString strOldPasswordId = encryptedMedium.key(strMediumId);
+                        const QString strOldPasswordId = encryptedMedium.key(uMediumId);
                         const QString strOldPassword = encryptionPasswords.value(strOldPasswordId);
 
                         /* Create encryption progress: */
@@ -918,11 +942,11 @@ bool UIMachineSettingsGeneral::saveEncryptionData()
                     if (fSuccess)
                     {
                         pDlg = new UIProgress(comProgress);
-                        connect(pDlg, SIGNAL(sigProgressChange(ulong, QString, ulong, ulong)),
-                                this, SIGNAL(sigOperationProgressChange(ulong, QString, ulong, ulong)),
+                        connect(pDlg.data(), &UIProgress::sigProgressChange,
+                                this, &UIMachineSettingsGeneral::sigOperationProgressChange,
                                 Qt::QueuedConnection);
-                        connect(pDlg, SIGNAL(sigProgressError(QString)),
-                                this, SIGNAL(sigOperationProgressError(QString)),
+                        connect(pDlg.data(), &UIProgress::sigProgressError,
+                            this, &UIMachineSettingsGeneral::sigOperationProgressError,
                                 Qt::BlockingQueuedConnection);
                         pDlg->run(350);
                         if (pDlg)

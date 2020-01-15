@@ -7,7 +7,7 @@ VirtualBox Validation Kit - Storage benchmark, test execution helpers.
 
 __copyright__ = \
 """
-Copyright (C) 2016-2017 Oracle Corporation
+Copyright (C) 2016-2019 Oracle Corporation
 
 This file is part of VirtualBox Open Source Edition (OSE), as
 available from http://www.virtualbox.org. This file is free software;
@@ -26,25 +26,31 @@ CDDL are applicable instead of those of the GPL.
 You may elect to license modified versions of this file under the
 terms and conditions of either the GPL or the CDDL or both.
 """
-__version__ = "$Revision: 118412 $"
+__version__ = "$Revision: 133060 $"
 
 
 # Standard Python imports.
 import array;
 import os;
 import shutil;
-import StringIO
+import sys;
+if sys.version_info[0] >= 3:
+    from io import StringIO as StringIO;            # pylint: disable=import-error,no-name-in-module,useless-import-alias
+else:
+    from StringIO import StringIO as StringIO;      # pylint: disable=import-error,no-name-in-module,useless-import-alias
 import subprocess;
 
 # Validation Kit imports.
 from common     import utils;
 from testdriver import reporter;
 
+
+
 class StdInOutBuffer(object):
     """ Standard input output buffer """
 
     def __init__(self, sInput = None):
-        self.sInput = StringIO.StringIO();
+        self.sInput = StringIO();
         if sInput is not None:
             self.sInput.write(self._toString(sInput));
             self.sInput.seek(0);
@@ -57,11 +63,13 @@ class StdInOutBuffer(object):
         """
         if isinstance(sText, array.array):
             try:
-                return sText.tostring();
+                return str(sText.tostring()); # tostring() returns bytes with python3.
             except:
                 pass;
-        else:
-            return sText;
+        elif isinstance(sText, bytes):
+            return sText.decode('utf-8');
+
+        return sText;
 
     def read(self, cb):
         """file.read"""
@@ -94,14 +102,6 @@ class RemoteExecutor(object):
         if self.asPaths is None:
             self.asPaths = [ ];
 
-    def _isFile(self, sFile):
-        """
-        Checks whether a file exists.
-        """
-        if self.oTxsSession is not None:
-            return self.oTxsSession.syncIsFile(sFile);
-        return os.path.isfile(sFile);
-
     def _getBinaryPath(self, sBinary):
         """
         Returns the complete path of the given binary if found
@@ -109,9 +109,9 @@ class RemoteExecutor(object):
         """
         for sPath in self.asPaths:
             sFile = sPath + '/' + sBinary;
-            if self._isFile(sFile):
+            if self.isFile(sFile):
                 return sFile;
-        return None;
+        return sBinary;
 
     def _sudoExecuteSync(self, asArgs, sInput):
         """
@@ -131,7 +131,7 @@ class RemoteExecutor(object):
             sOutput, sError = oProcess.communicate(sInput);
             iExitCode  = oProcess.poll();
 
-            if iExitCode is not 0:
+            if iExitCode != 0:
                 fRc = False;
         except:
             reporter.errorXcpt();
@@ -151,14 +151,16 @@ class RemoteExecutor(object):
             reporter.flushall();
             oStdOut = StdInOutBuffer();
             oStdErr = StdInOutBuffer();
+            oTestPipe = reporter.FileWrapperTestPipe();
             oStdIn = None;
             if sInput is not None:
                 oStdIn = StdInOutBuffer(sInput);
             else:
-                oStdIn = '/dev/null'; # pylint: disable=R0204
+                oStdIn = '/dev/null'; # pylint: disable=redefined-variable-type
             fRc = self.oTxsSession.syncExecEx(sExec, (sExec,) + asArgs,
                                               oStdIn = oStdIn, oStdOut = oStdOut,
-                                              oStdErr = oStdErr, cMsTimeout = cMsTimeout);
+                                              oStdErr = oStdErr, oTestPipe = oTestPipe,
+                                              cMsTimeout = cMsTimeout);
             sOutput = oStdOut.getOutput();
             sError = oStdErr.getOutput();
             if fRc is False:
@@ -245,15 +247,15 @@ class RemoteExecutor(object):
 
         return sFileId;
 
-    def mkDir(self, sDir, fMode = 0700, cMsTimeout = 30000):
+    def mkDir(self, sDir, fMode = 0o700, cMsTimeout = 30000):
         """
         Creates a new directory at the given location.
         """
         fRc = True;
         if self.oTxsSession is not None:
             fRc = self.oTxsSession.syncMkDir(sDir, fMode, cMsTimeout);
-        else:
-            fRc = self.execBinaryNoStdOut('mkdir', ('-m', format(fMode, 'o'), sDir));
+        elif not os.path.isdir(sDir):
+            fRc = os.mkdir(sDir, fMode);
 
         return fRc;
 
@@ -266,6 +268,36 @@ class RemoteExecutor(object):
             fRc = self.oTxsSession.syncRmDir(sDir, cMsTimeout);
         else:
             fRc = self.execBinaryNoStdOut('rmdir', (sDir,));
+
+        return fRc;
+
+    def rmTree(self, sDir, cMsTimeout = 30000):
+        """
+        Recursively removes all files and sub directories including the given directory.
+        """
+        fRc = True;
+        if self.oTxsSession is not None:
+            fRc = self.oTxsSession.syncRmTree(sDir, cMsTimeout);
+        else:
+            try:
+                shutil.rmtree(sDir, ignore_errors=True);
+            except:
+                fRc = False;
+
+        return fRc;
+
+    def isFile(self, sPath, cMsTimeout = 30000):
+        """
+        Checks that the given file  exists.
+        """
+        fRc = True;
+        if self.oTxsSession is not None:
+            fRc = self.oTxsSession.syncIsFile(sPath, cMsTimeout);
+        else:
+            try:
+                fRc = os.path.isfile(sPath);
+            except:
+                fRc = False;
 
         return fRc;
 

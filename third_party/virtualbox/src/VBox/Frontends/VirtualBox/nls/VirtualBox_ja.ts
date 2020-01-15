@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="ja">
+<TS version="2.1" language="ja_JP">
 <context>
     <name>@@@</name>
     <message>
@@ -235,7 +235,7 @@
     <name>QIInputDialog</name>
     <message>
         <source>Name:</source>
-        <translation type="vanished">名前:</translation>
+        <translation>名前:</translation>
     </message>
 </context>
 <context>
@@ -359,24 +359,24 @@
     <message>
         <source>%1, %2: %3, %4: %5, %6: %7</source>
         <comment>col.1 text, col.2 name: col.2 text, col.3 name: col.3 text, col.4 name: col.4 text</comment>
-        <translation>%1, %2: %3, %4: %5, %6: %7</translation>
-    </message>
-    <message>
-        <source>Full</source>
-        <translation type="vanished">完全</translation>
-    </message>
-    <message>
-        <source>Read-only</source>
-        <translation type="vanished">読み込み専用</translation>
-    </message>
-    <message>
-        <source>Yes</source>
-        <translation type="vanished">はい</translation>
+        <translation type="vanished">%1, %2: %3, %4: %5, %6: %7</translation>
     </message>
     <message>
         <source>%1, %2: %3, %4: %5, %6: %7, %8: %9</source>
         <comment>col.1 text, col.2 name: col.2 text, col.3 name: col.3 text, col.4 name: col.4 text, col.5 name: col.5 text</comment>
-        <translation type="vanished">%1, %2: %3, %4: %5, %6: %7, %8: %9</translation>
+        <translation>%1, %2: %3, %4: %5, %6: %7, %8: %9</translation>
+    </message>
+    <message>
+        <source>Full</source>
+        <translation>完全</translation>
+    </message>
+    <message>
+        <source>Read-only</source>
+        <translation>読み込み専用</translation>
+    </message>
+    <message>
+        <source>Yes</source>
+        <translation>はい</translation>
     </message>
 </context>
 <context>
@@ -659,7 +659,7 @@
     </message>
     <message>
         <source>&amp;Video Capture</source>
-        <translation>ビデオキャプチャー(&amp;V)</translation>
+        <translation type="vanished">ビデオキャプチャー(&amp;V)</translation>
     </message>
     <message>
         <source>Toggle video capture</source>
@@ -667,7 +667,7 @@
     </message>
     <message>
         <source>&amp;Video Capture Settings...</source>
-        <translation>ビデオキャプチャーの設定(&amp;V)...</translation>
+        <translation type="vanished">ビデオキャプチャーの設定(&amp;V)...</translation>
     </message>
     <message>
         <source>Configure video capture settings</source>
@@ -999,7 +999,7 @@
     </message>
     <message>
         <source>Re&amp;fresh...</source>
-        <translation type="vanished">最新の情報に更新(&amp;F)...</translation>
+        <translation>最新の情報に更新(&amp;F)...</translation>
     </message>
     <message>
         <source>Refresh the accessibility state of the selected virtual machine</source>
@@ -1244,7 +1244,7 @@
     </message>
     <message>
         <source>S&amp;cale Factor</source>
-        <translation>表示倍率(&amp;C)</translation>
+        <translation type="vanished">表示倍率(&amp;C)</translation>
     </message>
     <message>
         <source>&amp;Insert %1</source>
@@ -1358,11 +1358,11 @@
     </message>
     <message>
         <source>Display virtual machine settings window to configure video capture</source>
-        <translation>ビデオキャプチャーの設定に仮想マシン設定ウィンドウを表示</translation>
+        <translation type="vanished">ビデオキャプチャーの設定に仮想マシン設定ウィンドウを表示</translation>
     </message>
     <message>
         <source>Enable guest display video capture</source>
-        <translation>ゲストOS画面のビデオキャプチャーを有効化</translation>
+        <translation type="vanished">ゲストOS画面のビデオキャプチャーを有効化</translation>
     </message>
     <message>
         <source>Allow remote desktop (RDP) connections to this machine</source>
@@ -1432,7 +1432,7 @@
     <message>
         <source>%1%</source>
         <comment>scale-factor</comment>
-        <translation>%1%</translation>
+        <translation type="vanished">%1%</translation>
     </message>
     <message>
         <source>Enable</source>
@@ -1658,19 +1658,19 @@
     </message>
     <message>
         <source>&amp;Machine Tools</source>
-        <translation>マシンツール(&amp;M)</translation>
+        <translation type="vanished">マシンツール(&amp;M)</translation>
     </message>
     <message>
         <source>Switch to machine tools</source>
-        <translation>マシンツールに切り替え</translation>
+        <translation type="vanished">マシンツールに切り替え</translation>
     </message>
     <message>
         <source>&amp;Machine Tools Menu</source>
-        <translation>マシンツールのメニュー(&amp;M)</translation>
+        <translation type="vanished">マシンツールのメニュー(&amp;M)</translation>
     </message>
     <message>
         <source>Open the machine tools menu</source>
-        <translation>マシンツールのメニューを開く</translation>
+        <translation type="vanished">マシンツールのメニューを開く</translation>
     </message>
     <message>
         <source>&amp;Details</source>
@@ -1690,11 +1690,11 @@
     </message>
     <message>
         <source>&amp;Global Tools</source>
-        <translation>グローバルツール(&amp;G)</translation>
+        <translation type="vanished">グローバルツール(&amp;G)</translation>
     </message>
     <message>
         <source>Switch to global tools</source>
-        <translation>グローバルツールに切り替え</translation>
+        <translation type="vanished">グローバルツールに切り替え</translation>
     </message>
     <message>
         <source>&amp;Global Tools Menu</source>
@@ -1702,7 +1702,7 @@
     </message>
     <message>
         <source>Open the global tools menu</source>
-        <translation>グローバルツールのメニューを開く</translation>
+        <translation type="vanished">グローバルツールのメニューを開く</translation>
     </message>
     <message>
         <source>&amp;Virtual Media Manager</source>
@@ -1741,24 +1741,124 @@
         <translation>オーディオ入力を有効化</translation>
     </message>
     <message>
+        <source>&amp;Log</source>
+        <translation>ログ(&amp;L)</translation>
+    </message>
+    <message>
+        <source>Open the log menu</source>
+        <translation type="vanished">ログメニューを開く</translation>
+    </message>
+    <message>
         <source>&amp;Find</source>
-        <translation type="vanished">検索(&amp;F)</translation>
+        <translation>検索(&amp;F)</translation>
     </message>
     <message>
         <source>Log Viewer</source>
-        <translation type="vanished">ログビューアー</translation>
+        <translation>ログビューアー</translation>
+    </message>
+    <message>
+        <source>Open pane with searching options</source>
+        <translation>検索オプション付きでペインを開く</translation>
+    </message>
+    <message>
+        <source>Open Find Pane (%1)</source>
+        <translation type="vanished">検索ペイン (%1) を開く</translation>
+    </message>
+    <message>
+        <source>&amp;Filter</source>
+        <translation>フィルター(&amp;F)</translation>
+    </message>
+    <message>
+        <source>Open pane with filtering options</source>
+        <translation>フィルターオプション付きでペインを開く</translation>
+    </message>
+    <message>
+        <source>Open Filter Pane (%1)</source>
+        <translation type="vanished">フィルターペイン (%1) を表示</translation>
+    </message>
+    <message>
+        <source>&amp;Bookmark</source>
+        <translation>ブックマーク(&amp;B)</translation>
+    </message>
+    <message>
+        <source>Open pane with bookmarking options</source>
+        <translation>ブックマークオプション付きでペインを開く</translation>
+    </message>
+    <message>
+        <source>Open Bookmark Pane (%1)</source>
+        <translation type="vanished">ブックマークペイン (%1) を開く</translation>
+    </message>
+    <message>
+        <source>&amp;Options</source>
+        <translation>オプション(&amp;O)</translation>
+    </message>
+    <message>
+        <source>Open pane with log viewer options</source>
+        <translation>ログ表示オプション付きでペインを開く</translation>
+    </message>
+    <message>
+        <source>Open Options Pane (%1)</source>
+        <translation type="vanished">オプションペイン (%1) を開く</translation>
     </message>
     <message>
         <source>&amp;Refresh</source>
-        <translation type="vanished">最新の情報に更新(&amp;R)</translation>
+        <translation>最新の情報に更新(&amp;R)</translation>
+    </message>
+    <message>
+        <source>Refresh selected virtual machine log</source>
+        <translation>選択した仮想マシンログを最新の状態に更新</translation>
+    </message>
+    <message>
+        <source>Refresh Virtual Machine Log (%1)</source>
+        <translation type="vanished">仮想マシンログ (%1) を最新の情報に更新</translation>
     </message>
     <message>
         <source>&amp;Save...</source>
-        <translation type="vanished">保存(&amp;S)...</translation>
+        <translation>保存(&amp;S)...</translation>
+    </message>
+    <message>
+        <source>Save selected virtual machine log</source>
+        <translation>選択した仮想マシンログを保存</translation>
+    </message>
+    <message>
+        <source>Save Virtual Machine Log (%1)</source>
+        <translation type="vanished">仮想マシンログ (%1) を保存</translation>
+    </message>
+    <message>
+        <source>File Manager</source>
+        <translation>ファイルマネージャー</translation>
+    </message>
+    <message>
+        <source>Host</source>
+        <translation>ホスト</translation>
     </message>
     <message>
         <source>Guest</source>
-        <translation type="vanished">ゲスト</translation>
+        <translation>ゲスト</translation>
+    </message>
+    <message>
+        <source>Copy to guest</source>
+        <translation>ゲストにコピー</translation>
+    </message>
+    <message>
+        <source>Copy the Selected Object(s) from Host to Guest</source>
+        <translation type="vanished">選択したオブジェクトをホストからゲストへコピー</translation>
+    </message>
+    <message>
+        <source>Copy the selected object(s) from host to guest</source>
+        <translation>選択したオブジェクトをホストからゲストへコピー</translation>
+    </message>
+    <message>
+        <source>Copy to host</source>
+        <translation>ホストにコピー</translation>
+    </message>
+    <message>
+        <source>Copy the Selected Object(s) from Guest to Host</source>
+        <translation type="vanished">選択したオブジェクトをゲストからホストへコピー</translation>
+    </message>
+    <message>
+        <source>Copy the selected object(s) from guest to host</source>
+        <translation>選択したオブジェクトをゲストからホストへコピー</translation>
     </message>
     <message>
         <source>Settings</source>
@@ -1766,67 +1866,227 @@
     </message>
     <message>
         <source>Log</source>
-        <translation type="vanished">ログ</translation>
+        <translation>ログ</translation>
+    </message>
+    <message>
+        <source>Session</source>
+        <translation>セッション</translation>
+    </message>
+    <message>
+        <source>Open File Manager Session</source>
+        <translation type="vanished">ファイルマネージャーのセッションを開く</translation>
+    </message>
+    <message>
+        <source>Go one level up to parent folder</source>
+        <translation>親フォルダーから一つ上に移動</translation>
+    </message>
+    <message>
+        <source>Go One Level Up to Parent Folder</source>
+        <translation type="vanished">親フォルダーから一つ上に移動</translation>
+    </message>
+    <message>
+        <source>Go Home</source>
+        <translation>ホームへ</translation>
+    </message>
+    <message>
+        <source>Go to home folder</source>
+        <translation>ホームフォルダーへ移動</translation>
+    </message>
+    <message>
+        <source>Go to Home Folder</source>
+        <translation>ホームフォルダーへ移動</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation type="vanished">削除</translation>
+        <translation>削除</translation>
+    </message>
+    <message>
+        <source>Delete selected file object(s)</source>
+        <translation>選択したファイルオブジェクトを削除</translation>
+    </message>
+    <message>
+        <source>Delete Selected File Object(s)</source>
+        <translation type="vanished">選択したファイルオブジェクトを削除</translation>
     </message>
     <message>
         <source>Refresh</source>
-        <translation type="vanished">最新の情報に更新</translation>
+        <translation>最新の情報に更新</translation>
     </message>
     <message>
         <source>Rename</source>
-        <translation type="vanished">名前を変更</translation>
+        <translation>名前を変更</translation>
+    </message>
+    <message>
+        <source>Create New Directory</source>
+        <translation>新規ディレクトリの作成</translation>
     </message>
     <message>
         <source>Copy</source>
-        <translation type="vanished">コピー</translation>
+        <translation>コピー</translation>
+    </message>
+    <message>
+        <source>Copy selected file object(s)</source>
+        <translation>選択したファイルオブジェクトをコピー</translation>
+    </message>
+    <message>
+        <source>Copy Selected File Object(s)</source>
+        <translation type="vanished">選択したファイルオブジェクトをコピー</translation>
+    </message>
+    <message>
+        <source>Cut</source>
+        <translation>切り取り</translation>
+    </message>
+    <message>
+        <source>Cut selected file object(s)</source>
+        <translation>選択したファイルオブジェクトを切り取り</translation>
+    </message>
+    <message>
+        <source>Cut Selected File Object(s)</source>
+        <translation type="vanished">選択したファイルオブジェクトを切り取り</translation>
+    </message>
+    <message>
+        <source>Paste</source>
+        <translation>貼り付け</translation>
+    </message>
+    <message>
+        <source>Paste copied/cut file object(s)</source>
+        <translation>コピー/切り取りしたファイルオブジェクトを貼り付け</translation>
+    </message>
+    <message>
+        <source>Paste Copied/Cut File Object(s)</source>
+        <translation type="vanished">コピー/切り取りしたファイルオブジェクトを貼り付け</translation>
+    </message>
+    <message>
+        <source>Select All</source>
+        <translation>すべてを選択</translation>
+    </message>
+    <message>
+        <source>Select all files objects</source>
+        <translation>すべてのファイルオブジェクトを選択</translation>
+    </message>
+    <message>
+        <source>Select All Files Objects</source>
+        <translation type="vanished">すべてのファイルオブジェクトを選択</translation>
+    </message>
+    <message>
+        <source>Invert Selection</source>
+        <translation>選択を反転</translation>
+    </message>
+    <message>
+        <source>Invert the current selection</source>
+        <translation>現在の選択を反転</translation>
+    </message>
+    <message>
+        <source>Invert the Current Selection</source>
+        <translation type="vanished">現在の選択を反転</translation>
+    </message>
+    <message>
+        <source>Show Properties</source>
+        <translation>プロパティを表示</translation>
+    </message>
+    <message>
+        <source>Show the properties of currently selected file object(s)</source>
+        <translation>現在選択したファイルオブジェクトのプロパティを開く</translation>
+    </message>
+    <message>
+        <source>Show the Properties of Currently Selected File Object(s)</source>
+        <translation type="vanished">現在選択したファイルオブジェクトのプロパティを開く</translation>
+    </message>
+    <message>
+        <source>&amp;Cloud Profile Manager...</source>
+        <translation>クラウドプロファイルマネージャー(&amp;C)...</translation>
+    </message>
+    <message>
+        <source>Display the Cloud Profile Manager window</source>
+        <translation>クラウドプロファイルマネージャーのウィンドウを表示</translation>
     </message>
     <message>
         <source>Import</source>
-        <translation type="vanished">インポート</translation>
+        <translation>インポート</translation>
     </message>
     <message>
         <source>Export</source>
-        <translation type="vanished">エクスポート</translation>
+        <translation>エクスポート</translation>
     </message>
     <message>
         <source>&amp;Move...</source>
-        <translation type="vanished">移動(&amp;M)...</translation>
+        <translation>移動(&amp;M)...</translation>
+    </message>
+    <message>
+        <source>Move selected virtual machine</source>
+        <translation>選択した仮想マシンを移動</translation>
+    </message>
+    <message>
+        <source>&amp;Logs</source>
+        <translation>ログ(&amp;L)</translation>
+    </message>
+    <message>
+        <source>Open the machine logs pane</source>
+        <translation>マシンログペインを開く</translation>
+    </message>
+    <message>
+        <source>&amp;Cloud Profile Manager</source>
+        <translation>クラウドプロファイルマネージャー(&amp;C)</translation>
+    </message>
+    <message>
+        <source>Open the Cloud Profile Manager</source>
+        <translation>クラウドプロファイルマネージャーを開く</translation>
+    </message>
+    <message>
+        <source>&amp;Snapshot</source>
+        <translation>スナップショット(&amp;S)</translation>
+    </message>
+    <message>
+        <source>Open the snapshot menu</source>
+        <translation type="vanished">スナップショットメニューを開く</translation>
     </message>
     <message>
         <source>&amp;Take...</source>
-        <translation type="vanished">作成(&amp;T)...</translation>
+        <translation>作成(&amp;T)...</translation>
+    </message>
+    <message>
+        <source>Snapshot Pane</source>
+        <translation>スナップショットペイン</translation>
     </message>
     <message>
         <source>Take a snapshot of the current virtual machine state</source>
-        <translation type="vanished">現在の仮想マシンの状態のスナップショットを作成</translation>
+        <translation>現在の仮想マシンの状態のスナップショットを作成</translation>
     </message>
     <message>
         <source>Take Snapshot (%1)</source>
         <translation type="vanished">スナップショットを作成 (%1)</translation>
     </message>
     <message>
+        <source>&amp;Delete...</source>
+        <translation>削除(&amp;D)...</translation>
+    </message>
+    <message>
         <source>Delete selected snapshot of the virtual machine</source>
-        <translation type="vanished">選択した仮想マシンのスナップショットを削除</translation>
+        <translation>選択した仮想マシンのスナップショットを削除</translation>
     </message>
     <message>
         <source>Delete Snapshot (%1)</source>
         <translation type="vanished">スナップショットを削除 (%1)</translation>
     </message>
     <message>
+        <source>&amp;Restore...</source>
+        <translation>復元(&amp;R)...</translation>
+    </message>
+    <message>
         <source>Restore selected snapshot of the virtual machine</source>
-        <translation type="vanished">選択した仮想マシンのスナップショットに復元</translation>
+        <translation>選択した仮想マシンのスナップショットに復元</translation>
     </message>
     <message>
         <source>Restore Snapshot (%1)</source>
         <translation type="vanished">スナップショットを復元 (%1)</translation>
     </message>
     <message>
+        <source>&amp;Properties</source>
+        <translation>プロパティ(&amp;P)</translation>
+    </message>
+    <message>
         <source>Open pane with the selected snapshot properties</source>
-        <translation type="vanished">選択したスナップショットのプロパティ付きでペインを開く</translation>
+        <translation>選択したスナップショットのプロパティ付きでペインを開く</translation>
     </message>
     <message>
         <source>Open Snapshot Properties (%1)</source>
@@ -1834,7 +2094,7 @@
     </message>
     <message>
         <source>&amp;Clone...</source>
-        <translation type="vanished">クローン(&amp;C)...</translation>
+        <translation>クローン(&amp;C)...</translation>
     </message>
     <message>
         <source>Clone Virtual Machine (%1)</source>
@@ -1842,11 +2102,27 @@
     </message>
     <message>
         <source>&amp;Medium</source>
-        <translation type="vanished">メディア(&amp;M)</translation>
+        <translation>メディア(&amp;M)</translation>
+    </message>
+    <message>
+        <source>Open the medium menu</source>
+        <translation type="vanished">メディアメニューを開く</translation>
+    </message>
+    <message>
+        <source>Media Manager</source>
+        <translation>メディアマネージャー</translation>
+    </message>
+    <message>
+        <source>Add a disk image file</source>
+        <translation type="vanished">ディスクイメージファイルを追加</translation>
+    </message>
+    <message>
+        <source>Add a Disk Image File (%1)</source>
+        <translation type="vanished">ディスクイメージファイル (%1) を追加</translation>
     </message>
     <message>
         <source>&amp;Copy...</source>
-        <translation type="vanished">コピー(&amp;C)...</translation>
+        <translation>コピー(&amp;C)...</translation>
     </message>
     <message>
         <source>Copy selected disk image file</source>
@@ -1874,7 +2150,11 @@
     </message>
     <message>
         <source>Re&amp;lease...</source>
-        <translation type="vanished">解放(&amp;L)...</translation>
+        <translation>解放(&amp;L)...</translation>
+    </message>
+    <message>
+        <source>Release selected disk image file</source>
+        <translation type="vanished">選択したディスクイメージファイルを解放</translation>
     </message>
     <message>
         <source>Release Disk Image File (%1)</source>
@@ -1897,8 +2177,20 @@
         <translation type="vanished">ディスクイメージファイルを最新の情報に更新 (%1)</translation>
     </message>
     <message>
+        <source>Open the network menu</source>
+        <translation type="vanished">ネットワークメニューを開く</translation>
+    </message>
+    <message>
+        <source>&amp;Create...</source>
+        <translation>作成(&amp;C)...</translation>
+    </message>
+    <message>
+        <source>Network Manager</source>
+        <translation>ネットワークマネージャー</translation>
+    </message>
+    <message>
         <source>Create new host-only network</source>
-        <translation type="vanished">新しいホストオンリーネットワークを作成</translation>
+        <translation>新しいホストオンリーネットワークを作成</translation>
     </message>
     <message>
         <source>Create Host-only Network (%1)</source>
@@ -1906,7 +2198,7 @@
     </message>
     <message>
         <source>Remove selected host-only network</source>
-        <translation type="vanished">選択したホストオンリーネットワークを除去します</translation>
+        <translation>選択したホストオンリーネットワークを除去します</translation>
     </message>
     <message>
         <source>Remove Host-only Network (%1)</source>
@@ -1914,7 +2206,7 @@
     </message>
     <message>
         <source>Open pane with selected host-only network properties</source>
-        <translation type="vanished">選択したホストオンリーネットワークのプロパティ付きでペインで開く</translation>
+        <translation>選択したホストオンリーネットワークのプロパティ付きでペインで開く</translation>
     </message>
     <message>
         <source>Open Host-only Network Properties (%1)</source>
@@ -1922,335 +2214,35 @@
     </message>
     <message>
         <source>Refresh the list of host-only networks</source>
-        <translation type="vanished">ホストオンリーネットワークのリストを最新の状態に更新</translation>
+        <translation>ホストオンリーネットワークのリストを最新の状態に更新</translation>
     </message>
     <message>
         <source>Refresh Host-only Networks (%1)</source>
         <translation type="vanished">ホストオンリーネットワーク (%1) を最新の状態に更新</translation>
     </message>
     <message>
-        <source>Add</source>
-        <translation type="vanished">追加</translation>
-    </message>
-    <message>
-        <source>Remove</source>
-        <translation type="vanished">除去</translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="vanished">ヘルプ</translation>
-    </message>
-    <message>
-        <source>&amp;Log</source>
-        <translation type="vanished">ログ(&amp;L)</translation>
-    </message>
-    <message>
-        <source>Open the log menu</source>
-        <translation type="vanished">ログメニューを開く</translation>
-    </message>
-    <message>
-        <source>Open pane with searching options</source>
-        <translation type="vanished">検索オプション付きでペインを開く</translation>
-    </message>
-    <message>
-        <source>Open Find Pane (%1)</source>
-        <translation type="vanished">検索ペイン (%1) を開く</translation>
-    </message>
-    <message>
-        <source>&amp;Filter</source>
-        <translation type="vanished">フィルター(&amp;F)</translation>
-    </message>
-    <message>
-        <source>Open pane with filtering options</source>
-        <translation type="vanished">フィルターオプション付きでペインを開く</translation>
-    </message>
-    <message>
-        <source>Open Filter Pane (%1)</source>
-        <translation type="vanished">フィルターペイン (%1) を表示</translation>
-    </message>
-    <message>
-        <source>&amp;Bookmark</source>
-        <translation type="vanished">ブックマーク(&amp;B)</translation>
-    </message>
-    <message>
-        <source>Open pane with bookmarking options</source>
-        <translation type="vanished">ブックマークオプション付きでペインを開く</translation>
-    </message>
-    <message>
-        <source>Open Bookmark Pane (%1)</source>
-        <translation type="vanished">ブックマークペイン (%1) を開く</translation>
-    </message>
-    <message>
-        <source>&amp;Options</source>
-        <translation type="vanished">オプション(&amp;O)</translation>
-    </message>
-    <message>
-        <source>Open pane with log viewer options</source>
-        <translation type="vanished">ログ表示オプション付きでペインを開く</translation>
-    </message>
-    <message>
-        <source>Open Options Pane (%1)</source>
-        <translation type="vanished">オプションペイン (%1) を開く</translation>
-    </message>
-    <message>
-        <source>Refresh selected virtual machine log</source>
-        <translation type="vanished">選択した仮想マシンログを最新の状態に更新</translation>
-    </message>
-    <message>
-        <source>Refresh Virtual Machine Log (%1)</source>
-        <translation type="vanished">仮想マシンログ (%1) を最新の情報に更新</translation>
-    </message>
-    <message>
-        <source>Save selected virtual machine log</source>
-        <translation type="vanished">選択した仮想マシンログを保存</translation>
-    </message>
-    <message>
-        <source>Save Virtual Machine Log (%1)</source>
-        <translation type="vanished">仮想マシンログ (%1) を保存</translation>
-    </message>
-    <message>
-        <source>File Manager</source>
-        <translation type="vanished">ファイルマネージャー</translation>
-    </message>
-    <message>
-        <source>Host</source>
-        <translation type="vanished">ホスト</translation>
-    </message>
-    <message>
-        <source>Copy to guest</source>
-        <translation type="vanished">ゲストにコピー</translation>
-    </message>
-    <message>
-        <source>Copy the Selected Object(s) from Host to Guest</source>
-        <translation type="vanished">選択したオブジェクトをホストからゲストへコピー</translation>
-    </message>
-    <message>
-        <source>Copy the selected object(s) from host to guest</source>
-        <translation type="vanished">選択したオブジェクトをホストからゲストへコピー</translation>
-    </message>
-    <message>
-        <source>Copy to host</source>
-        <translation type="vanished">ホストにコピー</translation>
-    </message>
-    <message>
-        <source>Copy the Selected Object(s) from Guest to Host</source>
-        <translation type="vanished">選択したオブジェクトをゲストからホストへコピー</translation>
-    </message>
-    <message>
-        <source>Copy the selected object(s) from guest to host</source>
-        <translation type="vanished">選択したオブジェクトをゲストからホストへコピー</translation>
-    </message>
-    <message>
-        <source>Session</source>
-        <translation type="vanished">セッション</translation>
-    </message>
-    <message>
-        <source>Open File Manager Session</source>
-        <translation type="vanished">ファイルマネージャーのセッションを開く</translation>
-    </message>
-    <message>
-        <source>Go one level up to parent folder</source>
-        <translation type="vanished">親フォルダーから一つ上に移動</translation>
-    </message>
-    <message>
-        <source>Go One Level Up to Parent Folder</source>
-        <translation type="vanished">親フォルダーから一つ上に移動</translation>
-    </message>
-    <message>
-        <source>Go Home</source>
-        <translation type="vanished">ホームへ</translation>
-    </message>
-    <message>
-        <source>Go to home folder</source>
-        <translation type="vanished">ホームフォルダーへ移動</translation>
-    </message>
-    <message>
-        <source>Go to Home Folder</source>
-        <translation type="vanished">ホームフォルダーへ移動</translation>
-    </message>
-    <message>
-        <source>Delete selected file object(s)</source>
-        <translation type="vanished">選択したファイルオブジェクトを削除</translation>
-    </message>
-    <message>
-        <source>Delete Selected File Object(s)</source>
-        <translation type="vanished">選択したファイルオブジェクトを削除</translation>
-    </message>
-    <message>
-        <source>Create New Directory</source>
-        <translation type="vanished">新規ディレクトリの作成</translation>
-    </message>
-    <message>
-        <source>Copy selected file object(s)</source>
-        <translation type="vanished">選択したファイルオブジェクトをコピー</translation>
-    </message>
-    <message>
-        <source>Copy Selected File Object(s)</source>
-        <translation type="vanished">選択したファイルオブジェクトをコピー</translation>
-    </message>
-    <message>
-        <source>Cut</source>
-        <translation type="vanished">切り取り</translation>
-    </message>
-    <message>
-        <source>Cut selected file object(s)</source>
-        <translation type="vanished">選択したファイルオブジェクトを切り取り</translation>
-    </message>
-    <message>
-        <source>Cut Selected File Object(s)</source>
-        <translation type="vanished">選択したファイルオブジェクトを切り取り</translation>
-    </message>
-    <message>
-        <source>Paste</source>
-        <translation type="vanished">貼り付け</translation>
-    </message>
-    <message>
-        <source>Paste copied/cut file object(s)</source>
-        <translation type="vanished">コピー/切り取りしたファイルオブジェクトを貼り付け</translation>
-    </message>
-    <message>
-        <source>Paste Copied/Cut File Object(s)</source>
-        <translation type="vanished">コピー/切り取りしたファイルオブジェクトを貼り付け</translation>
-    </message>
-    <message>
-        <source>Select All</source>
-        <translation type="vanished">すべてを選択</translation>
-    </message>
-    <message>
-        <source>Select all files objects</source>
-        <translation type="vanished">すべてのファイルオブジェクトを選択</translation>
-    </message>
-    <message>
-        <source>Select All Files Objects</source>
-        <translation type="vanished">すべてのファイルオブジェクトを選択</translation>
-    </message>
-    <message>
-        <source>Invert Selection</source>
-        <translation type="vanished">選択を反転</translation>
-    </message>
-    <message>
-        <source>Invert the current selection</source>
-        <translation type="vanished">現在の選択を反転</translation>
-    </message>
-    <message>
-        <source>Invert the Current Selection</source>
-        <translation type="vanished">現在の選択を反転</translation>
-    </message>
-    <message>
-        <source>Show Properties</source>
-        <translation type="vanished">プロパティを表示</translation>
-    </message>
-    <message>
-        <source>Show the properties of currently selected file object(s)</source>
-        <translation type="vanished">現在選択したファイルオブジェクトのプロパティを開く</translation>
-    </message>
-    <message>
-        <source>Show the Properties of Currently Selected File Object(s)</source>
-        <translation type="vanished">現在選択したファイルオブジェクトのプロパティを開く</translation>
-    </message>
-    <message>
-        <source>&amp;Cloud Profile Manager...</source>
-        <translation type="vanished">クラウドプロファイルマネージャー(&amp;C)...</translation>
-    </message>
-    <message>
-        <source>Display the Cloud Profile Manager window</source>
-        <translation type="vanished">クラウドプロファイルマネージャーのウィンドウを表示</translation>
-    </message>
-    <message>
-        <source>Move selected virtual machine</source>
-        <translation type="vanished">選択した仮想マシンを移動</translation>
-    </message>
-    <message>
-        <source>&amp;Logs</source>
-        <translation type="vanished">ログ(&amp;L)</translation>
-    </message>
-    <message>
-        <source>Open the machine logs pane</source>
-        <translation type="vanished">マシンログペインを開く</translation>
-    </message>
-    <message>
-        <source>&amp;Cloud Profile Manager</source>
-        <translation type="vanished">クラウドプロファイルマネージャー(&amp;C)</translation>
-    </message>
-    <message>
-        <source>Open the Cloud Profile Manager</source>
-        <translation type="vanished">クラウドプロファイルマネージャーを開く</translation>
-    </message>
-    <message>
-        <source>&amp;Snapshot</source>
-        <translation type="vanished">スナップショット(&amp;S)</translation>
-    </message>
-    <message>
-        <source>Open the snapshot menu</source>
-        <translation type="vanished">スナップショットメニューを開く</translation>
-    </message>
-    <message>
-        <source>Snapshot Pane</source>
-        <translation type="vanished">スナップショットペイン</translation>
-    </message>
-    <message>
-        <source>&amp;Delete...</source>
-        <translation type="vanished">削除(&amp;D)...</translation>
-    </message>
-    <message>
-        <source>&amp;Restore...</source>
-        <translation type="vanished">復元(&amp;R)...</translation>
-    </message>
-    <message>
-        <source>&amp;Properties</source>
-        <translation type="vanished">プロパティ(&amp;P)</translation>
-    </message>
-    <message>
-        <source>Open the medium menu</source>
-        <translation type="vanished">メディアメニューを開く</translation>
-    </message>
-    <message>
-        <source>Media Manager</source>
-        <translation type="vanished">メディアマネージャー</translation>
-    </message>
-    <message>
-        <source>Add a disk image file</source>
-        <translation type="vanished">ディスクイメージファイルを追加</translation>
-    </message>
-    <message>
-        <source>Add a Disk Image File (%1)</source>
-        <translation type="vanished">ディスクイメージファイル (%1) を追加</translation>
-    </message>
-    <message>
-        <source>Release selected disk image file</source>
-        <translation type="vanished">選択したディスクイメージファイルを解放</translation>
-    </message>
-    <message>
-        <source>Open the network menu</source>
-        <translation type="vanished">ネットワークメニューを開く</translation>
-    </message>
-    <message>
-        <source>&amp;Create...</source>
-        <translation type="vanished">作成(&amp;C)...</translation>
-    </message>
-    <message>
-        <source>Network Manager</source>
-        <translation type="vanished">ネットワークマネージャー</translation>
-    </message>
-    <message>
         <source>&amp;Cloud</source>
-        <translation type="vanished">クラウド(&amp;C)</translation>
+        <translation>クラウド(&amp;C)</translation>
     </message>
     <message>
         <source>Open the cloud menu</source>
         <translation type="vanished">クラウドメニューを開く</translation>
     </message>
     <message>
+        <source>Add</source>
+        <translation>追加</translation>
+    </message>
+    <message>
         <source>&amp;Add Profile...</source>
-        <translation type="vanished">プロファイルを追加(&amp;A)...</translation>
+        <translation>プロファイルを追加(&amp;A)...</translation>
     </message>
     <message>
         <source>Cloud Profile Manager</source>
-        <translation type="vanished">クラウドプロファイルマネージャー</translation>
+        <translation>クラウドプロファイルマネージャー</translation>
     </message>
     <message>
         <source>Add new cloud profile</source>
-        <translation type="vanished">新しいクラウドプロファイルを追加</translation>
+        <translation>新しいクラウドプロファイルを追加</translation>
     </message>
     <message>
         <source>Add Cloud Profile (%1)</source>
@@ -2258,23 +2250,27 @@
     </message>
     <message>
         <source>&amp;Import Profiles...</source>
-        <translation type="vanished">プロファイルのインポート(&amp;I)...</translation>
+        <translation>プロファイルのインポート(&amp;I)...</translation>
     </message>
     <message>
         <source>Import the list of cloud profiles from external files</source>
-        <translation type="vanished">外部ファイルからクラウドプロファイルのリストをインポート</translation>
+        <translation>外部ファイルからクラウドプロファイルのリストをインポート</translation>
     </message>
     <message>
         <source>Import Cloud Profiles (%1)</source>
         <translation type="vanished">クラウドプロファイル (%1) をインポート</translation>
     </message>
     <message>
+        <source>Remove</source>
+        <translation>除去</translation>
+    </message>
+    <message>
         <source>&amp;Remove Profile...</source>
-        <translation type="vanished">プロファイルを除去(&amp;R)...</translation>
+        <translation>プロファイルを除去(&amp;R)...</translation>
     </message>
     <message>
         <source>Remove selected cloud profile</source>
-        <translation type="vanished">選択したクラウドプロファイルを除去</translation>
+        <translation>選択したクラウドプロファイルを除去</translation>
     </message>
     <message>
         <source>Remove Cloud Profile (%1)</source>
@@ -2282,27 +2278,31 @@
     </message>
     <message>
         <source>Properties</source>
-        <translation type="vanished">プロパティ</translation>
+        <translation>プロパティ</translation>
     </message>
     <message>
         <source>Profile &amp;Properties</source>
-        <translation type="vanished">プロファイルとプロパティ(&amp;P)</translation>
+        <translation>プロファイルとプロパティ(&amp;P)</translation>
     </message>
     <message>
         <source>Open pane with selected cloud profile properties</source>
-        <translation type="vanished">選択したクラウドプロファイルプロパティ付きでペインを開く</translation>
+        <translation>選択したクラウドプロファイルプロパティ付きでペインを開く</translation>
     </message>
     <message>
         <source>Open Cloud Profile Properties (%1)</source>
         <translation type="vanished">クラウドプロファイルのプロパティ (%1) を開く</translation>
     </message>
     <message>
+        <source>Help</source>
+        <translation>ヘルプ</translation>
+    </message>
+    <message>
         <source>&amp;Show Help...</source>
-        <translation type="vanished">ヘルプを表示(&amp;S)...</translation>
+        <translation>ヘルプを表示(&amp;S)...</translation>
     </message>
     <message>
         <source>Show cloud profile help</source>
-        <translation type="vanished">クラウドプロファイルヘルプを開く</translation>
+        <translation>クラウドプロファイルヘルプを開く</translation>
     </message>
     <message>
         <source>Show Cloud Profile Help (%1)</source>
@@ -2310,7 +2310,7 @@
     </message>
     <message>
         <source>File Manager...</source>
-        <translation type="vanished">ファイルマネージャー...</translation>
+        <translation>ファイルマネージャー...</translation>
     </message>
     <message>
         <source>Guest Process Control...</source>
@@ -2322,42 +2322,42 @@
     </message>
     <message>
         <source>&amp;Recording</source>
-        <translation type="vanished">レコーディング(&amp;R)</translation>
+        <translation>レコーディング(&amp;R)</translation>
     </message>
     <message>
         <source>&amp;Recording Settings...</source>
-        <translation type="vanished">レコーディングの設定(&amp;R)...</translation>
+        <translation>レコーディングの設定(&amp;R)...</translation>
     </message>
     <message>
         <source>Display virtual machine settings window to configure video/audio recording</source>
-        <translation type="vanished">ビデオ/オーディオレコーディングを調節する仮想マシン設定ウィンドウを表示</translation>
+        <translation>ビデオ/オーディオレコーディングを調節する仮想マシン設定ウィンドウを表示</translation>
     </message>
     <message>
         <source>Enable guest video/audio recording</source>
-        <translation type="vanished">ゲストビデオ/オーディオレコーディングを有効化</translation>
+        <translation>ゲストビデオ/オーディオレコーディングを有効化</translation>
     </message>
     <message>
         <source>Scale to %1%</source>
         <comment>scale-factor</comment>
-        <translation type="vanished">%1% にスケール</translation>
+        <translation>%1% にスケール</translation>
     </message>
     <message>
         <source>Scale to %1% (unscaled output)</source>
         <comment>scale-factor</comment>
-        <translation type="vanished">%1% にスケール(原寸出力)</translation>
+        <translation>%1% にスケール(原寸出力)</translation>
     </message>
     <message>
         <source>Scale to %1% (autoscaled output)</source>
         <comment>scale-factor</comment>
-        <translation type="vanished">%1% にスケール(自動スケール出力)</translation>
+        <translation>%1% にスケール(自動スケール出力)</translation>
     </message>
     <message>
         <source>Options</source>
-        <translation type="vanished">オプション</translation>
+        <translation>オプション</translation>
     </message>
     <message>
         <source>Open panel with file manager options</source>
-        <translation type="vanished">ファイルマネージャーオプション付きでペインを開く</translation>
+        <translation>ファイルマネージャーオプション付きでペインを開く</translation>
     </message>
     <message>
         <source>Open the file manager</source>
@@ -2377,7 +2377,7 @@
     </message>
     <message>
         <source>Open panel with file manager log</source>
-        <translation type="vanished">ファイルマネージャーログ付きでペインを開く</translation>
+        <translation>ファイルマネージャーログ付きでペインを開く</translation>
     </message>
     <message>
         <source>Open File Manager Log</source>
@@ -2385,11 +2385,11 @@
     </message>
     <message>
         <source>Operations</source>
-        <translation type="vanished">操作</translation>
+        <translation>操作</translation>
     </message>
     <message>
         <source>Open panel with file manager operations</source>
-        <translation type="vanished">ファイルマネージャー操作パネルを開く</translation>
+        <translation>ファイルマネージャー操作パネルを開く</translation>
     </message>
     <message>
         <source>Open File Manager Operations</source>
@@ -2397,43 +2397,304 @@
     </message>
     <message>
         <source>Open panel with file manager session</source>
-        <translation type="vanished">ファイルマネージャーセッション付きで開く</translation>
+        <translation>ファイルマネージャーセッション付きで開く</translation>
     </message>
     <message>
         <source>Go Up</source>
-        <translation type="vanished">上へ</translation>
+        <translation>上へ</translation>
     </message>
     <message>
         <source>Display the virtual machine file manager window</source>
-        <translation type="vanished">仮想マシンファイルマネージャーのウィンドウを表示</translation>
+        <translation>仮想マシンファイルマネージャーのウィンドウを表示</translation>
     </message>
     <message>
         <source>Tools</source>
-        <translation type="vanished">ツール</translation>
+        <translation>ツール</translation>
     </message>
     <message>
         <source>E&amp;xport to OCI...</source>
-        <translation type="vanished">OCIにエクスポート(&amp;X)...</translation>
+        <translation>OCIにエクスポート(&amp;X)...</translation>
     </message>
     <message>
         <source>Export selected virtual machine to OCI</source>
-        <translation type="vanished">選択した仮想マシンをOCIにエクスポートします</translation>
+        <translation>選択した仮想マシンをOCIにエクスポートします</translation>
     </message>
     <message>
         <source>Try</source>
-        <translation type="vanished">試す</translation>
+        <translation>試す</translation>
     </message>
     <message>
         <source>&amp;Try Oracle Cloud for Free...</source>
-        <translation type="vanished">Oracle Cloudを無料で試す(&amp;T)...</translation>
+        <translation>Oracle Cloudを無料で試す(&amp;T)...</translation>
     </message>
     <message>
         <source>Try Oracle cloud for free</source>
-        <translation type="vanished">Oracle Cloudを無料で試す</translation>
+        <translation>Oracle Cloudを無料で試す</translation>
     </message>
     <message>
         <source>Try Oracle Cloud for Free</source>
-        <translation type="vanished">Oracle Cloudを無料で試す</translation>
+        <translation>Oracle Cloudを無料で試す</translation>
+    </message>
+    <message>
+        <source>Display Global Preferences</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open Find Pane</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open Filter Pane</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open Bookmark Pane</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open Options Pane</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Refresh Virtual Machine Log</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save Virtual Machine Log</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy from Host to Guest</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy from Guest to Host</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open Log Pane</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open Operations Pane</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open Session Pane</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Go One Level Up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete Selected Object(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Refresh Contents</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rename selected file object</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rename Selected Object</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy Selected Object(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cut Selected Object(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Paste Copied/Cut Object(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select All Objects</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invert Current Selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show Properties of Current Object(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;New Cloud VM...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create new cloud virtual machine</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>E&amp;xport Locally...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export selected virtual machine locally</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>S&amp;earch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Search virtual machines with respect to a search term</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Take Snapshot</source>
+        <translation type="unfinished">スナップショット作成</translation>
+    </message>
+    <message>
+        <source>Delete Snapshot</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Restore Snapshot</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open Snapshot Properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clone Virtual Machine</source>
+        <translation type="unfinished">仮想マシンのクローン</translation>
+    </message>
+    <message>
+        <source>Add a disk image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add Disk Image</source>
+        <translation type="unfinished">ディスクイメージを追加</translation>
+    </message>
+    <message>
+        <source>Create a new disk image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create Disk Image</source>
+        <translation type="unfinished">ディスクイメージを作成</translation>
+    </message>
+    <message>
+        <source>Copy selected disk image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy Disk Image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected disk image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move Disk Image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove selected disk image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove Disk Image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Release selected disk image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Release Disk Image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open pane with selected disk image properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open Disk Image Properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open the disk image search pane</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open Disk Image Search Pane</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Refresh the list of disk images</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Refresh Disk Images</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create Host-only Network</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove Host-only Network</source>
+        <translation type="unfinished">ホストオンリーネットワークを除去</translation>
+    </message>
+    <message>
+        <source>Open Host-only Network Properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Refresh Host-only Networks</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add Cloud Profile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import Cloud Profiles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove Cloud Profile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open Cloud Profile Properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show Cloud Profile Help</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Soft Keyboard...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display soft keyboard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Guest Control Terminal...</source>
+        <comment>debug action</comment>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2615,11 +2876,11 @@
     </message>
     <message>
         <source>When checked a new unique MAC address will assigned to all configured network cards.</source>
-        <translation>新しい一意のMACアドレスがすべての設定してあるネットワークカードに付与されます。</translation>
+        <translation type="vanished">新しい一意のMACアドレスがすべての設定してあるネットワークカードに付与されます。</translation>
     </message>
     <message>
         <source>&amp;Reinitialize the MAC address of all network cards</source>
-        <translation>すべてのネットワークカードのMACアドレスを再初期化(&amp;R)</translation>
+        <translation type="vanished">すべてのネットワークカードのMACアドレスを再初期化(&amp;R)</translation>
     </message>
     <message>
         <source>Warnings:</source>
@@ -2647,15 +2908,15 @@
     </message>
     <message>
         <source>Settings File</source>
-        <translation type="vanished">設定ファイル</translation>
+        <translation>設定ファイル</translation>
     </message>
     <message>
         <source>Base Folder</source>
-        <translation type="vanished">ベースフォルダー</translation>
+        <translation>ベースフォルダー</translation>
     </message>
     <message>
         <source>Primary Group</source>
-        <translation type="vanished">プライマリグループ</translation>
+        <translation>プライマリグループ</translation>
     </message>
 </context>
 <context>
@@ -2670,23 +2931,23 @@
     </message>
     <message>
         <source>&amp;Import hard drives as VDI</source>
-        <translation type="vanished">ハードドライブをVDIとしてインポート(&amp;I)</translation>
+        <translation>ハードドライブをVDIとしてインポート(&amp;I)</translation>
     </message>
     <message>
         <source>MAC Address &amp;Policy:</source>
-        <translation type="vanished">MACアドレスのポリシー(&amp;P):</translation>
+        <translation>MACアドレスのポリシー(&amp;P):</translation>
     </message>
     <message>
         <source>Include all network adapter MAC addresses</source>
-        <translation type="vanished">すべてのネットワークアダプターのMACアドレスを含む</translation>
+        <translation>すべてのネットワークアダプターのMACアドレスを含む</translation>
     </message>
     <message>
         <source>Include only NAT network adapter MAC addresses</source>
-        <translation type="vanished">NATネットワークアダプターのMACアドレスのみ含む</translation>
+        <translation>NATネットワークアダプターのMACアドレスのみ含む</translation>
     </message>
     <message>
         <source>Generate new MAC addresses for all network adapters</source>
-        <translation type="vanished">すべてのネットワークアダプターでMACアドレスを生成</translation>
+        <translation>すべてのネットワークアダプターでMACアドレスを生成</translation>
     </message>
     <message>
         <source>Include only NAT network adapter MAC addresses during cloning.</source>
@@ -2698,15 +2959,31 @@
     </message>
     <message>
         <source>Additional Options:</source>
-        <translation type="vanished">追加オプション:</translation>
+        <translation>追加オプション:</translation>
     </message>
     <message>
         <source>When checked, all the hard drives that belong to this appliance will be imported in VDI format.</source>
-        <translation type="vanished">このアプライアンスに含まれるすべてのハードドライブをVDIフォーマットでインポートします。</translation>
+        <translation>このアプライアンスに含まれるすべてのハードドライブをVDIフォーマットでインポートします。</translation>
     </message>
     <message>
         <source>Include all network adapter MAC addresses during cloning.</source>
         <translation type="vanished">クローンにすべてのネットワークアダプターのMACアドレスを含みます。</translation>
+    </message>
+    <message>
+        <source>&amp;Machine Base Folder:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Include all network adapter MAC addresses during importing.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Include only NAT network adapter MAC addresses during importing.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Generate new MAC addresses for all network adapters during importing.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2796,6 +3073,57 @@
     </message>
 </context>
 <context>
+    <name>UIAudioControllerEditor</name>
+    <message>
+        <source>Audio &amp;Controller:</source>
+        <translation type="unfinished">オーディオコントローラー(&amp;C):</translation>
+    </message>
+</context>
+<context>
+    <name>UIAudioHostDriverEditor</name>
+    <message>
+        <source>Host Audio &amp;Driver:</source>
+        <translation type="unfinished">ホストオーディオドライバー(&amp;D):</translation>
+    </message>
+</context>
+<context>
+    <name>UIBaseMemoryEditor</name>
+    <message>
+        <source>Base &amp;Memory:</source>
+        <translation type="unfinished">メインメモリー(&amp;M):</translation>
+    </message>
+    <message>
+        <source>%1 MB</source>
+        <translation type="unfinished">%1 MB</translation>
+    </message>
+    <message>
+        <source>MB</source>
+        <translation type="unfinished">MB</translation>
+    </message>
+</context>
+<context>
+    <name>UIBootOrderEditor</name>
+    <message>
+        <source>&amp;Boot Order:</source>
+        <translation type="unfinished">起動順序(&amp;B):</translation>
+    </message>
+    <message>
+        <source>Move Up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move Down</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>UIChooserAbstractModel</name>
+    <message>
+        <source>New group</source>
+        <translation type="unfinished">新しいグループ</translation>
+    </message>
+</context>
+<context>
     <name>UIChooserItemGlobal</name>
     <message>
         <source>Tools</source>
@@ -2819,51 +3147,51 @@
     <message>
         <source>&lt;b&gt;%1&lt;/b&gt;</source>
         <comment>Group item tool-tip / Group name</comment>
-        <translation type="vanished">&lt;b&gt;%1&lt;/b&gt;</translation>
+        <translation>&lt;b&gt;%1&lt;/b&gt;</translation>
     </message>
     <message numerus="yes">
         <source>%n group(s)</source>
         <comment>Group item tool-tip / Group info</comment>
-        <translation type="vanished">
+        <translation>
             <numerusform>%n グループ</numerusform>
         </translation>
     </message>
     <message>
         <source>&lt;nobr&gt;%1&lt;/nobr&gt;</source>
         <comment>Group item tool-tip / Group info wrapper</comment>
-        <translation type="vanished">&lt;nobr&gt;%1&lt;/nobr&gt;</translation>
+        <translation>&lt;nobr&gt;%1&lt;/nobr&gt;</translation>
     </message>
     <message numerus="yes">
         <source>%n machine(s)</source>
         <comment>Group item tool-tip / Machine info</comment>
-        <translation type="vanished">
+        <translation>
             <numerusform>%n マシン</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>(%n running)</source>
         <comment>Group item tool-tip / Running machine info</comment>
-        <translation type="vanished">
+        <translation>
             <numerusform>(%n 実行中)</numerusform>
         </translation>
     </message>
     <message>
         <source>&lt;nobr&gt;%1&lt;/nobr&gt;</source>
         <comment>Group item tool-tip / Machine info wrapper</comment>
-        <translation type="vanished">&lt;nobr&gt;%1&lt;/nobr&gt;</translation>
+        <translation>&lt;nobr&gt;%1&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;%1 %2&lt;/nobr&gt;</source>
         <comment>Group item tool-tip / Machine info wrapper, including running</comment>
-        <translation type="vanished">&lt;nobr&gt;%1&lt;/nobr&gt; {1 %2&lt;?}</translation>
+        <translation>&lt;nobr&gt;%1&lt;/nobr&gt; {1 %2&lt;?}</translation>
     </message>
     <message>
         <source>Collapse group</source>
-        <translation type="vanished">グループをたたむ</translation>
+        <translation>グループをたたむ</translation>
     </message>
     <message>
         <source>Expand group</source>
-        <translation type="vanished">グループを広げる</translation>
+        <translation>グループを広げる</translation>
     </message>
 </context>
 <context>
@@ -2881,147 +3209,1709 @@
     </message>
 </context>
 <context>
+    <name>UIChooserNodeGlobal</name>
+    <message>
+        <source>Tools</source>
+        <translation type="unfinished">ツール</translation>
+    </message>
+</context>
+<context>
+    <name>UIChooserNodeGroup</name>
+    <message>
+        <source>Virtual Machine group</source>
+        <translation type="unfinished">仮想マシングループ</translation>
+    </message>
+</context>
+<context>
+    <name>UIChooserNodeMachine</name>
+    <message>
+        <source>Virtual Machine</source>
+        <translation type="unfinished">仮想マシン</translation>
+    </message>
+</context>
+<context>
+    <name>UIChooserSearchWidget</name>
+    <message>
+        <source>Navigate to the next item among the search results</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Navigate to the previous item among the search results</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter a search term to be used during virtual machine search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close the search widget</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>UIChooserView</name>
     <message>
         <source>Contains a tree of Virtual Machines and their groups</source>
-        <translation type="vanished">仮想マシンとそのグループのツリーを含む</translation>
+        <translation>仮想マシンとそのグループのツリーを含む</translation>
     </message>
 </context>
 <context>
     <name>UICloudProfileDetailsWidget</name>
     <message>
-        <source>Reset</source>
-        <translation type="vanished">リセット</translation>
-    </message>
-    <message>
-        <source>Add</source>
-        <translation type="vanished">追加</translation>
-    </message>
-    <message>
-        <source>Apply</source>
-        <translation type="vanished">適用</translation>
-    </message>
-    <message>
         <source>Name:</source>
-        <translation type="vanished">名前:</translation>
+        <translation>名前:</translation>
     </message>
     <message>
         <source>Properties:</source>
-        <translation type="vanished">プロパティ:</translation>
+        <translation>プロパティ:</translation>
     </message>
     <message>
         <source>Contains cloud profile settings</source>
-        <translation type="vanished">クラウドプロファイルの設定の内容</translation>
+        <translation>クラウドプロファイルの設定の内容</translation>
     </message>
     <message>
         <source>Enter a name for the new profile...</source>
-        <translation type="vanished">新しいプロファイルの名前を入力...</translation>
+        <translation>新しいプロファイルの名前を入力...</translation>
     </message>
     <message>
         <source>Enter a name for this profile...</source>
-        <translation type="vanished">このプロファイr名前を入力...</translation>
+        <translation>このプロファイr名前を入力...</translation>
+    </message>
+    <message>
+        <source>Reset</source>
+        <translation>リセット</translation>
     </message>
     <message>
         <source>Reset changes in current profile details</source>
-        <translation type="vanished">現在のクラウドプロファイル詳細の変更を適用</translation>
+        <translation>現在のクラウドプロファイル詳細の変更を適用</translation>
     </message>
     <message>
         <source>Reset Changes (%1)</source>
-        <translation type="vanished">変更をリセット (%1)</translation>
+        <translation>変更をリセット (%1)</translation>
+    </message>
+    <message>
+        <source>Add</source>
+        <translation>追加</translation>
     </message>
     <message>
         <source>Add a new profile with following name</source>
-        <translation type="vanished">次の名前で新しいプロファイルを追加</translation>
+        <translation>次の名前で新しいプロファイルを追加</translation>
     </message>
     <message>
         <source>Add Profile (%1)</source>
-        <translation type="vanished">プロファイルを追加 (%1)</translation>
+        <translation>プロファイルを追加 (%1)</translation>
+    </message>
+    <message>
+        <source>Apply</source>
+        <translation>適用</translation>
     </message>
     <message>
         <source>Apply changes in current profile details</source>
-        <translation type="vanished">現在のクラウドプロファイル詳細の変更を適用</translation>
+        <translation>現在のクラウドプロファイル詳細の変更を適用</translation>
     </message>
     <message>
         <source>Apply Changes (%1)</source>
-        <translation type="vanished">変更を適用 (%1)</translation>
+        <translation>変更を適用 (%1)</translation>
     </message>
 </context>
 <context>
     <name>UICloudProfileManager</name>
     <message>
+        <source>Cloud Profile Manager</source>
+        <translation>クラウドプロファイルマネージャー</translation>
+    </message>
+    <message>
         <source>Reset</source>
-        <translation type="vanished">リセット</translation>
+        <translation>リセット</translation>
     </message>
     <message>
         <source>Apply</source>
-        <translation type="vanished">適用</translation>
+        <translation>適用</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="vanished">閉じる</translation>
-    </message>
-    <message>
-        <source>Close dialog without saving</source>
-        <translation type="vanished">保存しないでダイアログを閉じる</translation>
-    </message>
-    <message>
-        <source>Close Window (%1)</source>
-        <translation type="vanished">ウィンドウを閉じる (%1)</translation>
-    </message>
-    <message>
-        <source>Cloud Profile Manager</source>
-        <translation type="vanished">クラウドプロファイルマネージャー</translation>
+        <translation>閉じる</translation>
     </message>
     <message>
         <source>Reset changes in current cloud profile details</source>
-        <translation type="vanished">現在のクラウドプロファイル詳細をリセット</translation>
+        <translation>現在のクラウドプロファイル詳細をリセット</translation>
     </message>
     <message>
         <source>Apply changes in current cloud profile details</source>
-        <translation type="vanished">現在のクラウドプロファイル詳細の変更を適用</translation>
+        <translation>現在のクラウドプロファイル詳細の変更を適用</translation>
+    </message>
+    <message>
+        <source>Close dialog without saving</source>
+        <translation>保存しないでダイアログを閉じる</translation>
     </message>
     <message>
         <source>Reset Changes (%1)</source>
-        <translation type="vanished">変更をリセット (%1)</translation>
+        <translation>変更をリセット (%1)</translation>
     </message>
     <message>
         <source>Apply Changes (%1)</source>
-        <translation type="vanished">変更を適用 (%1)</translation>
+        <translation>変更を適用 (%1)</translation>
+    </message>
+    <message>
+        <source>Close Window (%1)</source>
+        <translation>ウィンドウを閉じる (%1)</translation>
     </message>
     <message>
         <source>Add Profile</source>
-        <translation type="vanished">プロファイルを追加</translation>
+        <translation>プロファイルを追加</translation>
+    </message>
+</context>
+<context>
+    <name>UICommon</name>
+    <message>
+        <source>MB</source>
+        <comment>size suffix MBytes=1024 KBytes</comment>
+        <translation type="unfinished">MB</translation>
+    </message>
+    <message>
+        <source>&lt;nobr&gt;%1 MB&lt;/nobr&gt;</source>
+        <comment>details report</comment>
+        <translation type="unfinished">&lt;nobr&gt;%1 MB&lt;/nobr&gt;</translation>
+    </message>
+    <message>
+        <source>Enabled</source>
+        <comment>details report (3D Acceleration)</comment>
+        <translation type="unfinished">有効</translation>
+    </message>
+    <message>
+        <source>Disabled</source>
+        <comment>details report (3D Acceleration)</comment>
+        <translation type="unfinished">無効</translation>
+    </message>
+    <message>
+        <source>not set</source>
+        <comment>details report (execution engine)</comment>
+        <translation type="unfinished">未設定</translation>
+    </message>
+    <message>
+        <source>Active</source>
+        <comment>details report (Nested Paging)</comment>
+        <translation type="unfinished">有効</translation>
+    </message>
+    <message>
+        <source>Inactive</source>
+        <comment>details report (Nested Paging)</comment>
+        <translation type="unfinished">無効</translation>
+    </message>
+    <message>
+        <source>Active</source>
+        <comment>details report (Unrestricted Execution)</comment>
+        <translation type="unfinished">有効</translation>
+    </message>
+    <message>
+        <source>Inactive</source>
+        <comment>details report (Unrestricted Execution)</comment>
+        <translation type="unfinished">無効</translation>
+    </message>
+    <message>
+        <source>Execution engine</source>
+        <comment>details report</comment>
+        <translation type="unfinished">実行エンジン</translation>
+    </message>
+    <message>
+        <source>Nested Paging</source>
+        <translation type="unfinished">ネステッドページング</translation>
+    </message>
+    <message>
+        <source>Unrestricted Execution</source>
+        <translation type="unfinished">Unrestricted Execution</translation>
+    </message>
+    <message>
+        <source>Execution Cap</source>
+        <comment>details report</comment>
+        <translation type="unfinished">使用率制限</translation>
+    </message>
+    <message>
+        <source>Paravirtualization Interface</source>
+        <comment>details report</comment>
+        <translation type="unfinished">準仮想化インターフェース</translation>
+    </message>
+    <message>
+        <source>Processors</source>
+        <comment>details report</comment>
+        <translation type="unfinished">プロセッサー</translation>
+    </message>
+    <message>
+        <source>Powered Off</source>
+        <comment>MachineState</comment>
+        <translation type="unfinished">電源オフ</translation>
+    </message>
+    <message>
+        <source>Saved</source>
+        <comment>MachineState</comment>
+        <translation type="unfinished">保存</translation>
+    </message>
+    <message>
+        <source>Aborted</source>
+        <comment>MachineState</comment>
+        <translation type="unfinished">中断</translation>
+    </message>
+    <message>
+        <source>Teleported</source>
+        <comment>MachineState</comment>
+        <translation type="unfinished">テレポーテーション</translation>
+    </message>
+    <message>
+        <source>Running</source>
+        <comment>MachineState</comment>
+        <translation type="unfinished">実行中</translation>
+    </message>
+    <message>
+        <source>Paused</source>
+        <comment>MachineState</comment>
+        <translation type="unfinished">一時停止</translation>
+    </message>
+    <message>
+        <source>Guru Meditation</source>
+        <comment>MachineState</comment>
+        <translation type="unfinished">瞑想中(システムエラー)</translation>
+    </message>
+    <message>
+        <source>Teleporting</source>
+        <comment>MachineState</comment>
+        <translation type="unfinished">テレポーテーション中</translation>
+    </message>
+    <message>
+        <source>Taking Snapshot</source>
+        <comment>MachineState</comment>
+        <translation type="unfinished">スナップショット作成中</translation>
+    </message>
+    <message>
+        <source>Taking Online Snapshot</source>
+        <comment>MachineState</comment>
+        <translation type="unfinished">オンラインスナップショットを作成中</translation>
+    </message>
+    <message>
+        <source>Taking Live Snapshot</source>
+        <comment>MachineState</comment>
+        <translation type="unfinished">スナップショットを作成中</translation>
+    </message>
+    <message>
+        <source>Starting</source>
+        <comment>MachineState</comment>
+        <translation type="unfinished">起動中</translation>
+    </message>
+    <message>
+        <source>Stopping</source>
+        <comment>MachineState</comment>
+        <translation type="unfinished">停止中</translation>
+    </message>
+    <message>
+        <source>Saving</source>
+        <comment>MachineState</comment>
+        <translation type="unfinished">保存中</translation>
+    </message>
+    <message>
+        <source>Restoring</source>
+        <comment>MachineState</comment>
+        <translation type="unfinished">復元中</translation>
+    </message>
+    <message>
+        <source>Teleporting Paused VM</source>
+        <comment>MachineState</comment>
+        <translation type="unfinished">仮想マシンのテレポーテーションを中断</translation>
+    </message>
+    <message>
+        <source>Deleting Snapshot</source>
+        <comment>MachineState</comment>
+        <translation type="unfinished">スナップショットを削除中</translation>
+    </message>
+    <message>
+        <source>Restoring Snapshot</source>
+        <comment>MachineState</comment>
+        <translation type="unfinished">スナップショットに復元中</translation>
+    </message>
+    <message>
+        <source>Setting Up</source>
+        <comment>MachineState</comment>
+        <translation type="unfinished">セットアップ</translation>
+    </message>
+    <message>
+        <source>Unlocked</source>
+        <comment>SessionState</comment>
+        <translation type="unfinished">アンロック</translation>
+    </message>
+    <message>
+        <source>Locked</source>
+        <comment>SessionState</comment>
+        <translation type="unfinished">ロック</translation>
+    </message>
+    <message>
+        <source>Spawning</source>
+        <comment>SessionState</comment>
+        <translation type="unfinished">生成中</translation>
+    </message>
+    <message>
+        <source>Unlocking</source>
+        <comment>SessionState</comment>
+        <translation type="unfinished">アンロック中</translation>
+    </message>
+    <message>
+        <source>None</source>
+        <comment>ParavirtProvider</comment>
+        <translation type="unfinished">なし</translation>
+    </message>
+    <message>
+        <source>Default</source>
+        <comment>ParavirtProvider</comment>
+        <translation type="unfinished">デフォルト</translation>
+    </message>
+    <message>
+        <source>Legacy</source>
+        <comment>ParavirtProvider</comment>
+        <translation type="unfinished">Legacy</translation>
+    </message>
+    <message>
+        <source>Minimal</source>
+        <comment>ParavirtProvider</comment>
+        <translation type="unfinished">Minimal</translation>
+    </message>
+    <message>
+        <source>Hyper-V</source>
+        <comment>ParavirtProvider</comment>
+        <translation type="unfinished">Hyper-V</translation>
+    </message>
+    <message>
+        <source>KVM</source>
+        <comment>ParavirtProvider</comment>
+        <translation type="unfinished">KVM</translation>
+    </message>
+    <message>
+        <source>None</source>
+        <comment>DeviceType</comment>
+        <translation type="unfinished">なし</translation>
+    </message>
+    <message>
+        <source>Floppy</source>
+        <comment>DeviceType</comment>
+        <translation type="unfinished">フロッピー</translation>
+    </message>
+    <message>
+        <source>Optical</source>
+        <comment>DeviceType</comment>
+        <translation type="unfinished">光学</translation>
+    </message>
+    <message>
+        <source>Hard Disk</source>
+        <comment>DeviceType</comment>
+        <translation type="unfinished">ハードディスク</translation>
+    </message>
+    <message>
+        <source>Network</source>
+        <comment>DeviceType</comment>
+        <translation type="unfinished">ネットワーク</translation>
+    </message>
+    <message>
+        <source>USB</source>
+        <comment>DeviceType</comment>
+        <translation type="unfinished">USB</translation>
+    </message>
+    <message>
+        <source>Shared Folder</source>
+        <comment>DeviceType</comment>
+        <translation type="unfinished">共有フォルダー</translation>
+    </message>
+    <message>
+        <source>Disabled</source>
+        <comment>ClipboardType</comment>
+        <translation type="unfinished">無効</translation>
+    </message>
+    <message>
+        <source>Host To Guest</source>
+        <comment>ClipboardType</comment>
+        <translation type="unfinished">ホストOSからゲストOSへ</translation>
+    </message>
+    <message>
+        <source>Guest To Host</source>
+        <comment>ClipboardType</comment>
+        <translation type="unfinished">ゲストOSからホストOSへ</translation>
+    </message>
+    <message>
+        <source>Bidirectional</source>
+        <comment>ClipboardType</comment>
+        <translation type="unfinished">双方向</translation>
+    </message>
+    <message>
+        <source>Disabled</source>
+        <comment>DragAndDropType</comment>
+        <translation type="unfinished">無効</translation>
+    </message>
+    <message>
+        <source>Host To Guest</source>
+        <comment>DragAndDropType</comment>
+        <translation type="unfinished">ホストOSからゲストOSへ</translation>
+    </message>
+    <message>
+        <source>Guest To Host</source>
+        <comment>DragAndDropType</comment>
+        <translation type="unfinished">ゲストOSからホストOSへ</translation>
+    </message>
+    <message>
+        <source>Bidirectional</source>
+        <comment>DragAndDropType</comment>
+        <translation type="unfinished">双方向</translation>
+    </message>
+    <message>
+        <source>PS/2 Mouse</source>
+        <comment>PointingHIDType</comment>
+        <translation type="unfinished">PS/2 マウス</translation>
+    </message>
+    <message>
+        <source>USB Mouse</source>
+        <comment>PointingHIDType</comment>
+        <translation type="unfinished">USBマウス</translation>
+    </message>
+    <message>
+        <source>USB Tablet</source>
+        <comment>PointingHIDType</comment>
+        <translation type="unfinished">USBタブレット</translation>
+    </message>
+    <message>
+        <source>PS/2 and USB Mouse</source>
+        <comment>PointingHIDType</comment>
+        <translation type="unfinished">PS/2とUSBマウス</translation>
+    </message>
+    <message>
+        <source>USB Multi-Touch Tablet</source>
+        <comment>PointingHIDType</comment>
+        <translation type="unfinished">USB マルチタッチタブレット</translation>
+    </message>
+    <message>
+        <source>None</source>
+        <comment>GraphicsControllerType</comment>
+        <translation type="unfinished">なし</translation>
+    </message>
+    <message>
+        <source>VBoxVGA</source>
+        <comment>GraphicsControllerType</comment>
+        <translation type="unfinished">VBoxVGA</translation>
+    </message>
+    <message>
+        <source>VMSVGA</source>
+        <comment>GraphicsControllerType</comment>
+        <translation type="unfinished">VMSVGA</translation>
+    </message>
+    <message>
+        <source>VBoxSVGA</source>
+        <comment>GraphicsControllerType</comment>
+        <translation type="unfinished">VBoxSVGA</translation>
+    </message>
+    <message>
+        <source>Normal</source>
+        <comment>MediumType</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Immutable</source>
+        <comment>MediumType</comment>
+        <translation type="unfinished">変更不可</translation>
+    </message>
+    <message>
+        <source>Writethrough</source>
+        <comment>MediumType</comment>
+        <translation type="unfinished">ライトスルー</translation>
+    </message>
+    <message>
+        <source>Shareable</source>
+        <comment>MediumType</comment>
+        <translation type="unfinished">共有可能</translation>
+    </message>
+    <message>
+        <source>Readonly</source>
+        <comment>MediumType</comment>
+        <translation type="unfinished">読み込み専用</translation>
+    </message>
+    <message>
+        <source>Multi-attach</source>
+        <comment>MediumType</comment>
+        <translation type="unfinished">複数割り当て</translation>
+    </message>
+    <message>
+        <source>Dynamically allocated storage</source>
+        <comment>MediumVariant</comment>
+        <translation type="unfinished">可変サイズのストレージ</translation>
+    </message>
+    <message>
+        <source>New dynamically allocated storage</source>
+        <comment>MediumVariant</comment>
+        <translation type="unfinished">新しい可変サイズのストレージ</translation>
+    </message>
+    <message>
+        <source>Dynamically allocated differencing storage</source>
+        <comment>MediumVariant</comment>
+        <translation type="unfinished">可変サイズの差分ストレージ</translation>
+    </message>
+    <message>
+        <source>Fixed size storage</source>
+        <comment>MediumVariant</comment>
+        <translation type="unfinished">固定サイズのストレージ</translation>
+    </message>
+    <message>
+        <source>Dynamically allocated storage split into files of less than 2GB</source>
+        <comment>MediumVariant</comment>
+        <translation type="unfinished">2GB以下のファイルで分割する可変サイズのストレージ</translation>
+    </message>
+    <message>
+        <source>Dynamically allocated differencing storage split into files of less than 2GB</source>
+        <comment>MediumVariant</comment>
+        <translation type="unfinished">2GB以下のファイルで分割する可変サイズの差分ストレージ</translation>
+    </message>
+    <message>
+        <source>Fixed size storage split into files of less than 2GB</source>
+        <comment>MediumVariant</comment>
+        <translation type="unfinished">2GB以下のファイルで分割する固定サイズのストレージ</translation>
+    </message>
+    <message>
+        <source>Dynamically allocated compressed storage</source>
+        <comment>MediumVariant</comment>
+        <translation type="unfinished">可変サイズの圧縮ストレージ</translation>
+    </message>
+    <message>
+        <source>Dynamically allocated differencing compressed storage</source>
+        <comment>MediumVariant</comment>
+        <translation type="unfinished">可変サイズの差分圧縮ストレージ</translation>
+    </message>
+    <message>
+        <source>Fixed size ESX storage</source>
+        <comment>MediumVariant</comment>
+        <translation type="unfinished">固定サイズのESXストレージ</translation>
+    </message>
+    <message>
+        <source>Fixed size storage on raw disk</source>
+        <comment>MediumVariant</comment>
+        <translation type="unfinished">固定サイズのrawディスク</translation>
+    </message>
+    <message>
+        <source>Not attached</source>
+        <comment>NetworkAttachmentType</comment>
+        <translation type="unfinished">未割り当て</translation>
+    </message>
+    <message>
+        <source>NAT</source>
+        <comment>NetworkAttachmentType</comment>
+        <translation type="unfinished">NAT</translation>
+    </message>
+    <message>
+        <source>Bridged Adapter</source>
+        <comment>NetworkAttachmentType</comment>
+        <translation type="unfinished">ブリッジアダプター</translation>
+    </message>
+    <message>
+        <source>Internal Network</source>
+        <comment>NetworkAttachmentType</comment>
+        <translation type="unfinished">内部ネットワーク</translation>
+    </message>
+    <message>
+        <source>Host-only Adapter</source>
+        <comment>NetworkAttachmentType</comment>
+        <translation type="unfinished">ホストオンリーアダプター</translation>
+    </message>
+    <message>
+        <source>Generic Driver</source>
+        <comment>NetworkAttachmentType</comment>
+        <translation type="unfinished">汎用ドライバー</translation>
+    </message>
+    <message>
+        <source>NAT Network</source>
+        <comment>NetworkAttachmentType</comment>
+        <translation type="unfinished">NATネットワーク</translation>
+    </message>
+    <message>
+        <source>Cloud Network</source>
+        <comment>NetworkAttachmentType</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PCnet-PCI II (Am79C970A)</source>
+        <comment>NetworkAdapterType</comment>
+        <translation type="unfinished">PCnet-PCI II (Am79C970A)</translation>
+    </message>
+    <message>
+        <source>PCnet-FAST III (Am79C973)</source>
+        <comment>NetworkAdapterType</comment>
+        <translation type="unfinished">PCnet-FAST III (Am79C973)</translation>
+    </message>
+    <message>
+        <source>Intel PRO/1000 MT Desktop (82540EM)</source>
+        <comment>NetworkAdapterType</comment>
+        <translation type="unfinished">Intel PRO/1000 MT Desktop (82540EM)</translation>
+    </message>
+    <message>
+        <source>Intel PRO/1000 T Server (82543GC)</source>
+        <comment>NetworkAdapterType</comment>
+        <translation type="unfinished">Intel PRO/1000 T Server (82543GC)</translation>
+    </message>
+    <message>
+        <source>Intel PRO/1000 MT Server (82545EM)</source>
+        <comment>NetworkAdapterType</comment>
+        <translation type="unfinished">Intel PRO/1000 MT Server (82545EM)</translation>
+    </message>
+    <message>
+        <source>Paravirtualized Network (virtio-net)</source>
+        <comment>NetworkAdapterType</comment>
+        <translation type="unfinished">準仮想化ネットワーク (virtio-net)</translation>
+    </message>
+    <message>
+        <source>Deny</source>
+        <comment>NetworkAdapterPromiscModePolicy</comment>
+        <translation type="unfinished">拒否</translation>
+    </message>
+    <message>
+        <source>Allow VMs</source>
+        <comment>NetworkAdapterPromiscModePolicy</comment>
+        <translation type="unfinished">許可したVM</translation>
+    </message>
+    <message>
+        <source>Allow All</source>
+        <comment>NetworkAdapterPromiscModePolicy</comment>
+        <translation type="unfinished">すべて許可</translation>
+    </message>
+    <message>
+        <source>Disconnected</source>
+        <comment>PortMode</comment>
+        <translation type="unfinished">切断</translation>
+    </message>
+    <message>
+        <source>Host Pipe</source>
+        <comment>PortMode</comment>
+        <translation type="unfinished">ホストにパイプ</translation>
+    </message>
+    <message>
+        <source>Host Device</source>
+        <comment>PortMode</comment>
+        <translation type="unfinished">ホストデバイス</translation>
+    </message>
+    <message>
+        <source>Raw File</source>
+        <comment>PortMode</comment>
+        <translation type="unfinished">Rawファイル</translation>
+    </message>
+    <message>
+        <source>TCP</source>
+        <comment>PortMode</comment>
+        <translation type="unfinished">TCP</translation>
+    </message>
+    <message>
+        <source>OHCI</source>
+        <comment>USBControllerType</comment>
+        <translation type="unfinished">OHCI</translation>
+    </message>
+    <message>
+        <source>EHCI</source>
+        <comment>USBControllerType</comment>
+        <translation type="unfinished">EHCI</translation>
+    </message>
+    <message>
+        <source>xHCI</source>
+        <comment>USBControllerType</comment>
+        <translation type="unfinished">xHCI</translation>
+    </message>
+    <message>
+        <source>Not supported</source>
+        <comment>USBDeviceState</comment>
+        <translation type="unfinished">未サポート</translation>
+    </message>
+    <message>
+        <source>Unavailable</source>
+        <comment>USBDeviceState</comment>
+        <translation type="unfinished">利用不可</translation>
+    </message>
+    <message>
+        <source>Busy</source>
+        <comment>USBDeviceState</comment>
+        <translation type="unfinished">ビジー</translation>
+    </message>
+    <message>
+        <source>Available</source>
+        <comment>USBDeviceState</comment>
+        <translation type="unfinished">利用可能</translation>
+    </message>
+    <message>
+        <source>Held</source>
+        <comment>USBDeviceState</comment>
+        <translation type="unfinished">保持</translation>
+    </message>
+    <message>
+        <source>Captured</source>
+        <comment>USBDeviceState</comment>
+        <translation type="unfinished">キャプチャー</translation>
+    </message>
+    <message>
+        <source>Ignore</source>
+        <comment>USBDeviceFilterAction</comment>
+        <translation type="unfinished">無視</translation>
+    </message>
+    <message>
+        <source>Hold</source>
+        <comment>USBDeviceFilterAction</comment>
+        <translation type="unfinished">保持</translation>
+    </message>
+    <message>
+        <source>Null Audio Driver</source>
+        <comment>AudioDriverType</comment>
+        <translation type="unfinished">Null Audio Driver</translation>
+    </message>
+    <message>
+        <source>Windows Multimedia</source>
+        <comment>AudioDriverType</comment>
+        <translation type="unfinished">Windows マルチメディア</translation>
+    </message>
+    <message>
+        <source>OSS Audio Driver</source>
+        <comment>AudioDriverType</comment>
+        <translation type="unfinished">OSS オーディオドライバー</translation>
+    </message>
+    <message>
+        <source>ALSA Audio Driver</source>
+        <comment>AudioDriverType</comment>
+        <translation type="unfinished">ALSA オーディオドライバー</translation>
+    </message>
+    <message>
+        <source>Windows DirectSound</source>
+        <comment>AudioDriverType</comment>
+        <translation type="unfinished">Windows DirectSound</translation>
+    </message>
+    <message>
+        <source>CoreAudio</source>
+        <comment>AudioDriverType</comment>
+        <translation type="unfinished">CoreAudio</translation>
+    </message>
+    <message>
+        <source>PulseAudio</source>
+        <comment>AudioDriverType</comment>
+        <translation type="unfinished">PulseAudio</translation>
+    </message>
+    <message>
+        <source>Solaris Audio</source>
+        <comment>AudioDriverType</comment>
+        <translation type="unfinished">Solaris オーディオ</translation>
+    </message>
+    <message>
+        <source>ICH AC97</source>
+        <comment>AudioControllerType</comment>
+        <translation type="unfinished">ICH AC97</translation>
+    </message>
+    <message>
+        <source>SoundBlaster 16</source>
+        <comment>AudioControllerType</comment>
+        <translation type="unfinished">SoundBlaster 16</translation>
+    </message>
+    <message>
+        <source>Intel HD Audio</source>
+        <comment>AudioControllerType</comment>
+        <translation type="unfinished">Intel HD オーディオ</translation>
+    </message>
+    <message>
+        <source>Null</source>
+        <comment>AuthType</comment>
+        <translation type="unfinished">Null</translation>
+    </message>
+    <message>
+        <source>External</source>
+        <comment>AuthType</comment>
+        <translation type="unfinished">外部</translation>
+    </message>
+    <message>
+        <source>Guest</source>
+        <comment>AuthType</comment>
+        <translation type="unfinished">ゲスト</translation>
+    </message>
+    <message>
+        <source>IDE</source>
+        <comment>StorageBus</comment>
+        <translation type="unfinished">IDE</translation>
+    </message>
+    <message>
+        <source>SATA</source>
+        <comment>StorageBus</comment>
+        <translation type="unfinished">SATA</translation>
+    </message>
+    <message>
+        <source>SCSI</source>
+        <comment>StorageBus</comment>
+        <translation type="unfinished">SCSI</translation>
+    </message>
+    <message>
+        <source>Floppy</source>
+        <comment>StorageBus</comment>
+        <translation type="unfinished">フロッピー</translation>
+    </message>
+    <message>
+        <source>SAS</source>
+        <comment>StorageBus</comment>
+        <translation type="unfinished">SAS</translation>
+    </message>
+    <message>
+        <source>USB</source>
+        <comment>StorageBus</comment>
+        <translation type="unfinished">USB</translation>
+    </message>
+    <message>
+        <source>PCIe</source>
+        <comment>StorageBus</comment>
+        <translation type="unfinished">PCIe</translation>
+    </message>
+    <message>
+        <source>virtio-scsi</source>
+        <comment>StorageBus</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>LsiLogic</source>
+        <comment>StorageControllerType</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>BusLogic</source>
+        <comment>StorageControllerType</comment>
+        <translation type="unfinished">BusLogic</translation>
+    </message>
+    <message>
+        <source>AHCI</source>
+        <comment>StorageControllerType</comment>
+        <translation type="unfinished">AHCI</translation>
+    </message>
+    <message>
+        <source>PIIX3</source>
+        <comment>StorageControllerType</comment>
+        <translation type="unfinished">PIIX3</translation>
+    </message>
+    <message>
+        <source>PIIX4</source>
+        <comment>StorageControllerType</comment>
+        <translation type="unfinished">PIIX4</translation>
+    </message>
+    <message>
+        <source>ICH6</source>
+        <comment>StorageControllerType</comment>
+        <translation type="unfinished">ICH6</translation>
+    </message>
+    <message>
+        <source>I82078</source>
+        <comment>StorageControllerType</comment>
+        <translation type="unfinished">I82078</translation>
+    </message>
+    <message>
+        <source>LsiLogic SAS</source>
+        <comment>StorageControllerType</comment>
+        <translation type="unfinished">LsiLogic SAS</translation>
+    </message>
+    <message>
+        <source>USB</source>
+        <comment>StorageControllerType</comment>
+        <translation type="unfinished">USB</translation>
+    </message>
+    <message>
+        <source>NVMe</source>
+        <comment>StorageControllerType</comment>
+        <translation type="unfinished">NVMe</translation>
+    </message>
+    <message>
+        <source>virtio-scsi</source>
+        <comment>StorageControllerType</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PIIX3</source>
+        <comment>ChipsetType</comment>
+        <translation type="unfinished">PIIX3</translation>
+    </message>
+    <message>
+        <source>ICH9</source>
+        <comment>ChipsetType</comment>
+        <translation type="unfinished">ICH9</translation>
+    </message>
+    <message>
+        <source>UDP</source>
+        <comment>NATProtocol</comment>
+        <translation type="unfinished">UDP</translation>
+    </message>
+    <message>
+        <source>TCP</source>
+        <comment>NATProtocol</comment>
+        <translation type="unfinished">TCP</translation>
+    </message>
+    <message>
+        <source>Starting</source>
+        <comment>GuestSessionStatus</comment>
+        <translation type="obsolete">起動中</translation>
+    </message>
+    <message>
+        <source>Starting</source>
+        <comment>ProcessStatus</comment>
+        <translation type="obsolete">起動中</translation>
+    </message>
+    <message>
+        <source>Paused</source>
+        <comment>ProcessStatus</comment>
+        <translation type="obsolete">一時停止</translation>
+    </message>
+    <message>
+        <source>B</source>
+        <comment>size suffix Bytes</comment>
+        <translation type="unfinished">B</translation>
+    </message>
+    <message>
+        <source>KB</source>
+        <comment>size suffix KBytes=1024 Bytes</comment>
+        <translation type="unfinished">KB</translation>
+    </message>
+    <message>
+        <source>GB</source>
+        <comment>size suffix GBytes=1024 MBytes</comment>
+        <translation type="unfinished">GB</translation>
+    </message>
+    <message>
+        <source>TB</source>
+        <comment>size suffix TBytes=1024 GBytes</comment>
+        <translation type="unfinished">TB</translation>
+    </message>
+    <message>
+        <source>PB</source>
+        <comment>size suffix PBytes=1024 TBytes</comment>
+        <translation type="unfinished">PB</translation>
+    </message>
+    <message>
+        <source>IDE Primary Master</source>
+        <comment>StorageSlot</comment>
+        <translation type="unfinished">IDE プライマリマスター</translation>
+    </message>
+    <message>
+        <source>IDE Primary Slave</source>
+        <comment>StorageSlot</comment>
+        <translation type="unfinished">IDE プライマリスレーブ</translation>
+    </message>
+    <message>
+        <source>IDE Secondary Master</source>
+        <comment>StorageSlot</comment>
+        <translation type="unfinished">IDE セカンダリマスター</translation>
+    </message>
+    <message>
+        <source>IDE Secondary Slave</source>
+        <comment>StorageSlot</comment>
+        <translation type="unfinished">IDE セカンダリスレーブ</translation>
+    </message>
+    <message>
+        <source>SATA Port %1</source>
+        <comment>StorageSlot</comment>
+        <translation type="unfinished">SATA ポート %1</translation>
+    </message>
+    <message>
+        <source>SCSI Port %1</source>
+        <comment>StorageSlot</comment>
+        <translation type="unfinished">SCSI ポート %1</translation>
+    </message>
+    <message>
+        <source>SAS Port %1</source>
+        <comment>StorageSlot</comment>
+        <translation type="unfinished">SAS ポート %1</translation>
+    </message>
+    <message>
+        <source>Floppy Device %1</source>
+        <comment>StorageSlot</comment>
+        <translation type="unfinished">フロッピーデバイス %1</translation>
+    </message>
+    <message>
+        <source>USB Port %1</source>
+        <comment>StorageSlot</comment>
+        <translation type="unfinished">USB ポート %1</translation>
+    </message>
+    <message>
+        <source>NVMe Port %1</source>
+        <comment>StorageSlot</comment>
+        <translation type="unfinished">NVMe ポート %1</translation>
+    </message>
+    <message>
+        <source>virtio-scsi Port %1</source>
+        <comment>StorageSlot</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished">名前</translation>
+    </message>
+    <message>
+        <source>OS</source>
+        <translation type="unfinished">OS</translation>
+    </message>
+    <message>
+        <source>Location</source>
+        <translation type="unfinished">場所</translation>
+    </message>
+    <message>
+        <source>Groups</source>
+        <translation type="unfinished">グループ</translation>
+    </message>
+    <message>
+        <source>RAM</source>
+        <translation type="unfinished">RAM</translation>
+    </message>
+    <message>
+        <source>CPU Count</source>
+        <translation type="unfinished">CPU数</translation>
+    </message>
+    <message>
+        <source>CPU Execution Cap</source>
+        <translation type="unfinished">CPU使用率制限</translation>
+    </message>
+    <message>
+        <source>Boot Order</source>
+        <translation type="unfinished">起動順序</translation>
+    </message>
+    <message>
+        <source>Chipset Type</source>
+        <translation type="unfinished">チップセットのタイプ</translation>
+    </message>
+    <message>
+        <source>Firmware</source>
+        <translation type="unfinished">ファームウェア</translation>
+    </message>
+    <message>
+        <source>Acceleration</source>
+        <translation type="unfinished">アクセラレーション</translation>
+    </message>
+    <message>
+        <source>VRAM</source>
+        <translation type="unfinished">VRAM</translation>
+    </message>
+    <message>
+        <source>Screen Count</source>
+        <translation type="unfinished">スクリーン数</translation>
+    </message>
+    <message>
+        <source>Scale Factor</source>
+        <translation type="unfinished">表示倍率</translation>
+    </message>
+    <message>
+        <source>Graphics Controller</source>
+        <translation type="unfinished">グラフィックスコントローラー</translation>
+    </message>
+    <message>
+        <source>VRDE</source>
+        <translation type="unfinished">VRDE</translation>
+    </message>
+    <message>
+        <source>Recording</source>
+        <translation type="unfinished">レコーディング</translation>
+    </message>
+    <message>
+        <source>Hard Disks</source>
+        <translation type="unfinished">ハードディスク</translation>
+    </message>
+    <message>
+        <source>Optical Devices</source>
+        <translation type="unfinished">光学デバイス</translation>
+    </message>
+    <message>
+        <source>Floppy Devices</source>
+        <translation type="unfinished">フロッピーデバイス</translation>
+    </message>
+    <message>
+        <source>Driver</source>
+        <translation type="unfinished">ドライバー</translation>
+    </message>
+    <message>
+        <source>Controller</source>
+        <translation type="unfinished">コントローラー</translation>
+    </message>
+    <message>
+        <source>Input/Output</source>
+        <translation type="unfinished">入出力</translation>
+    </message>
+    <message>
+        <source>Not Attached</source>
+        <comment>network adapter</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>NAT</source>
+        <translation type="unfinished">NAT</translation>
+    </message>
+    <message>
+        <source>Bridget Adapter</source>
+        <translation type="unfinished">ブリッジアダプター</translation>
+    </message>
+    <message>
+        <source>Internal Network</source>
+        <translation type="unfinished">内部ネットワーク</translation>
+    </message>
+    <message>
+        <source>Host Only Adapter</source>
+        <translation type="unfinished">ホストオンリーアダプター</translation>
+    </message>
+    <message>
+        <source>Generic Driver</source>
+        <translation type="unfinished">汎用ドライバー</translation>
+    </message>
+    <message>
+        <source>NAT Network</source>
+        <translation type="unfinished">NATネットワーク</translation>
+    </message>
+    <message>
+        <source>Disconnected</source>
+        <comment>serial port</comment>
+        <translation type="unfinished">切断</translation>
+    </message>
+    <message>
+        <source>Host Pipe</source>
+        <translation type="unfinished">ホストにパイプ</translation>
+    </message>
+    <message>
+        <source>Host Device</source>
+        <translation type="unfinished">ホストデバイス</translation>
+    </message>
+    <message>
+        <source>Raw File</source>
+        <translation type="unfinished">Rawファイル</translation>
+    </message>
+    <message>
+        <source>TCP</source>
+        <translation type="unfinished">TCP</translation>
+    </message>
+    <message>
+        <source>Device Filters</source>
+        <translation type="unfinished">デバイスフィルター</translation>
+    </message>
+    <message>
+        <source>Menu Bar</source>
+        <translation type="unfinished">メニューバー</translation>
+    </message>
+    <message>
+        <source>Status Bar</source>
+        <translation type="unfinished">ステータスバー</translation>
+    </message>
+    <message>
+        <source>Mini Toolbar</source>
+        <translation type="unfinished">ミニ ツールバー</translation>
+    </message>
+    <message>
+        <source>General</source>
+        <comment>DetailsElementType</comment>
+        <translation type="unfinished">一般</translation>
+    </message>
+    <message>
+        <source>Preview</source>
+        <comment>DetailsElementType</comment>
+        <translation type="unfinished">プレビュー</translation>
+    </message>
+    <message>
+        <source>System</source>
+        <comment>DetailsElementType</comment>
+        <translation type="unfinished">システム</translation>
+    </message>
+    <message>
+        <source>Display</source>
+        <comment>DetailsElementType</comment>
+        <translation type="unfinished">ディスプレイ</translation>
+    </message>
+    <message>
+        <source>Storage</source>
+        <comment>DetailsElementType</comment>
+        <translation type="unfinished">ストレージ</translation>
+    </message>
+    <message>
+        <source>Audio</source>
+        <comment>DetailsElementType</comment>
+        <translation type="unfinished">オーディオ</translation>
+    </message>
+    <message>
+        <source>Network</source>
+        <comment>DetailsElementType</comment>
+        <translation type="unfinished">ネットワーク</translation>
+    </message>
+    <message>
+        <source>Serial ports</source>
+        <comment>DetailsElementType</comment>
+        <translation type="unfinished">シリアルポート</translation>
+    </message>
+    <message>
+        <source>USB</source>
+        <comment>DetailsElementType</comment>
+        <translation type="unfinished">USB</translation>
+    </message>
+    <message>
+        <source>Shared folders</source>
+        <comment>DetailsElementType</comment>
+        <translation type="unfinished">共有フォルダー</translation>
+    </message>
+    <message>
+        <source>User interface</source>
+        <comment>DetailsElementType</comment>
+        <translation type="unfinished">ユーザーインターフェース</translation>
+    </message>
+    <message>
+        <source>Description</source>
+        <comment>DetailsElementType</comment>
+        <translation type="unfinished">説明</translation>
+    </message>
+    <message>
+        <source>Hard Disks</source>
+        <comment>IndicatorType</comment>
+        <translation type="unfinished">ハードディスク</translation>
+    </message>
+    <message>
+        <source>Optical Disks</source>
+        <comment>IndicatorType</comment>
+        <translation type="unfinished">光学ディスク</translation>
+    </message>
+    <message>
+        <source>Floppy Disks</source>
+        <comment>IndicatorType</comment>
+        <translation type="unfinished">フロッピーディスク</translation>
+    </message>
+    <message>
+        <source>Audio</source>
+        <comment>IndicatorType</comment>
+        <translation type="unfinished">オーディオ</translation>
+    </message>
+    <message>
+        <source>Network</source>
+        <comment>IndicatorType</comment>
+        <translation type="unfinished">ネットワーク</translation>
+    </message>
+    <message>
+        <source>USB</source>
+        <comment>IndicatorType</comment>
+        <translation type="unfinished">USB</translation>
+    </message>
+    <message>
+        <source>Shared Folders</source>
+        <comment>IndicatorType</comment>
+        <translation type="unfinished">共有フォルダー</translation>
+    </message>
+    <message>
+        <source>Display</source>
+        <comment>IndicatorType</comment>
+        <translation type="unfinished">ディスプレイ</translation>
+    </message>
+    <message>
+        <source>Recording</source>
+        <comment>IndicatorType</comment>
+        <translation type="unfinished">レコーディング</translation>
+    </message>
+    <message>
+        <source>Features</source>
+        <comment>IndicatorType</comment>
+        <translation type="unfinished">機能</translation>
+    </message>
+    <message>
+        <source>Mouse</source>
+        <comment>IndicatorType</comment>
+        <translation type="unfinished">マウス</translation>
+    </message>
+    <message>
+        <source>Keyboard</source>
+        <comment>IndicatorType</comment>
+        <translation type="unfinished">キーボード</translation>
+    </message>
+    <message>
+        <source>General</source>
+        <comment>InformationElementType</comment>
+        <translation type="unfinished">一般</translation>
+    </message>
+    <message>
+        <source>Preview</source>
+        <comment>InformationElementType</comment>
+        <translation type="unfinished">プレビュー</translation>
+    </message>
+    <message>
+        <source>System</source>
+        <comment>InformationElementType</comment>
+        <translation type="unfinished">システム</translation>
+    </message>
+    <message>
+        <source>Display</source>
+        <comment>InformationElementType</comment>
+        <translation type="unfinished">ディスプレイ</translation>
+    </message>
+    <message>
+        <source>Storage</source>
+        <comment>InformationElementType</comment>
+        <translation type="unfinished">ストレージ</translation>
+    </message>
+    <message>
+        <source>Audio</source>
+        <comment>InformationElementType</comment>
+        <translation type="unfinished">オーディオ</translation>
+    </message>
+    <message>
+        <source>Network</source>
+        <comment>InformationElementType</comment>
+        <translation type="unfinished">ネットワーク</translation>
+    </message>
+    <message>
+        <source>Serial ports</source>
+        <comment>InformationElementType</comment>
+        <translation type="unfinished">シリアルポート</translation>
+    </message>
+    <message>
+        <source>USB</source>
+        <comment>InformationElementType</comment>
+        <translation type="unfinished">USB</translation>
+    </message>
+    <message>
+        <source>Shared folders</source>
+        <comment>InformationElementType</comment>
+        <translation type="unfinished">共有フォルダー</translation>
+    </message>
+    <message>
+        <source>User interface</source>
+        <comment>InformationElementType</comment>
+        <translation type="unfinished">ユーザーインターフェース</translation>
+    </message>
+    <message>
+        <source>Description</source>
+        <comment>InformationElementType</comment>
+        <translation type="unfinished">説明</translation>
+    </message>
+    <message>
+        <source>Runtime attributes</source>
+        <comment>InformationElementType</comment>
+        <translation type="unfinished">ランタイム属性</translation>
+    </message>
+    <message>
+        <source>Storage statistics</source>
+        <comment>InformationElementType</comment>
+        <translation type="unfinished">ストレージ統計</translation>
+    </message>
+    <message>
+        <source>Network statistics</source>
+        <comment>InformationElementType</comment>
+        <translation type="unfinished">ネットワーク 統計</translation>
+    </message>
+    <message>
+        <source>VDI (VirtualBox Disk Image)</source>
+        <comment>UIMediumFormat</comment>
+        <translation type="unfinished">VDI (VirtualBox Disk Image)</translation>
+    </message>
+    <message>
+        <source>VMDK (Virtual Machine Disk)</source>
+        <comment>UIMediumFormat</comment>
+        <translation type="unfinished">VMDK (Virtual Machine Disk)</translation>
+    </message>
+    <message>
+        <source>VHD (Virtual Hard Disk)</source>
+        <comment>UIMediumFormat</comment>
+        <translation type="unfinished">VHD (Virtual Hard Disk)</translation>
+    </message>
+    <message>
+        <source>HDD (Parallels Hard Disk)</source>
+        <comment>UIMediumFormat</comment>
+        <translation type="unfinished">HDD (Parallels Hard Disk)</translation>
+    </message>
+    <message>
+        <source>QED (QEMU enhanced disk)</source>
+        <comment>UIMediumFormat</comment>
+        <translation type="unfinished">QED (QEMU enhanced disk)</translation>
+    </message>
+    <message>
+        <source>QCOW (QEMU Copy-On-Write)</source>
+        <comment>UIMediumFormat</comment>
+        <translation type="unfinished">QCOW (QEMU Copy-On-Write)</translation>
+    </message>
+    <message>
+        <source>Video/Audio</source>
+        <comment>UISettingsDefs::RecordingMode</comment>
+        <translation type="unfinished">ビデオ/オーディオ</translation>
+    </message>
+    <message>
+        <source>Video Only</source>
+        <comment>UISettingsDefs::RecordingMode</comment>
+        <translation type="unfinished">ビデオのみ</translation>
+    </message>
+    <message>
+        <source>Audio Only</source>
+        <comment>UISettingsDefs::RecordingMode</comment>
+        <translation type="unfinished">オーディオのみ</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n year(s)</source>
+        <translation type="unfinished">
+            <numerusform>%n 年</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n month(s)</source>
+        <translation type="unfinished">
+            <numerusform>%n 月</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n day(s)</source>
+        <translation type="unfinished">
+            <numerusform>%n 日</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n hour(s)</source>
+        <translation type="unfinished">
+            <numerusform>%n 時間</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n minute(s)</source>
+        <translation type="unfinished">
+            <numerusform>%n 分</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n second(s)</source>
+        <translation type="unfinished">
+            <numerusform>%n 秒</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Please choose a virtual hard disk file</source>
+        <translation type="unfinished">仮想ハードディスクファイルを選択してください</translation>
+    </message>
+    <message>
+        <source>All virtual hard disk files (%1)</source>
+        <translation type="unfinished">すべての仮想ハードディスクファイル (%1)</translation>
+    </message>
+    <message>
+        <source>Please choose a virtual optical disk file</source>
+        <translation type="unfinished">仮想光学ディスクファイルを選択してください</translation>
+    </message>
+    <message>
+        <source>All virtual optical disk files (%1)</source>
+        <translation type="unfinished">すべての仮想光学ディスクファイル (%1)</translation>
+    </message>
+    <message>
+        <source>Please choose a virtual floppy disk file</source>
+        <translation type="unfinished">仮想フロッピーディスクファイルを選択してください</translation>
+    </message>
+    <message>
+        <source>All virtual floppy disk files (%1)</source>
+        <translation type="unfinished">すべての仮想フロッピーディスクファイル (%1)</translation>
+    </message>
+    <message>
+        <source>All files (*)</source>
+        <translation type="unfinished">すべてのファイル(*)</translation>
+    </message>
+    <message>
+        <source>Unknown device</source>
+        <comment>USB device details</comment>
+        <translation type="unfinished">不明なデバイス</translation>
+    </message>
+    <message>
+        <source>Unknown device %1:%2</source>
+        <comment>USB device details</comment>
+        <translation type="unfinished">不明なデバイス %1:%2</translation>
+    </message>
+    <message>
+        <source>&lt;nobr&gt;Vendor ID: %1&lt;/nobr&gt;&lt;br&gt;&lt;nobr&gt;Product ID: %2&lt;/nobr&gt;&lt;br&gt;&lt;nobr&gt;Revision: %3&lt;/nobr&gt;</source>
+        <comment>USB device tooltip</comment>
+        <translation type="unfinished">&lt;nobr&gt;ベンダーID: %1&lt;/nobr&gt;&lt;br&gt;&lt;nobr&gt;プロダクトID: %2&lt;/nobr&gt;&lt;br&gt;&lt;nobr&gt;リビジョン: %3&lt;/nobr&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;&lt;nobr&gt;Serial No. %1&lt;/nobr&gt;</source>
+        <comment>USB device tooltip</comment>
+        <translation type="unfinished">&lt;br&gt;&lt;nobr&gt;シリアルNo. %1&lt;/nobr&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;&lt;nobr&gt;State: %1&lt;/nobr&gt;</source>
+        <comment>USB device tooltip</comment>
+        <translation type="unfinished">&lt;br&gt;&lt;nobr&gt;状態: %1&lt;/nobr&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;nobr&gt;Vendor ID: %1&lt;/nobr&gt;</source>
+        <comment>USB filter tooltip</comment>
+        <translation type="unfinished">&lt;nobr&gt;ベンダーID: %1&lt;/nobr&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;nobr&gt;Product ID: %2&lt;/nobr&gt;</source>
+        <comment>USB filter tooltip</comment>
+        <translation type="unfinished">&lt;nobr&gt;プロダクトID: %2&lt;/nobr&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;nobr&gt;Revision: %3&lt;/nobr&gt;</source>
+        <comment>USB filter tooltip</comment>
+        <translation type="unfinished">&lt;nobr&gt;リビジョン: %3&lt;/nobr&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;nobr&gt;Product: %4&lt;/nobr&gt;</source>
+        <comment>USB filter tooltip</comment>
+        <translation type="unfinished">&lt;nobr&gt;製品: %4&lt;/nobr&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;nobr&gt;Manufacturer: %5&lt;/nobr&gt;</source>
+        <comment>USB filter tooltip</comment>
+        <translation type="unfinished">&lt;nobr&gt;メーカー: %5&lt;/nobr&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;nobr&gt;Serial No.: %1&lt;/nobr&gt;</source>
+        <comment>USB filter tooltip</comment>
+        <translation type="unfinished">&lt;nobr&gt;シリアルNo.: %1&lt;/nobr&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;nobr&gt;Port: %1&lt;/nobr&gt;</source>
+        <comment>USB filter tooltip</comment>
+        <translation type="unfinished">&lt;nobr&gt;ポート: %1&lt;/nobr&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;nobr&gt;State: %1&lt;/nobr&gt;</source>
+        <comment>USB filter tooltip</comment>
+        <translation type="unfinished">&lt;nobr&gt;状態: %1&lt;/nobr&gt;</translation>
+    </message>
+    <message>
+        <source>User-defined</source>
+        <comment>serial port</comment>
+        <translation type="unfinished">ユーザー定義</translation>
+    </message>
+    <message>
+        <source>Inaccessible</source>
+        <comment>medium</comment>
+        <translation type="unfinished">アクセスできません</translation>
+    </message>
+    <message>
+        <source>Empty</source>
+        <comment>medium</comment>
+        <translation type="unfinished">空</translation>
+    </message>
+    <message>
+        <source>Host Drive &apos;%1&apos;</source>
+        <comment>medium</comment>
+        <translation type="unfinished">ホストドライブ &apos;%1&apos;</translation>
+    </message>
+    <message>
+        <source>Host Drive %1 (%2)</source>
+        <comment>medium</comment>
+        <translation type="unfinished">ホストドライブ %1 (%2)</translation>
+    </message>
+    <message>
+        <source>&lt;p style=white-space:pre&gt;Type (Format):  %1 (%2)&lt;/p&gt;</source>
+        <comment>medium</comment>
+        <translation type="unfinished">&lt;p style=white-space:pre&gt;タイプ (形式):  %1 (%2)&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;Attached to:  %1&lt;/p&gt;</source>
+        <comment>image</comment>
+        <translation type="unfinished">&lt;p&gt;割り当て:  %1&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;i&gt;Not Attached&lt;/i&gt;</source>
+        <comment>image</comment>
+        <translation type="unfinished">&lt;i&gt;未割り当て&lt;/i&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;i&gt;Checking accessibility...&lt;/i&gt;</source>
+        <comment>medium</comment>
+        <translation type="unfinished">&lt;i&gt;アクセス可否を確認中...&lt;/i&gt;</translation>
+    </message>
+    <message>
+        <source>Failed to check accessibility of disk image files.</source>
+        <comment>medium</comment>
+        <translation type="unfinished">メディアのアクセス可否の確認に失敗しました。</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;No disk image file selected&lt;/b&gt;</source>
+        <comment>medium</comment>
+        <translation type="unfinished">&lt;b&gt;メディア 未選択&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>You can also change this while the machine is running.</source>
+        <translation type="unfinished">仮想マシンの動作中、これを変更することができます。</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;No disk image files available&lt;/b&gt;</source>
+        <comment>medium</comment>
+        <translation type="unfinished">&lt;b&gt;メディア 利用不可&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>You can create or add disk image files in the virtual machine settings.</source>
+        <translation type="unfinished">仮想マシン設定でディスクイメージファイルを作成ないし追加できます。</translation>
+    </message>
+    <message>
+        <source>Attaching this hard disk will be performed indirectly using a newly created differencing hard disk.</source>
+        <comment>medium</comment>
+        <translation type="unfinished">このハードディスクの割り当ては、新規作成された差分ハードディスクの使用により、間接的に実行されます。</translation>
+    </message>
+    <message>
+        <source>Encrypted</source>
+        <comment>medium</comment>
+        <translation type="unfinished">暗号化</translation>
+    </message>
+    <message>
+        <source>Checking...</source>
+        <comment>medium</comment>
+        <translation type="unfinished">確認中...</translation>
+    </message>
+    <message>
+        <source>Some of the files in this hard disk chain are inaccessible. Please use the Virtual Medium Manager to inspect these files.</source>
+        <comment>medium</comment>
+        <translation type="unfinished">ハードディスクチェーン中のいくつかのメディアにアクセスできません。仮想メディアマネージャーを使用して、これらのメディアを確認してください。</translation>
+    </message>
+    <message>
+        <source>This base hard disk is indirectly attached using the following differencing hard disk:</source>
+        <comment>medium</comment>
+        <translation type="unfinished">このベースハードディスクは以下の差分ハードディスクを使用して間接的に割り当てられます:</translation>
+    </message>
+    <message>
+        <source>Differencing</source>
+        <comment>MediumType</comment>
+        <translation type="unfinished">差分</translation>
+    </message>
+    <message>
+        <source>Adapter %1</source>
+        <translation type="unfinished">アダプター %1</translation>
+    </message>
+    <message>
+        <source>Please choose a location for new virtual hard disk file</source>
+        <translation type="unfinished">新しい仮想ハードディスクファイルの場所を選択</translation>
+    </message>
+    <message>
+        <source>Paravirtualized Network (virtio-net 1.0)</source>
+        <comment>NetworkAdapterType</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PCnet-ISA (Am79C960)</source>
+        <comment>NetworkAdapterType</comment>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>UICustomFileSystemModel</name>
     <message>
         <source>Name</source>
-        <translation type="vanished">名前</translation>
+        <translation>名前</translation>
     </message>
     <message>
         <source>Size</source>
-        <translation type="vanished">サイズ</translation>
-    </message>
-    <message>
-        <source>Path</source>
-        <translation type="vanished">パス</translation>
+        <translation>サイズ</translation>
     </message>
     <message>
         <source>Change Time</source>
-        <translation type="vanished">変更日時</translation>
+        <translation>変更日時</translation>
     </message>
     <message>
         <source>Owner</source>
-        <translation type="vanished">所有者</translation>
+        <translation>所有者</translation>
     </message>
     <message>
         <source>Permissions</source>
-        <translation type="vanished">パーミッション</translation>
+        <translation>パーミッション</translation>
     </message>
     <message>
         <source>LocalPath</source>
         <translation type="vanished">ローカルパス</translation>
+    </message>
+    <message>
+        <source>Path</source>
+        <translation>パス</translation>
+    </message>
+    <message>
+        <source>New Directory</source>
+        <translation type="unfinished">新規ディレクトリ</translation>
+    </message>
+    <message>
+        <source>Local Path</source>
+        <translation type="unfinished">ローカルパス</translation>
     </message>
 </context>
 <context>
@@ -3044,152 +4934,157 @@
     <message>
         <source>Name</source>
         <comment>details (general)</comment>
-        <translation type="vanished">名前</translation>
+        <translation>名前</translation>
     </message>
     <message>
         <source>Operating System</source>
         <comment>details (general)</comment>
-        <translation type="vanished">オペレーティングシステム</translation>
+        <translation>オペレーティングシステム</translation>
+    </message>
+    <message>
+        <source>Settings File Location</source>
+        <comment>details (general)</comment>
+        <translation>設定ファイルの場所</translation>
     </message>
     <message>
         <source>Groups</source>
         <comment>details (general)</comment>
-        <translation type="vanished">グループ</translation>
+        <translation>グループ</translation>
     </message>
     <message>
         <source>Information Inaccessible</source>
         <comment>details</comment>
-        <translation type="vanished">取得不可能な情報</translation>
+        <translation>取得不可能な情報</translation>
     </message>
     <message>
         <source>Base Memory</source>
         <comment>details (system)</comment>
-        <translation type="vanished">メインメモリー</translation>
+        <translation>メインメモリー</translation>
     </message>
     <message>
         <source>%1 MB</source>
         <comment>details</comment>
-        <translation type="vanished">%1 MB</translation>
+        <translation>%1 MB</translation>
     </message>
     <message>
         <source>Processors</source>
         <comment>details (system)</comment>
-        <translation type="vanished">プロセッサー</translation>
+        <translation>プロセッサー</translation>
     </message>
     <message>
         <source>Execution Cap</source>
         <comment>details (system)</comment>
-        <translation type="vanished">使用率制限</translation>
+        <translation>使用率制限</translation>
     </message>
     <message>
         <source>%1%</source>
         <comment>details</comment>
-        <translation type="vanished">%1%</translation>
+        <translation>%1%</translation>
     </message>
     <message>
         <source>Boot Order</source>
         <comment>details (system)</comment>
-        <translation type="vanished">起動順序</translation>
+        <translation>起動順序</translation>
     </message>
     <message>
         <source>Chipset Type</source>
         <comment>details (system)</comment>
-        <translation type="vanished">チップセットのタイプ</translation>
+        <translation>チップセットのタイプ</translation>
     </message>
     <message>
         <source>EFI</source>
         <comment>details (system)</comment>
-        <translation type="vanished">EFI</translation>
+        <translation>EFI</translation>
     </message>
     <message>
         <source>Enabled</source>
         <comment>details (system/EFI)</comment>
-        <translation type="vanished">有効</translation>
+        <translation>有効</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details (system/EFI)</comment>
-        <translation type="vanished">無効</translation>
+        <translation>無効</translation>
     </message>
     <message>
         <source>VT-x/AMD-V</source>
         <comment>details (system)</comment>
-        <translation type="vanished">VT-x/AMD-V</translation>
+        <translation>VT-x/AMD-V</translation>
     </message>
     <message>
         <source>Nested Paging</source>
         <comment>details (system)</comment>
-        <translation type="vanished">ネステッドページング</translation>
+        <translation>ネステッドページング</translation>
     </message>
     <message>
         <source>PAE/NX</source>
         <comment>details (system)</comment>
-        <translation type="vanished">PAE/NX</translation>
+        <translation>PAE/NX</translation>
     </message>
     <message>
         <source>Minimal Paravirtualization</source>
         <comment>details (system)</comment>
-        <translation type="vanished">最低限の準仮想化</translation>
+        <translation>最低限の準仮想化</translation>
     </message>
     <message>
         <source>Hyper-V Paravirtualization</source>
         <comment>details (system)</comment>
-        <translation type="vanished">Hyper-V 準仮想化</translation>
+        <translation>Hyper-V 準仮想化</translation>
     </message>
     <message>
         <source>KVM Paravirtualization</source>
         <comment>details (system)</comment>
-        <translation type="vanished">KVM 準仮想化</translation>
+        <translation>KVM 準仮想化</translation>
     </message>
     <message>
         <source>Acceleration</source>
         <comment>details (system)</comment>
-        <translation type="vanished">アクセラレーション</translation>
+        <translation>アクセラレーション</translation>
     </message>
     <message>
         <source>Video Memory</source>
         <comment>details (display)</comment>
-        <translation type="vanished">ビデオメモリー</translation>
+        <translation>ビデオメモリー</translation>
     </message>
     <message>
         <source>Screens</source>
         <comment>details (display)</comment>
-        <translation type="vanished">スクリーン</translation>
+        <translation>スクリーン</translation>
     </message>
     <message>
         <source>Scale-factor</source>
         <comment>details (display)</comment>
-        <translation type="vanished">表示倍率</translation>
+        <translation>表示倍率</translation>
     </message>
     <message>
         <source>2D Video</source>
         <comment>details (display)</comment>
-        <translation type="vanished">2D ビデオ</translation>
+        <translation>2D ビデオ</translation>
     </message>
     <message>
         <source>3D</source>
         <comment>details (display)</comment>
-        <translation type="vanished">3D</translation>
+        <translation>3D</translation>
     </message>
     <message>
         <source>Acceleration</source>
         <comment>details (display)</comment>
-        <translation type="vanished">アクセラレーション</translation>
+        <translation>アクセラレーション</translation>
     </message>
     <message>
         <source>Remote Desktop Server Port</source>
         <comment>details (display/vrde)</comment>
-        <translation type="vanished">リモートデスクトップサーバーポート</translation>
+        <translation>リモートデスクトップサーバーポート</translation>
     </message>
     <message>
         <source>Remote Desktop Server</source>
         <comment>details (display/vrde)</comment>
-        <translation type="vanished">リモートデスクトップサーバー</translation>
+        <translation>リモートデスクトップサーバー</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details (display/vrde/VRDE server)</comment>
-        <translation type="vanished">無効</translation>
+        <translation>無効</translation>
     </message>
     <message>
         <source>Video Capture File</source>
@@ -3203,7 +5098,7 @@
     </message>
     <message>
         <source>Frame Size: %1x%2, Frame Rate: %3fps, Bit Rate: %4kbps</source>
-        <translation type="vanished">フレームサイズ: %1x%2, フレームレート: %3fps, ビットレート: %4kbps</translation>
+        <translation>フレームサイズ: %1x%2, フレームレート: %3fps, ビットレート: %4kbps</translation>
     </message>
     <message>
         <source>Video Capture</source>
@@ -3218,232 +5113,246 @@
     <message>
         <source>[Optical Drive]</source>
         <comment>details (storage)</comment>
-        <translation type="vanished">[光学ドライブ]</translation>
-    </message>
-    <message>
-        <source>Host Driver</source>
-        <comment>details (audio)</comment>
-        <translation type="vanished">ホストドライバー</translation>
-    </message>
-    <message>
-        <source>Controller</source>
-        <comment>details (audio)</comment>
-        <translation type="vanished">コントローラー</translation>
-    </message>
-    <message>
-        <source>Audio Output</source>
-        <comment>details (audio)</comment>
-        <translation type="vanished">オーディオ出力</translation>
-    </message>
-    <message>
-        <source>Enabled</source>
-        <comment>details (audio/output)</comment>
-        <translation type="vanished">有効</translation>
-    </message>
-    <message>
-        <source>Disabled</source>
-        <comment>details (audio/output)</comment>
-        <translation type="vanished">無効</translation>
-    </message>
-    <message>
-        <source>Audio Input</source>
-        <comment>details (audio)</comment>
-        <translation type="vanished">オーディオ入力</translation>
-    </message>
-    <message>
-        <source>Enabled</source>
-        <comment>details (audio/input)</comment>
-        <translation type="vanished">有効</translation>
-    </message>
-    <message>
-        <source>Disabled</source>
-        <comment>details (audio/input)</comment>
-        <translation type="vanished">無効</translation>
-    </message>
-    <message>
-        <source>Disabled</source>
-        <comment>details (audio)</comment>
-        <translation type="vanished">無効</translation>
-    </message>
-    <message>
-        <source>Bridged Adapter, %1</source>
-        <comment>details (network)</comment>
-        <translation type="vanished">ブリッジアダプター, &apos;%1&apos;</translation>
-    </message>
-    <message>
-        <source>Internal Network, &apos;%1&apos;</source>
-        <comment>details (network)</comment>
-        <translation type="vanished">内部ネットワーク, &apos;%1&apos;</translation>
-    </message>
-    <message>
-        <source>Host-only Adapter, &apos;%1&apos;</source>
-        <comment>details (network)</comment>
-        <translation type="vanished">ホストオンリーアダプター, &apos;%1&apos;</translation>
-    </message>
-    <message>
-        <source>Generic Driver, &apos;%1&apos;</source>
-        <comment>details (network)</comment>
-        <translation type="vanished">汎用ドライバー, &apos;%1&apos;</translation>
-    </message>
-    <message>
-        <source>Generic Driver, &apos;%1&apos; { %2 }</source>
-        <comment>details (network)</comment>
-        <translation type="vanished">汎用ドライバー, &apos;%1&apos; { %2 }</translation>
-    </message>
-    <message>
-        <source>NAT Network, &apos;%1&apos;</source>
-        <comment>details (network)</comment>
-        <translation type="vanished">NAT ネットワーク, &apos;%1&apos;</translation>
-    </message>
-    <message>
-        <source>Adapter %1</source>
-        <comment>details (network)</comment>
-        <translation type="vanished">アダプター %1</translation>
-    </message>
-    <message>
-        <source>Disabled</source>
-        <comment>details (network/adapter)</comment>
-        <translation type="vanished">無効</translation>
-    </message>
-    <message>
-        <source>Port %1</source>
-        <comment>details (serial)</comment>
-        <translation type="vanished">ポート %1</translation>
-    </message>
-    <message>
-        <source>Disabled</source>
-        <comment>details (serial)</comment>
-        <translation type="vanished">無効</translation>
-    </message>
-    <message>
-        <source>USB Controller</source>
-        <comment>details (usb)</comment>
-        <translation type="vanished">USB コントローラー</translation>
-    </message>
-    <message>
-        <source>Device Filters</source>
-        <comment>details (usb)</comment>
-        <translation type="vanished">デバイスフィルター</translation>
-    </message>
-    <message>
-        <source>Disabled</source>
-        <comment>details (usb)</comment>
-        <translation type="vanished">無効</translation>
-    </message>
-    <message>
-        <source>USB Controller Inaccessible</source>
-        <comment>details (usb)</comment>
-        <translation type="vanished">USB コントローラーにアクセスできません</translation>
-    </message>
-    <message>
-        <source>Shared Folders</source>
-        <comment>details (shared folders)</comment>
-        <translation type="vanished">共有フォルダー</translation>
-    </message>
-    <message>
-        <source>None</source>
-        <comment>details (shared folders)</comment>
-        <translation type="vanished">なし</translation>
-    </message>
-    <message>
-        <source>Menu-bar</source>
-        <comment>details (user interface)</comment>
-        <translation type="vanished">メニューバー</translation>
-    </message>
-    <message>
-        <source>Enabled</source>
-        <comment>details (user interface/menu-bar)</comment>
-        <translation type="vanished">有効</translation>
-    </message>
-    <message>
-        <source>Disabled</source>
-        <comment>details (user interface/menu-bar)</comment>
-        <translation type="vanished">無効</translation>
-    </message>
-    <message>
-        <source>Status-bar</source>
-        <comment>details (user interface)</comment>
-        <translation type="vanished">ステータスバー</translation>
-    </message>
-    <message>
-        <source>Enabled</source>
-        <comment>details (user interface/status-bar)</comment>
-        <translation type="vanished">有効</translation>
-    </message>
-    <message>
-        <source>Disabled</source>
-        <comment>details (user interface/status-bar)</comment>
-        <translation type="vanished">無効</translation>
-    </message>
-    <message>
-        <source>Mini-toolbar Position</source>
-        <comment>details (user interface)</comment>
-        <translation type="vanished">ミニツールバーの場所</translation>
-    </message>
-    <message>
-        <source>Top</source>
-        <comment>details (user interface/mini-toolbar position)</comment>
-        <translation type="vanished">上部</translation>
-    </message>
-    <message>
-        <source>Bottom</source>
-        <comment>details (user interface/mini-toolbar position)</comment>
-        <translation type="vanished">下部</translation>
-    </message>
-    <message>
-        <source>Mini-toolbar</source>
-        <comment>details (user interface)</comment>
-        <translation type="vanished">ミニツールバー</translation>
-    </message>
-    <message>
-        <source>Disabled</source>
-        <comment>details (user interface/mini-toolbar)</comment>
-        <translation type="vanished">無効</translation>
-    </message>
-    <message>
-        <source>None</source>
-        <comment>details (description)</comment>
-        <translation type="vanished">なし</translation>
-    </message>
-    <message>
-        <source>Disabled</source>
-        <comment>details (display/recording)</comment>
-        <translation type="vanished">無効</translation>
-    </message>
-    <message>
-        <source>Settings File Location</source>
-        <comment>details (general)</comment>
-        <translation type="vanished">設定ファイルの場所</translation>
+        <translation>[光学ドライブ]</translation>
     </message>
     <message>
         <source>Not Attached</source>
         <comment>details (storage)</comment>
-        <translation type="vanished">未割り当て</translation>
+        <translation>未割り当て</translation>
+    </message>
+    <message>
+        <source>Host Driver</source>
+        <comment>details (audio)</comment>
+        <translation>ホストドライバー</translation>
+    </message>
+    <message>
+        <source>Controller</source>
+        <comment>details (audio)</comment>
+        <translation>コントローラー</translation>
+    </message>
+    <message>
+        <source>Audio Output</source>
+        <comment>details (audio)</comment>
+        <translation>オーディオ出力</translation>
+    </message>
+    <message>
+        <source>Enabled</source>
+        <comment>details (audio/output)</comment>
+        <translation>有効</translation>
+    </message>
+    <message>
+        <source>Disabled</source>
+        <comment>details (audio/output)</comment>
+        <translation>無効</translation>
+    </message>
+    <message>
+        <source>Audio Input</source>
+        <comment>details (audio)</comment>
+        <translation>オーディオ入力</translation>
+    </message>
+    <message>
+        <source>Enabled</source>
+        <comment>details (audio/input)</comment>
+        <translation>有効</translation>
+    </message>
+    <message>
+        <source>Disabled</source>
+        <comment>details (audio/input)</comment>
+        <translation>無効</translation>
+    </message>
+    <message>
+        <source>Disabled</source>
+        <comment>details (audio)</comment>
+        <translation>無効</translation>
+    </message>
+    <message>
+        <source>Bridged Adapter, %1</source>
+        <comment>details (network)</comment>
+        <translation>ブリッジアダプター, &apos;%1&apos;</translation>
+    </message>
+    <message>
+        <source>Internal Network, &apos;%1&apos;</source>
+        <comment>details (network)</comment>
+        <translation>内部ネットワーク, &apos;%1&apos;</translation>
+    </message>
+    <message>
+        <source>Host-only Adapter, &apos;%1&apos;</source>
+        <comment>details (network)</comment>
+        <translation>ホストオンリーアダプター, &apos;%1&apos;</translation>
+    </message>
+    <message>
+        <source>Generic Driver, &apos;%1&apos;</source>
+        <comment>details (network)</comment>
+        <translation>汎用ドライバー, &apos;%1&apos;</translation>
+    </message>
+    <message>
+        <source>Generic Driver, &apos;%1&apos; { %2 }</source>
+        <comment>details (network)</comment>
+        <translation>汎用ドライバー, &apos;%1&apos; { %2 }</translation>
+    </message>
+    <message>
+        <source>NAT Network, &apos;%1&apos;</source>
+        <comment>details (network)</comment>
+        <translation>NAT ネットワーク, &apos;%1&apos;</translation>
+    </message>
+    <message>
+        <source>Adapter %1</source>
+        <comment>details (network)</comment>
+        <translation>アダプター %1</translation>
+    </message>
+    <message>
+        <source>Disabled</source>
+        <comment>details (network/adapter)</comment>
+        <translation>無効</translation>
+    </message>
+    <message>
+        <source>Port %1</source>
+        <comment>details (serial)</comment>
+        <translation>ポート %1</translation>
+    </message>
+    <message>
+        <source>Disabled</source>
+        <comment>details (serial)</comment>
+        <translation>無効</translation>
+    </message>
+    <message>
+        <source>USB Controller</source>
+        <comment>details (usb)</comment>
+        <translation>USB コントローラー</translation>
+    </message>
+    <message>
+        <source>Device Filters</source>
+        <comment>details (usb)</comment>
+        <translation>デバイスフィルター</translation>
     </message>
     <message>
         <source>%1 (%2 active)</source>
         <comment>details (usb)</comment>
-        <translation type="vanished">%1 (%2 アクティブ)</translation>
+        <translation>%1 (%2 アクティブ)</translation>
+    </message>
+    <message>
+        <source>Disabled</source>
+        <comment>details (usb)</comment>
+        <translation>無効</translation>
+    </message>
+    <message>
+        <source>USB Controller Inaccessible</source>
+        <comment>details (usb)</comment>
+        <translation>USB コントローラーにアクセスできません</translation>
+    </message>
+    <message>
+        <source>Shared Folders</source>
+        <comment>details (shared folders)</comment>
+        <translation>共有フォルダー</translation>
+    </message>
+    <message>
+        <source>None</source>
+        <comment>details (shared folders)</comment>
+        <translation>なし</translation>
+    </message>
+    <message>
+        <source>Menu-bar</source>
+        <comment>details (user interface)</comment>
+        <translation>メニューバー</translation>
+    </message>
+    <message>
+        <source>Enabled</source>
+        <comment>details (user interface/menu-bar)</comment>
+        <translation>有効</translation>
+    </message>
+    <message>
+        <source>Disabled</source>
+        <comment>details (user interface/menu-bar)</comment>
+        <translation>無効</translation>
+    </message>
+    <message>
+        <source>Status-bar</source>
+        <comment>details (user interface)</comment>
+        <translation>ステータスバー</translation>
+    </message>
+    <message>
+        <source>Enabled</source>
+        <comment>details (user interface/status-bar)</comment>
+        <translation>有効</translation>
+    </message>
+    <message>
+        <source>Disabled</source>
+        <comment>details (user interface/status-bar)</comment>
+        <translation>無効</translation>
+    </message>
+    <message>
+        <source>Mini-toolbar Position</source>
+        <comment>details (user interface)</comment>
+        <translation>ミニツールバーの場所</translation>
+    </message>
+    <message>
+        <source>Top</source>
+        <comment>details (user interface/mini-toolbar position)</comment>
+        <translation>上部</translation>
+    </message>
+    <message>
+        <source>Bottom</source>
+        <comment>details (user interface/mini-toolbar position)</comment>
+        <translation>下部</translation>
+    </message>
+    <message>
+        <source>Mini-toolbar</source>
+        <comment>details (user interface)</comment>
+        <translation>ミニツールバー</translation>
+    </message>
+    <message>
+        <source>Disabled</source>
+        <comment>details (user interface/mini-toolbar)</comment>
+        <translation>無効</translation>
+    </message>
+    <message>
+        <source>None</source>
+        <comment>details (description)</comment>
+        <translation>なし</translation>
     </message>
     <message>
         <source>Recording File</source>
         <comment>details (display/recording)</comment>
-        <translation type="vanished">レコーディングファイル</translation>
+        <translation>レコーディングファイル</translation>
     </message>
     <message>
         <source>Recording Attributes</source>
         <comment>details (display/recording)</comment>
-        <translation type="vanished">レコーディング属性</translation>
+        <translation>レコーディング属性</translation>
     </message>
     <message>
         <source>Recording</source>
         <comment>details (display/recording)</comment>
-        <translation type="vanished">レコーディング</translation>
+        <translation>レコーディング</translation>
+    </message>
+    <message>
+        <source>Disabled</source>
+        <comment>details (display/recording)</comment>
+        <translation>無効</translation>
     </message>
     <message>
         <source>Graphics Controller</source>
         <comment>details (display)</comment>
-        <translation type="vanished">グラフィックスコントローラー</translation>
+        <translation>グラフィックスコントローラー</translation>
+    </message>
+    <message>
+        <source>USB 1.1 (OHCI) Controller</source>
+        <comment>details (usb)</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>USB 2.0 (OHCI + EHCI) Controller</source>
+        <comment>details (usb)</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>USB 3.0 (xHCI) Controller</source>
+        <comment>details (usb)</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 MB</source>
+        <translation type="unfinished">%1 MB</translation>
     </message>
 </context>
 <context>
@@ -3683,7 +5592,7 @@
     <message>
         <source>%1 details</source>
         <comment>like &apos;General details&apos; or &apos;Storage details&apos;</comment>
-        <translation type="vanished">%1 の詳細</translation>
+        <translation>%1 の詳細</translation>
     </message>
 </context>
 <context>
@@ -3899,7 +5808,7 @@
     </message>
     <message>
         <source>The selected virtual machine is &lt;i&gt;inaccessible&lt;/i&gt;. Please inspect the error message shown below and press the &lt;b&gt;Refresh&lt;/b&gt; button if you want to repeat the accessibility check:</source>
-        <translation>選択した仮想マシンに&lt;i&gt;アクセスできません&lt;/i&gt;。アクセス可否を再確認するには以下に示されたエラーメッセージを調査して&lt;b&gt;[最新の情報に更新]&lt;/b&gt;ボタンをクリックしてください:</translation>
+        <translation type="vanished">選択した仮想マシンに&lt;i&gt;アクセスできません&lt;/i&gt;。アクセス可否を再確認するには以下に示されたエラーメッセージを調査して&lt;b&gt;[最新の情報に更新]&lt;/b&gt;ボタンをクリックしてください:</translation>
     </message>
     <message>
         <source>General</source>
@@ -3966,14 +5875,14 @@
     <name>UIDetailsSet</name>
     <message>
         <source>Contains the details of virtual machine &apos;%1&apos;</source>
-        <translation type="vanished">仮想マシン &apos;%1&apos; の詳細を含む</translation>
+        <translation>仮想マシン &apos;%1&apos; の詳細を含む</translation>
     </message>
 </context>
 <context>
     <name>UIDetailsView</name>
     <message>
         <source>Contains a list of Virtual Machine details</source>
-        <translation type="vanished">仮想マシンの詳細のリストを含む</translation>
+        <translation>仮想マシンの詳細のリストを含む</translation>
     </message>
 </context>
 <context>
@@ -4137,7 +6046,7 @@
     <name>UIErrorPane</name>
     <message>
         <source>The selected virtual machine is &lt;i&gt;inaccessible&lt;/i&gt;. Please inspect the error message shown below and press the &lt;b&gt;Refresh&lt;/b&gt; button if you want to repeat the accessibility check:</source>
-        <translation type="vanished">選択した仮想マシンに&lt;i&gt;アクセスできません&lt;/i&gt;。アクセス可否を再確認するには以下に示されたエラーメッセージを調査して&lt;b&gt;[最新の情報に更新]&lt;/b&gt;ボタンをクリックしてください:</translation>
+        <translation>選択した仮想マシンに&lt;i&gt;アクセスできません&lt;/i&gt;。アクセス可否を再確認するには以下に示されたエラーメッセージを調査して&lt;b&gt;[最新の情報に更新]&lt;/b&gt;ボタンをクリックしてください:</translation>
     </message>
 </context>
 <context>
@@ -4517,55 +6426,179 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>UIFDCreationDialog</name>
     <message>
-        <source>Size:</source>
-        <translation type="vanished">サイズ:</translation>
-    </message>
-    <message>
-        <source>1.44M</source>
-        <translation type="vanished">1.44M</translation>
-    </message>
-    <message>
-        <source>1.2M</source>
-        <translation type="vanished">1.2M</translation>
-    </message>
-    <message>
-        <source>720K</source>
-        <translation type="vanished">720K</translation>
-    </message>
-    <message>
-        <source>360K</source>
-        <translation type="vanished">360K</translation>
-    </message>
-    <message>
         <source>Create a Floppy Disk</source>
         <translation type="vanished">フロッピーディスクの作成</translation>
     </message>
     <message>
         <source>File Path:</source>
-        <translation type="vanished">ファイルのパス:</translation>
+        <translation>ファイルのパス:</translation>
+    </message>
+    <message>
+        <source>Size:</source>
+        <translation>サイズ:</translation>
     </message>
     <message>
         <source>Format disk as FAT12</source>
-        <translation type="vanished">ディスクをFAT12でフォーマット</translation>
+        <translation>ディスクをFAT12でフォーマット</translation>
+    </message>
+    <message>
+        <source>1.44M</source>
+        <translation>1.44M</translation>
+    </message>
+    <message>
+        <source>1.2M</source>
+        <translation>1.2M</translation>
+    </message>
+    <message>
+        <source>720K</source>
+        <translation>720K</translation>
+    </message>
+    <message>
+        <source>360K</source>
+        <translation>360K</translation>
+    </message>
+    <message>
+        <source>Floppy Disk Creator</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>UIFileManager</name>
     <message>
+        <source>%1 - File Manager</source>
+        <translation>%1 - ファイルマネージャー</translation>
+    </message>
+    <message>
         <source>Close</source>
-        <translation type="vanished">閉じる</translation>
+        <translation>閉じる</translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation>クリア</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="vanished">キャンセル</translation>
+        <translation>キャンセル</translation>
+    </message>
+    <message>
+        <source>Not yet started</source>
+        <translation>未開始</translation>
+    </message>
+    <message>
+        <source>Working</source>
+        <translation>動作</translation>
     </message>
     <message>
         <source>Paused</source>
-        <translation type="vanished">一時停止</translation>
+        <translation>一時停止</translation>
+    </message>
+    <message>
+        <source>Canceled</source>
+        <translation>キャンセル</translation>
+    </message>
+    <message>
+        <source>Succeded</source>
+        <translation>成功</translation>
+    </message>
+    <message>
+        <source>Failed</source>
+        <translation>失敗</translation>
+    </message>
+    <message>
+        <source>Invalid</source>
+        <translation>無効</translation>
+    </message>
+    <message>
+        <source>Remove Selected</source>
+        <translation>選択したものを除去</translation>
+    </message>
+    <message>
+        <source>Remove Finished</source>
+        <translation>除去完了</translation>
+    </message>
+    <message>
+        <source>Remove All</source>
+        <translation>すべて除去</translation>
+    </message>
+    <message>
+        <source>List directories on top</source>
+        <translation>ディレクトリを上部に配置</translation>
+    </message>
+    <message>
+        <source>List directories before files</source>
+        <translation>ファイルの前にディレクトリを配置</translation>
+    </message>
+    <message>
+        <source>Ask before delete</source>
+        <translation>削除前に確認</translation>
+    </message>
+    <message>
+        <source>Show a confirmation dialog before deleting files and directories</source>
+        <translation>ファイルやディレクトリの削除前に確認ダイアログを表示</translation>
+    </message>
+    <message>
+        <source>Human readable sizes</source>
+        <translation>わかりやすいサイズ表記</translation>
+    </message>
+    <message>
+        <source>Show file/directory sizes in human readable format rather than in bytes</source>
+        <translation>ファイル/ディレクトリのサイズをバイト数ではなく読みやすいフォーマットで表示</translation>
+    </message>
+    <message>
+        <source>Close the pane</source>
+        <translation type="vanished">ペインを閉じる</translation>
     </message>
     <message>
         <source>Password</source>
-        <translation type="vanished">パスワード</translation>
+        <translation>パスワード</translation>
+    </message>
+    <message>
+        <source>Show Password</source>
+        <translation>パスワードを表示</translation>
+    </message>
+    <message>
+        <source>User name to authenticate session creation</source>
+        <translation>セッションの作成に必要な認証で使用するユーザー名</translation>
+    </message>
+    <message>
+        <source>User Name</source>
+        <translation>ユーザー名</translation>
+    </message>
+    <message>
+        <source>Password to authenticate session creation</source>
+        <translation>セッションの作成に必要な認証で使用するパスワード</translation>
+    </message>
+    <message>
+        <source>Create Session</source>
+        <translation>セッションを作成</translation>
+    </message>
+    <message>
+        <source>Close Session</source>
+        <translation>セッションを閉じる</translation>
+    </message>
+    <message>
+        <source>Total Size</source>
+        <translation>合計サイズ</translation>
+    </message>
+    <message>
+        <source> bytes</source>
+        <translation> バイト</translation>
+    </message>
+    <message>
+        <source>File Count</source>
+        <translation>ファイル数</translation>
+    </message>
+    <message>
+        <source>Delete the selected file(s) and/or folder(s)</source>
+        <translation>選択したファイルまたはフォルダーを削除</translation>
+    </message>
+    <message>
+        <source>Ask for this confirmation next time</source>
+        <translation>次回も確認するか尋ねる</translation>
+    </message>
+    <message>
+        <source>Delete confirmation can be disabled/enabled also from the Options panel.</source>
+        <translation>オプションパネルからも削除前の確認を有効/無効にすることができます。</translation>
     </message>
     <message>
         <source>Name</source>
@@ -4574,126 +6607,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Size</source>
         <translation type="obsolete">サイズ</translation>
-    </message>
-    <message>
-        <source>%1 - File Manager</source>
-        <translation type="vanished">%1 - ファイルマネージャー</translation>
-    </message>
-    <message>
-        <source>Clear</source>
-        <translation type="vanished">クリア</translation>
-    </message>
-    <message>
-        <source>Not yet started</source>
-        <translation type="vanished">未開始</translation>
-    </message>
-    <message>
-        <source>Working</source>
-        <translation type="vanished">動作</translation>
-    </message>
-    <message>
-        <source>Canceled</source>
-        <translation type="vanished">キャンセル</translation>
-    </message>
-    <message>
-        <source>Succeded</source>
-        <translation type="vanished">成功</translation>
-    </message>
-    <message>
-        <source>Failed</source>
-        <translation type="vanished">失敗</translation>
-    </message>
-    <message>
-        <source>Invalid</source>
-        <translation type="vanished">無効</translation>
-    </message>
-    <message>
-        <source>Remove Selected</source>
-        <translation type="vanished">選択したものを除去</translation>
-    </message>
-    <message>
-        <source>Remove Finished</source>
-        <translation type="vanished">除去完了</translation>
-    </message>
-    <message>
-        <source>Remove All</source>
-        <translation type="vanished">すべて除去</translation>
-    </message>
-    <message>
-        <source>List directories on top</source>
-        <translation type="vanished">ディレクトリを上部に配置</translation>
-    </message>
-    <message>
-        <source>List directories before files</source>
-        <translation type="vanished">ファイルの前にディレクトリを配置</translation>
-    </message>
-    <message>
-        <source>Ask before delete</source>
-        <translation type="vanished">削除前に確認</translation>
-    </message>
-    <message>
-        <source>Show a confirmation dialog before deleting files and directories</source>
-        <translation type="vanished">ファイルやディレクトリの削除前に確認ダイアログを表示</translation>
-    </message>
-    <message>
-        <source>Human readable sizes</source>
-        <translation type="vanished">わかりやすいサイズ表記</translation>
-    </message>
-    <message>
-        <source>Show file/directory sizes in human readable format rather than in bytes</source>
-        <translation type="vanished">ファイル/ディレクトリのサイズをバイト数ではなく読みやすいフォーマットで表示</translation>
-    </message>
-    <message>
-        <source>Close the pane</source>
-        <translation type="vanished">ペインを閉じる</translation>
-    </message>
-    <message>
-        <source>Show Password</source>
-        <translation type="vanished">パスワードを表示</translation>
-    </message>
-    <message>
-        <source>User name to authenticate session creation</source>
-        <translation type="vanished">セッションの作成に必要な認証で使用するユーザー名</translation>
-    </message>
-    <message>
-        <source>User Name</source>
-        <translation type="vanished">ユーザー名</translation>
-    </message>
-    <message>
-        <source>Password to authenticate session creation</source>
-        <translation type="vanished">セッションの作成に必要な認証で使用するパスワード</translation>
-    </message>
-    <message>
-        <source>Create Session</source>
-        <translation type="vanished">セッションを作成</translation>
-    </message>
-    <message>
-        <source>Close Session</source>
-        <translation type="vanished">セッションを閉じる</translation>
-    </message>
-    <message>
-        <source>Total Size</source>
-        <translation type="vanished">合計サイズ</translation>
-    </message>
-    <message>
-        <source> bytes</source>
-        <translation type="vanished"> バイト</translation>
-    </message>
-    <message>
-        <source>File Count</source>
-        <translation type="vanished">ファイル数</translation>
-    </message>
-    <message>
-        <source>Delete the selected file(s) and/or folder(s)</source>
-        <translation type="vanished">選択したファイルまたはフォルダーを削除</translation>
-    </message>
-    <message>
-        <source>Ask for this confirmation next time</source>
-        <translation type="vanished">次回も確認するか尋ねる</translation>
-    </message>
-    <message>
-        <source>Delete confirmation can be disabled/enabled also from the Options panel.</source>
-        <translation type="vanished">オプションパネルからも削除前の確認を有効/無効にすることができます。</translation>
     </message>
     <message>
         <source>Change Time</source>
@@ -4713,19 +6626,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Unknown</source>
-        <translation type="vanished">不明</translation>
+        <translation>不明</translation>
     </message>
     <message>
         <source>File</source>
-        <translation type="vanished">ファイル</translation>
+        <translation>ファイル</translation>
     </message>
     <message>
         <source>Directory</source>
-        <translation type="vanished">ディレクトリ</translation>
+        <translation>ディレクトリ</translation>
     </message>
     <message>
         <source>Symbolic Link</source>
-        <translation type="vanished">シンボリックリンク</translation>
+        <translation>シンボリックリンク</translation>
     </message>
     <message>
         <source>Other</source>
@@ -4737,115 +6650,115 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&lt;b&gt;Size:&lt;/b&gt; %1 bytes</source>
-        <translation type="vanished">&lt;b&gt;サイズ:&lt;/b&gt; %1 バイト</translation>
+        <translation>&lt;b&gt;サイズ:&lt;/b&gt; %1 バイト</translation>
     </message>
     <message>
         <source>&lt;b&gt;Allocated:&lt;/b&gt; %1 bytes</source>
-        <translation type="vanished">&lt;b&gt;割り当て:&lt;/b&gt; %1 バイト</translation>
+        <translation>&lt;b&gt;割り当て:&lt;/b&gt; %1 バイト</translation>
     </message>
     <message>
         <source>directory</source>
-        <translation type="vanished">ディレクトリ</translation>
+        <translation>ディレクトリ</translation>
     </message>
     <message>
         <source>file</source>
-        <translation type="vanished">ファイル</translation>
+        <translation>ファイル</translation>
     </message>
     <message>
         <source>symbolic link</source>
-        <translation type="vanished">シンボリックリンク</translation>
+        <translation>シンボリックリンク</translation>
     </message>
     <message>
         <source>character device</source>
-        <translation type="vanished">キャラクターデバイス</translation>
+        <translation>キャラクターデバイス</translation>
     </message>
     <message>
         <source>block device</source>
-        <translation type="vanished">ブロックデバイス</translation>
+        <translation>ブロックデバイス</translation>
     </message>
     <message>
         <source>fifo</source>
-        <translation type="vanished">FIFO</translation>
+        <translation>FIFO</translation>
     </message>
     <message>
         <source>socket</source>
-        <translation type="vanished">ソケット</translation>
+        <translation>ソケット</translation>
     </message>
     <message>
         <source>whiteout</source>
-        <translation type="vanished">ホワイトアウト</translation>
+        <translation>ホワイトアウト</translation>
     </message>
     <message>
         <source>unknown</source>
-        <translation type="vanished">不明</translation>
+        <translation>不明</translation>
     </message>
     <message>
         <source>illegal-value</source>
-        <translation type="vanished">不正な値</translation>
+        <translation>不正な値</translation>
     </message>
     <message>
         <source>&lt;b&gt;Type:&lt;/b&gt; %1&lt;br/&gt;</source>
-        <translation type="vanished">&lt;b&gt;タイプ:&lt;/b&gt; %1&lt;br/&gt;</translation>
+        <translation>&lt;b&gt;タイプ:&lt;/b&gt; %1&lt;br/&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;INode:&lt;/b&gt; %1&lt;br/&gt;</source>
-        <translation type="vanished">&lt;b&gt;Iノード:&lt;/b&gt; %1&lt;br/&gt;</translation>
+        <translation>&lt;b&gt;Iノード:&lt;/b&gt; %1&lt;br/&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;Device:&lt;/b&gt; %1&lt;br/&gt;</source>
-        <translation type="vanished">&lt;b&gt;デバイス:&lt;/b&gt; %1&lt;br/&gt;</translation>
+        <translation>&lt;b&gt;デバイス:&lt;/b&gt; %1&lt;br/&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;Hardlinks:&lt;/b&gt; %1&lt;br/&gt;</source>
-        <translation type="vanished">&lt;b&gt;ハードリンク:&lt;/b&gt; %1&lt;br/&gt;</translation>
+        <translation>&lt;b&gt;ハードリンク:&lt;/b&gt; %1&lt;br/&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;Mode:&lt;/b&gt; %1&lt;br/&gt;</source>
-        <translation type="vanished">&lt;b&gt;モード:&lt;/b&gt; %1&lt;br/&gt;</translation>
+        <translation>&lt;b&gt;モード:&lt;/b&gt; %1&lt;br/&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;Attributes:&lt;/b&gt; %1&lt;br/&gt;</source>
-        <translation type="vanished">&lt;b&gt;属性:&lt;/b&gt; %1&lt;br/&gt;</translation>
+        <translation>&lt;b&gt;属性:&lt;/b&gt; %1&lt;br/&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;Device ID:&lt;/b&gt; %1&lt;br/&gt;</source>
-        <translation type="vanished">&lt;b&gt;デバイス ID:&lt;/b&gt; %1&lt;br/&gt;</translation>
+        <translation>&lt;b&gt;デバイス ID:&lt;/b&gt; %1&lt;br/&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;Owner:&lt;/b&gt; %1 (%2)&lt;br/&gt;</source>
-        <translation type="vanished">&lt;b&gt;所有者:&lt;/b&gt; %1 (%2)&lt;br/&gt;</translation>
+        <translation>&lt;b&gt;所有者:&lt;/b&gt; %1 (%2)&lt;br/&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;Group:&lt;/b&gt; %1 (%2)&lt;br/&gt;</source>
-        <translation type="vanished">&lt;b&gt;グループ:&lt;/b&gt; %1 (%2)&lt;br/&gt;</translation>
+        <translation>&lt;b&gt;グループ:&lt;/b&gt; %1 (%2)&lt;br/&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;Birth:&lt;/b&gt; %1&lt;br/&gt;</source>
-        <translation type="vanished">&lt;b&gt;出自:&lt;/b&gt; %1&lt;br/&gt;</translation>
+        <translation>&lt;b&gt;出自:&lt;/b&gt; %1&lt;br/&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;Change:&lt;/b&gt; %1&lt;br/&gt;</source>
-        <translation type="vanished">&lt;b&gt;変更:&lt;/b&gt; %1&lt;br/&gt;</translation>
+        <translation>&lt;b&gt;変更:&lt;/b&gt; %1&lt;br/&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;Modified:&lt;/b&gt; %1&lt;br/&gt;</source>
-        <translation type="vanished">&lt;b&gt;更新:&lt;/b&gt; %1&lt;br/&gt;</translation>
+        <translation>&lt;b&gt;更新:&lt;/b&gt; %1&lt;br/&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;Access:&lt;/b&gt; %1&lt;br/&gt;</source>
-        <translation type="vanished">&lt;b&gt;アクセス:&lt;/b&gt; %1&lt;br/&gt;</translation>
+        <translation>&lt;b&gt;アクセス:&lt;/b&gt; %1&lt;br/&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;Selected:&lt;/b&gt; %1 files and %2 directories&lt;br/&gt;</source>
-        <translation type="vanished">&lt;b&gt;選択:&lt;/b&gt; %1 ファイルと %2 ディレクトリ&lt;br/&gt;</translation>
+        <translation>&lt;b&gt;選択:&lt;/b&gt; %1 ファイルと %2 ディレクトリ&lt;br/&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;Size (non-recursive):&lt;/b&gt; %1 bytes</source>
-        <translation type="vanished">&lt;b&gt;サイズ (再帰なし):&lt;/b&gt; %1 バイト</translation>
+        <translation>&lt;b&gt;サイズ (再帰なし):&lt;/b&gt; %1 バイト</translation>
     </message>
     <message>
         <source>Properties</source>
-        <translation type="vanished">プロパティ</translation>
+        <translation>プロパティ</translation>
     </message>
     <message>
         <source>Host System</source>
@@ -4853,23 +6766,35 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&lt;b&gt;Name:&lt;/b&gt; %1&lt;br/&gt;</source>
-        <translation type="vanished">&lt;b&gt;名前:&lt;/b&gt; %1&lt;br/&gt;</translation>
+        <translation>&lt;b&gt;名前:&lt;/b&gt; %1&lt;br/&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;Created:&lt;/b&gt; %1&lt;br/&gt;</source>
-        <translation type="vanished">&lt;b&gt;作成:&lt;/b&gt; %1&lt;br/&gt;</translation>
+        <translation>&lt;b&gt;作成:&lt;/b&gt; %1&lt;br/&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;Owner:&lt;/b&gt; %1</source>
-        <translation type="vanished">&lt;b&gt;所有者:&lt;/b&gt; %1</translation>
+        <translation>&lt;b&gt;所有者:&lt;/b&gt; %1</translation>
     </message>
     <message>
         <source>Show hidden objects</source>
-        <translation type="vanished">隠しオブジェクトを表示</translation>
+        <translation>隠しオブジェクトを表示</translation>
     </message>
     <message>
         <source>Show hidden files/directories</source>
-        <translation type="vanished">隠しファイル/ディレクトリを表示</translation>
+        <translation>隠しファイル/ディレクトリを表示</translation>
+    </message>
+    <message>
+        <source>Guest File System</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Host File System</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No Guest Session found!&lt;br&gt;Please use the Session Panel to start a new guest session</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -5142,88 +7067,107 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>UIFormEditorWidget</name>
+    <message>
+        <source>Edit...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished">名前</translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Assign value ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>UIGChooserItemGroup</name>
     <message>
         <source>&lt;b&gt;%1&lt;/b&gt;</source>
         <comment>Group item tool-tip / Group name</comment>
-        <translation>&lt;b&gt;%1&lt;/b&gt;</translation>
+        <translation type="vanished">&lt;b&gt;%1&lt;/b&gt;</translation>
     </message>
     <message numerus="yes">
         <source>%n group(s)</source>
         <comment>Group item tool-tip / Group info</comment>
-        <translation>
+        <translation type="vanished">
             <numerusform>%n グループ</numerusform>
         </translation>
     </message>
     <message>
         <source>&lt;nobr&gt;%1&lt;/nobr&gt;</source>
         <comment>Group item tool-tip / Group info wrapper</comment>
-        <translation>&lt;nobr&gt;%1&lt;/nobr&gt;</translation>
+        <translation type="vanished">&lt;nobr&gt;%1&lt;/nobr&gt;</translation>
     </message>
     <message numerus="yes">
         <source>%n machine(s)</source>
         <comment>Group item tool-tip / Machine info</comment>
-        <translation>
+        <translation type="vanished">
             <numerusform>%n マシン</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>(%n running)</source>
         <comment>Group item tool-tip / Running machine info</comment>
-        <translation>
+        <translation type="vanished">
             <numerusform>(%n 実行中)</numerusform>
         </translation>
     </message>
     <message>
         <source>&lt;nobr&gt;%1&lt;/nobr&gt;</source>
         <comment>Group item tool-tip / Machine info wrapper</comment>
-        <translation>&lt;nobr&gt;%1&lt;/nobr&gt;</translation>
+        <translation type="vanished">&lt;nobr&gt;%1&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;%1 %2&lt;/nobr&gt;</source>
         <comment>Group item tool-tip / Machine info wrapper, including running</comment>
-        <translation>&lt;nobr&gt;%1&lt;/nobr&gt; {1 %2&lt;?}</translation>
+        <translation type="vanished">&lt;nobr&gt;%1&lt;/nobr&gt; {1 %2&lt;?}</translation>
     </message>
     <message>
         <source>Collapse group</source>
-        <translation>グループをたたむ</translation>
+        <translation type="vanished">グループをたたむ</translation>
     </message>
     <message>
         <source>Expand group</source>
-        <translation>グループを広げる</translation>
+        <translation type="vanished">グループを広げる</translation>
     </message>
     <message>
         <source>Enter group</source>
-        <translation>グループに入る</translation>
+        <translation type="vanished">グループに入る</translation>
     </message>
     <message>
         <source>Exit group</source>
-        <translation>グループを出る</translation>
+        <translation type="vanished">グループを出る</translation>
     </message>
     <message>
         <source>Virtual Machine group</source>
-        <translation>仮想マシングループ</translation>
+        <translation type="vanished">仮想マシングループ</translation>
     </message>
 </context>
 <context>
     <name>UIGChooserItemMachine</name>
     <message>
         <source>Virtual Machine</source>
-        <translation>仮想マシン</translation>
+        <translation type="vanished">仮想マシン</translation>
     </message>
 </context>
 <context>
     <name>UIGChooserModel</name>
     <message>
         <source>New group</source>
-        <translation>新しいグループ</translation>
+        <translation type="vanished">新しいグループ</translation>
     </message>
 </context>
 <context>
     <name>UIGChooserView</name>
     <message>
         <source>Contains a tree of Virtual Machines and their groups</source>
-        <translation>仮想マシンとそのグループのツリーを含む</translation>
+        <translation type="vanished">仮想マシンとそのグループのツリーを含む</translation>
     </message>
 </context>
 <context>
@@ -5231,62 +7175,62 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Name</source>
         <comment>details (general)</comment>
-        <translation>名前</translation>
+        <translation type="vanished">名前</translation>
     </message>
     <message>
         <source>Groups</source>
         <comment>details (general)</comment>
-        <translation>グループ</translation>
+        <translation type="vanished">グループ</translation>
     </message>
     <message>
         <source>%1 MB</source>
         <comment>details</comment>
-        <translation>%1 MB</translation>
+        <translation type="vanished">%1 MB</translation>
     </message>
     <message>
         <source>Processors</source>
         <comment>details (system)</comment>
-        <translation>プロセッサー</translation>
+        <translation type="vanished">プロセッサー</translation>
     </message>
     <message>
         <source>%1%</source>
         <comment>details</comment>
-        <translation>%1%</translation>
+        <translation type="vanished">%1%</translation>
     </message>
     <message>
         <source>VT-x/AMD-V</source>
         <comment>details (system)</comment>
-        <translation>VT-x/AMD-V</translation>
+        <translation type="vanished">VT-x/AMD-V</translation>
     </message>
     <message>
         <source>PAE/NX</source>
         <comment>details (system)</comment>
-        <translation>PAE/NX</translation>
+        <translation type="vanished">PAE/NX</translation>
     </message>
     <message>
         <source>Acceleration</source>
         <comment>details (system)</comment>
-        <translation>アクセラレーション</translation>
+        <translation type="vanished">アクセラレーション</translation>
     </message>
     <message>
         <source>Screens</source>
         <comment>details (display)</comment>
-        <translation>スクリーン</translation>
+        <translation type="vanished">スクリーン</translation>
     </message>
     <message>
         <source>3D</source>
         <comment>details (display)</comment>
-        <translation>3D</translation>
+        <translation type="vanished">3D</translation>
     </message>
     <message>
         <source>Acceleration</source>
         <comment>details (display)</comment>
-        <translation>アクセラレーション</translation>
+        <translation type="vanished">アクセラレーション</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details (display/vrde/VRDE server)</comment>
-        <translation>無効</translation>
+        <translation type="vanished">無効</translation>
     </message>
     <message>
         <source>[CD/DVD]</source>
@@ -5301,12 +7245,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Controller</source>
         <comment>details (audio)</comment>
-        <translation>コントローラー</translation>
+        <translation type="vanished">コントローラー</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details (audio)</comment>
-        <translation>無効</translation>
+        <translation type="vanished">無効</translation>
     </message>
     <message>
         <source>Bridged adapter, %1</source>
@@ -5326,136 +7270,136 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Operating System</source>
         <comment>details (general)</comment>
-        <translation>オペレーティングシステム</translation>
+        <translation type="vanished">オペレーティングシステム</translation>
     </message>
     <message>
         <source>Information Inaccessible</source>
         <comment>details</comment>
-        <translation>取得不可能な情報</translation>
+        <translation type="vanished">取得不可能な情報</translation>
     </message>
     <message>
         <source>Base Memory</source>
         <comment>details (system)</comment>
-        <translation>メインメモリー</translation>
+        <translation type="vanished">メインメモリー</translation>
     </message>
     <message>
         <source>Execution Cap</source>
         <comment>details (system)</comment>
-        <translation>使用率制限</translation>
+        <translation type="vanished">使用率制限</translation>
     </message>
     <message>
         <source>Boot Order</source>
         <comment>details (system)</comment>
-        <translation>起動順序</translation>
+        <translation type="vanished">起動順序</translation>
     </message>
     <message>
         <source>Nested Paging</source>
         <comment>details (system)</comment>
-        <translation>ネステッドページング</translation>
+        <translation type="vanished">ネステッドページング</translation>
     </message>
     <message>
         <source>Video Memory</source>
         <comment>details (display)</comment>
-        <translation>ビデオメモリー</translation>
+        <translation type="vanished">ビデオメモリー</translation>
     </message>
     <message>
         <source>2D Video</source>
         <comment>details (display)</comment>
-        <translation>2D ビデオ</translation>
+        <translation type="vanished">2D ビデオ</translation>
     </message>
     <message>
         <source>Remote Desktop Server Port</source>
         <comment>details (display/vrde)</comment>
-        <translation>リモートデスクトップサーバーポート</translation>
+        <translation type="vanished">リモートデスクトップサーバーポート</translation>
     </message>
     <message>
         <source>Remote Desktop Server</source>
         <comment>details (display/vrde)</comment>
-        <translation>リモートデスクトップサーバー</translation>
+        <translation type="vanished">リモートデスクトップサーバー</translation>
     </message>
     <message>
         <source>Video Capture File</source>
         <comment>details (display/video capture)</comment>
-        <translation>ビデオキャプチャーしたファイル</translation>
+        <translation type="vanished">ビデオキャプチャーしたファイル</translation>
     </message>
     <message>
         <source>Video Capture Attributes</source>
         <comment>details (display/video capture)</comment>
-        <translation>ビデオキャプチャーの属性</translation>
+        <translation type="vanished">ビデオキャプチャーの属性</translation>
     </message>
     <message>
         <source>Frame Size: %1x%2, Frame Rate: %3fps, Bit Rate: %4kbps</source>
-        <translation>フレームサイズ: %1x%2, フレームレート: %3fps, ビットレート: %4kbps</translation>
+        <translation type="vanished">フレームサイズ: %1x%2, フレームレート: %3fps, ビットレート: %4kbps</translation>
     </message>
     <message>
         <source>Video Capture</source>
         <comment>details (display/video capture)</comment>
-        <translation>ビデオキャプチャー</translation>
+        <translation type="vanished">ビデオキャプチャー</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details (display/video capture)</comment>
-        <translation>無効</translation>
+        <translation type="vanished">無効</translation>
     </message>
     <message>
         <source>Not Attached</source>
         <comment>details (storage)</comment>
-        <translation>未割り当て</translation>
+        <translation type="vanished">未割り当て</translation>
     </message>
     <message>
         <source>Host Driver</source>
         <comment>details (audio)</comment>
-        <translation>ホストドライバー</translation>
+        <translation type="vanished">ホストドライバー</translation>
     </message>
     <message>
         <source>Bridged Adapter, %1</source>
         <comment>details (network)</comment>
-        <translation>ブリッジアダプター, &apos;%1&apos;</translation>
+        <translation type="vanished">ブリッジアダプター, &apos;%1&apos;</translation>
     </message>
     <message>
         <source>Internal Network, &apos;%1&apos;</source>
         <comment>details (network)</comment>
-        <translation>内部ネットワーク, &apos;%1&apos;</translation>
+        <translation type="vanished">内部ネットワーク, &apos;%1&apos;</translation>
     </message>
     <message>
         <source>Host-only Adapter, &apos;%1&apos;</source>
         <comment>details (network)</comment>
-        <translation>ホストオンリーアダプター, &apos;%1&apos;</translation>
+        <translation type="vanished">ホストオンリーアダプター, &apos;%1&apos;</translation>
     </message>
     <message>
         <source>Generic Driver, &apos;%1&apos;</source>
         <comment>details (network)</comment>
-        <translation>汎用ドライバー, &apos;%1&apos;</translation>
+        <translation type="vanished">汎用ドライバー, &apos;%1&apos;</translation>
     </message>
     <message>
         <source>Generic Driver, &apos;%1&apos; { %2 }</source>
         <comment>details (network)</comment>
-        <translation>汎用ドライバー, &apos;%1&apos; { %2 }</translation>
+        <translation type="vanished">汎用ドライバー, &apos;%1&apos; { %2 }</translation>
     </message>
     <message>
         <source>NAT Network, &apos;%1&apos;</source>
         <comment>details (network)</comment>
-        <translation>NAT ネットワーク, &apos;%1&apos;</translation>
+        <translation type="vanished">NAT ネットワーク, &apos;%1&apos;</translation>
     </message>
     <message>
         <source>Adapter %1</source>
         <comment>details (network)</comment>
-        <translation>アダプター %1</translation>
+        <translation type="vanished">アダプター %1</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details (network/adapter)</comment>
-        <translation>無効</translation>
+        <translation type="vanished">無効</translation>
     </message>
     <message>
         <source>Port %1</source>
         <comment>details (serial)</comment>
-        <translation>ポート %1</translation>
+        <translation type="vanished">ポート %1</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details (serial)</comment>
-        <translation>無効</translation>
+        <translation type="vanished">無効</translation>
     </message>
     <message>
         <source>Port %1</source>
@@ -5470,62 +7414,62 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Device Filters</source>
         <comment>details (usb)</comment>
-        <translation>デバイスフィルター</translation>
+        <translation type="vanished">デバイスフィルター</translation>
     </message>
     <message>
         <source>USB Controller Inaccessible</source>
         <comment>details (usb)</comment>
-        <translation>USB コントローラーにアクセスできません</translation>
+        <translation type="vanished">USB コントローラーにアクセスできません</translation>
     </message>
     <message>
         <source>Shared Folders</source>
         <comment>details (shared folders)</comment>
-        <translation>共有フォルダー</translation>
+        <translation type="vanished">共有フォルダー</translation>
     </message>
     <message>
         <source>%1 (%2 active)</source>
         <comment>details (usb)</comment>
-        <translation>%1 (%2 有効)</translation>
+        <translation type="vanished">%1 (%2 有効)</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details (usb)</comment>
-        <translation>無効</translation>
+        <translation type="vanished">無効</translation>
     </message>
     <message>
         <source>None</source>
         <comment>details (shared folders)</comment>
-        <translation>なし</translation>
+        <translation type="vanished">なし</translation>
     </message>
     <message>
         <source>None</source>
         <comment>details (description)</comment>
-        <translation>なし</translation>
+        <translation type="vanished">なし</translation>
     </message>
     <message>
         <source>Minimal Paravirtualization</source>
         <comment>details (system)</comment>
-        <translation>最低限の準仮想化</translation>
+        <translation type="vanished">最低限の準仮想化</translation>
     </message>
     <message>
         <source>Hyper-V Paravirtualization</source>
         <comment>details (system)</comment>
-        <translation>Hyper-V 準仮想化</translation>
+        <translation type="vanished">Hyper-V 準仮想化</translation>
     </message>
     <message>
         <source>KVM Paravirtualization</source>
         <comment>details (system)</comment>
-        <translation>KVM 準仮想化</translation>
+        <translation type="vanished">KVM 準仮想化</translation>
     </message>
     <message>
         <source>[Optical Drive]</source>
         <comment>details (storage)</comment>
-        <translation>[光学ドライブ]</translation>
+        <translation type="vanished">[光学ドライブ]</translation>
     </message>
     <message>
         <source>USB Controller</source>
         <comment>details (usb)</comment>
-        <translation>USB コントローラー</translation>
+        <translation type="vanished">USB コントローラー</translation>
     </message>
     <message>
         <source>Scale-factor</source>
@@ -5545,127 +7489,127 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Mini-toolbar Position</source>
         <comment>details (user interface)</comment>
-        <translation>ミニツールバーの場所</translation>
+        <translation type="vanished">ミニツールバーの場所</translation>
     </message>
     <message>
         <source>Top</source>
         <comment>details (user interface/mini-toolbar position)</comment>
-        <translation>上部</translation>
+        <translation type="vanished">上部</translation>
     </message>
     <message>
         <source>Bottom</source>
         <comment>details (user interface/mini-toolbar position)</comment>
-        <translation>下部</translation>
+        <translation type="vanished">下部</translation>
     </message>
     <message>
         <source>Mini-toolbar</source>
         <comment>details (user interface)</comment>
-        <translation>ミニツールバー</translation>
+        <translation type="vanished">ミニツールバー</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details (user interface/mini-toolbar)</comment>
-        <translation>無効</translation>
+        <translation type="vanished">無効</translation>
     </message>
     <message>
         <source>Scale-factor</source>
         <comment>details (display)</comment>
-        <translation>表示倍率</translation>
+        <translation type="vanished">表示倍率</translation>
     </message>
     <message>
         <source>Unscaled HiDPI Video Output</source>
         <comment>details (display)</comment>
-        <translation>スケールしない HiDPI 出力</translation>
+        <translation type="vanished">スケールしない HiDPI 出力</translation>
     </message>
     <message>
         <source>Enabled</source>
         <comment>details (display/Unscaled HiDPI Video Output)</comment>
-        <translation>有効</translation>
+        <translation type="vanished">有効</translation>
     </message>
     <message>
         <source>Menu-bar</source>
         <comment>details (user interface)</comment>
-        <translation>メニューバー</translation>
+        <translation type="vanished">メニューバー</translation>
     </message>
     <message>
         <source>Enabled</source>
         <comment>details (user interface/menu-bar)</comment>
-        <translation>有効</translation>
+        <translation type="vanished">有効</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details (user interface/menu-bar)</comment>
-        <translation>無効</translation>
+        <translation type="vanished">無効</translation>
     </message>
     <message>
         <source>Status-bar</source>
         <comment>details (user interface)</comment>
-        <translation>ステータスバー</translation>
+        <translation type="vanished">ステータスバー</translation>
     </message>
     <message>
         <source>Enabled</source>
         <comment>details (user interface/status-bar)</comment>
-        <translation>有効</translation>
+        <translation type="vanished">有効</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details (user interface/status-bar)</comment>
-        <translation>無効</translation>
+        <translation type="vanished">無効</translation>
     </message>
     <message>
         <source>Chipset Type</source>
         <comment>details (system)</comment>
-        <translation>チップセットのタイプ</translation>
+        <translation type="vanished">チップセットのタイプ</translation>
     </message>
     <message>
         <source>Enabled</source>
         <comment>details (system/EFI)</comment>
-        <translation>有効</translation>
+        <translation type="vanished">有効</translation>
     </message>
     <message>
         <source>EFI</source>
         <comment>details (system)</comment>
-        <translation>EFI</translation>
+        <translation type="vanished">EFI</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details (system/EFI)</comment>
-        <translation>無効</translation>
+        <translation type="vanished">無効</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details (display/Unscaled HiDPI Video Output)</comment>
-        <translation>無効</translation>
+        <translation type="vanished">無効</translation>
     </message>
     <message>
         <source>Audio Output</source>
         <comment>details (audio)</comment>
-        <translation>オーディオ出力</translation>
+        <translation type="vanished">オーディオ出力</translation>
     </message>
     <message>
         <source>Enabled</source>
         <comment>details (audio/output)</comment>
-        <translation>有効</translation>
+        <translation type="vanished">有効</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details (audio/output)</comment>
-        <translation>無効</translation>
+        <translation type="vanished">無効</translation>
     </message>
     <message>
         <source>Audio Input</source>
         <comment>details (audio)</comment>
-        <translation>オーディオ入力</translation>
+        <translation type="vanished">オーディオ入力</translation>
     </message>
     <message>
         <source>Enabled</source>
         <comment>details (audio/input)</comment>
-        <translation>有効</translation>
+        <translation type="vanished">有効</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details (audio/input)</comment>
-        <translation>無効</translation>
+        <translation type="vanished">無効</translation>
     </message>
     <message>
         <source>Disabled</source>
@@ -5678,14 +7622,14 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>%1 details</source>
         <comment>like &apos;General details&apos; or &apos;Storage details&apos;</comment>
-        <translation>%1 の詳細</translation>
+        <translation type="vanished">%1 の詳細</translation>
     </message>
 </context>
 <context>
     <name>UIGDetailsSet</name>
     <message>
         <source>Contains the details of virtual machine &apos;%1&apos;</source>
-        <translation>仮想マシン &apos;%1&apos; の詳細を含む</translation>
+        <translation type="vanished">仮想マシン &apos;%1&apos; の詳細を含む</translation>
     </message>
 </context>
 <context>
@@ -5890,7 +7834,7 @@ p, li { white-space: pre-wrap; }
     <name>UIGDetailsView</name>
     <message>
         <source>Contains a list of Virtual Machine details</source>
-        <translation>仮想マシンの詳細のリストを含む</translation>
+        <translation type="vanished">仮想マシンの詳細のリストを含む</translation>
     </message>
 </context>
 <context>
@@ -5901,31 +7845,31 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Update disabled</source>
-        <translation>更新を無効化</translation>
+        <translation type="vanished">更新を無効化</translation>
     </message>
     <message>
         <source>Every 0.5 s</source>
-        <translation>0.5秒毎</translation>
+        <translation type="vanished">0.5秒毎</translation>
     </message>
     <message>
         <source>Every 1 s</source>
-        <translation>1秒毎</translation>
+        <translation type="vanished">1秒毎</translation>
     </message>
     <message>
         <source>Every 2 s</source>
-        <translation>2秒毎</translation>
+        <translation type="vanished">2秒毎</translation>
     </message>
     <message>
         <source>Every 5 s</source>
-        <translation>5秒毎</translation>
+        <translation type="vanished">5秒毎</translation>
     </message>
     <message>
         <source>Every 10 s</source>
-        <translation>10秒毎</translation>
+        <translation type="vanished">10秒毎</translation>
     </message>
     <message>
         <source>No preview</source>
-        <translation>プレビューなし</translation>
+        <translation type="vanished">プレビューなし</translation>
     </message>
     <message>
         <source>No Preview</source>
@@ -6007,11 +7951,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Scale Factor:</source>
-        <translation type="vanished">表示倍率:</translation>
+        <translation>表示倍率:</translation>
     </message>
     <message>
         <source>Controls the guest screen scale factor.</source>
-        <translation type="vanished">この設定はゲストスクリーンの表示倍率を調整します。</translation>
+        <translation>この設定はゲストスクリーンの表示倍率を調整します。</translation>
     </message>
 </context>
 <context>
@@ -6240,22 +8184,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <source> (built-in)</source>
         <comment>Language</comment>
-        <translation> (内蔵)</translation>
+        <translation type="vanished"> (内蔵)</translation>
     </message>
     <message>
         <source>&lt;unavailable&gt;</source>
         <comment>Language</comment>
-        <translation>&lt;利用不可&gt;</translation>
+        <translation type="vanished">&lt;利用不可&gt;</translation>
     </message>
     <message>
         <source>&lt;unknown&gt;</source>
         <comment>Author(s)</comment>
-        <translation>&lt;不明&gt;</translation>
+        <translation type="vanished">&lt;不明&gt;</translation>
     </message>
     <message>
         <source>Default</source>
         <comment>Language</comment>
-        <translation>デフォルト</translation>
+        <translation type="vanished">デフォルト</translation>
     </message>
     <message>
         <source>Language:</source>
@@ -6331,67 +8275,67 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>No new name specified for the NAT network previously called &lt;b&gt;%1&lt;/b&gt;.</source>
-        <translation>以前の &lt;b&gt;%1&lt;/b&gt; NATネットワークに新しい名前が与えられていません。</translation>
+        <translation type="vanished">以前の &lt;b&gt;%1&lt;/b&gt; NATネットワークに新しい名前が与えられていません。</translation>
     </message>
     <message>
         <source>No CIDR specified for the NAT network &lt;b&gt;%1&lt;/b&gt;.</source>
-        <translation>&lt;b&gt;%1&lt;/b&gt; NATネットワークにCIDRが与えられていません。</translation>
+        <translation type="vanished">&lt;b&gt;%1&lt;/b&gt; NATネットワークにCIDRが与えられていません。</translation>
     </message>
     <message>
         <source>No CIDR specified for the NAT network previously called &lt;b&gt;%1&lt;/b&gt;.</source>
-        <translation>以前の &lt;b&gt;%1&lt;/b&gt; NATネットワークにCIDRが与えられていません。</translation>
+        <translation type="vanished">以前の &lt;b&gt;%1&lt;/b&gt; NATネットワークにCIDRが与えられていません。</translation>
     </message>
     <message>
         <source>Invalid CIDR specified (&lt;i&gt;%1&lt;/i&gt;) for the NAT network &lt;b&gt;%2&lt;/b&gt;.</source>
-        <translation>無効なCIDR (&lt;i&gt;%1&lt;/i&gt;) がNATネットワーク &lt;b&gt;%2&lt;/b&gt;で指定されています。</translation>
+        <translation type="vanished">無効なCIDR (&lt;i&gt;%1&lt;/i&gt;) がNATネットワーク &lt;b&gt;%2&lt;/b&gt;で指定されています。</translation>
     </message>
     <message>
         <source>Invalid CIDR specified (&lt;i&gt;%1&lt;/i&gt;) for the NAT network previously called &lt;b&gt;%2&lt;/b&gt;.</source>
-        <translation>無効なCIDR (&lt;i&gt;%1&lt;/i&gt;) が以前のNATネットワーク &lt;b&gt;%2&lt;/b&gt;で指定されています。</translation>
+        <translation type="vanished">無効なCIDR (&lt;i&gt;%1&lt;/i&gt;) が以前のNATネットワーク &lt;b&gt;%2&lt;/b&gt;で指定されています。</translation>
     </message>
     <message>
         <source>Network Name</source>
-        <translation>ネットワーク名</translation>
+        <translation type="vanished">ネットワーク名</translation>
     </message>
     <message>
         <source>[empty]</source>
-        <translation>[空]</translation>
+        <translation type="vanished">[空]</translation>
     </message>
     <message>
         <source>%1 (renamed from %2)</source>
-        <translation>%1 (%2 から名称変更)</translation>
+        <translation type="vanished">%1 (%2 から名称変更)</translation>
     </message>
     <message>
         <source>Old Network Name</source>
-        <translation>古いネットワーク名</translation>
+        <translation type="vanished">古いネットワーク名</translation>
     </message>
     <message>
         <source>New Network Name</source>
-        <translation>新しいネットワーク名</translation>
+        <translation type="vanished">新しいネットワーク名</translation>
     </message>
     <message>
         <source>Network CIDR</source>
-        <translation>ネットワークCIDR</translation>
+        <translation type="vanished">ネットワークCIDR</translation>
     </message>
     <message>
         <source>Supports DHCP</source>
-        <translation>DHCPのサポート</translation>
+        <translation type="vanished">DHCPのサポート</translation>
     </message>
     <message>
         <source>yes</source>
-        <translation>はい</translation>
+        <translation type="vanished">はい</translation>
     </message>
     <message>
         <source>no</source>
-        <translation>いいえ</translation>
+        <translation type="vanished">いいえ</translation>
     </message>
     <message>
         <source>Supports IPv6</source>
-        <translation>IPv6のサポート</translation>
+        <translation type="vanished">IPv6のサポート</translation>
     </message>
     <message>
         <source>Default IPv6 route</source>
-        <translation>IPv6デフォルトルート</translation>
+        <translation type="vanished">IPv6デフォルトルート</translation>
     </message>
     <message>
         <source>Host interface &lt;b&gt;%1&lt;/b&gt; does not currently have a valid IPv4 address.</source>
@@ -6936,7 +8880,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Ho&amp;st:</source>
-        <translation>ホスト(&amp;S):</translation>
+        <translation type="vanished">ホスト(&amp;S):</translation>
     </message>
     <message>
         <source>Changes the proxy host.</source>
@@ -6944,7 +8888,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Port:</source>
-        <translation>ポート(&amp;P):</translation>
+        <translation type="vanished">ポート(&amp;P):</translation>
     </message>
     <message>
         <source>Changes the proxy port.</source>
@@ -6976,19 +8920,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>No proxy host is currently specified.</source>
-        <translation>現在プロキシーのホストが指定されていません。</translation>
+        <translation type="vanished">現在プロキシーのホストが指定されていません。</translation>
     </message>
     <message>
         <source>No proxy port is currently specified.</source>
-        <translation>現在プロキシーのポートが指定されていません。</translation>
+        <translation type="vanished">現在プロキシーのポートが指定されていません。</translation>
     </message>
     <message>
         <source>Holds the proxy host.</source>
-        <translation>プロキシーのホストを指定します。</translation>
+        <translation type="vanished">プロキシーのホストを指定します。</translation>
     </message>
     <message>
         <source>Holds the proxy port.</source>
-        <translation>プロキシーのポートを指定します。</translation>
+        <translation type="vanished">プロキシーのポートを指定します。</translation>
     </message>
     <message>
         <source>When chosen, VirtualBox will try to auto-detect host proxy settings for tasks like downloading Guest Additions from the network or checking for updates.</source>
@@ -7015,20 +8959,24 @@ p, li { white-space: pre-wrap; }
         <translation>手動プロキシー設定(&amp;M)</translation>
     </message>
     <message>
+        <source>&amp;URL:</source>
+        <translation></translation>
+    </message>
+    <message>
         <source>No proxy URL is currently specified.</source>
-        <translation type="vanished">現在プロキシーのポートが指定されていません。</translation>
+        <translation>現在プロキシーのポートが指定されていません。</translation>
     </message>
     <message>
         <source>Invalid proxy URL is currently specified.</source>
-        <translation type="vanished">現在指定されているプロキシーのURLが不正です。</translation>
+        <translation>現在指定されているプロキシーのURLが不正です。</translation>
     </message>
     <message>
         <source>You have provided a proxy password. Please be aware that the password will be saved in plain text. You may wish to configure a system-wide proxy instead and not store application-specific settings.</source>
-        <translation type="vanished">プロキシーのパスワードを指定しています。パスワードは平文で保存されるのでご注意ください。もしシステム全体でのプロキシーを設定したい場合は、アプリケーション固有の設定は行わないでください。</translation>
+        <translation>プロキシーのパスワードを指定しています。パスワードは平文で保存されるのでご注意ください。もしシステム全体でのプロキシーを設定したい場合は、アプリケーション固有の設定は行わないでください。</translation>
     </message>
     <message>
         <source>Holds the proxy URL. The format is: &lt;table cellspacing=0 style=&apos;white-space:pre&apos;&gt;&lt;tr&gt;&lt;td&gt;[{type}://][{userid}[:{password}]@]{server}[:{port}]&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;http://username:password@proxy.host.com:port&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
-        <translation type="vanished">プロキシーのURLを入力してください。書式は次のとおりです: &lt;table cellspacing=0 style=&apos;white-space:pre&apos;&gt;&lt;tr&gt;&lt;td&gt;[{type}://][{userid}[:{password}]@]{server}[:{port}]&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;http://username:password@proxy.host.com:port&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
+        <translation>プロキシーのURLを入力してください。書式は次のとおりです: &lt;table cellspacing=0 style=&apos;white-space:pre&apos;&gt;&lt;tr&gt;&lt;td&gt;[{type}://][{userid}[:{password}]@]{server}[:{port}]&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;http://username:password@proxy.host.com:port&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
     </message>
 </context>
 <context>
@@ -7087,6 +9035,13 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>UIGraphicsControllerEditor</name>
+    <message>
+        <source>&amp;Graphics Controller:</source>
+        <translation type="unfinished">グラフィックスコントローラー(&amp;G):</translation>
+    </message>
+</context>
+<context>
     <name>UIGraphicsTextPane</name>
     <message>
         <source>%1: %2</source>
@@ -7129,22 +9084,38 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Terminate Process</source>
-        <translation type="vanished">プロセスの終了</translation>
+        <translation>プロセスの終了</translation>
     </message>
     <message>
         <source>Expand All</source>
-        <translation type="vanished">すべて開く</translation>
+        <translation>すべて開く</translation>
     </message>
     <message>
         <source>Collapse All</source>
-        <translation type="vanished">すべてたたむ</translation>
+        <translation>すべてたたむ</translation>
+    </message>
+    <message>
+        <source>Terminate Session</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove All Terminated Sessions/Processes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Properties</source>
+        <translation type="unfinished">プロパティ</translation>
     </message>
 </context>
 <context>
     <name>UIGuestProcessControlDialog</name>
     <message>
         <source>%1 - Guest Control</source>
-        <translation type="vanished">%1 - ゲストコントール</translation>
+        <translation>%1 - ゲストコントール</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation type="unfinished">閉じる</translation>
     </message>
 </context>
 <context>
@@ -7152,6 +9123,56 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Close</source>
         <translation type="vanished">閉じる</translation>
+    </message>
+    <message>
+        <source>Session/Process ID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Session Name/Process Command</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Session/Process Status</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>UIGuestProcessTreeItem</name>
+    <message>
+        <source>Process Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Process Id</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Process Status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Executable Path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arguments</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>UIGuestSessionTreeItem</name>
+    <message>
+        <source>Session Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Session Id</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Session Status</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7404,52 +9425,52 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Enable</source>
         <comment>DHCP Server</comment>
-        <translation>有効</translation>
+        <translation type="vanished">有効</translation>
     </message>
     <message>
         <source>Adapter</source>
-        <translation>アダプター</translation>
+        <translation type="vanished">アダプター</translation>
     </message>
     <message>
         <source>Automatically configured</source>
         <comment>interface</comment>
-        <translation>自動構成</translation>
+        <translation type="vanished">自動構成</translation>
     </message>
     <message>
         <source>Manually configured</source>
         <comment>interface</comment>
-        <translation>手動構成</translation>
+        <translation type="vanished">手動構成</translation>
     </message>
     <message>
         <source>IPv4 Address</source>
-        <translation>IPv4 アドレス</translation>
+        <translation type="vanished">IPv4 アドレス</translation>
     </message>
     <message>
         <source>Not set</source>
         <comment>address</comment>
-        <translation>未設定</translation>
+        <translation type="vanished">未設定</translation>
     </message>
     <message>
         <source>IPv4 Network Mask</source>
-        <translation>IPv4 ネットマスク</translation>
+        <translation type="vanished">IPv4 ネットマスク</translation>
     </message>
     <message>
         <source>Not set</source>
         <comment>mask</comment>
-        <translation>未設定</translation>
+        <translation type="vanished">未設定</translation>
     </message>
     <message>
         <source>IPv6 Address</source>
-        <translation>IPv6 アドレス</translation>
+        <translation type="vanished">IPv6 アドレス</translation>
     </message>
     <message>
         <source>IPv6 Prefix Length</source>
-        <translation>IPv6 ネットマスク</translation>
+        <translation type="vanished">IPv6 ネットマスク</translation>
     </message>
     <message>
         <source>Not set</source>
         <comment>length</comment>
-        <translation>未設定</translation>
+        <translation type="vanished">未設定</translation>
     </message>
     <message>
         <source>DHCP Server</source>
@@ -7458,85 +9479,85 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Enabled</source>
         <comment>server</comment>
-        <translation>有効</translation>
+        <translation type="vanished">有効</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>server</comment>
-        <translation>無効</translation>
+        <translation type="vanished">無効</translation>
     </message>
     <message>
         <source>Address</source>
-        <translation>アドレス</translation>
+        <translation type="vanished">アドレス</translation>
     </message>
     <message>
         <source>Network Mask</source>
-        <translation>ネットマスク</translation>
+        <translation type="vanished">ネットマスク</translation>
     </message>
     <message>
         <source>Lower Bound</source>
-        <translation>下限</translation>
+        <translation type="vanished">下限</translation>
     </message>
     <message>
         <source>Not set</source>
         <comment>bound</comment>
-        <translation>未設定</translation>
+        <translation type="vanished">未設定</translation>
     </message>
     <message>
         <source>Upper Bound</source>
-        <translation>上限</translation>
+        <translation type="vanished">上限</translation>
     </message>
     <message>
         <source>&amp;Network</source>
-        <translation>ネットワーク(&amp;N)</translation>
+        <translation type="vanished">ネットワーク(&amp;N)</translation>
     </message>
     <message>
         <source>&amp;Create</source>
-        <translation>作成(&amp;C)</translation>
+        <translation type="vanished">作成(&amp;C)</translation>
     </message>
     <message>
         <source>Create Host-only Network (%1)</source>
-        <translation>ホストオンリーネットワークを作成 (%1)</translation>
+        <translation type="vanished">ホストオンリーネットワークを作成 (%1)</translation>
     </message>
     <message>
         <source>Create new host-only network</source>
-        <translation>新しいホストオンリーネットワークを作成</translation>
+        <translation type="vanished">新しいホストオンリーネットワークを作成</translation>
     </message>
     <message>
         <source>&amp;Remove...</source>
-        <translation>除去(&amp;R)...</translation>
+        <translation type="vanished">除去(&amp;R)...</translation>
     </message>
     <message>
         <source>Remove Host-only Network (%1)</source>
-        <translation>ホストオンリーネットワークを除去 (%1)</translation>
+        <translation type="vanished">ホストオンリーネットワークを除去 (%1)</translation>
     </message>
     <message>
         <source>Remove selected host-only network</source>
-        <translation>選択したホストオンリーネットワークを除去します</translation>
+        <translation type="vanished">選択したホストオンリーネットワークを除去します</translation>
     </message>
     <message>
         <source>&amp;Properties...</source>
-        <translation>プロパティ(&amp;P)...</translation>
+        <translation type="vanished">プロパティ(&amp;P)...</translation>
     </message>
     <message>
         <source>Open Host-only Network Properties (%1)</source>
-        <translation>ホストオンリーネットワークのプロパティを開く (%1)</translation>
+        <translation type="vanished">ホストオンリーネットワークのプロパティを開く (%1)</translation>
     </message>
     <message>
         <source>Open pane with selected host-only network properties</source>
-        <translation>選択したホストオンリーネットワークのプロパティをペインで開く</translation>
+        <translation type="vanished">選択したホストオンリーネットワークのプロパティをペインで開く</translation>
     </message>
     <message>
         <source>&amp;Refresh...</source>
-        <translation>最新の情報に更新(&amp;R)...</translation>
+        <translation type="vanished">最新の情報に更新(&amp;R)...</translation>
     </message>
     <message>
         <source>Refresh Host-only Networks (%1)</source>
-        <translation>ホストオンリーネットワークを最新の状態に更新 (%1)</translation>
+        <translation type="vanished">ホストオンリーネットワークを最新の状態に更新 (%1)</translation>
     </message>
     <message>
         <source>Refresh the list of host-only networks</source>
-        <translation>ホストオンリーネットワークのリストを最新の状態に更新する</translation>
+        <translation type="vanished">ホストオンリーネットワークのリストを最新の状態に更新する</translation>
     </message>
     <message>
         <source>Name</source>
@@ -7598,6 +9619,14 @@ p, li { white-space: pre-wrap; }
         <source>Removing network...</source>
         <translation type="vanished">ネットワークの削除...</translation>
     </message>
+    <message>
+        <source>Adding network ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Removing network ...</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>UIHostNetworkManagerWidget</name>
@@ -7607,11 +9636,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Adding network...</source>
-        <translation>ネットワークの追加...</translation>
+        <translation type="vanished">ネットワークの追加...</translation>
     </message>
     <message>
         <source>Removing network...</source>
-        <translation>ネットワークの削除...</translation>
+        <translation type="vanished">ネットワークの削除...</translation>
     </message>
 </context>
 <context>
@@ -7818,7 +9847,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>%1: %2</source>
         <comment>scope: description</comment>
-        <translation type="vanished">%1: %2</translation>
+        <translation>%1: %2</translation>
     </message>
 </context>
 <context>
@@ -8138,12 +10167,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Video capture disabled</source>
         <comment>Video capture tooltip</comment>
-        <translation>ビデオキャプチャー無効</translation>
+        <translation type="vanished">ビデオキャプチャー無効</translation>
     </message>
     <message>
         <source>Video capture file</source>
         <comment>Video capture tooltip</comment>
-        <translation>ビデオキャプチャーしたファイル</translation>
+        <translation type="vanished">ビデオキャプチャーしたファイル</translation>
     </message>
     <message>
         <source>Indicates whether the host mouse pointer is captured by the guest OS:%1</source>
@@ -8198,22 +10227,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Recording disabled</source>
         <comment>Recording tooltip</comment>
-        <translation type="vanished">レコーディングを無効化</translation>
+        <translation>レコーディングを無効化</translation>
     </message>
     <message>
         <source>Video/audio recording file</source>
         <comment>Recording tooltip</comment>
-        <translation type="vanished">ビデオ/オーディオレコーディングファイル</translation>
+        <translation>ビデオ/オーディオレコーディングファイル</translation>
     </message>
     <message>
         <source>Audio recording file</source>
         <comment>Recording tooltip</comment>
-        <translation type="vanished">オーディオレコーディングファイル</translation>
+        <translation>オーディオレコーディングファイル</translation>
     </message>
     <message>
         <source>Video recording file</source>
         <comment>Recording tooltip</comment>
-        <translation type="vanished">ビデオレコーディングファイル</translation>
+        <translation>ビデオレコーディングファイル</translation>
     </message>
 </context>
 <context>
@@ -8225,12 +10254,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Host Driver</source>
         <comment>details report (audio)</comment>
-        <translation>ホストドライバー</translation>
+        <translation type="vanished">ホストドライバー</translation>
     </message>
     <message>
         <source>Controller</source>
         <comment>details report (audio)</comment>
-        <translation>コントローラー</translation>
+        <translation type="vanished">コントローラー</translation>
     </message>
 </context>
 <context>
@@ -8243,57 +10272,57 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Video Memory</source>
         <comment>details report</comment>
-        <translation>ビデオメモリー</translation>
+        <translation type="vanished">ビデオメモリー</translation>
     </message>
     <message>
         <source>Screens</source>
         <comment>details report</comment>
-        <translation>スクリーン</translation>
+        <translation type="vanished">スクリーン</translation>
     </message>
     <message>
         <source>Enabled</source>
         <comment>details report (3D Acceleration)</comment>
-        <translation>有効</translation>
+        <translation type="vanished">有効</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details report (3D Acceleration)</comment>
-        <translation>無効</translation>
+        <translation type="vanished">無効</translation>
     </message>
     <message>
         <source>3D Acceleration</source>
         <comment>details report</comment>
-        <translation>3D アクセラレーション</translation>
+        <translation type="vanished">3D アクセラレーション</translation>
     </message>
     <message>
         <source>Enabled</source>
         <comment>details report (2D Video Acceleration)</comment>
-        <translation>有効</translation>
+        <translation type="vanished">有効</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details report (2D Video Acceleration)</comment>
-        <translation>無効</translation>
+        <translation type="vanished">無効</translation>
     </message>
     <message>
         <source>2D Video Acceleration</source>
         <comment>details report</comment>
-        <translation>2D ビデオアクセラレーション</translation>
+        <translation type="vanished">2D ビデオアクセラレーション</translation>
     </message>
     <message>
         <source>Remote Desktop Server Port</source>
         <comment>details report (VRDE Server)</comment>
-        <translation>リモートデスクトップサーバーポート</translation>
+        <translation type="vanished">リモートデスクトップサーバーポート</translation>
     </message>
     <message>
         <source>Remote Desktop Server</source>
         <comment>details report (VRDE Server)</comment>
-        <translation>リモートデスクトップサーバー</translation>
+        <translation type="vanished">リモートデスクトップサーバー</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details report (VRDE Server)</comment>
-        <translation>無効</translation>
+        <translation type="vanished">無効</translation>
     </message>
 </context>
 <context>
@@ -8306,12 +10335,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Name</source>
         <comment>details report</comment>
-        <translation>名前</translation>
+        <translation type="vanished">名前</translation>
     </message>
     <message>
         <source>OS Type</source>
         <comment>details report</comment>
-        <translation>OSタイプ</translation>
+        <translation type="vanished">OSタイプ</translation>
     </message>
 </context>
 <context>
@@ -8323,43 +10352,43 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Bridged adapter, %1</source>
         <comment>details report (network)</comment>
-        <translation>ブリッジアダプター, &apos;%1&apos;</translation>
+        <translation type="vanished">ブリッジアダプター, &apos;%1&apos;</translation>
     </message>
     <message>
         <source>Internal network, &apos;%1&apos;</source>
         <comment>details report (network)</comment>
-        <translation>内部ネットワーク, &apos;%1&apos;</translation>
+        <translation type="vanished">内部ネットワーク, &apos;%1&apos;</translation>
     </message>
     <message>
         <source>Host-only adapter, &apos;%1&apos;</source>
         <comment>details report (network)</comment>
-        <translation>ホストオンリーアダプター, &apos;%1&apos;</translation>
+        <translation type="vanished">ホストオンリーアダプター, &apos;%1&apos;</translation>
     </message>
     <message>
         <source>Generic, &apos;%1&apos;</source>
         <comment>details report (network)</comment>
-        <translation>一般, &apos;%1&apos;</translation>
+        <translation type="vanished">一般, &apos;%1&apos;</translation>
     </message>
     <message>
         <source>NAT network, &apos;%1&apos;</source>
         <comment>details report (network)</comment>
-        <translation>NATネットワーク, &apos;%1&apos;</translation>
+        <translation type="vanished">NATネットワーク, &apos;%1&apos;</translation>
     </message>
     <message>
         <source>Adapter %1</source>
         <comment>details report (network)</comment>
-        <translation>アダプター %1</translation>
+        <translation type="vanished">アダプター %1</translation>
     </message>
 </context>
 <context>
     <name>UIInformationDataNetworkStatistics</name>
     <message>
         <source>Data Transmitted</source>
-        <translation>データ送信</translation>
+        <translation type="vanished">データ送信</translation>
     </message>
     <message>
         <source>Data Received</source>
-        <translation>データ受信</translation>
+        <translation type="vanished">データ受信</translation>
     </message>
     <message>
         <source>Network Statistics</source>
@@ -8395,67 +10424,67 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Not Detected</source>
         <comment>guest additions</comment>
-        <translation>未検出</translation>
+        <translation type="vanished">未検出</translation>
     </message>
     <message>
         <source>Not Detected</source>
         <comment>guest os type</comment>
-        <translation>未検出</translation>
+        <translation type="vanished">未検出</translation>
     </message>
     <message>
         <source>Not Available</source>
         <comment>details report (VRDE server port)</comment>
-        <translation>利用不可</translation>
+        <translation type="vanished">利用不可</translation>
     </message>
     <message>
         <source>Screen Resolution</source>
-        <translation>画面解像度</translation>
+        <translation type="vanished">画面解像度</translation>
     </message>
     <message>
         <source>VM Uptime</source>
-        <translation>VM 起動時間</translation>
+        <translation type="vanished">VM 起動時間</translation>
     </message>
     <message>
         <source>Clipboard Mode</source>
-        <translation>クリップボードモード</translation>
+        <translation type="vanished">クリップボードモード</translation>
     </message>
     <message>
         <source>Drag and Drop Mode</source>
-        <translation>ドラッグ＆ドロップモード</translation>
+        <translation type="vanished">ドラッグ＆ドロップモード</translation>
     </message>
     <message>
         <source>VT-x/AMD-V</source>
         <comment>details report</comment>
-        <translation>VT-x/AMD-V</translation>
+        <translation type="vanished">VT-x/AMD-V</translation>
     </message>
     <message>
         <source>Nested Paging</source>
         <comment>details report</comment>
-        <translation>ネステッドページング</translation>
+        <translation type="vanished">ネステッドページング</translation>
     </message>
     <message>
         <source>Unrestricted Execution</source>
         <comment>details report</comment>
-        <translation>Unrestricted Execution</translation>
+        <translation type="vanished">Unrestricted Execution</translation>
     </message>
     <message>
         <source>Paravirtualization Interface</source>
         <comment>details report</comment>
-        <translation>準仮想化インターフェース</translation>
+        <translation type="vanished">準仮想化インターフェース</translation>
     </message>
     <message>
         <source>Guest Additions</source>
-        <translation>Guest Additions</translation>
+        <translation type="vanished">Guest Additions</translation>
     </message>
     <message>
         <source>Guest OS Type</source>
         <comment>details report</comment>
-        <translation>ゲストOSのタイプ</translation>
+        <translation type="vanished">ゲストOSのタイプ</translation>
     </message>
     <message>
         <source>Remote Desktop Server Port</source>
         <comment>details report (VRDE Server)</comment>
-        <translation>リモートデスクトップサーバーポート</translation>
+        <translation type="vanished">リモートデスクトップサーバーポート</translation>
     </message>
     <message>
         <source>VM Execution Engine</source>
@@ -8472,7 +10501,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Port %1</source>
         <comment>details report (serial ports)</comment>
-        <translation>ポート %1</translation>
+        <translation type="vanished">ポート %1</translation>
     </message>
 </context>
 <context>
@@ -8485,7 +10514,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Shared Folders</source>
         <comment>details report (shared folders)</comment>
-        <translation>共有フォルダー</translation>
+        <translation type="vanished">共有フォルダー</translation>
     </message>
 </context>
 <context>
@@ -8496,26 +10525,26 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>(Optical Drive)</source>
-        <translation>(光学ドライブ)</translation>
+        <translation type="vanished">(光学ドライブ)</translation>
     </message>
 </context>
 <context>
     <name>UIInformationDataStorageStatistics</name>
     <message>
         <source>DMA Transfers</source>
-        <translation>DMA 転送</translation>
+        <translation type="vanished">DMA 転送</translation>
     </message>
     <message>
         <source>PIO Transfers</source>
-        <translation>PIO 転送</translation>
+        <translation type="vanished">PIO 転送</translation>
     </message>
     <message>
         <source>Data Read</source>
-        <translation>データ読み込み</translation>
+        <translation type="vanished">データ読み込み</translation>
     </message>
     <message>
         <source>Data Written</source>
-        <translation>データ書き込み</translation>
+        <translation type="vanished">データ書き込み</translation>
     </message>
     <message>
         <source>Storage Statistics</source>
@@ -8524,7 +10553,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Requests</source>
-        <translation>リクエスト</translation>
+        <translation type="vanished">リクエスト</translation>
     </message>
 </context>
 <context>
@@ -8537,102 +10566,102 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Enabled</source>
         <comment>details report (ACPI)</comment>
-        <translation>有効</translation>
+        <translation type="vanished">有効</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details report (ACPI)</comment>
-        <translation>無効</translation>
+        <translation type="vanished">無効</translation>
     </message>
     <message>
         <source>Enabled</source>
         <comment>details report (I/O APIC)</comment>
-        <translation>有効</translation>
+        <translation type="vanished">有効</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details report (I/O APIC)</comment>
-        <translation>無効</translation>
+        <translation type="vanished">無効</translation>
     </message>
     <message>
         <source>Enabled</source>
         <comment>details report (PAE/NX)</comment>
-        <translation>有効</translation>
+        <translation type="vanished">有効</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details report (PAE/NX)</comment>
-        <translation>無効</translation>
+        <translation type="vanished">無効</translation>
     </message>
     <message>
         <source>Base Memory</source>
         <comment>details report</comment>
-        <translation>メインメモリー</translation>
+        <translation type="vanished">メインメモリー</translation>
     </message>
     <message>
         <source>Processor(s)</source>
         <comment>details report</comment>
-        <translation>プロセッサー数</translation>
+        <translation type="vanished">プロセッサー数</translation>
     </message>
     <message>
         <source>Execution Cap</source>
         <comment>details report</comment>
-        <translation>使用率制限</translation>
+        <translation type="vanished">使用率制限</translation>
     </message>
     <message>
         <source>Boot Order</source>
         <comment>details report</comment>
-        <translation>起動順序</translation>
+        <translation type="vanished">起動順序</translation>
     </message>
     <message>
         <source>ACPI</source>
         <comment>details report</comment>
-        <translation>ACPI</translation>
+        <translation type="vanished">ACPI</translation>
     </message>
     <message>
         <source>I/O APIC</source>
         <comment>details report</comment>
-        <translation>I/O APIC</translation>
+        <translation type="vanished">I/O APIC</translation>
     </message>
     <message>
         <source>PAE/NX</source>
         <comment>details report</comment>
-        <translation>PAE/NX</translation>
+        <translation type="vanished">PAE/NX</translation>
     </message>
     <message>
         <source>Enabled</source>
         <comment>details report (VT-x/AMD-V)</comment>
-        <translation>有効</translation>
+        <translation type="vanished">有効</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details report (VT-x/AMD-V)</comment>
-        <translation>無効</translation>
+        <translation type="vanished">無効</translation>
     </message>
     <message>
         <source>VT-x/AMD-V</source>
         <comment>details report</comment>
-        <translation>VT-x/AMD-V</translation>
+        <translation type="vanished">VT-x/AMD-V</translation>
     </message>
     <message>
         <source>Enabled</source>
         <comment>details report (Nested Paging)</comment>
-        <translation>有効</translation>
+        <translation type="vanished">有効</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details report (Nested Paging)</comment>
-        <translation>無効</translation>
+        <translation type="vanished">無効</translation>
     </message>
     <message>
         <source>Nested Paging</source>
         <comment>details report</comment>
-        <translation>ネステッドページング</translation>
+        <translation type="vanished">ネステッドページング</translation>
     </message>
     <message>
         <source>Paravirtualization Interface</source>
         <comment>details report</comment>
-        <translation>準仮想化インターフェース</translation>
+        <translation type="vanished">準仮想化インターフェース</translation>
     </message>
 </context>
 <context>
@@ -8645,17 +10674,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Disabled</source>
         <comment>details report (USB)</comment>
-        <translation>無効</translation>
+        <translation type="vanished">無効</translation>
     </message>
     <message>
         <source>Device Filters</source>
         <comment>details report (USB)</comment>
-        <translation>デバイスフィルター</translation>
+        <translation type="vanished">デバイスフィルター</translation>
     </message>
     <message>
         <source>%1 (%2 active)</source>
         <comment>details report (USB)</comment>
-        <translation>%1 (%2 有効)</translation>
+        <translation type="vanished">%1 (%2 有効)</translation>
     </message>
 </context>
 <context>
@@ -8663,87 +10692,87 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Enable</source>
         <comment>DHCP Server</comment>
-        <translation type="vanished">有効</translation>
+        <translation>有効</translation>
     </message>
     <message>
         <source>Adapter</source>
-        <translation type="vanished">アダプター</translation>
+        <translation>アダプター</translation>
     </message>
     <message>
         <source>Automatically configured</source>
         <comment>interface</comment>
-        <translation type="vanished">自動構成</translation>
+        <translation>自動構成</translation>
     </message>
     <message>
         <source>Manually configured</source>
         <comment>interface</comment>
-        <translation type="vanished">手動構成</translation>
+        <translation>手動構成</translation>
     </message>
     <message>
         <source>IPv4 Address</source>
-        <translation type="vanished">IPv4 アドレス</translation>
+        <translation>IPv4 アドレス</translation>
     </message>
     <message>
         <source>Not set</source>
         <comment>address</comment>
-        <translation type="vanished">未設定</translation>
+        <translation>未設定</translation>
     </message>
     <message>
         <source>IPv4 Network Mask</source>
-        <translation type="vanished">IPv4 ネットマスク</translation>
+        <translation>IPv4 ネットマスク</translation>
     </message>
     <message>
         <source>Not set</source>
         <comment>mask</comment>
-        <translation type="vanished">未設定</translation>
+        <translation>未設定</translation>
     </message>
     <message>
         <source>IPv6 Address</source>
-        <translation type="vanished">IPv6 アドレス</translation>
+        <translation>IPv6 アドレス</translation>
     </message>
     <message>
         <source>IPv6 Prefix Length</source>
-        <translation type="vanished">IPv6 ネットマスク</translation>
+        <translation>IPv6 ネットマスク</translation>
     </message>
     <message>
         <source>Not set</source>
         <comment>length</comment>
-        <translation type="vanished">未設定</translation>
+        <translation>未設定</translation>
     </message>
     <message>
         <source>DHCP Server</source>
-        <translation type="vanished">DHCP サーバー</translation>
+        <translation>DHCP サーバー</translation>
     </message>
     <message>
         <source>Enabled</source>
         <comment>server</comment>
-        <translation type="vanished">有効</translation>
+        <translation>有効</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>server</comment>
-        <translation type="vanished">無効</translation>
+        <translation>無効</translation>
     </message>
     <message>
         <source>Address</source>
-        <translation type="vanished">アドレス</translation>
+        <translation>アドレス</translation>
     </message>
     <message>
         <source>Network Mask</source>
-        <translation type="vanished">ネットマスク</translation>
+        <translation>ネットマスク</translation>
     </message>
     <message>
         <source>Lower Bound</source>
-        <translation type="vanished">下限</translation>
+        <translation>下限</translation>
     </message>
     <message>
         <source>Not set</source>
         <comment>bound</comment>
-        <translation type="vanished">未設定</translation>
+        <translation>未設定</translation>
     </message>
     <message>
         <source>Upper Bound</source>
-        <translation type="vanished">上限</translation>
+        <translation>上限</translation>
     </message>
 </context>
 <context>
@@ -8760,90 +10789,90 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Network Name</source>
-        <translation type="vanished">ネットワーク名</translation>
+        <translation>ネットワーク名</translation>
     </message>
     <message>
         <source>[empty]</source>
-        <translation type="vanished">[空]</translation>
+        <translation>[空]</translation>
     </message>
     <message>
         <source>%1 (renamed from %2)</source>
-        <translation type="vanished">%1 (%2 から名称変更)</translation>
+        <translation>%1 (%2 から名称変更)</translation>
     </message>
     <message>
         <source>Old Network Name</source>
-        <translation type="vanished">古いネットワーク名</translation>
+        <translation>古いネットワーク名</translation>
     </message>
     <message>
         <source>New Network Name</source>
-        <translation type="vanished">新しいネットワーク名</translation>
+        <translation>新しいネットワーク名</translation>
     </message>
     <message>
         <source>Network CIDR</source>
-        <translation type="vanished">ネットワークCIDR</translation>
+        <translation>ネットワークCIDR</translation>
     </message>
     <message>
         <source>Supports DHCP</source>
-        <translation type="vanished">DHCPのサポート</translation>
+        <translation>DHCPのサポート</translation>
     </message>
     <message>
         <source>yes</source>
-        <translation type="vanished">はい</translation>
+        <translation>はい</translation>
     </message>
     <message>
         <source>no</source>
-        <translation type="vanished">いいえ</translation>
+        <translation>いいえ</translation>
     </message>
     <message>
         <source>Supports IPv6</source>
-        <translation type="vanished">IPv6のサポート</translation>
+        <translation>IPv6のサポート</translation>
     </message>
     <message>
         <source>Default IPv6 route</source>
-        <translation type="vanished">IPv6デフォルトルート</translation>
+        <translation>IPv6デフォルトルート</translation>
     </message>
     <message>
         <source>No new name specified for the NAT network previously called &lt;b&gt;%1&lt;/b&gt;.</source>
-        <translation type="vanished">以前の &lt;b&gt;%1&lt;/b&gt; NATネットワークに新しい名前が与えられていません。</translation>
+        <translation>以前の &lt;b&gt;%1&lt;/b&gt; NATネットワークに新しい名前が与えられていません。</translation>
     </message>
     <message>
         <source>No CIDR specified for the NAT network &lt;b&gt;%1&lt;/b&gt;.</source>
-        <translation type="vanished">&lt;b&gt;%1&lt;/b&gt; NATネットワークにCIDRが与えられていません。</translation>
+        <translation>&lt;b&gt;%1&lt;/b&gt; NATネットワークにCIDRが与えられていません。</translation>
     </message>
     <message>
         <source>No CIDR specified for the NAT network previously called &lt;b&gt;%1&lt;/b&gt;.</source>
-        <translation type="vanished">以前の &lt;b&gt;%1&lt;/b&gt; NATネットワークにCIDRが与えられていません。</translation>
+        <translation>以前の &lt;b&gt;%1&lt;/b&gt; NATネットワークにCIDRが与えられていません。</translation>
     </message>
     <message>
         <source>Invalid CIDR specified (&lt;i&gt;%1&lt;/i&gt;) for the NAT network &lt;b&gt;%2&lt;/b&gt;.</source>
-        <translation type="vanished">無効なCIDR (&lt;i&gt;%1&lt;/i&gt;) がNATネットワーク &lt;b&gt;%2&lt;/b&gt;で指定されています。</translation>
+        <translation>無効なCIDR (&lt;i&gt;%1&lt;/i&gt;) がNATネットワーク &lt;b&gt;%2&lt;/b&gt;で指定されています。</translation>
     </message>
     <message>
         <source>Invalid CIDR specified (&lt;i&gt;%1&lt;/i&gt;) for the NAT network previously called &lt;b&gt;%2&lt;/b&gt;.</source>
-        <translation type="vanished">無効なCIDR (&lt;i&gt;%1&lt;/i&gt;) が以前のNATネットワーク &lt;b&gt;%2&lt;/b&gt;で指定されています。</translation>
+        <translation>無効なCIDR (&lt;i&gt;%1&lt;/i&gt;) が以前のNATネットワーク &lt;b&gt;%2&lt;/b&gt;で指定されています。</translation>
     </message>
 </context>
 <context>
     <name>UILanguageItem</name>
     <message>
+        <source> (built-in)</source>
+        <comment>Language</comment>
+        <translation> (内蔵)</translation>
+    </message>
+    <message>
         <source>&lt;unavailable&gt;</source>
         <comment>Language</comment>
-        <translation type="vanished">&lt;利用不可&gt;</translation>
+        <translation>&lt;利用不可&gt;</translation>
     </message>
     <message>
         <source>&lt;unknown&gt;</source>
         <comment>Author(s)</comment>
-        <translation type="vanished">&lt;不明&gt;</translation>
+        <translation>&lt;不明&gt;</translation>
     </message>
     <message>
         <source>Default</source>
         <comment>Language</comment>
-        <translation type="vanished">デフォルト</translation>
-    </message>
-    <message>
-        <source> (built-in)</source>
-        <comment>Language</comment>
-        <translation type="vanished"> (内蔵)</translation>
+        <translation>デフォルト</translation>
     </message>
 </context>
 <context>
@@ -8936,31 +10965,31 @@ p, li { white-space: pre-wrap; }
     <name>UIMachinePreview</name>
     <message>
         <source>No preview</source>
-        <translation type="vanished">プレビューなし</translation>
+        <translation>プレビューなし</translation>
     </message>
     <message>
         <source>Update disabled</source>
-        <translation type="vanished">更新を無効化</translation>
+        <translation>更新を無効化</translation>
     </message>
     <message>
         <source>Every 0.5 s</source>
-        <translation type="vanished">0.5秒毎</translation>
+        <translation>0.5秒毎</translation>
     </message>
     <message>
         <source>Every 1 s</source>
-        <translation type="vanished">1秒毎</translation>
+        <translation>1秒毎</translation>
     </message>
     <message>
         <source>Every 2 s</source>
-        <translation type="vanished">2秒毎</translation>
+        <translation>2秒毎</translation>
     </message>
     <message>
         <source>Every 5 s</source>
-        <translation type="vanished">5秒毎</translation>
+        <translation>5秒毎</translation>
     </message>
     <message>
         <source>Every 10 s</source>
-        <translation type="vanished">10秒毎</translation>
+        <translation>10秒毎</translation>
     </message>
 </context>
 <context>
@@ -9117,7 +11146,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>MB</source>
-        <translation>MB</translation>
+        <translation type="vanished">MB</translation>
     </message>
     <message>
         <source>Mo&amp;nitor Count:</source>
@@ -9165,7 +11194,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Video &amp;Capture</source>
-        <translation>ビデオキャプチャー(&amp;C)</translation>
+        <translation type="vanished">ビデオキャプチャー(&amp;C)</translation>
     </message>
     <message>
         <source>When checked, VirtualBox will record the virtual machine session as a video file.</source>
@@ -9173,7 +11202,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Enable Video Capture</source>
-        <translation>ビデオキャプチャーを有効化(&amp;E)</translation>
+        <translation type="vanished">ビデオキャプチャーを有効化(&amp;E)</translation>
     </message>
     <message>
         <source>File &amp;Path:</source>
@@ -9209,7 +11238,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Quality:</source>
-        <translation>画質(&amp;Q):</translation>
+        <translation type="vanished">画質(&amp;Q):</translation>
     </message>
     <message>
         <source>This setting determines the &lt;b&gt;quality&lt;/b&gt;. Increasing this value will make the video look better at the cost of an increased file size.</source>
@@ -9321,7 +11350,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>%</source>
-        <translation>%</translation>
+        <translation type="vanished">%</translation>
     </message>
     <message>
         <source>HiDPI:</source>
@@ -9329,11 +11358,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>When checked, guest screen contents will not be scaled up to compensate for high host screen resolutions.</source>
-        <translation>ゲストスクリーンの内容をホストのスクリーン解像度に合わせてスケールする処理を行いません。</translation>
+        <translation type="vanished">ゲストスクリーンの内容をホストのスクリーン解像度に合わせてスケールする処理を行いません。</translation>
     </message>
     <message>
         <source>Use &amp;Unscaled HiDPI Output</source>
-        <translation>スケールしない HiDPI 出力を使用(&amp;U)</translation>
+        <translation type="vanished">スケールしない HiDPI 出力を使用(&amp;U)</translation>
     </message>
     <message>
         <source>Acceleration:</source>
@@ -9341,7 +11370,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>HiDPI Support:</source>
-        <translation>HiDPI サポート:</translation>
+        <translation type="vanished">HiDPI サポート:</translation>
     </message>
     <message>
         <source>Holds the VRDP Server port number. You may specify &lt;tt&gt;0&lt;/tt&gt; (zero), to select port 3389, the standard port for RDP.</source>
@@ -9393,11 +11422,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>%1 MB</source>
-        <translation>%1 MB</translation>
+        <translation type="vanished">%1 MB</translation>
     </message>
     <message>
         <source>%1%</source>
-        <translation>%1%</translation>
+        <translation type="vanished">%1%</translation>
     </message>
     <message>
         <source>When checked, enables video recording for screen %1.</source>
@@ -9405,47 +11434,55 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>When checked, VirtualBox will record the audio stream to video file as well.</source>
-        <translation>チェックを入れると、VirtualBoxはオーディオストリームもビデオファイルの記録します。</translation>
+        <translation type="vanished">チェックを入れると、VirtualBoxはオーディオストリームもビデオファイルの記録します。</translation>
     </message>
     <message>
         <source>&amp;Record Audio</source>
-        <translation>オーディオを保存(&amp;R)</translation>
+        <translation type="vanished">オーディオを保存(&amp;R)</translation>
     </message>
     <message>
         <source>&amp;Audio Quality:</source>
-        <translation type="vanished">オーディオの品質(&amp;A):</translation>
+        <translation>オーディオの品質(&amp;A):</translation>
     </message>
     <message>
         <source>&amp;Graphics Controller:</source>
-        <translation type="vanished">グラフィックスコントローラー(&amp;G):</translation>
+        <translation>グラフィックスコントローラー(&amp;G):</translation>
     </message>
     <message>
         <source>Selects the graphics adapter type the virtual machine will use.</source>
-        <translation type="vanished">仮想マシンが使用するグラフィックスアダプターのタイプを選択してください。</translation>
+        <translation>仮想マシンが使用するグラフィックスアダプターのタイプを選択してください。</translation>
     </message>
     <message>
         <source>Re&amp;cording</source>
-        <translation type="vanished">レコーディング(&amp;C)</translation>
+        <translation>レコーディング(&amp;C)</translation>
     </message>
     <message>
         <source>&amp;Enable Recording</source>
-        <translation type="vanished">レコーディングを有効化(&amp;E)</translation>
+        <translation>レコーディングを有効化(&amp;E)</translation>
     </message>
     <message>
         <source>Recording &amp;Mode:</source>
-        <translation type="vanished">レコーディングモード(&amp;M):</translation>
+        <translation>レコーディングモード(&amp;M):</translation>
     </message>
     <message>
         <source>Selects the recording mode.</source>
-        <translation type="vanished">レコーディングモードを選択してください。</translation>
+        <translation>レコーディングモードを選択してください。</translation>
     </message>
     <message>
         <source>&amp;Video Quality:</source>
-        <translation type="vanished">ビデオの品質(&amp;V):</translation>
+        <translation>ビデオの品質(&amp;V):</translation>
     </message>
     <message>
         <source>Controls the &lt;b&gt;quality&lt;/b&gt;. Increasing this value will make the audio sound better at the cost of an increased file size.</source>
-        <translation type="vanished">&lt;b&gt;品質&lt;/b&gt; を調整します。この値を増やすとオーディオサウンドの品質が向上し、ファイルサイズが増加します。</translation>
+        <translation>&lt;b&gt;品質&lt;/b&gt; を調整します。この値を増やすとオーディオサウンドの品質が向上し、ファイルサイズが増加します。</translation>
+    </message>
+    <message>
+        <source>The virtual machine is configured to use 3D acceleration. This will work only if you pick a different graphics controller (%1). Either disable 3D acceleration or switch to required graphics controller type. The latter will be done automatically if you confirm your changes.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The virtual machine is configured to use a graphics controller other than the recommended one (%1). Please consider switching unless you have a reason to keep the currently selected graphics controller.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10098,28 +12135,28 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Selects the network adapter on the host system that traffic to and from this network card will go through.</source>
-        <translation>このネットワークカードに入出力するトラフィックが通過する、ホストシステムのネットワークアダプターを選択してください。</translation>
+        <translation type="vanished">このネットワークカードに入出力するトラフィックが通過する、ホストシステムのネットワークアダプターを選択してください。</translation>
     </message>
     <message>
         <source>Holds the name of the internal network that this network card will be connected to. You can create a new internal network by choosing a name which is not used by any other network cards in this virtual machine or others.</source>
-        <translation>このネットワークカードの接続先の内部ネットワーク名を入力してください。この仮想マシンまたは他に存在する、他のすべてのネットワークカードで使われていない名前を選択すると、内部ネットワークを作成することができます。</translation>
+        <translation type="vanished">このネットワークカードの接続先の内部ネットワーク名を入力してください。この仮想マシンまたは他に存在する、他のすべてのネットワークカードで使われていない名前を選択すると、内部ネットワークを作成することができます。</translation>
     </message>
     <message>
         <source>Selects the virtual network adapter on the host system that traffic to and from this network card will go through. You can create and remove adapters using the global network settings in the virtual machine manager window.</source>
-        <translation>このネットワークカードに入出力するトラフィックが通過する、ホストシステムの仮想ネットワークアダプターを選択してください。仮想マシンマネージャーウィンドウでグローバルネットワーク設定を利用すると、アダプターを作成/削除できます。</translation>
+        <translation type="vanished">このネットワークカードに入出力するトラフィックが通過する、ホストシステムの仮想ネットワークアダプターを選択してください。仮想マシンマネージャーウィンドウでグローバルネットワーク設定を利用すると、アダプターを作成/削除できます。</translation>
     </message>
     <message>
         <source>Selects the driver to be used with this network card.</source>
-        <translation>このネットワークカードで使用するドライバーを選択してください。</translation>
+        <translation type="vanished">このネットワークカードで使用するドライバーを選択してください。</translation>
     </message>
     <message>
         <source>Holds the name of the NAT network that this network card will be connected to. You can create and remove networks using the global network settings in the virtual machine manager window.</source>
-        <translation>ネットワークカードに接続するNATネットワーク名を指定します。仮想マシンマネージャーウィンドウにある全体のネットワーク設定でネットワークの追加と削除ができます。</translation>
+        <translation type="vanished">ネットワークカードに接続するNATネットワーク名を指定します。仮想マシンマネージャーウィンドウにある全体のネットワーク設定でネットワークの追加と削除ができます。</translation>
     </message>
     <message>
         <source>Not selected</source>
         <comment>network adapter name</comment>
-        <translation>未選択</translation>
+        <translation type="vanished">未選択</translation>
     </message>
     <message>
         <source>Open additional options dialog for current attachment type.</source>
@@ -10192,6 +12229,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Displays a window to configure port forwarding rules.</source>
         <translation>ポートフォワーディングのルールを設定するウィンドウを表示します。</translation>
+    </message>
+    <message>
+        <source>No cloud network name is currently specified.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10466,7 +12507,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Yes</source>
-        <translation>はい</translation>
+        <translation type="vanished">はい</translation>
     </message>
     <message>
         <source> Machine Folders</source>
@@ -10478,11 +12519,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Full</source>
-        <translation>完全</translation>
+        <translation type="vanished">完全</translation>
     </message>
     <message>
         <source>Read-only</source>
-        <translation>読み込み専用</translation>
+        <translation type="vanished">読み込み専用</translation>
     </message>
     <message>
         <source>Lists all shared folders accessible to this machine. Use &apos;net use x: \\vboxsvr\share&apos; to access a shared folder named &lt;i&gt;share&lt;/i&gt; from a DOS-like OS, or &apos;mount -t vboxsf share mount_point&apos; to access it from a Linux OS. This feature requires Guest Additions.</source>
@@ -10498,7 +12539,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Auto-mount</source>
-        <translation>自動マウント</translation>
+        <translation type="vanished">自動マウント</translation>
     </message>
     <message>
         <source>Access</source>
@@ -10554,11 +12595,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Auto Mount</source>
-        <translation type="vanished">自動マウント</translation>
+        <translation>自動マウント</translation>
     </message>
     <message>
         <source>At</source>
-        <translation type="vanished">場所</translation>
+        <translation>場所</translation>
     </message>
 </context>
 <context>
@@ -10617,11 +12658,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Mount point:</source>
-        <translation type="vanished">マウントポイント:</translation>
+        <translation>マウントポイント:</translation>
     </message>
     <message>
         <source>Where to automatically mount the folder in the guest.  A drive letter (e.g. &apos;G:&apos;) for Windows and OS/2 guests, path for the others.  If left empty the guest will pick something fitting.</source>
-        <translation type="vanished">ゲストOSのどこに自動マウントするかを設定します。WIndowsとOS/2ゲストではドライブレター(&apos;G:&apos;など)をほかのOSではパスを入力してください。空欄にするとゲストは適切な場所を選択します。</translation>
+        <translation>ゲストOSのどこに自動マウントするかを設定します。WIndowsとOS/2ゲストではドライブレター(&apos;G:&apos;など)をほかのOSではパスを入力してください。空欄にするとゲストは適切な場所を選択します。</translation>
     </message>
 </context>
 <context>
@@ -10941,27 +12982,27 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Add IDE Controller</source>
-        <translation>IDE コントローラーを追加</translation>
+        <translation type="vanished">IDE コントローラーを追加</translation>
     </message>
     <message>
         <source>Add SATA Controller</source>
-        <translation>SATA コントローラーを追加</translation>
+        <translation type="vanished">SATA コントローラーを追加</translation>
     </message>
     <message>
         <source>Add SCSI Controller</source>
-        <translation>SCSI コントローラーを追加</translation>
+        <translation type="vanished">SCSI コントローラーを追加</translation>
     </message>
     <message>
         <source>Add SAS Controller</source>
-        <translation>SAS コントローラーを追加</translation>
+        <translation type="vanished">SAS コントローラーを追加</translation>
     </message>
     <message>
         <source>Add Floppy Controller</source>
-        <translation>フロッピーコントローラーを追加</translation>
+        <translation type="vanished">フロッピーコントローラーを追加</translation>
     </message>
     <message>
         <source>Add USB Controller</source>
-        <translation>USB コントローラーを追加</translation>
+        <translation type="vanished">USB コントローラーを追加</translation>
     </message>
     <message>
         <source>Remove Controller</source>
@@ -10973,7 +13014,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Add Hard Disk</source>
-        <translation>ハードディスクを追加</translation>
+        <translation type="vanished">ハードディスクを追加</translation>
     </message>
     <message>
         <source>Add CD/DVD Device</source>
@@ -11253,11 +13294,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Add Optical Drive</source>
-        <translation>光学ドライブを追加</translation>
+        <translation type="vanished">光学ドライブを追加</translation>
     </message>
     <message>
         <source>Add Floppy Drive</source>
-        <translation>フロッピードライブを追加</translation>
+        <translation type="vanished">フロッピードライブを追加</translation>
     </message>
     <message>
         <source>Optical &amp;Drive:</source>
@@ -11342,15 +13383,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Create New Hard Disk...</source>
-        <translation>新規ハードディスクの作成...</translation>
+        <translation type="vanished">新規ハードディスクの作成...</translation>
     </message>
     <message>
         <source>Choose Virtual Hard Disk File...</source>
-        <translation>仮想ハードディスクファイルを選択...</translation>
+        <translation type="vanished">仮想ハードディスクファイルを選択...</translation>
     </message>
     <message>
         <source>Choose Virtual Optical Disk File...</source>
-        <translation>仮想光学ディスクファイルを選択...</translation>
+        <translation type="vanished">仮想光学ディスクファイルを選択...</translation>
     </message>
     <message>
         <source>Remove Disk from Virtual Drive</source>
@@ -11358,16 +13399,16 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Choose Virtual Floppy Disk File...</source>
-        <translation>仮想フロッピーディスクファイルを選択...</translation>
+        <translation type="vanished">仮想フロッピーディスクファイルを選択...</translation>
     </message>
     <message>
         <source>Choose disk image...</source>
         <comment>This is used for hard disks, optical media and floppies</comment>
-        <translation>ディスクイメージを選択...</translation>
+        <translation type="vanished">ディスクイメージを選択...</translation>
     </message>
     <message>
         <source>Add NVMe Controller</source>
-        <translation>NVMe コントローラーを追加</translation>
+        <translation type="vanished">NVMe コントローラーを追加</translation>
     </message>
     <message>
         <source>&amp;Storage Devices</source>
@@ -11382,6 +13423,82 @@ p, li { white-space: pre-wrap; }
         <source>Create ad hoc VISO...</source>
         <comment>This is used for optical media</comment>
         <translation type="vanished">新規アドホックVISOの作成...</translation>
+    </message>
+    <message>
+        <source>PIIX3 (IDE)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PIIX4 (Default IDE)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ICH6 (IDE)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>AHCI (SATA)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>LsiLogic (Default SCSI)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>BusLogic (SCSI)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>LsiLogic SAS (SAS)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>I82078 (Floppy)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>USB</source>
+        <translation type="unfinished">USB</translation>
+    </message>
+    <message>
+        <source>NVMe (PCIe)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>virtio-scsi</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hard Disk</source>
+        <translation type="unfinished">ハードディスク</translation>
+    </message>
+    <message>
+        <source>Optical Drive</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Floppy Drive</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose/Create a Virtual Hard Disk...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose a disk file...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose/Create a Virtual Optical Disk...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose/Create a Virtual Floppy Disk...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose/Create a disk image...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -11500,7 +13617,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>MB</source>
-        <translation>MB</translation>
+        <translation type="vanished">MB</translation>
     </message>
     <message>
         <source>&amp;Boot Order:</source>
@@ -11516,7 +13633,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Moves the selected boot device down.</source>
-        <translation>選択した起動デバイスを下に移動します。</translation>
+        <translation type="vanished">選択した起動デバイスを下に移動します。</translation>
     </message>
     <message>
         <source>&amp;Chipset:</source>
@@ -11552,7 +13669,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Moves the selected boot device up.</source>
-        <translation>選択した起動デバイスを上に移動します。</translation>
+        <translation type="vanished">選択した起動デバイスを上に移動します。</translation>
     </message>
     <message>
         <source>&amp;Pointing Device:</source>
@@ -11681,7 +13798,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>%1 MB</source>
-        <translation>%1 MB</translation>
+        <translation type="vanished">%1 MB</translation>
     </message>
     <message>
         <source>%1 CPU</source>
@@ -11715,35 +13832,35 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Please consider lowering the number of CPUs assigned to the virtual machine rather than setting the processor execution cap.</source>
-        <translation type="vanished">プロセッサーの使用率制限を低くするよりも、仮想マシンに割り当てるCPUの数を減らすことをご一考ください。</translation>
+        <translation>プロセッサーの使用率制限を低くするよりも、仮想マシンに割り当てるCPUの数を減らすことをご一考ください。</translation>
     </message>
     <message>
         <source>Lowering the processor execution cap may result in a decline in performance.</source>
-        <translation type="vanished">プロセッサの使用率制限が低いと、パフォーマンスが悪くなります。</translation>
+        <translation>プロセッサの使用率制限が低いと、パフォーマンスが悪くなります。</translation>
     </message>
     <message>
         <source>The hardware virtualization is enabled in the Acceleration section of the System page although it is not supported by the host system. It should be disabled in order to start the virtual system.</source>
-        <translation type="vanished">システム設定ページのアクセラレーションセクションでハードウェア仮想化が有効になっていますが、このホストシステムではサポートされていません。仮想システムを起動するには無効にする必要があります。</translation>
+        <translation>システム設定ページのアクセラレーションセクションでハードウェア仮想化が有効になっていますが、このホストシステムではサポートされていません。仮想システムを起動するには無効にする必要があります。</translation>
     </message>
     <message>
         <source>When checked, the nested hardware virtualization CPU feature will be exposed to the virtual machine.</source>
-        <translation type="vanished">ネステッドハードウェア仮想化CPU機能を仮想マシンにエクスポートします。</translation>
+        <translation>ネステッドハードウェア仮想化CPU機能を仮想マシンにエクスポートします。</translation>
     </message>
     <message>
         <source>Enable Nested &amp;VT-x/AMD-V</source>
-        <translation type="vanished">ネステッドVT-x/AMD-Vを有効化(&amp;V)</translation>
+        <translation>ネステッドVT-x/AMD-Vを有効化(&amp;V)</translation>
     </message>
     <message>
         <source>The hardware virtualization is not currently enabled in the Acceleration section of the System page. This is needed to support nested hardware virtualization. It will be enabled automatically if you confirm your changes.</source>
-        <translation type="vanished">ハードウェア仮想化がシステムページのアクセラレーションセクションで有効になっていません。ネステッドハードウェア仮想化を有効にするのなら必須です。変更を確認すると自動的に有効になります。</translation>
+        <translation>ハードウェア仮想化がシステムページのアクセラレーションセクションで有効になっていません。ネステッドハードウェア仮想化を有効にするのなら必須です。変更を確認すると自動的に有効になります。</translation>
     </message>
     <message>
         <source>The nested paging is not currently enabled in the Acceleration section of the System page. This is needed to support nested hardware virtualization. It will be enabled automatically if you confirm your changes.</source>
-        <translation type="vanished">システムページのアクセラレーションセクションでネステッドページングが有効になっていません。ネステッドハードウェア仮想化を有効にするのなら必須です。変更を確認すると自動的に有効になります。</translation>
+        <translation>システムページのアクセラレーションセクションでネステッドページングが有効になっていません。ネステッドハードウェア仮想化を有効にするのなら必須です。変更を確認すると自動的に有効になります。</translation>
     </message>
     <message>
         <source>The hardware virtualization is not currently enabled in the Acceleration section of the System page. This is needed for nested paging support. It will be enabled automatically if you confirm your changes.</source>
-        <translation type="vanished">システムページのアクセラレーションセクションで、ハードウェア仮想化が有効になっていません。ネステッドページングを有効にするのなら必須です。この変更を適用すると自動的に有効になります。</translation>
+        <translation>システムページのアクセラレーションセクションで、ハードウェア仮想化が有効になっていません。ネステッドページングを有効にするのなら必須です。この変更を適用すると自動的に有効になります。</translation>
     </message>
 </context>
 <context>
@@ -11816,42 +13933,42 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>&lt;nobr&gt;Vendor ID: %1&lt;/nobr&gt;</source>
         <comment>USB filter tooltip</comment>
-        <translation>&lt;nobr&gt;ベンダーID: %1&lt;/nobr&gt;</translation>
+        <translation type="vanished">&lt;nobr&gt;ベンダーID: %1&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;Product ID: %2&lt;/nobr&gt;</source>
         <comment>USB filter tooltip</comment>
-        <translation>&lt;nobr&gt;プロダクトID: %2&lt;/nobr&gt;</translation>
+        <translation type="vanished">&lt;nobr&gt;プロダクトID: %2&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;Revision: %3&lt;/nobr&gt;</source>
         <comment>USB filter tooltip</comment>
-        <translation>&lt;nobr&gt;リビジョン: %3&lt;/nobr&gt;</translation>
+        <translation type="vanished">&lt;nobr&gt;リビジョン: %3&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;Product: %4&lt;/nobr&gt;</source>
         <comment>USB filter tooltip</comment>
-        <translation>&lt;nobr&gt;製品: %4&lt;/nobr&gt;</translation>
+        <translation type="vanished">&lt;nobr&gt;製品: %4&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;Manufacturer: %5&lt;/nobr&gt;</source>
         <comment>USB filter tooltip</comment>
-        <translation>&lt;nobr&gt;メーカー: %5&lt;/nobr&gt;</translation>
+        <translation type="vanished">&lt;nobr&gt;メーカー: %5&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;Serial No.: %1&lt;/nobr&gt;</source>
         <comment>USB filter tooltip</comment>
-        <translation>&lt;nobr&gt;シリアルNo.: %1&lt;/nobr&gt;</translation>
+        <translation type="vanished">&lt;nobr&gt;シリアルNo.: %1&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;Port: %1&lt;/nobr&gt;</source>
         <comment>USB filter tooltip</comment>
-        <translation>&lt;nobr&gt;ポート: %1&lt;/nobr&gt;</translation>
+        <translation type="vanished">&lt;nobr&gt;ポート: %1&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;State: %1&lt;/nobr&gt;</source>
         <comment>USB filter tooltip</comment>
-        <translation>&lt;nobr&gt;状態: %1&lt;/nobr&gt;</translation>
+        <translation type="vanished">&lt;nobr&gt;状態: %1&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>When checked, enables the virtual USB controller of this machine.</source>
@@ -11891,7 +14008,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>USB &amp;2.0 (EHCI) Controller</source>
-        <translation>USB &amp;2.0 (EHCI) コントローラー</translation>
+        <translation type="vanished">USB &amp;2.0 (EHCI) コントローラー</translation>
     </message>
     <message>
         <source>When checked, enables the virtual USB xHCI controller of this machine. The USB xHCI controller provides USB 3.0 support.</source>
@@ -11911,7 +14028,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>When chosen, enables the virtual USB EHCI controller of this machine. The USB EHCI controller provides USB 2.0 support.</source>
-        <translation>仮想マシンの仮想USB EHCI コントローラーを有効にします。USB EHCI コントローラーはUSB 2.0 サポートを提供します。</translation>
+        <translation type="vanished">仮想マシンの仮想USB EHCI コントローラーを有効にします。USB EHCI コントローラーはUSB 2.0 サポートを提供します。</translation>
     </message>
     <message>
         <source>When chosen, enables the virtual USB xHCI controller of this machine. The USB xHCI controller provides USB 3.0 support.</source>
@@ -11964,6 +14081,14 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Moves selected USB filter down.</source>
         <translation>選択したUSB フィルターを下に移動します。</translation>
+    </message>
+    <message>
+        <source>When chosen, enables the virtual USB OHCI and EHCI controllers of this machine. Together they provide USB 2.0 support.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>USB &amp;2.0 (OHCI + EHCI) Controller</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -12221,88 +14346,15 @@ p, li { white-space: pre-wrap; }
     <name>UIMediumItem</name>
     <message>
         <source>Current extension (*.%1)</source>
-        <translation type="vanished">現在の拡張機能 (*.%1)</translation>
+        <translation>現在の拡張機能 (*.%1)</translation>
     </message>
     <message>
         <source>Choose the location of this medium</source>
-        <translation type="vanished">このメディアの場所を選択</translation>
+        <translation>このメディアの場所を選択</translation>
     </message>
     <message>
         <source>Moving medium...</source>
         <translation type="vanished">メディアを移動中...</translation>
-    </message>
-    <message>
-        <source>%1, %2: %3, %4: %5</source>
-        <comment>col.1 text, col.2 name: col.2 text, col.3 name: col.3 text</comment>
-        <translation type="vanished">%1, %2: %3, %4: %5</translation>
-    </message>
-    <message>
-        <source>Format:</source>
-        <translation type="vanished">フォーマット:</translation>
-    </message>
-    <message>
-        <source>Storage details:</source>
-        <translation type="vanished">ストレージの詳細:</translation>
-    </message>
-    <message>
-        <source>Attached to:</source>
-        <translation type="vanished">割り当て:</translation>
-    </message>
-    <message>
-        <source>Encrypted with key:</source>
-        <translation type="vanished">暗号化の鍵:</translation>
-    </message>
-    <message>
-        <source>UUID:</source>
-        <translation type="vanished">UUID:</translation>
-    </message>
-    <message>
-        <source>&lt;i&gt;Not&amp;nbsp;Attached&lt;/i&gt;</source>
-        <translation type="vanished">&lt;i&gt;未割り当て&lt;/i&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;i&gt;Not&amp;nbsp;Encrypted&lt;/i&gt;</source>
-        <translation type="vanished">&lt;i&gt;暗号化なし&lt;/i&gt;</translation>
-    </message>
-    <message>
-        <source>Removing medium...</source>
-        <translation type="vanished">メディアを除去中...</translation>
-    </message>
-    <message>
-        <source>--</source>
-        <comment>no info</comment>
-        <translation type="vanished">--</translation>
-    </message>
-</context>
-<context>
-    <name>UIMediumManager</name>
-    <message>
-        <source>&amp;Hard drives</source>
-        <translation type="obsolete">ハードドライブ(&amp;H)</translation>
-    </message>
-    <message>
-        <source>&amp;Optical disks</source>
-        <translation>光学ディスク(&amp;O)</translation>
-    </message>
-    <message>
-        <source>&amp;Floppy disks</source>
-        <translation>フロッピーディスク(&amp;F)</translation>
-    </message>
-    <message>
-        <source>&amp;Select</source>
-        <translation type="obsolete">選択(&amp;S)</translation>
-    </message>
-    <message>
-        <source>C&amp;lose</source>
-        <translation type="obsolete">閉じる(&amp;L)</translation>
-    </message>
-    <message>
-        <source>Removing medium...</source>
-        <translation>メディアを除去中...</translation>
-    </message>
-    <message>
-        <source>&amp;Hard disks</source>
-        <translation>ハードディスク(&amp;H)</translation>
     </message>
     <message>
         <source>%1, %2: %3, %4: %5</source>
@@ -12343,48 +14395,129 @@ p, li { white-space: pre-wrap; }
         <translation>--</translation>
     </message>
     <message>
+        <source>Removing medium...</source>
+        <translation type="vanished">メディアを除去中...</translation>
+    </message>
+    <message>
+        <source>Moving medium ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Removing medium ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>UIMediumManager</name>
+    <message>
+        <source>&amp;Hard drives</source>
+        <translation type="obsolete">ハードドライブ(&amp;H)</translation>
+    </message>
+    <message>
+        <source>&amp;Optical disks</source>
+        <translation>光学ディスク(&amp;O)</translation>
+    </message>
+    <message>
+        <source>&amp;Floppy disks</source>
+        <translation>フロッピーディスク(&amp;F)</translation>
+    </message>
+    <message>
+        <source>&amp;Select</source>
+        <translation type="obsolete">選択(&amp;S)</translation>
+    </message>
+    <message>
+        <source>C&amp;lose</source>
+        <translation type="obsolete">閉じる(&amp;L)</translation>
+    </message>
+    <message>
+        <source>Removing medium...</source>
+        <translation type="vanished">メディアを除去中...</translation>
+    </message>
+    <message>
+        <source>&amp;Hard disks</source>
+        <translation>ハードディスク(&amp;H)</translation>
+    </message>
+    <message>
+        <source>%1, %2: %3, %4: %5</source>
+        <comment>col.1 text, col.2 name: col.2 text, col.3 name: col.3 text</comment>
+        <translation type="vanished">%1, %2: %3, %4: %5</translation>
+    </message>
+    <message>
+        <source>Format:</source>
+        <translation type="vanished">フォーマット:</translation>
+    </message>
+    <message>
+        <source>Storage details:</source>
+        <translation type="vanished">ストレージの詳細:</translation>
+    </message>
+    <message>
+        <source>Attached to:</source>
+        <translation type="vanished">割り当て:</translation>
+    </message>
+    <message>
+        <source>Encrypted with key:</source>
+        <translation type="vanished">暗号化の鍵:</translation>
+    </message>
+    <message>
+        <source>UUID:</source>
+        <translation type="vanished">UUID:</translation>
+    </message>
+    <message>
+        <source>&lt;i&gt;Not&amp;nbsp;Attached&lt;/i&gt;</source>
+        <translation type="vanished">&lt;i&gt;未割り当て&lt;/i&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;i&gt;Not&amp;nbsp;Encrypted&lt;/i&gt;</source>
+        <translation type="vanished">&lt;i&gt;暗号化なし&lt;/i&gt;</translation>
+    </message>
+    <message>
+        <source>--</source>
+        <comment>no info</comment>
+        <translation type="vanished">--</translation>
+    </message>
+    <message>
         <source>&amp;Medium</source>
-        <translation>メディア(&amp;M)</translation>
+        <translation type="vanished">メディア(&amp;M)</translation>
     </message>
     <message>
         <source>&amp;Copy...</source>
-        <translation>コピー(&amp;C)...</translation>
+        <translation type="vanished">コピー(&amp;C)...</translation>
     </message>
     <message>
         <source>Copy selected disk image file</source>
-        <translation>選択したディスクイメージファイルをコピー</translation>
+        <translation type="vanished">選択したディスクイメージファイルをコピー</translation>
     </message>
     <message>
         <source>&amp;Remove...</source>
-        <translation>除去(&amp;R)...</translation>
+        <translation type="vanished">除去(&amp;R)...</translation>
     </message>
     <message>
         <source>Remove selected disk image file</source>
-        <translation>選択したディスクイメージファイルを除去</translation>
+        <translation type="vanished">選択したディスクイメージファイルを除去</translation>
     </message>
     <message>
         <source>Re&amp;lease...</source>
-        <translation>解放(&amp;L)...</translation>
+        <translation type="vanished">解放(&amp;L)...</translation>
     </message>
     <message>
         <source>Release selected disk image file by detaching it from machines</source>
-        <translation>選択したメディアを仮想マシンから割り当て解除して解放する</translation>
+        <translation type="vanished">選択したメディアを仮想マシンから割り当て解除して解放する</translation>
     </message>
     <message>
         <source>&amp;Properties...</source>
-        <translation>プロパティ(&amp;P)...</translation>
+        <translation type="vanished">プロパティ(&amp;P)...</translation>
     </message>
     <message>
         <source>Open pane with selected disk image file properties</source>
-        <translation>選択したディスクイメージファイルのプロパティをペインで開く</translation>
+        <translation type="vanished">選択したディスクイメージファイルのプロパティをペインで開く</translation>
     </message>
     <message>
         <source>Re&amp;fresh</source>
-        <translation>最新の情報に更新(&amp;F)</translation>
+        <translation type="vanished">最新の情報に更新(&amp;F)</translation>
     </message>
     <message>
         <source>Refresh the list of disk image files</source>
-        <translation>メディアリストを最新の情報に更新</translation>
+        <translation type="vanished">メディアリストを最新の情報に更新</translation>
     </message>
     <message>
         <source>Name</source>
@@ -12408,7 +14541,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Moving medium...</source>
-        <translation>メディアを移動中...</translation>
+        <translation type="vanished">メディアを移動中...</translation>
     </message>
     <message>
         <source>Virtual Media Manager</source>
@@ -12452,23 +14585,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Copy Disk Image File (%1)</source>
-        <translation>ディスクイメージファイル ( %1) をコピー</translation>
+        <translation type="vanished">ディスクイメージファイル ( %1) をコピー</translation>
     </message>
     <message>
         <source>Remove Disk Image File (%1)</source>
-        <translation>ディスクイメージファイルを除去 (%1)</translation>
+        <translation type="vanished">ディスクイメージファイルを除去 (%1)</translation>
     </message>
     <message>
         <source>Release Disk Image File (%1)</source>
-        <translation>ディスクイメージファイルを解放 (%1)</translation>
+        <translation type="vanished">ディスクイメージファイルを解放 (%1)</translation>
     </message>
     <message>
         <source>Open Disk Image File Properties (%1)</source>
-        <translation>ディスクイメージファイルのプロパティを開く (%1)</translation>
+        <translation type="vanished">ディスクイメージファイルのプロパティを開く (%1)</translation>
     </message>
     <message>
         <source>Refresh Disk Image Files (%1)</source>
-        <translation>ディスクイメージファイルを最新の情報に更新 (%1)</translation>
+        <translation type="vanished">ディスクイメージファイルを最新の情報に更新 (%1)</translation>
     </message>
     <message>
         <source>Current extension (*.%1)</source>
@@ -12480,15 +14613,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Move...</source>
-        <translation>移動(&amp;M)...</translation>
+        <translation type="vanished">移動(&amp;M)...</translation>
     </message>
     <message>
         <source>Move Disk Image File (%1)</source>
-        <translation>ディスクイメージファイル (%1) を移動</translation>
+        <translation type="vanished">ディスクイメージファイル (%1) を移動</translation>
     </message>
     <message>
         <source>Move selected disk image file</source>
-        <translation>選択したディスクイメージファイルを移動</translation>
+        <translation type="vanished">選択したディスクイメージファイルを移動</translation>
+    </message>
+    <message>
+        <source>Resizing medium...</source>
+        <translation type="vanished">メディアをリサイズ...</translation>
     </message>
     <message>
         <source>Size:</source>
@@ -12515,90 +14652,118 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">作成(&amp;C)</translation>
     </message>
     <message>
-        <source>Resizing medium...</source>
-        <translation type="vanished">メディアをリサイズ...</translation>
+        <source>Moving medium ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Resizing medium ...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>UIMediumSearchWidget</name>
     <message>
         <source>Search By Name</source>
-        <translation type="vanished">名前で検索</translation>
+        <translation>名前で検索</translation>
     </message>
     <message>
         <source>Search By UUID</source>
-        <translation type="vanished">UUIDで検索</translation>
+        <translation>UUIDで検索</translation>
     </message>
     <message>
         <source>Select the search type</source>
-        <translation type="vanished">検索タイプを選択</translation>
+        <translation>検索タイプを選択</translation>
     </message>
 </context>
 <context>
     <name>UIMediumSelector</name>
     <message>
         <source>&amp;Add...</source>
-        <translation type="vanished">追加(&amp;A)...</translation>
-    </message>
-    <message>
-        <source>&amp;Refresh</source>
-        <translation type="vanished">最新の情報に更新(&amp;R)</translation>
-    </message>
-    <message>
-        <source>Refresh Disk Image Files (%1)</source>
-        <translation type="vanished">ディスクイメージファイルを最新の情報に更新 (%1)</translation>
-    </message>
-    <message>
-        <source>Refresh the list of disk image files</source>
-        <translation type="vanished">ディスクイメージファイルのリストを最新の情報に更新</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="vanished">名前</translation>
-    </message>
-    <message>
-        <source>Virtual Size</source>
-        <translation type="vanished">仮想的なサイズ</translation>
-    </message>
-    <message>
-        <source>Actual Size</source>
-        <translation type="vanished">実際のサイズ</translation>
+        <translation>追加(&amp;A)...</translation>
     </message>
     <message>
         <source>Add Disk Image</source>
-        <translation type="vanished">ディスクイメージを追加</translation>
+        <translation>ディスクイメージを追加</translation>
     </message>
     <message>
         <source>Add existing disk image file</source>
-        <translation type="vanished">既存のメディアを追加</translation>
+        <translation>既存のメディアを追加</translation>
     </message>
     <message>
         <source>&amp;Create...</source>
-        <translation type="vanished">作成(&amp;C)...</translation>
+        <translation>作成(&amp;C)...</translation>
     </message>
     <message>
         <source>Create Disk Image</source>
-        <translation type="vanished">ディスクイメージを作成</translation>
+        <translation>ディスクイメージを作成</translation>
     </message>
     <message>
         <source>Create new disk image file</source>
-        <translation type="vanished">新しいディスクイメージファイルを追加</translation>
+        <translation>新しいディスクイメージファイルを追加</translation>
+    </message>
+    <message>
+        <source>&amp;Refresh</source>
+        <translation>最新の情報に更新(&amp;R)</translation>
+    </message>
+    <message>
+        <source>Refresh Disk Image Files (%1)</source>
+        <translation>ディスクイメージファイルを最新の情報に更新 (%1)</translation>
+    </message>
+    <message>
+        <source>Refresh the list of disk image files</source>
+        <translation>ディスクイメージファイルのリストを最新の情報に更新</translation>
     </message>
     <message>
         <source>Choose</source>
-        <translation type="vanished">選択</translation>
+        <translation>選択</translation>
     </message>
     <message>
-        <source>Expand All</source>
-        <translation type="vanished">グループを広げる</translation>
+        <source>Name</source>
+        <translation>名前</translation>
     </message>
     <message>
-        <source>Collapse All</source>
-        <translation type="vanished">すべてたたむ</translation>
+        <source>Virtual Size</source>
+        <translation>仮想的なサイズ</translation>
+    </message>
+    <message>
+        <source>Actual Size</source>
+        <translation>実際のサイズ</translation>
     </message>
     <message>
         <source>Medium</source>
-        <translation type="vanished">メディア</translation>
+        <translation>メディア</translation>
+    </message>
+    <message>
+        <source>Expand All</source>
+        <translation>グループを広げる</translation>
+    </message>
+    <message>
+        <source>Collapse All</source>
+        <translation>すべてたたむ</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished">キャンセル</translation>
+    </message>
+    <message>
+        <source>Leave Empty</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Optical Disk Selector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Floppy Disk Selector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hard Disk Selector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Virtual Medium Selector</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -12659,7 +14824,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Virtual Screen Mapping</source>
-        <translation>仮想スクリーンのマッピング</translation>
+        <translation type="vanished">仮想スクリーンのマッピング</translation>
     </message>
     <message>
         <source>Close</source>
@@ -12684,11 +14849,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Virtual Screen Remap</source>
-        <translation type="vanished">仮想スクリーンの再マップ</translation>
+        <translation>仮想スクリーンの再マップ</translation>
     </message>
     <message>
         <source>Virtual Screen Rescale</source>
-        <translation type="vanished">仮想スクリーンの再スケール</translation>
+        <translation>仮想スクリーンの再スケール</translation>
     </message>
 </context>
 <context>
@@ -12740,11 +14905,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Failed to enable video capturing for the virtual machine &lt;b&gt;%1&lt;/b&gt;.</source>
-        <translation>仮想マシン &lt;b&gt;%1&lt;/b&gt; のビデオキャプチャーを有効化できませんでした。</translation>
+        <translation type="vanished">仮想マシン &lt;b&gt;%1&lt;/b&gt; のビデオキャプチャーを有効化できませんでした。</translation>
     </message>
     <message>
         <source>Failed to disable video capturing for the virtual machine &lt;b&gt;%1&lt;/b&gt;.</source>
-        <translation>仮想マシン &lt;b&gt;%1&lt;/b&gt; のビデオキャプチャーを無効化できませんでした。</translation>
+        <translation type="vanished">仮想マシン &lt;b&gt;%1&lt;/b&gt; のビデオキャプチャーを無効化できませんでした。</translation>
     </message>
     <message>
         <source>&lt;p&gt;The VirtualBox Guest Additions do not appear to be available on this virtual machine, and shared folders cannot be used without them. To use shared folders inside the virtual machine, please install the Guest Additions if they are not installed, or re-install them if they are not working correctly, by selecting &lt;b&gt;Insert Guest Additions CD image&lt;/b&gt; from the &lt;b&gt;Devices&lt;/b&gt; menu. If they are installed but the machine is not yet fully started then shared folders will be available once it is.&lt;/p&gt;</source>
@@ -13100,19 +15265,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Create &amp;new disk</source>
-        <translation>新規ディスクの作成(&amp;N)</translation>
+        <translation type="vanished">新規ディスクの作成(&amp;N)</translation>
     </message>
     <message>
         <source>&amp;Choose existing disk</source>
-        <translation>既存のディスクを選択(&amp;C)</translation>
+        <translation type="vanished">既存のディスクを選択(&amp;C)</translation>
     </message>
     <message>
         <source>Leave &amp;empty</source>
-        <translation>空のままにする(&amp;E)</translation>
+        <translation type="vanished">空のままにする(&amp;E)</translation>
     </message>
     <message>
         <source>&amp;Choose disk</source>
-        <translation>ディスクを選択(&amp;C)</translation>
+        <translation type="vanished">ディスクを選択(&amp;C)</translation>
     </message>
     <message>
         <source>&lt;p&gt;There are unsaved changes in the port forwarding configuration.&lt;/p&gt;&lt;p&gt;If you proceed your changes will be discarded.&lt;/p&gt;</source>
@@ -13232,7 +15397,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&lt;p&gt;The virtual machine execution may run into an error condition as described below. We suggest that you take an appropriate action to avert the error.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;仮想マシンの実行中、以下で説明されるエラーが発生するかもしれません。このメッセージは無視できますが、動作を確実にするために、説明された誤りを対策することが推奨されます。&lt;/p&gt;</translation>
+        <translation type="vanished">&lt;p&gt;仮想マシンの実行中、以下で説明されるエラーが発生するかもしれません。このメッセージは無視できますが、動作を確実にするために、説明された誤りを対策することが推奨されます。&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Sorry, some generic error happens.</source>
@@ -13907,7 +16072,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&lt;p&gt;You are about to remove following virtual machines from the machine list:&lt;/p&gt;&lt;p&gt;%1&lt;/p&gt;&lt;p&gt;Would you like to delete the files containing the virtual machine from your hard disk as well? Doing this will also remove the files containing the machine&apos;s virtual hard disks if they are not in use by another machine.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;以下の仮想マシンを除去しようとしています:&lt;/p&gt;&lt;p&gt;&lt;b&gt;%1&lt;/b&gt;&lt;/p&gt;&lt;p&gt;仮想マシンを構成するファイルをハードディスクから削除しますか？&#x3000;他の仮想マシンで使用されていない仮想ハードディスクも削除します。&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;以下の仮想マシンを除去しようとしています:&lt;/p&gt;&lt;p&gt;&lt;b&gt;%1&lt;/b&gt;&lt;/p&gt;&lt;p&gt;仮想マシンを構成するファイルをハードディスクから削除しますか？　他の仮想マシンで使用されていない仮想ハードディスクも削除します。&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;p&gt;You are about to remove following virtual machines from the machine list:&lt;/p&gt;&lt;p&gt;%1&lt;/p&gt;&lt;p&gt;Would you like to delete the files containing the virtual machine from your hard disk as well?&lt;/p&gt;</source>
@@ -13927,7 +16092,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&lt;p&gt;You are about to add a virtual hard disk to controller &lt;b&gt;%1&lt;/b&gt;.&lt;/p&gt;&lt;p&gt;Would you like to create a new, empty file to hold the disk contents or select an existing one?&lt;/p&gt;</source>
-        <translation>&lt;p&gt;仮想ハードディスクをコントローラー&lt;b&gt;&quot;%1&quot;&lt;/b&gt;に追加します。&lt;/p&gt;&lt;p&gt;空の仮想ハードディスクを新規作成しますか？既存の仮想ハードディスクを選択しますか？&lt;/p&gt;</translation>
+        <translation type="vanished">&lt;p&gt;仮想ハードディスクをコントローラー&lt;b&gt;&quot;%1&quot;&lt;/b&gt;に追加します。&lt;/p&gt;&lt;p&gt;空の仮想ハードディスクを新規作成しますか？既存の仮想ハードディスクを選択しますか？&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Create &amp;new disk</source>
@@ -13955,7 +16120,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&lt;p&gt;You are about to add a new floppy drive to controller &lt;b&gt;%1&lt;/b&gt;.&lt;/p&gt;&lt;p&gt;Would you like to choose a virtual floppy disk to put in the drive or to leave it empty for now?&lt;/p&gt;</source>
-        <translation>&lt;p&gt;フロッピードライブをコントローラー&lt;b&gt;&quot;%1&quot;&lt;/b&gt;に追加します。&lt;/p&gt;&lt;p&gt;仮想フロッピーディスクをドライブに割り当てますか？空のドライブだけ割り当てますか？&lt;/p&gt;</translation>
+        <translation type="vanished">&lt;p&gt;フロッピードライブをコントローラー&lt;b&gt;&quot;%1&quot;&lt;/b&gt;に追加します。&lt;/p&gt;&lt;p&gt;仮想フロッピーディスクをドライブに割り当てますか？空のドライブだけ割り当てますか？&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Failed to detach the hard disk (&lt;nobr&gt;&lt;b&gt;%1&lt;/b&gt;&lt;/nobr&gt;) from the slot &lt;i&gt;%2&lt;/i&gt; of the machine &lt;b&gt;%3&lt;/b&gt;.</source>
@@ -14486,7 +16651,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&lt;p&gt;You are about to add a new optical drive to controller &lt;b&gt;%1&lt;/b&gt;.&lt;/p&gt;&lt;p&gt;Would you like to choose a virtual optical disk to put in the drive or to leave it empty for now?&lt;/p&gt;</source>
-        <translation>&lt;p&gt;光学ドライブをコントローラー&lt;b&gt;&quot;%1&quot;&lt;/b&gt;に追加します。&lt;/p&gt;&lt;p&gt;仮想光学ディスクをドライブに割り当てますか？ それとも空のドライブだけ割り当てますか？&lt;/p&gt;</translation>
+        <translation type="vanished">&lt;p&gt;光学ドライブをコントローラー&lt;b&gt;&quot;%1&quot;&lt;/b&gt;に追加します。&lt;/p&gt;&lt;p&gt;仮想光学ディスクをドライブに割り当てますか？ それとも空のドライブだけ割り当てますか？&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;p&gt;Are you sure you want to delete the optical drive?&lt;/p&gt;&lt;p&gt;You will not be able to insert any optical disks or ISO images or install the Guest Additions without it!&lt;/p&gt;</source>
@@ -14750,97 +16915,165 @@ p, li { white-space: pre-wrap; }
         <translation>&lt;p&gt;リクエストされたこの変更は仮想マシンにアタッチされているディスクを除去する必要があります。&lt;/p&gt;&lt;p&gt;本当にディスクイメージ &lt;nobr&gt;&lt;b&gt;%1&lt;/b&gt;&lt;/nobr&gt; の除去を行いますか？&lt;/p&gt;&lt;p&gt;次の仮想マシン &lt;b&gt;%2&lt;/b&gt; からデタッチを行います。&lt;/p&gt;</translation>
     </message>
     <message>
-        <source>Import</source>
-        <translation type="vanished">インポート</translation>
-    </message>
-    <message>
         <source>Unknown option &lt;b&gt;%1&lt;/b&gt;.</source>
-        <translation type="vanished">オプション &lt;b&gt;%1&lt;/b&gt; は不明です。</translation>
+        <translation>オプション &lt;b&gt;%1&lt;/b&gt; は不明です。</translation>
     </message>
     <message>
         <source>&lt;b&gt;%1&lt;/b&gt; is an option for the VirtualBox VM runner (VirtualBoxVM) application, not the VirtualBox Manager.</source>
-        <translation type="vanished">&lt;b&gt;%1&lt;/b&gt; はVirtualBox VM ランナー(VirtualBoxVM)アプリケーションのオプションで、VirtualBoxマネージャーのオプションではありません。</translation>
+        <translation>&lt;b&gt;%1&lt;/b&gt; はVirtualBox VM ランナー(VirtualBoxVM)アプリケーションのオプションで、VirtualBoxマネージャーのオプションではありません。</translation>
     </message>
     <message>
         <source>&lt;p&gt;You must specify a machine to start, using the command line.&lt;/p&gt;&lt;p&gt;%1&lt;/p&gt;</source>
         <comment>There will be a usage text passed as argument.</comment>
-        <translation type="vanished">&lt;p&gt;コマンドラインを使用して、開始するマシンを指定する必要があります。&lt;/p&gt;&lt;p&gt;%1&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;コマンドラインを使用して、開始するマシンを指定する必要があります。&lt;/p&gt;&lt;p&gt;%1&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;tr&gt;&lt;td&gt;Usage: VirtualBoxVM --startvm &amp;lt;name|UUID&amp;gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Starts the VirtualBox virtual machine with the given name or unique identifier (UUID).&lt;/td&gt;&lt;/tr&gt;</source>
-        <translation type="vanished">&lt;tr&gt;&lt;td&gt;使い方: VirtualBoxVM --startvm &amp;lt;name|UUID&amp;gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;VirtualBox仮想マシン名または UUIDを指定して開始します。&lt;/td&gt;&lt;/tr&gt;</translation>
+        <translation>&lt;tr&gt;&lt;td&gt;使い方: VirtualBoxVM --startvm &amp;lt;name|UUID&amp;gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;VirtualBox仮想マシン名または UUIDを指定して開始します。&lt;/td&gt;&lt;/tr&gt;</translation>
     </message>
     <message>
         <source>Failed to move the virtual machine &lt;b&gt;%1&lt;/b&gt;.</source>
-        <translation type="vanished">仮想マシン &lt;b&gt;%1&lt;/b&gt; の移動に失敗しました。</translation>
+        <translation>仮想マシン &lt;b&gt;%1&lt;/b&gt; の移動に失敗しました。</translation>
     </message>
     <message>
         <source>Failed to acquire cloud provider manager.</source>
-        <translation type="vanished">クラウドプロバイダーのパラメーター作成に失敗しました。</translation>
+        <translation>クラウドプロバイダーのパラメーター作成に失敗しました。</translation>
     </message>
     <message>
         <source>Failed to acquire cloud provider manager parameter.</source>
-        <translation type="vanished">クラウドプロバイダーマネージャーのパラメーター作成に失敗しました。</translation>
+        <translation>クラウドプロバイダーマネージャーのパラメーター作成に失敗しました。</translation>
     </message>
     <message>
         <source>Failed to find cloud provider with following uuid: &lt;b&gt;%1&lt;/b&gt;.</source>
-        <translation type="vanished">次のUUIDのクラウドプロバイダーが見つかりませんでした: &lt;b&gt;%1&lt;/b&gt;。</translation>
+        <translation>次のUUIDのクラウドプロバイダーが見つかりませんでした: &lt;b&gt;%1&lt;/b&gt;。</translation>
     </message>
     <message>
         <source>Failed to acquire cloud provider parameter.</source>
-        <translation type="vanished">クラウドプロバイダーのパラメーター作成に失敗しました。</translation>
+        <translation>クラウドプロバイダーのパラメーター作成に失敗しました。</translation>
     </message>
     <message>
         <source>Failed to find cloud profile with following name: &lt;b&gt;%1&lt;/b&gt;.</source>
-        <translation type="vanished">次の名称のクラウドプロファイルが見つかりませんでした: &lt;b&gt;%1&lt;/b&gt;。</translation>
+        <translation>次の名称のクラウドプロファイルが見つかりませんでした: &lt;b&gt;%1&lt;/b&gt;。</translation>
     </message>
     <message>
         <source>Failed to create cloud profile.</source>
-        <translation type="vanished">クラウドプロファイルの作成に失敗しました。</translation>
+        <translation>クラウドプロファイルの作成に失敗しました。</translation>
     </message>
     <message>
         <source>Failed to save cloud profiles.</source>
-        <translation type="vanished">クラウドプロファイルの保存に失敗しました。</translation>
+        <translation>クラウドプロファイルの保存に失敗しました。</translation>
     </message>
     <message>
         <source>Failed to import cloud profiles.</source>
-        <translation type="vanished">クラウドプロファイルのインポートに失敗しました。</translation>
+        <translation>クラウドプロファイルのインポートに失敗しました。</translation>
     </message>
     <message>
         <source>Failed to acquire cloud profile parameter.</source>
-        <translation type="vanished">クラウドプロファイルのパラメーター作成に失敗しました。</translation>
+        <translation>クラウドプロファイルのパラメーター作成に失敗しました。</translation>
     </message>
     <message>
         <source>Failed to assign cloud profile parameter.</source>
-        <translation type="vanished">クラウドプロファイルパラメーターの付与に失敗しました。</translation>
+        <translation>クラウドプロファイルパラメーターの付与に失敗しました。</translation>
     </message>
     <message>
         <source>Failed to create cloud client.</source>
-        <translation type="vanished">クラウドクライアントの作成に失敗しました。</translation>
+        <translation>クラウドクライアントの作成に失敗しました。</translation>
     </message>
     <message>
         <source>Failed to acquire cloud client parameter.</source>
-        <translation type="vanished">クラウドクライアントのパラメーター作成に失敗しました。</translation>
+        <translation>クラウドクライアントのパラメーター作成に失敗しました。</translation>
     </message>
     <message>
         <source>&lt;p&gt;Do you want to remove the cloud profile &lt;nobr&gt;&lt;b&gt;%1&lt;/b&gt;?&lt;/nobr&gt;&lt;/p&gt;</source>
-        <translation type="vanished">&lt;p&gt;クラウドプロファイル &lt;nobr&gt;&lt;b&gt;%1&lt;/b&gt;を削除しますか？&lt;/nobr&gt;&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;クラウドプロファイル &lt;nobr&gt;&lt;b&gt;%1&lt;/b&gt;を削除しますか？&lt;/nobr&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;p&gt;Do you want to import cloud profiles from external files?&lt;/p&gt;&lt;p&gt;VirtualBox cloud profiles will be overwritten and their data will be lost.&lt;/p&gt;</source>
-        <translation type="vanished">&lt;p&gt;クラウドプロファイルを外部ファイルからインポートしますか？&lt;/p&gt;&lt;p&gt;VirtualBox クラウドプロファイルは上書きされ、データは消滅します。&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;クラウドプロファイルを外部ファイルからインポートしますか？&lt;/p&gt;&lt;p&gt;VirtualBox クラウドプロファイルは上書きされ、データは消滅します。&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>Import</source>
+        <translation>インポート</translation>
     </message>
     <message>
         <source>Failed to create the hard disk storage &lt;nobr&gt;&lt;b&gt;%1&lt;/b&gt;.&lt;/nobr&gt; FAT file systems have 4GB file size limit.</source>
-        <translation type="vanished">ハードディスクストレージ &lt;nobr&gt;&lt;b&gt;%1&lt;/b&gt;の作成に失敗しました。&lt;/nobr&gt; FAT ファイルシステムには4GBまでの制限があります。</translation>
+        <translation>ハードディスクストレージ &lt;nobr&gt;&lt;b&gt;%1&lt;/b&gt;の作成に失敗しました。&lt;/nobr&gt; FAT ファイルシステムには4GBまでの制限があります。</translation>
     </message>
     <message>
         <source>Failed to enable recording for the virtual machine &lt;b&gt;%1&lt;/b&gt;.</source>
-        <translation type="vanished">仮想マシン &lt;b&gt;%1&lt;/b&gt; のレコーディングの有効化に失敗しました。</translation>
+        <translation>仮想マシン &lt;b&gt;%1&lt;/b&gt; のレコーディングの有効化に失敗しました。</translation>
     </message>
     <message>
         <source>Failed to disable recording for the virtual machine &lt;b&gt;%1&lt;/b&gt;.</source>
-        <translation type="vanished">仮想マシン &lt;b&gt;%1&lt;/b&gt; のレコーディングの無効化に失敗しました。</translation>
+        <translation>仮想マシン &lt;b&gt;%1&lt;/b&gt; のレコーディングの無効化に失敗しました。</translation>
+    </message>
+    <message>
+        <source>Failed to acquire machine parameter.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;This controller has optical devices attached.  You have requested storage bus change to type which doesn&apos;t support optical devices.&lt;/p&gt;&lt;p&gt;If you proceed optical devices will be removed.&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;This controller has devices attached.  You have requested storage bus change to type which supports smaller amount of attached devices.&lt;/p&gt;&lt;p&gt;If you proceed excessive devices will be removed.&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to change the attribute of the virtual machine &lt;b&gt;%1&lt;/b&gt;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to change graphics adapter attribute.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to change audio adapter attribute.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to change network adapter attribute.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to open the medium with following ID: &lt;nobr&gt;&lt;b&gt;%1&lt;/b&gt;&lt;/nobr&gt;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to acquire attachment parameter.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to acquire medium attribute.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to create cloud machine.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to assign form value.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;Cannot create a virtual appliance.&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;Cannot create a virtual system description.&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;Cannot add a virtual system description value.&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;Cannot acquire a virtual system description property.&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;The virtual machine execution ran into a non-fatal problem as described below. We suggest that you take appropriate action to prevent the problem from recurring.&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -14922,11 +17155,11 @@ p, li { white-space: pre-wrap; }
     <name>UINameAndSystemEditor</name>
     <message>
         <source>N&amp;ame:</source>
-        <translation>名前(&amp;N):</translation>
+        <translation type="vanished">名前(&amp;N):</translation>
     </message>
     <message>
         <source>Holds the name of the virtual machine.</source>
-        <translation>仮想マシンの名前を指定します。</translation>
+        <translation type="vanished">仮想マシンの名前を指定します。</translation>
     </message>
     <message>
         <source>&amp;Type:</source>
@@ -14946,15 +17179,55 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Holds the location of the virtual machine.</source>
-        <translation>仮想マシンの場所を指定します。</translation>
+        <translation type="vanished">仮想マシンの場所を指定します。</translation>
     </message>
     <message>
         <source>Name:</source>
-        <translation type="vanished">名前:</translation>
+        <translation>名前:</translation>
     </message>
     <message>
         <source>Machine Folder:</source>
-        <translation type="vanished">マシンフォルダー:</translation>
+        <translation>マシンフォルダー:</translation>
+    </message>
+</context>
+<context>
+    <name>UINetworkAttachmentEditor</name>
+    <message>
+        <source>&amp;Attached to:</source>
+        <translation type="unfinished">割り当て(&amp;A):</translation>
+    </message>
+    <message>
+        <source>&amp;Name:</source>
+        <translation type="unfinished">名前(&amp;N):</translation>
+    </message>
+    <message>
+        <source>Not selected</source>
+        <comment>network adapter name</comment>
+        <translation type="unfinished">未選択</translation>
+    </message>
+    <message>
+        <source>Selects the network adapter on the host system that traffic to and from this network card will go through.</source>
+        <translation type="unfinished">このネットワークカードに入出力するトラフィックが通過する、ホストシステムのネットワークアダプターを選択してください。</translation>
+    </message>
+    <message>
+        <source>Holds the name of the internal network that this network card will be connected to. You can create a new internal network by choosing a name which is not used by any other network cards in this virtual machine or others.</source>
+        <translation type="unfinished">このネットワークカードの接続先の内部ネットワーク名を入力してください。この仮想マシンまたは他に存在する、他のすべてのネットワークカードで使われていない名前を選択すると、内部ネットワークを作成することができます。</translation>
+    </message>
+    <message>
+        <source>Selects the virtual network adapter on the host system that traffic to and from this network card will go through. You can create and remove adapters using the global network settings in the virtual machine manager window.</source>
+        <translation type="unfinished">このネットワークカードに入出力するトラフィックが通過する、ホストシステムの仮想ネットワークアダプターを選択してください。仮想マシンマネージャーウィンドウでグローバルネットワーク設定を利用すると、アダプターを作成/削除できます。</translation>
+    </message>
+    <message>
+        <source>Selects the driver to be used with this network card.</source>
+        <translation type="unfinished">このネットワークカードで使用するドライバーを選択してください。</translation>
+    </message>
+    <message>
+        <source>Holds the name of the NAT network that this network card will be connected to. You can create and remove networks using the global network settings in the virtual machine manager window.</source>
+        <translation type="unfinished">ネットワークカードに接続するNATネットワーク名を指定します。仮想マシンマネージャーウィンドウにある全体のネットワーク設定でネットワークの追加と削除ができます。</translation>
+    </message>
+    <message>
+        <source>(experimental) Holds the name of the cloud network that this network card will be connected to. You can add and remove cloud networks using the global network settings in the virtual machine manager window.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -15964,24 +18237,24 @@ step and attach hard disks later using the VM Settings dialog.&lt;/p&gt;</source
 <context>
     <name>UIScaleFactorEditor</name>
     <message>
-        <source>Controls the guest screen scale factor.</source>
-        <translation type="vanished">この設定はゲストスクリーンの表示倍率を調整します。</translation>
-    </message>
-    <message>
         <source>Max</source>
-        <translation type="vanished">最大</translation>
+        <translation>最大</translation>
     </message>
     <message>
         <source>Min</source>
-        <translation type="vanished">最小</translation>
+        <translation>最小</translation>
     </message>
     <message>
         <source>All Monitors</source>
-        <translation type="vanished">すべてのモニター</translation>
+        <translation>すべてのモニター</translation>
     </message>
     <message>
         <source>Monitor %1</source>
-        <translation type="vanished">モニター %1</translation>
+        <translation>モニター %1</translation>
+    </message>
+    <message>
+        <source>Controls the guest screen scale factor.</source>
+        <translation>この設定はゲストスクリーンの表示倍率を調整します。</translation>
     </message>
 </context>
 <context>
@@ -16003,19 +18276,19 @@ step and attach hard disks later using the VM Settings dialog.&lt;/p&gt;</source
     <name>UISelectorWindow</name>
     <message>
         <source>Show Toolbar</source>
-        <translation>ツールバーを表示</translation>
+        <translation type="vanished">ツールバーを表示</translation>
     </message>
     <message>
         <source>Show Statusbar</source>
-        <translation>ステータスバーを表示</translation>
+        <translation type="vanished">ステータスバーを表示</translation>
     </message>
     <message>
         <source>Select a virtual machine file</source>
-        <translation>仮想マシンファイルを選択</translation>
+        <translation type="vanished">仮想マシンファイルを選択</translation>
     </message>
     <message>
         <source>Virtual machine files (%1)</source>
-        <translation>仮想マシンファイル(%1)</translation>
+        <translation type="vanished">仮想マシンファイル(%1)</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Welcome to VirtualBox!&lt;/h3&gt;&lt;p&gt;The left part of this window is  a list of all virtual machines on your computer. The list is empty now because you haven&apos;t created any virtual machines yet.&lt;img src=:/welcome.png align=right/&gt;&lt;/p&gt;&lt;p&gt;In order to create a new virtual machine, press the &lt;b&gt;New&lt;/b&gt; button in the main tool bar located at the top of the window.&lt;/p&gt;&lt;p&gt;You can press the &lt;b&gt;%1&lt;/b&gt; key to get instant help, or visit &lt;a href=http://www.virtualbox.org&gt;www.virtualbox.org&lt;/a&gt; for the latest information and news.&lt;/p&gt;</source>
@@ -16024,7 +18297,7 @@ step and attach hard disks later using the VM Settings dialog.&lt;/p&gt;</source
     <message>
         <source>Manager</source>
         <comment>Note: main window title which is pretended by the product name.</comment>
-        <translation>マネージャー</translation>
+        <translation type="vanished">マネージャー</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Welcome to VirtualBox!&lt;/h3&gt;&lt;p&gt;The left part of this window is  a list of all virtual machines on your computer. The list is empty now because you haven&apos;t created any virtual machines yet.&lt;img src=:/welcome.png align=right/&gt;&lt;/p&gt;&lt;p&gt;In order to create a new virtual machine, press the &lt;b&gt;New&lt;/b&gt; button in the main tool bar located at the top of the window.&lt;/p&gt;&lt;p&gt;You can press the &lt;b&gt;%1&lt;/b&gt; key to get instant help, or visit &lt;a href=https://www.virtualbox.org&gt;www.virtualbox.org&lt;/a&gt; for the latest information and news.&lt;/p&gt;</source>
@@ -16032,7 +18305,7 @@ step and attach hard disks later using the VM Settings dialog.&lt;/p&gt;</source
     </message>
     <message>
         <source>Show Toolbar Text</source>
-        <translation>ツールバーテキストを表示</translation>
+        <translation type="vanished">ツールバーテキストを表示</translation>
     </message>
 </context>
 <context>
@@ -16319,62 +18592,6 @@ step and attach hard disks later using the VM Settings dialog.&lt;/p&gt;</source
     <message>
         <source>Current State (changed)</source>
         <comment>Current State (Modified)</comment>
-        <translation type="vanished">最新の状態(変更)</translation>
-    </message>
-    <message>
-        <source>Current State</source>
-        <comment>Current State (Unmodified)</comment>
-        <translation type="vanished">最新の状態</translation>
-    </message>
-    <message>
-        <source>The current state differs from the state stored in the current snapshot</source>
-        <translation type="vanished">最新の状態は最新のスナップショットに保存されている状態と異なります</translation>
-    </message>
-    <message>
-        <source>The current state is identical to the state stored in the current snapshot</source>
-        <translation type="vanished">最新の状態は最新のスナップショットに保存されている状態と同じです</translation>
-    </message>
-    <message>
-        <source>%1 (%2 ago)</source>
-        <comment>date time (how long ago)</comment>
-        <translation type="vanished">%1 (%2 前)</translation>
-    </message>
-    <message>
-        <source>%1 since %2</source>
-        <comment>Current State (time or date + time)</comment>
-        <translation type="vanished">%2からの状態 %1</translation>
-    </message>
-    <message>
-        <source>current</source>
-        <comment>snapshot</comment>
-        <translation type="vanished">現在</translation>
-    </message>
-    <message>
-        <source>online</source>
-        <comment>snapshot</comment>
-        <translation type="vanished">オンライン</translation>
-    </message>
-    <message>
-        <source>offline</source>
-        <comment>snapshot</comment>
-        <translation type="vanished">オフライン</translation>
-    </message>
-    <message>
-        <source>Taken at %1</source>
-        <comment>Snapshot (time)</comment>
-        <translation type="vanished">作成時刻 %1</translation>
-    </message>
-    <message>
-        <source>Taken on %1</source>
-        <comment>Snapshot (date + time)</comment>
-        <translation type="vanished">作成日時 %1</translation>
-    </message>
-</context>
-<context>
-    <name>UISnapshotPane</name>
-    <message>
-        <source>Current State (changed)</source>
-        <comment>Current State (Modified)</comment>
         <translation>最新の状態(変更)</translation>
     </message>
     <message>
@@ -16425,69 +18642,125 @@ step and attach hard disks later using the VM Settings dialog.&lt;/p&gt;</source
         <comment>Snapshot (date + time)</comment>
         <translation>作成日時 %1</translation>
     </message>
+</context>
+<context>
+    <name>UISnapshotPane</name>
+    <message>
+        <source>Current State (changed)</source>
+        <comment>Current State (Modified)</comment>
+        <translation type="vanished">最新の状態(変更)</translation>
+    </message>
+    <message>
+        <source>Current State</source>
+        <comment>Current State (Unmodified)</comment>
+        <translation type="vanished">最新の状態</translation>
+    </message>
+    <message>
+        <source>The current state differs from the state stored in the current snapshot</source>
+        <translation type="vanished">最新の状態は最新のスナップショットに保存されている状態と異なります</translation>
+    </message>
+    <message>
+        <source>The current state is identical to the state stored in the current snapshot</source>
+        <translation type="vanished">最新の状態は最新のスナップショットに保存されている状態と同じです</translation>
+    </message>
+    <message>
+        <source>%1 (%2 ago)</source>
+        <comment>date time (how long ago)</comment>
+        <translation type="vanished">%1 (%2 前)</translation>
+    </message>
+    <message>
+        <source>%1 since %2</source>
+        <comment>Current State (time or date + time)</comment>
+        <translation type="vanished">%2からの状態 %1</translation>
+    </message>
+    <message>
+        <source>current</source>
+        <comment>snapshot</comment>
+        <translation type="vanished">現在</translation>
+    </message>
+    <message>
+        <source>online</source>
+        <comment>snapshot</comment>
+        <translation type="vanished">オンライン</translation>
+    </message>
+    <message>
+        <source>offline</source>
+        <comment>snapshot</comment>
+        <translation type="vanished">オフライン</translation>
+    </message>
+    <message>
+        <source>Taken at %1</source>
+        <comment>Snapshot (time)</comment>
+        <translation type="vanished">作成時刻 %1</translation>
+    </message>
+    <message>
+        <source>Taken on %1</source>
+        <comment>Snapshot (date + time)</comment>
+        <translation type="vanished">作成日時 %1</translation>
+    </message>
     <message>
         <source>Contains the snapshot tree of the current virtual machine</source>
         <translation>現在の仮想マシンのスナップショットツリーを含む</translation>
     </message>
     <message>
         <source>&amp;Take...</source>
-        <translation>作成(&amp;T)...</translation>
+        <translation type="vanished">作成(&amp;T)...</translation>
     </message>
     <message>
         <source>&amp;Delete</source>
-        <translation>削除(&amp;D)</translation>
+        <translation type="vanished">削除(&amp;D)</translation>
     </message>
     <message>
         <source>&amp;Restore</source>
-        <translation>復元(&amp;R)</translation>
+        <translation type="vanished">復元(&amp;R)</translation>
     </message>
     <message>
         <source>&amp;Properties...</source>
-        <translation>プロパティ(&amp;P)...</translation>
+        <translation type="vanished">プロパティ(&amp;P)...</translation>
     </message>
     <message>
         <source>&amp;Clone...</source>
-        <translation>クローン(&amp;C)...</translation>
+        <translation type="vanished">クローン(&amp;C)...</translation>
     </message>
     <message>
         <source>Take Snapshot (%1)</source>
-        <translation>スナップショットを作成 (%1)</translation>
+        <translation type="vanished">スナップショットを作成 (%1)</translation>
     </message>
     <message>
         <source>Delete Snapshot (%1)</source>
-        <translation>スナップショットを削除 (%1)</translation>
+        <translation type="vanished">スナップショットを削除 (%1)</translation>
     </message>
     <message>
         <source>Restore Snapshot (%1)</source>
-        <translation>スナップショットをリストア (%1)</translation>
+        <translation type="vanished">スナップショットをリストア (%1)</translation>
     </message>
     <message>
         <source>Open Snapshot Properties (%1)</source>
-        <translation>スナップショットのプロパティを開く (%1)</translation>
+        <translation type="vanished">スナップショットのプロパティを開く (%1)</translation>
     </message>
     <message>
         <source>Clone Virtual Machine (%1)</source>
-        <translation>仮想マシンをクローン (%1)</translation>
+        <translation type="vanished">仮想マシンをクローン (%1)</translation>
     </message>
     <message>
         <source>Take a snapshot of the current virtual machine state</source>
-        <translation>現在の仮想マシンの状態のスナップショットを作成</translation>
+        <translation type="vanished">現在の仮想マシンの状態のスナップショットを作成</translation>
     </message>
     <message>
         <source>Delete selected snapshot of the virtual machine</source>
-        <translation>選択した仮想マシンのスナップショットを削除</translation>
+        <translation type="vanished">選択した仮想マシンのスナップショットを削除</translation>
     </message>
     <message>
         <source>Restore selected snapshot of the virtual machine</source>
-        <translation>選択した仮想マシンのスナップショットに復元</translation>
+        <translation type="vanished">選択した仮想マシンのスナップショットに復元</translation>
     </message>
     <message>
         <source>Open pane with the selected snapshot properties</source>
-        <translation>選択したスナップショットのプロパティのペインを開く</translation>
+        <translation type="vanished">選択したスナップショットのプロパティのペインを開く</translation>
     </message>
     <message>
         <source>Clone selected virtual machine</source>
-        <translation>選択した仮想マシンをクローン</translation>
+        <translation type="vanished">選択した仮想マシンをクローン</translation>
     </message>
     <message>
         <source>Name</source>
@@ -16502,6 +18775,289 @@ step and attach hard disks later using the VM Settings dialog.&lt;/p&gt;</source
     <message>
         <source>Snapshot %1</source>
         <translation>スナップショット %1</translation>
+    </message>
+</context>
+<context>
+    <name>UISoftKeyboard</name>
+    <message>
+        <source>Layout Editor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Return Back to Layout List</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Back to Layout List</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Physical Layout</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>English Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name of the Layout in English</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Native Language Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name of the Layout in the native Language</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scan Code</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The scan code the key produces. Not editable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Position</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The physical position of the key. Not editable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Base</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shift</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>AltGr</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ShiftAltGr</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Captions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Selected Key</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use the selected layout</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit the selected layout</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete the selected layout</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy the selected layout</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save the selected layout into File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layout List</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close the layout list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Web browser go back</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Web browser go the home page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Web browser go forward</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Web browser reload the current page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Web browser stop loading the page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Web browser search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Jump back to previous media track</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Jump to next media track</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stop playing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Play or pause playing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Start email application</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Start calculator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show &apos;My Computer&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show Media folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Volume up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Volume down</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error! Could not create folder under</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Provide a file name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> is an invalid file name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> is saved</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy</source>
+        <translation type="unfinished">コピー</translation>
+    </message>
+    <message>
+        <source>This will delete the keyboard layout file as well. Proceed?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The file </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> has been deleted</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Deleting the file </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> has failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Settings</source>
+        <translation type="unfinished">設定</translation>
+    </message>
+    <message>
+        <source>Reset the keyboard and release all keys</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Click to change the color.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This color theme is not editable.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Keyboard Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hide NumPad</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hide OS/Menu Keys</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hide Multimedia Keys</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color Themes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Button Background Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Button Font Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Button Hover Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Button Edit Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pressed Button Font Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Soft Keyboard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;Following layouts are edited/copied but not saved:&lt;/p&gt;%1&lt;p&gt;Closing this dialog will cause loosing the changes. Proceed?&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layout</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The file will be saved under:&lt;br&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -16577,66 +19133,73 @@ step and attach hard disks later using the VM Settings dialog.&lt;/p&gt;</source
 <context>
     <name>UIToolsModel</name>
     <message>
-        <source>Network</source>
-        <translation type="vanished">ネットワーク</translation>
-    </message>
-    <message>
-        <source>Snapshots</source>
-        <translation type="vanished">スナップショット</translation>
-    </message>
-    <message>
         <source>Welcome</source>
-        <translation type="vanished">ようこそ</translation>
+        <translation>ようこそ</translation>
     </message>
     <message>
         <source>Media</source>
-        <translation type="vanished">メディア</translation>
+        <translation>メディア</translation>
+    </message>
+    <message>
+        <source>Network</source>
+        <translation>ネットワーク</translation>
     </message>
     <message>
         <source>Cloud</source>
-        <translation type="vanished">クラウド</translation>
+        <translation>クラウド</translation>
     </message>
     <message>
         <source>Details</source>
-        <translation type="vanished">詳細</translation>
+        <translation>詳細</translation>
+    </message>
+    <message>
+        <source>Snapshots</source>
+        <translation>スナップショット</translation>
     </message>
     <message>
         <source>Logs</source>
-        <translation type="vanished">ログ</translation>
+        <translation>ログ</translation>
     </message>
 </context>
 <context>
     <name>UIToolsPaneGlobal</name>
     <message>
         <source>&lt;h3&gt;Welcome to VirtualBox!&lt;/h3&gt;&lt;p&gt;This window represents a set of global tools which are currently opened (or can be opened). They are not related to any particular machine but to the complete VM collection. For a list of currently available tools check the corresponding menu at the right side of the main tool bar located at the top of the window. This list will be extended with new tools in future releases.&lt;/p&gt;&lt;p&gt;You can press the &lt;b&gt;%1&lt;/b&gt; key to get instant help, or visit &lt;a href=https://www.virtualbox.org&gt;www.virtualbox.org&lt;/a&gt; for more information and latest news.&lt;/p&gt;</source>
-        <translation>&lt;h3&gt;ようこそVirtualBoxへ！&lt;/h3&gt;&lt;p&gt;このウィンドウには現在開いている（あるいは開くことができる）グローバルツールが表示されます。それらは特定のマシンに関連するものではなく、VM全部に関連するものです。現在設定できるツールの一覧に関しては、このウィンドウ上部の右側にあるメインツールバーに同様のメニューがあることを確認してください。このリストは将来のリリースで拡張する予定です。&lt;/p&gt;&lt;p&gt;&lt;b&gt;%1&lt;/b&gt;キーでヘルプを表示できます。または最新情報とニュースを取得するため &lt;a href=http://www.virtualbox.org&gt;www.virtualbox.org&lt;/a&gt; をご覧ください。&lt;/p&gt;</translation>
+        <translation type="vanished">&lt;h3&gt;ようこそVirtualBoxへ！&lt;/h3&gt;&lt;p&gt;このウィンドウには現在開いている（あるいは開くことができる）グローバルツールが表示されます。それらは特定のマシンに関連するものではなく、VM全部に関連するものです。現在設定できるツールの一覧に関しては、このウィンドウ上部の右側にあるメインツールバーに同様のメニューがあることを確認してください。このリストは将来のリリースで拡張する予定です。&lt;/p&gt;&lt;p&gt;&lt;b&gt;%1&lt;/b&gt;キーでヘルプを表示できます。または最新情報とニュースを取得するため &lt;a href=http://www.virtualbox.org&gt;www.virtualbox.org&lt;/a&gt; をご覧ください。&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Tool to observe virtual storage media. Reflects all the chains of &lt;u&gt;virtual disks&lt;/u&gt; you have registered (per each storage type) within your virtual machines and allows for media operations like &lt;u&gt;copy&lt;/u&gt;, &lt;u&gt;remove&lt;/u&gt;, &lt;u&gt;release&lt;/u&gt; (detach it from VMs where it is currently attached to) and observe their properties. Allows to &lt;u&gt;edit&lt;/u&gt; medium attributes like &lt;u&gt;type&lt;/u&gt;, &lt;u&gt;location/name&lt;/u&gt;, &lt;u&gt;description&lt;/u&gt; and &lt;u&gt;size&lt;/u&gt; (for dynamical storages only).</source>
-        <translation>仮想ストレージメディアを表示するツールです。仮想マシン内の（ストレージタイプごとに）登録した&lt;u&gt;仮想ディスク&lt;/u&gt;の接続を示し、また&lt;u&gt;コピー&lt;/u&gt;、&lt;u&gt;除去&lt;/u&gt;、&lt;u&gt;開放&lt;/u&gt;（現在アタッチしているものをVMからデタッチする）などのメディアの操作ができ、それらのプロパティを表示します。&lt;u&gt;タイプ&lt;/u&gt;、&lt;u&gt;場所/名前&lt;/u&gt;、&lt;u&gt;説明&lt;/u&gt;と&lt;u&gt;サイズ&lt;/u&gt;（ダイナミックストレージのみ）などのメディアの属性も&lt;u&gt;編集&lt;/u&gt;できます。</translation>
+        <translation type="vanished">仮想ストレージメディアを表示するツールです。仮想マシン内の（ストレージタイプごとに）登録した&lt;u&gt;仮想ディスク&lt;/u&gt;の接続を示し、また&lt;u&gt;コピー&lt;/u&gt;、&lt;u&gt;除去&lt;/u&gt;、&lt;u&gt;開放&lt;/u&gt;（現在アタッチしているものをVMからデタッチする）などのメディアの操作ができ、それらのプロパティを表示します。&lt;u&gt;タイプ&lt;/u&gt;、&lt;u&gt;場所/名前&lt;/u&gt;、&lt;u&gt;説明&lt;/u&gt;と&lt;u&gt;サイズ&lt;/u&gt;（ダイナミックストレージのみ）などのメディアの属性も&lt;u&gt;編集&lt;/u&gt;できます。</translation>
     </message>
     <message>
         <source>Tool to control host-only network interfaces. Reflects &lt;u&gt;host-only networks&lt;/u&gt;, their DHCP servers and allows for operations on the networks like possibility to &lt;u&gt;create&lt;/u&gt;, &lt;u&gt;remove&lt;/u&gt; and observe their properties. Allows to &lt;u&gt;edit&lt;/u&gt; various &lt;u&gt;attributes&lt;/u&gt; for host-only interface and corresponding DHCP server.</source>
-        <translation>&lt;u&gt;ホストオンリーネットワーク&lt;/u&gt;のインターフェースを管理するツールです。ホストオンリーネットワーク、動作させるDHCPサーバー、&lt;u&gt;作成&lt;/u&gt;、&lt;u&gt;削除&lt;/u&gt;などのネットワークの操作とそのプロパティを表示します。ホストオンリーインターフェースのさまざまな&lt;u&gt;属性&lt;/u&gt;と、動作させるDHCPサーバーを&lt;u&gt;編集&lt;/u&gt;できます。</translation>
+        <translation type="vanished">&lt;u&gt;ホストオンリーネットワーク&lt;/u&gt;のインターフェースを管理するツールです。ホストオンリーネットワーク、動作させるDHCPサーバー、&lt;u&gt;作成&lt;/u&gt;、&lt;u&gt;削除&lt;/u&gt;などのネットワークの操作とそのプロパティを表示します。ホストオンリーインターフェースのさまざまな&lt;u&gt;属性&lt;/u&gt;と、動作させるDHCPサーバーを&lt;u&gt;編集&lt;/u&gt;できます。</translation>
     </message>
 </context>
 <context>
     <name>UIToolsPaneMachine</name>
     <message>
         <source>&lt;h3&gt;Welcome to VirtualBox!&lt;/h3&gt;&lt;p&gt;The left part of this window lists all virtual machines and virtual machine groups on your computer. The list is empty now because you haven&apos;t created any virtual machines yet.&lt;/p&gt;&lt;p&gt;In order to create a new virtual machine, press the &lt;b&gt;New&lt;/b&gt; button in the main tool bar located at the top of the window.&lt;/p&gt;&lt;p&gt;You can press the &lt;b&gt;%1&lt;/b&gt; key to get instant help, or visit &lt;a href=https://www.virtualbox.org&gt;www.virtualbox.org&lt;/a&gt; for more information and latest news.&lt;/p&gt;</source>
-        <translation>&lt;h3&gt;ようこそVirtualBoxへ！&lt;/h3&gt;&lt;p&gt;このウィンドウの左側にはコンピューター上のすべての仮想マシンと仮想マシンのグループがリスト表示されます。しかしまだ仮想マシンが作成されていないため、リストは空です。&lt;/p&gt;&lt;p&gt;新規仮想マシンを作成するにはウィンドウ上部にあるメインツールバーの&lt;b&gt;[新規]&lt;/b&gt;ボタンをクリックしてください。&lt;/p&gt;&lt;p&gt;&lt;b&gt;%1&lt;/b&gt;キーでヘルプを表示できます。または最新情報とニュースを取得するため &lt;a href=http://www.virtualbox.org&gt;www.virtualbox.org&lt;/a&gt; をご覧ください。&lt;/p&gt;</translation>
+        <translation type="vanished">&lt;h3&gt;ようこそVirtualBoxへ！&lt;/h3&gt;&lt;p&gt;このウィンドウの左側にはコンピューター上のすべての仮想マシンと仮想マシンのグループがリスト表示されます。しかしまだ仮想マシンが作成されていないため、リストは空です。&lt;/p&gt;&lt;p&gt;新規仮想マシンを作成するにはウィンドウ上部にあるメインツールバーの&lt;b&gt;[新規]&lt;/b&gt;ボタンをクリックしてください。&lt;/p&gt;&lt;p&gt;&lt;b&gt;%1&lt;/b&gt;キーでヘルプを表示できます。または最新情報とニュースを取得するため &lt;a href=http://www.virtualbox.org&gt;www.virtualbox.org&lt;/a&gt; をご覧ください。&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Welcome to VirtualBox!&lt;/h3&gt;&lt;p&gt;The left part of this window lists all virtual machines and virtual machine groups on your computer.&lt;/p&gt;&lt;p&gt;The right part of this window represents a set of tools which are currently opened (or can be opened) for the currently chosen machine. For a list of currently available tools check the corresponding menu at the right side of the main tool bar located at the top of the window. This list will be extended with new tools in future releases.&lt;/p&gt;&lt;p&gt;You can press the &lt;b&gt;%1&lt;/b&gt; key to get instant help, or visit &lt;a href=https://www.virtualbox.org&gt;www.virtualbox.org&lt;/a&gt; for more information and latest news.&lt;/p&gt;</source>
-        <translation>&lt;h3&gt;ようこそ VirtualBox へ！&lt;/h3&gt;&lt;p&gt;このウィンドウの左側には、このコンピューターにあるすべての仮想マシンと仮想マシンのグループがリストされています。&lt;/p&gt;&lt;p&gt;このウィンドウの右側には現在選択されているマシンの、現在開いている（あるいは開くことができる）ツールのセットを表示しています。現在設定できるツールの一覧に関しては、このウィンドウ上部の右側にあるメインツールバーに同様のメニューがあることを確認してください。このリストは将来のリリースで拡張する予定です。&lt;/p&gt;&lt;p&gt;&lt;b&gt;%1&lt;/b&gt;キーでヘルプを表示できます。または最新情報とニュースを取得するため &lt;a href=http://www.virtualbox.org&gt;www.virtualbox.org&lt;/a&gt; をご覧ください。&lt;/p&gt;</translation>
+        <translation type="vanished">&lt;h3&gt;ようこそ VirtualBox へ！&lt;/h3&gt;&lt;p&gt;このウィンドウの左側には、このコンピューターにあるすべての仮想マシンと仮想マシンのグループがリストされています。&lt;/p&gt;&lt;p&gt;このウィンドウの右側には現在選択されているマシンの、現在開いている（あるいは開くことができる）ツールのセットを表示しています。現在設定できるツールの一覧に関しては、このウィンドウ上部の右側にあるメインツールバーに同様のメニューがあることを確認してください。このリストは将来のリリースで拡張する予定です。&lt;/p&gt;&lt;p&gt;&lt;b&gt;%1&lt;/b&gt;キーでヘルプを表示できます。または最新情報とニュースを取得するため &lt;a href=http://www.virtualbox.org&gt;www.virtualbox.org&lt;/a&gt; をご覧ください。&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Tool to observe virtual machine (VM) details. Reflects groups of &lt;u&gt;properties&lt;/u&gt; for the currently chosen VM and allows basic operations on certain properties (like the machine storage devices).</source>
-        <translation>仮想マシン(VM)の詳細を表示するツールです。現在選択しているVMの&lt;u&gt;プロパティ&lt;/u&gt;のグループと、いくつかのプロパティの基本的な操作（マシンのストレージデバイスなど）を反映しています。</translation>
+        <translation type="vanished">仮想マシン(VM)の詳細を表示するツールです。現在選択しているVMの&lt;u&gt;プロパティ&lt;/u&gt;のグループと、いくつかのプロパティの基本的な操作（マシンのストレージデバイスなど）を反映しています。</translation>
     </message>
     <message>
         <source>Tool to control virtual machine (VM) snapshots. Reflects &lt;u&gt;snapshots&lt;/u&gt; created for the currently selected VM and allows snapshot operations like &lt;u&gt;create&lt;/u&gt;, &lt;u&gt;remove&lt;/u&gt;, &lt;u&gt;restore&lt;/u&gt; (make current) and observe their properties. Allows to &lt;u&gt;edit&lt;/u&gt; snapshot attributes like &lt;u&gt;name&lt;/u&gt; and &lt;u&gt;description&lt;/u&gt;.</source>
-        <translation>仮想マシン(VM)のスナップショットを管理するツールです。現在選択しているVMの&lt;u&gt;スナップショット&lt;/u&gt;を作成し、&lt;u&gt;作成&lt;/u&gt;、&lt;u&gt;削除&lt;/u&gt;、（現在の状態に）&lt;u&gt;リストア&lt;/u&gt;などのスナップショットの操作ができ、それらのプロパティを表示します。また、&lt;u&gt;名前&lt;/u&gt;や&lt;u&gt;説明&lt;/u&gt;のようなスナップショットの属性の&lt;u&gt;編集&lt;/u&gt;もできます。</translation>
+        <translation type="vanished">仮想マシン(VM)のスナップショットを管理するツールです。現在選択しているVMの&lt;u&gt;スナップショット&lt;/u&gt;を作成し、&lt;u&gt;作成&lt;/u&gt;、&lt;u&gt;削除&lt;/u&gt;、（現在の状態に）&lt;u&gt;リストア&lt;/u&gt;などのスナップショットの操作ができ、それらのプロパティを表示します。また、&lt;u&gt;名前&lt;/u&gt;や&lt;u&gt;説明&lt;/u&gt;のようなスナップショットの属性の&lt;u&gt;編集&lt;/u&gt;もできます。</translation>
+    </message>
+</context>
+<context>
+    <name>UIToolsView</name>
+    <message>
+        <source>Contains a list of VirtualBox tools</source>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -16654,42 +19217,42 @@ step and attach hard disks later using the VM Settings dialog.&lt;/p&gt;</source
     <message>
         <source>&lt;nobr&gt;Vendor ID: %1&lt;/nobr&gt;</source>
         <comment>USB filter tooltip</comment>
-        <translation type="vanished">&lt;nobr&gt;ベンダーID: %1&lt;/nobr&gt;</translation>
+        <translation>&lt;nobr&gt;ベンダーID: %1&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;Product ID: %2&lt;/nobr&gt;</source>
         <comment>USB filter tooltip</comment>
-        <translation type="vanished">&lt;nobr&gt;プロダクトID: %2&lt;/nobr&gt;</translation>
+        <translation>&lt;nobr&gt;プロダクトID: %2&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;Revision: %3&lt;/nobr&gt;</source>
         <comment>USB filter tooltip</comment>
-        <translation type="vanished">&lt;nobr&gt;リビジョン: %3&lt;/nobr&gt;</translation>
+        <translation>&lt;nobr&gt;リビジョン: %3&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;Product: %4&lt;/nobr&gt;</source>
         <comment>USB filter tooltip</comment>
-        <translation type="vanished">&lt;nobr&gt;製品: %4&lt;/nobr&gt;</translation>
+        <translation>&lt;nobr&gt;製品: %4&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;Manufacturer: %5&lt;/nobr&gt;</source>
         <comment>USB filter tooltip</comment>
-        <translation type="vanished">&lt;nobr&gt;メーカー: %5&lt;/nobr&gt;</translation>
+        <translation>&lt;nobr&gt;メーカー: %5&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;Serial No.: %1&lt;/nobr&gt;</source>
         <comment>USB filter tooltip</comment>
-        <translation type="vanished">&lt;nobr&gt;シリアルNo.: %1&lt;/nobr&gt;</translation>
+        <translation>&lt;nobr&gt;シリアルNo.: %1&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;Port: %1&lt;/nobr&gt;</source>
         <comment>USB filter tooltip</comment>
-        <translation type="vanished">&lt;nobr&gt;ポート: %1&lt;/nobr&gt;</translation>
+        <translation>&lt;nobr&gt;ポート: %1&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;State: %1&lt;/nobr&gt;</source>
         <comment>USB filter tooltip</comment>
-        <translation type="vanished">&lt;nobr&gt;状態: %1&lt;/nobr&gt;</translation>
+        <translation>&lt;nobr&gt;状態: %1&lt;/nobr&gt;</translation>
     </message>
 </context>
 <context>
@@ -17055,6 +19618,259 @@ step and attach hard disks later using the VM Settings dialog.&lt;/p&gt;</source
         <source>&amp;Runtime Information</source>
         <translation>ランタイム情報(&amp;R)</translation>
     </message>
+    <message>
+        <source>General</source>
+        <translation type="unfinished">一般</translation>
+    </message>
+    <message>
+        <source>System</source>
+        <translation type="unfinished">システム</translation>
+    </message>
+    <message>
+        <source>Display</source>
+        <translation type="unfinished">ディスプレイ</translation>
+    </message>
+    <message>
+        <source>Storage</source>
+        <translation type="unfinished">ストレージ</translation>
+    </message>
+    <message>
+        <source>Audio</source>
+        <translation type="unfinished">オーディオ</translation>
+    </message>
+    <message>
+        <source>Network</source>
+        <translation type="unfinished">ネットワーク</translation>
+    </message>
+    <message>
+        <source>Serial Ports</source>
+        <translation type="unfinished">シリアルポート</translation>
+    </message>
+    <message>
+        <source>USB</source>
+        <translation type="unfinished">USB</translation>
+    </message>
+    <message>
+        <source>Shared Folders</source>
+        <translation type="unfinished">共有フォルダー</translation>
+    </message>
+    <message>
+        <source>Performance &amp;Monitor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No guest additions! This metric requires guest additions to work properly.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reset</source>
+        <translation type="unfinished">リセット</translation>
+    </message>
+    <message>
+        <source>Show Pie Chart</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Draw Area Chart</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Seconds</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CPU Load</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Guest Load</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>VMM Load</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>RAM Usage</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Total</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Free</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Used</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Network Rate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Receive Rate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transmit Rate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Total Received</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Total Transmitted</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Disk IO Rate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Write Rate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Read Rate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Total Written</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Total Read</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>VM Exits</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Current</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Runtime Attributes</source>
+        <translation type="unfinished">ランタイム属性</translation>
+    </message>
+    <message>
+        <source>Screen Resolution</source>
+        <translation type="unfinished">画面解像度</translation>
+    </message>
+    <message>
+        <source>VM Uptime</source>
+        <translation type="unfinished">VM 起動時間</translation>
+    </message>
+    <message>
+        <source>Clipboard Mode</source>
+        <translation type="unfinished">クリップボードモード</translation>
+    </message>
+    <message>
+        <source>Drag and Drop Mode</source>
+        <translation type="unfinished">ドラッグ＆ドロップモード</translation>
+    </message>
+    <message>
+        <source>VM Execution Engine</source>
+        <translation type="unfinished">VM実行エンジン</translation>
+    </message>
+    <message>
+        <source>Nested Paging</source>
+        <translation type="unfinished">ネステッドページング</translation>
+    </message>
+    <message>
+        <source>Unrestricted Execution</source>
+        <translation type="unfinished">Unrestricted Execution</translation>
+    </message>
+    <message>
+        <source>Paravirtualization Interface</source>
+        <translation type="unfinished">準仮想化インターフェース</translation>
+    </message>
+    <message>
+        <source>Active</source>
+        <translation type="obsolete">有効</translation>
+    </message>
+    <message>
+        <source>Inactive</source>
+        <translation type="obsolete">無効</translation>
+    </message>
+    <message>
+        <source>Not Available</source>
+        <translation type="obsolete">利用不可</translation>
+    </message>
+    <message>
+        <source>Guest Additions</source>
+        <translation type="unfinished">Guest Additions</translation>
+    </message>
+    <message>
+        <source>Guest OS Type</source>
+        <translation type="unfinished">ゲストOSのタイプ</translation>
+    </message>
+    <message>
+        <source>Remote Desktop Server Port</source>
+        <translation type="unfinished">リモートデスクトップサーバーポート</translation>
+    </message>
+    <message>
+        <source>not set</source>
+        <translation type="obsolete">未設定</translation>
+    </message>
+    <message>
+        <source>Not Detected</source>
+        <translation type="obsolete">未検出</translation>
+    </message>
+    <message>
+        <source>&amp;Guest Control</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>turned off</source>
+        <comment>Screen</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Active</source>
+        <comment>Nested Paging</comment>
+        <translation type="unfinished">有効</translation>
+    </message>
+    <message>
+        <source>Inactive</source>
+        <comment>Nested Paging</comment>
+        <translation type="unfinished">無効</translation>
+    </message>
+    <message>
+        <source>Active</source>
+        <comment>Unrestricted Execution</comment>
+        <translation type="unfinished">有効</translation>
+    </message>
+    <message>
+        <source>Inactive</source>
+        <comment>Unrestricted Execution</comment>
+        <translation type="unfinished">無効</translation>
+    </message>
+    <message>
+        <source>Not Available</source>
+        <comment>VRDE Port</comment>
+        <translation type="unfinished">利用不可</translation>
+    </message>
+    <message>
+        <source>not set</source>
+        <comment>Execution Engine</comment>
+        <translation type="unfinished">未設定</translation>
+    </message>
+    <message>
+        <source>Not Detected</source>
+        <comment>Guest OS Type</comment>
+        <translation type="unfinished">未検出</translation>
+    </message>
+    <message>
+        <source>Not Detected</source>
+        <comment>Guest Additions Version</comment>
+        <translation type="unfinished">未検出</translation>
+    </message>
 </context>
 <context>
     <name>UIVMListView</name>
@@ -17109,105 +19925,39 @@ step and attach hard disks later using the VM Settings dialog.&lt;/p&gt;</source
     <name>UIVMLogViewer</name>
     <message>
         <source>Close the search panel</source>
-        <translation>検索パネルを閉じる</translation>
+        <translation type="vanished">検索パネルを閉じる</translation>
     </message>
     <message>
         <source>&amp;Find</source>
-        <translation>検索(&amp;F)</translation>
-    </message>
-    <message>
-        <source>Enter a search string here</source>
-        <translation>検索する文字列をここに入力</translation>
-    </message>
-    <message>
-        <source>&amp;Previous</source>
-        <translation>前へ(&amp;P)</translation>
-    </message>
-    <message>
-        <source>Search for the previous occurrence of the string</source>
-        <translation>前の文字列を検索</translation>
-    </message>
-    <message>
-        <source>&amp;Next</source>
-        <translation>次へ(&amp;N)</translation>
-    </message>
-    <message>
-        <source>Search for the next occurrence of the string</source>
-        <translation>次の文字列を検索</translation>
-    </message>
-    <message>
-        <source>C&amp;ase Sensitive</source>
-        <translation>大文字と小文字を区別(&amp;A)</translation>
-    </message>
-    <message>
-        <source>Perform case sensitive search (when checked)</source>
-        <translation>大文字小文字を区別して検索（チェックを入れた場合）</translation>
-    </message>
-    <message>
-        <source>String not found</source>
-        <translation>文字列が見つかりません</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;No log files found. Press the &lt;b&gt;Refresh&lt;/b&gt; button to rescan the log folder &lt;nobr&gt;&lt;b&gt;%1&lt;/b&gt;&lt;/nobr&gt;.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;ログファイルが見つかりません。&lt;b&gt;[最新の情報に更新]&lt;/b&gt;ボタンをクリックしてログフォルダー&lt;nobr&gt;&lt;b&gt;&quot;%1&quot;&lt;/b&gt;&lt;/nobr&gt;を再スキャンしてください。&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>Save VirtualBox Log As</source>
-        <translation>名前をつけてVirtualBoxのログを保存</translation>
-    </message>
-    <message>
-        <source>%1 - VirtualBox Log Viewer</source>
-        <translation>%1 -VirtualBox ログビューアー</translation>
-    </message>
-    <message>
-        <source>&amp;Refresh</source>
-        <translation>最新の情報に更新(&amp;R)</translation>
-    </message>
-    <message>
-        <source>&amp;Save</source>
-        <translation>保存(&amp;S)</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation>閉じる</translation>
-    </message>
-    <message>
-        <source>Filter</source>
-        <translation>フィルター</translation>
-    </message>
-    <message>
-        <source>Enter filtering string here</source>
-        <translation>フィルタリングする文字列をここに入力</translation>
-    </message>
-    <message>
-        <source>Fil&amp;ter</source>
-        <translation>フィルター(&amp;T)</translation>
-    </message>
-</context>
-<context>
-    <name>UIVMLogViewerDialog</name>
-    <message>
-        <source>%1 - Log Viewer</source>
-        <translation type="vanished">%1 - ログビューアー</translation>
-    </message>
-</context>
-<context>
-    <name>UIVMLogViewerWidget</name>
-    <message>
-        <source>Log Viewer</source>
-        <translation type="vanished">ログビューアー</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="vanished">閉じる</translation>
+        <translation type="vanished">検索(&amp;F)</translation>
     </message>
     <message>
         <source>Enter a search string here</source>
         <translation type="vanished">検索する文字列をここに入力</translation>
     </message>
     <message>
+        <source>&amp;Previous</source>
+        <translation type="vanished">前へ(&amp;P)</translation>
+    </message>
+    <message>
+        <source>Search for the previous occurrence of the string</source>
+        <translation type="vanished">前の文字列を検索</translation>
+    </message>
+    <message>
+        <source>&amp;Next</source>
+        <translation type="vanished">次へ(&amp;N)</translation>
+    </message>
+    <message>
+        <source>Search for the next occurrence of the string</source>
+        <translation type="vanished">次の文字列を検索</translation>
+    </message>
+    <message>
         <source>C&amp;ase Sensitive</source>
         <translation type="vanished">大文字と小文字を区別(&amp;A)</translation>
+    </message>
+    <message>
+        <source>Perform case sensitive search (when checked)</source>
+        <translation type="vanished">大文字小文字を区別して検索（チェックを入れた場合）</translation>
     </message>
     <message>
         <source>String not found</source>
@@ -17218,12 +19968,54 @@ step and attach hard disks later using the VM Settings dialog.&lt;/p&gt;</source
         <translation type="vanished">&lt;p&gt;ログファイルが見つかりません。&lt;b&gt;[最新の情報に更新]&lt;/b&gt;ボタンをクリックしてログフォルダー&lt;nobr&gt;&lt;b&gt;&quot;%1&quot;&lt;/b&gt;&lt;/nobr&gt;を再スキャンしてください。&lt;/p&gt;</translation>
     </message>
     <message>
+        <source>Save VirtualBox Log As</source>
+        <translation type="vanished">名前をつけてVirtualBoxのログを保存</translation>
+    </message>
+    <message>
+        <source>%1 - VirtualBox Log Viewer</source>
+        <translation type="vanished">%1 -VirtualBox ログビューアー</translation>
+    </message>
+    <message>
+        <source>&amp;Refresh</source>
+        <translation type="vanished">最新の情報に更新(&amp;R)</translation>
+    </message>
+    <message>
+        <source>&amp;Save</source>
+        <translation type="vanished">保存(&amp;S)</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation type="vanished">閉じる</translation>
+    </message>
+    <message>
+        <source>Filter</source>
+        <translation type="vanished">フィルター</translation>
+    </message>
+    <message>
+        <source>Enter filtering string here</source>
+        <translation type="vanished">フィルタリングする文字列をここに入力</translation>
+    </message>
+    <message>
+        <source>Fil&amp;ter</source>
+        <translation type="vanished">フィルター(&amp;T)</translation>
+    </message>
+</context>
+<context>
+    <name>UIVMLogViewerDialog</name>
+    <message>
+        <source>%1 - Log Viewer</source>
+        <translation>%1 - ログビューアー</translation>
+    </message>
+</context>
+<context>
+    <name>UIVMLogViewerWidget</name>
+    <message>
         <source>Delete the current bookmark</source>
-        <translation type="vanished">現在のブックマークを削除</translation>
+        <translation>現在のブックマークを削除</translation>
     </message>
     <message>
         <source>Delete all bookmarks</source>
-        <translation type="vanished">すべてのブックマークを削除</translation>
+        <translation>すべてのブックマークを削除</translation>
     </message>
     <message>
         <source>Goto the next bookmark</source>
@@ -17238,88 +20030,108 @@ step and attach hard disks later using the VM Settings dialog.&lt;/p&gt;</source
         <translation type="vanished">選択したブックマークに移動</translation>
     </message>
     <message>
+        <source>Log Viewer</source>
+        <translation>ログビューアー</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation>閉じる</translation>
+    </message>
+    <message>
         <source>Select or enter a term which will be used in filtering the log text</source>
-        <translation type="vanished">ログテキストのフィルタリングに使用するため、検索語を選択または入力してください</translation>
+        <translation>ログテキストのフィルタリングに使用するため、検索語を選択または入力してください</translation>
     </message>
     <message>
         <source>Add the filter term to the set of filter terms</source>
-        <translation type="vanished">フィルターしたい検索語を追加</translation>
+        <translation>フィルターしたい検索語を追加</translation>
     </message>
     <message>
         <source>Showing %1/%2</source>
-        <translation type="vanished">%1/%2 を表示中</translation>
+        <translation>%1/%2 を表示中</translation>
     </message>
     <message>
         <source>The filter terms list, select one to remove or click the button on the right side to remove them all</source>
-        <translation type="vanished">この検索語フィルターリストでは、選択した一つの語を削除したい場合は右側に表示されているアイコンをクリックし、すべてを削除したい場合は右端に表示されているアイコンをクリックします</translation>
+        <translation>この検索語フィルターリストでは、選択した一つの語を削除したい場合は右側に表示されているアイコンをクリックし、すべてを削除したい場合は右端に表示されているアイコンをクリックします</translation>
     </message>
     <message>
         <source>The type of boolean operator for filter operation</source>
-        <translation type="vanished">フィルターの実行時に使用する論理演算子</translation>
+        <translation>フィルターの実行時に使用する論理演算子</translation>
     </message>
     <message>
         <source>Show Line Numbers</source>
-        <translation type="vanished">行番号を表示</translation>
+        <translation>行番号を表示</translation>
     </message>
     <message>
         <source>When checked, show line numbers</source>
-        <translation type="vanished">行番号を表示します</translation>
+        <translation>行番号を表示します</translation>
     </message>
     <message>
         <source>Wrap Lines</source>
-        <translation type="vanished">行の折返し</translation>
+        <translation>行の折返し</translation>
     </message>
     <message>
         <source>When checked, wrap lines</source>
-        <translation type="vanished">行を折り返します</translation>
+        <translation>行を折り返します</translation>
     </message>
     <message>
         <source>Font Size</source>
-        <translation type="vanished">フォントサイズ</translation>
+        <translation>フォントサイズ</translation>
     </message>
     <message>
         <source>Log viewer font size</source>
-        <translation type="vanished">ログビューアーのフォントサイズ</translation>
+        <translation>ログビューアーのフォントサイズ</translation>
     </message>
     <message>
         <source>Open a font dialog to select font face for the logviewer</source>
-        <translation type="vanished">ログビューアーのフォントを変更するダイアログを開く</translation>
+        <translation>ログビューアーのフォントを変更するダイアログを開く</translation>
     </message>
     <message>
         <source>Reset options to application defaults</source>
-        <translation type="vanished">オプションをアプリケーションのデフォルトに戻す</translation>
+        <translation>オプションをアプリケーションのデフォルトに戻す</translation>
     </message>
     <message>
         <source>Close the pane</source>
         <translation type="vanished">ペインを閉じる</translation>
     </message>
     <message>
+        <source>Enter a search string here</source>
+        <translation>検索する文字列をここに入力</translation>
+    </message>
+    <message>
         <source>Search for the next occurrence of the string (F3)</source>
-        <translation type="vanished">次の文字列を検索(F3)</translation>
+        <translation>次の文字列を検索(F3)</translation>
     </message>
     <message>
         <source>Search for the previous occurrence of the string (Shift+F3)</source>
-        <translation type="vanished">前の文字列を検索(Shift+F3)</translation>
+        <translation>前の文字列を検索(Shift+F3)</translation>
+    </message>
+    <message>
+        <source>C&amp;ase Sensitive</source>
+        <translation>大文字と小文字を区別(&amp;A)</translation>
     </message>
     <message>
         <source>When checked, perform case sensitive search</source>
-        <translation type="vanished">大文字小文字を区別して検索します</translation>
+        <translation>大文字小文字を区別して検索します</translation>
     </message>
     <message>
         <source>Ma&amp;tch Whole Word</source>
-        <translation type="vanished">すべての語にマッチ(&amp;T)</translation>
+        <translation>すべての語にマッチ(&amp;T)</translation>
     </message>
     <message>
         <source>When checked, search matches only complete words</source>
-        <translation type="vanished">完全一致した語のみを検索します</translation>
+        <translation>完全一致した語のみを検索します</translation>
     </message>
     <message>
         <source>&amp;Highlight All</source>
-        <translation type="vanished">すべてをハイライト(&amp;H)</translation>
+        <translation>すべてをハイライト(&amp;H)</translation>
     </message>
     <message>
         <source>When checked, all occurence of the search text are highlighted</source>
-        <translation type="vanished">マッチした検索語をハイライト表示します</translation>
+        <translation>マッチした検索語をハイライト表示します</translation>
+    </message>
+    <message>
+        <source>String not found</source>
+        <translation type="vanished">文字列が見つかりません</translation>
     </message>
     <message>
         <source>%1 Matches Found</source>
@@ -17327,31 +20139,35 @@ step and attach hard disks later using the VM Settings dialog.&lt;/p&gt;</source
     </message>
     <message>
         <source>Filtered</source>
-        <translation type="vanished">フィルター適用済</translation>
+        <translation>フィルター適用済</translation>
     </message>
     <message>
         <source>Bookmark</source>
-        <translation type="vanished">ブックマーク</translation>
+        <translation>ブックマーク</translation>
     </message>
     <message>
         <source>Save VirtualBox Log As</source>
-        <translation type="vanished">名前をつけてVirtualBoxのログを保存</translation>
+        <translation>名前をつけてVirtualBoxのログを保存</translation>
     </message>
     <message>
         <source>&lt;p&gt;&lt;b&gt;No machine&lt;/b&gt; is currently selected or the selected machine is not valid. Please select a Virtual Machine to see its logs</source>
-        <translation type="vanished">&lt;p&gt;&lt;b&gt;マシンなし&lt;/b&gt; は現在選択しているマシンが正しくないことを表しています。ログを表示するための別な仮想マシンを選択してください</translation>
+        <translation>&lt;p&gt;&lt;b&gt;マシンなし&lt;/b&gt; は現在選択しているマシンが正しくないことを表しています。ログを表示するための別な仮想マシンを選択してください</translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;No log files found. Press the &lt;b&gt;Refresh&lt;/b&gt; button to rescan the log folder &lt;nobr&gt;&lt;b&gt;%1&lt;/b&gt;&lt;/nobr&gt;.&lt;/p&gt;</source>
+        <translation>&lt;p&gt;ログファイルが見つかりません。&lt;b&gt;[最新の情報に更新]&lt;/b&gt;ボタンをクリックしてログフォルダー&lt;nobr&gt;&lt;b&gt;&quot;%1&quot;&lt;/b&gt;&lt;/nobr&gt;を再スキャンしてください。&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Go to the next bookmark</source>
-        <translation type="vanished">次のブックマークに移動</translation>
+        <translation>次のブックマークに移動</translation>
     </message>
     <message>
         <source>Go to the previous bookmark</source>
-        <translation type="vanished">前のブックマークに移動</translation>
+        <translation>前のブックマークに移動</translation>
     </message>
     <message>
         <source>Go to selected bookmark</source>
-        <translation type="vanished">選択したブックマークに移動</translation>
+        <translation>選択したブックマークに移動</translation>
     </message>
     <message>
         <source>Matches Found</source>
@@ -17390,27 +20206,42 @@ step and attach hard disks later using the VM Settings dialog.&lt;/p&gt;</source
     </message>
 </context>
 <context>
+    <name>UIVideoMemoryEditor</name>
+    <message>
+        <source>Video &amp;Memory:</source>
+        <translation type="unfinished">ビデオメモリー(&amp;M):</translation>
+    </message>
+    <message>
+        <source>%1 MB</source>
+        <translation type="unfinished">%1 MB</translation>
+    </message>
+    <message>
+        <source>MB</source>
+        <translation type="unfinished">MB</translation>
+    </message>
+</context>
+<context>
     <name>UIVirtualBoxManager</name>
     <message>
         <source>Manager</source>
         <comment>Note: main window title which is prepended by the product name.</comment>
-        <translation type="vanished">マネージャー</translation>
+        <translation>マネージャー</translation>
     </message>
     <message>
         <source>Select a virtual machine file</source>
-        <translation type="vanished">仮想マシンファイルを選択</translation>
+        <translation>仮想マシンファイルを選択</translation>
     </message>
     <message>
         <source>Virtual machine files (%1)</source>
-        <translation type="vanished">仮想マシンファイル(%1)</translation>
-    </message>
-    <message>
-        <source>Show Toolbar Text</source>
-        <translation type="vanished">ツールバーテキストを表示</translation>
+        <translation>仮想マシンファイル(%1)</translation>
     </message>
     <message>
         <source>Select a destination folder to move the selected virtual machine</source>
-        <translation type="vanished">選択した仮想マシンの移動先フォルダーを選択</translation>
+        <translation>選択した仮想マシンの移動先フォルダーを選択</translation>
+    </message>
+    <message>
+        <source>Show Toolbar Text</source>
+        <translation>ツールバーテキストを表示</translation>
     </message>
 </context>
 <context>
@@ -17423,60 +20254,48 @@ step and attach hard disks later using the VM Settings dialog.&lt;/p&gt;</source
 <context>
     <name>UIVisoCreator</name>
     <message>
-        <source>Name</source>
-        <translation type="vanished">名前</translation>
-    </message>
-    <message>
-        <source>Size</source>
-        <translation type="vanished">サイズ</translation>
-    </message>
-    <message>
-        <source>Remove</source>
-        <translation type="vanished">除去</translation>
-    </message>
-    <message>
-        <source>Reset</source>
-        <translation type="vanished">リセット</translation>
-    </message>
-    <message>
-        <source>Add</source>
-        <translation type="vanished">追加</translation>
-    </message>
-    <message>
         <source>VISO content</source>
         <translation type="vanished">VISOの内容</translation>
     </message>
     <message>
         <source>Remove selected file objects from VISO</source>
-        <translation type="vanished">選択したファイルオブジェクトをVISOから削除</translation>
+        <translation>選択したファイルオブジェクトをVISOから削除</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation>名前</translation>
+    </message>
+    <message>
+        <source>Size</source>
+        <translation>サイズ</translation>
     </message>
     <message>
         <source>Change Time</source>
-        <translation type="vanished">変更日時</translation>
+        <translation>変更日時</translation>
     </message>
     <message>
         <source>Owner</source>
-        <translation type="vanished">所有者</translation>
+        <translation>所有者</translation>
     </message>
     <message>
         <source>Permissions</source>
-        <translation type="vanished">パーミッション</translation>
+        <translation>パーミッション</translation>
     </message>
     <message>
         <source>Local Path</source>
-        <translation type="vanished">ローカルパス</translation>
+        <translation>ローカルパス</translation>
     </message>
     <message>
         <source>ISO Path</source>
-        <translation type="vanished">ISOパス</translation>
+        <translation>ISOパス</translation>
     </message>
     <message>
         <source>&amp;Options...</source>
-        <translation type="vanished">オプション(&amp;O)...</translation>
+        <translation>オプション(&amp;O)...</translation>
     </message>
     <message>
         <source>Show Hidden Objects</source>
-        <translation type="vanished">隠しオブジェクトを表示</translation>
+        <translation>隠しオブジェクトを表示</translation>
     </message>
     <message>
         <source>Host file system</source>
@@ -17484,7 +20303,7 @@ step and attach hard disks later using the VM Settings dialog.&lt;/p&gt;</source
     </message>
     <message>
         <source>Create a new directory under the current location</source>
-        <translation type="vanished">現在の場所の下に新しいディレクトリを作成</translation>
+        <translation>現在の場所の下に新しいディレクトリを作成</translation>
     </message>
     <message>
         <source>Reset ISO content.</source>
@@ -17492,31 +20311,31 @@ step and attach hard disks later using the VM Settings dialog.&lt;/p&gt;</source
     </message>
     <message>
         <source>Rename the selected object</source>
-        <translation type="vanished">選択したオブジェクトの名前を変更</translation>
+        <translation>選択したオブジェクトの名前を変更</translation>
     </message>
     <message>
         <source>&amp;Configuration...</source>
-        <translation type="vanished">構成(&amp;C)...</translation>
+        <translation>構成(&amp;C)...</translation>
     </message>
     <message>
         <source>VISO Configuration</source>
-        <translation type="vanished">VISOの構成</translation>
+        <translation>VISOの構成</translation>
     </message>
     <message>
         <source>Manage VISO Configuration</source>
-        <translation type="vanished">VISO 設定を操作</translation>
+        <translation>VISO 設定を操作</translation>
     </message>
     <message>
         <source>Dialog Options</source>
-        <translation type="vanished">ダイアログのオプション</translation>
+        <translation>ダイアログのオプション</translation>
     </message>
     <message>
         <source>Manage Dialog Options</source>
-        <translation type="vanished">ダイアログオプションを操作</translation>
+        <translation>ダイアログオプションを操作</translation>
     </message>
     <message>
         <source>VISO Name:</source>
-        <translation type="vanished">VISO名:</translation>
+        <translation>VISO名:</translation>
     </message>
     <message>
         <source>Add selected file objects to ISO</source>
@@ -17524,19 +20343,27 @@ step and attach hard disks later using the VM Settings dialog.&lt;/p&gt;</source
     </message>
     <message>
         <source>Close the pane</source>
-        <translation type="vanished">ペインを閉じる</translation>
+        <translation>ペインを閉じる</translation>
+    </message>
+    <message>
+        <source>Remove</source>
+        <translation>除去</translation>
     </message>
     <message>
         <source>New Directory</source>
-        <translation type="vanished">新規ディレクトリ</translation>
+        <translation>新規ディレクトリ</translation>
+    </message>
+    <message>
+        <source>Reset</source>
+        <translation>リセット</translation>
     </message>
     <message>
         <source>VISO Creator</source>
-        <translation type="vanished">VISOクリエイター</translation>
+        <translation>VISOクリエイター</translation>
     </message>
     <message>
         <source>VISO</source>
-        <translation type="vanished">VISO</translation>
+        <translation>VISO</translation>
     </message>
     <message>
         <source>Host Browser</source>
@@ -17548,11 +20375,27 @@ step and attach hard disks later using the VM Settings dialog.&lt;/p&gt;</source
     </message>
     <message>
         <source>Custom VISO options:</source>
-        <translation type="vanished">カスタムVISOオプション:</translation>
+        <translation>カスタムVISOオプション:</translation>
     </message>
     <message>
         <source>Remove current option.</source>
-        <translation type="vanished">現在のオプションを削除します。</translation>
+        <translation>現在のオプションを削除します。</translation>
+    </message>
+    <message>
+        <source>Add</source>
+        <translation>追加</translation>
+    </message>
+    <message>
+        <source>Click to show/hide the tree view</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add selected file objects to VISO</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reset VISO content.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -17560,7 +20403,7 @@ step and attach hard disks later using the VM Settings dialog.&lt;/p&gt;</source
     <message>
         <source>&lt;h3&gt;Welcome to VirtualBox!&lt;/h3&gt;&lt;p&gt;The left part of application window contains global tools and lists all virtual machines and virtual machine groups on your computer. You can import, add and create new VMs using corresponding toolbar buttons. You can popup a tools of currently selected element using corresponding element button.&lt;/p&gt;&lt;p&gt;You can press the &lt;b&gt;%1&lt;/b&gt; key to get instant help, or visit &lt;a href=https://www.virtualbox.org&gt;www.virtualbox.org&lt;/a&gt; for more information and latest news.&lt;/p&gt;</source>
         <translatorcomment>要確認</translatorcomment>
-        <translation type="vanished">&lt;h3&gt;ようこそVirtualBoxへ！&lt;/h3&gt;&lt;p&gt;このアプリケーションウィンドウの左側にはグローバルツールと、コンピューター上にあるすべての仮想マシンと仮想マシングループがリスト表示されます。該当するツールバーのボタンを使用するとインポート・追加・新規仮想マシンの作成を行うことができます。リストの右側にある要素ボタンをクリックすると、使用できるツールをポップアップすることができます。&lt;/p&gt;&lt;p&gt;&lt;b&gt;%1&lt;/b&gt; ボタンを押すとヘルプが表示できます。&lt;a href=https://www.virtualbox.org&gt;www.virtualbox.org&lt;/a&gt;には最新情報とニュースがあります。&lt;/p&gt;</translation>
+        <translation>&lt;h3&gt;ようこそVirtualBoxへ！&lt;/h3&gt;&lt;p&gt;このアプリケーションウィンドウの左側にはグローバルツールと、コンピューター上にあるすべての仮想マシンと仮想マシングループがリスト表示されます。該当するツールバーのボタンを使用するとインポート・追加・新規仮想マシンの作成を行うことができます。リストの右側にある要素ボタンをクリックすると、使用できるツールをポップアップすることができます。&lt;/p&gt;&lt;p&gt;&lt;b&gt;%1&lt;/b&gt; ボタンを押すとヘルプが表示できます。&lt;a href=https://www.virtualbox.org&gt;www.virtualbox.org&lt;/a&gt;には最新情報とニュースがあります。&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -17763,15 +20606,15 @@ step and attach hard disks later using the VM Settings dialog.&lt;/p&gt;</source
     </message>
     <message>
         <source>Disk image to copy</source>
-        <translation>コピーするディスクイメージ</translation>
+        <translation type="vanished">コピーするディスクイメージ</translation>
     </message>
     <message>
         <source>&lt;p&gt;Please select the virtual disk image file that you would like to copy if it is not already selected. You can either choose one from the list or use the folder icon beside the list to select one.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;選択していない場合、コピーしたい仮想ディスクイメージのファイルを選択してください。リストから選択するか、リストの横にあるフォルダーアイコンからも選択できます。&lt;/p&gt;</translation>
+        <translation type="vanished">&lt;p&gt;選択していない場合、コピーしたい仮想ディスクイメージのファイルを選択してください。リストから選択するか、リストの横にあるフォルダーアイコンからも選択できます。&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Choose a virtual disk image file to copy...</source>
-        <translation>コピーする仮想ディスクイメージのファイルを選択...</translation>
+        <translation type="vanished">コピーする仮想ディスクイメージのファイルを選択...</translation>
     </message>
     <message>
         <source>Disk image file type</source>
@@ -17820,7 +20663,7 @@ step and attach hard disks later using the VM Settings dialog.&lt;/p&gt;</source
     </message>
     <message>
         <source>Disk image to &amp;copy</source>
-        <translation>コピーするディスクイメージ(&amp;C)</translation>
+        <translation type="vanished">コピーするディスクイメージ(&amp;C)</translation>
     </message>
     <message>
         <source>&amp;New disk image to create</source>
@@ -17851,19 +20694,19 @@ step and attach hard disks later using the VM Settings dialog.&lt;/p&gt;</source
     </message>
     <message>
         <source>New machine name</source>
-        <translation>新しいマシン名</translation>
+        <translation type="vanished">新しいマシン名</translation>
     </message>
     <message>
         <source>&lt;p&gt;Please choose a name for the new virtual machine. The new machine will be a clone of the machine &lt;b&gt;%1&lt;/b&gt;.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;新しい仮想マシンの名前を選択してください。新しい仮想マシンは &lt;b&gt;%1&lt;/b&gt; のクローンになるでしょう。&lt;/p&gt;</translation>
+        <translation type="vanished">&lt;p&gt;新しい仮想マシンの名前を選択してください。新しい仮想マシンは &lt;b&gt;%1&lt;/b&gt; のクローンになるでしょう。&lt;/p&gt;</translation>
     </message>
     <message>
         <source>When checked a new unique MAC address will be assigned to all configured network cards.</source>
-        <translation>新しい一意のMACアドレスがすべての設定してあるネットワークカードに付与されます。</translation>
+        <translation type="vanished">新しい一意のMACアドレスがすべての設定してあるネットワークカードに付与されます。</translation>
     </message>
     <message>
         <source>&amp;Reinitialize the MAC address of all network cards</source>
-        <translation>すべてのネットワークカードのMACアドレスを再初期化(&amp;R)</translation>
+        <translation type="vanished">すべてのネットワークカードのMACアドレスを再初期化(&amp;R)</translation>
     </message>
     <message>
         <source>Clone type</source>
@@ -17919,7 +20762,7 @@ step and attach hard disks later using the VM Settings dialog.&lt;/p&gt;</source
     </message>
     <message>
         <source>New machine &amp;name</source>
-        <translation>新しいマシン名(&amp;N)</translation>
+        <translation type="vanished">新しいマシン名(&amp;N)</translation>
     </message>
     <message>
         <source>&amp;Full Clone</source>
@@ -17935,75 +20778,75 @@ step and attach hard disks later using the VM Settings dialog.&lt;/p&gt;</source
     </message>
     <message>
         <source>&lt;p&gt;Please choose a name and optionally a folder for the new virtual machine. The new machine will be a clone of the machine &lt;b&gt;%1&lt;/b&gt;.&lt;/p&gt;</source>
-        <translation type="vanished">&lt;p&gt;新しい仮想マシンの名前とフォルダー（オプション）を選択してください。新しいマシンは &lt;b&gt;%1&lt;/b&gt; のクローンです。&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;新しい仮想マシンの名前とフォルダー（オプション）を選択してください。新しいマシンは &lt;b&gt;%1&lt;/b&gt; のクローンです。&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Name:</source>
-        <translation type="vanished">名前:</translation>
+        <translation>名前:</translation>
     </message>
     <message>
         <source>Path:</source>
-        <translation type="vanished">パス:</translation>
+        <translation>パス:</translation>
     </message>
     <message>
         <source>MAC Address &amp;Policy:</source>
-        <translation type="vanished">MACアドレスのポリシー(&amp;P):</translation>
+        <translation>MACアドレスのポリシー(&amp;P):</translation>
     </message>
     <message>
         <source>Include all network adapter MAC addresses</source>
-        <translation type="vanished">すべてのネットワークアダプターのMACアドレスを含む</translation>
+        <translation>すべてのネットワークアダプターのMACアドレスを含む</translation>
     </message>
     <message>
         <source>Include only NAT network adapter MAC addresses</source>
-        <translation type="vanished">NATネットワークアダプターのMACアドレスのみ含む</translation>
+        <translation>NATネットワークアダプターのMACアドレスのみ含む</translation>
     </message>
     <message>
         <source>Generate new MAC addresses for all network adapters</source>
-        <translation type="vanished">すべてのネットワークアダプターでMACアドレスを生成</translation>
+        <translation>すべてのネットワークアダプターでMACアドレスを生成</translation>
     </message>
     <message>
         <source>Include only NAT network adapter MAC addresses during cloning.</source>
-        <translation type="vanished">クローンにNATネットワークアダプターのMACアドレスのみを含みます。</translation>
+        <translation>クローンにNATネットワークアダプターのMACアドレスのみを含みます。</translation>
     </message>
     <message>
         <source>Generate new MAC addresses for all network adapters during cloning.</source>
-        <translation type="vanished">クローン中にすべてのネットワークアダプターでMACアドレスを生成します。</translation>
+        <translation>クローン中にすべてのネットワークアダプターでMACアドレスを生成します。</translation>
     </message>
     <message>
         <source>Additional Options:</source>
-        <translation type="vanished">追加オプション:</translation>
+        <translation>追加オプション:</translation>
     </message>
     <message>
         <source>Don&apos;t change the disk names during cloning.</source>
-        <translation type="vanished">クローンでディスク名を変更しません。</translation>
+        <translation>クローンでディスク名を変更しません。</translation>
     </message>
     <message>
         <source>Keep &amp;Disk Names</source>
-        <translation type="vanished">ディスク名を保持(&amp;D)</translation>
+        <translation>ディスク名を保持(&amp;D)</translation>
     </message>
     <message>
         <source>Don&apos;t change hardware UUIDs during cloning.</source>
-        <translation type="vanished">クローンでハードウェアのUUIDを変更しません。</translation>
+        <translation>クローンでハードウェアのUUIDを変更しません。</translation>
     </message>
     <message>
         <source>Keep &amp;Hardware UUIDs</source>
-        <translation type="vanished">ハードウェアUUIDを保持(&amp;H)</translation>
+        <translation>ハードウェアUUIDを保持(&amp;H)</translation>
     </message>
     <message>
         <source>New machine &amp;name and path</source>
-        <translation type="vanished">新しいマシンの名前とパス(&amp;N)</translation>
+        <translation>新しいマシンの名前とパス(&amp;N)</translation>
     </message>
     <message>
         <source>New machine name and path</source>
-        <translation type="vanished">新しいマシンの名前とパス</translation>
+        <translation>新しいマシンの名前とパス</translation>
     </message>
     <message>
         <source>Include all network adapter MAC addresses during cloning.</source>
-        <translation type="vanished">クローンにすべてのネットワークアダプターのMACアドレスを含みます。</translation>
+        <translation>クローンにすべてのネットワークアダプターのMACアドレスを含みます。</translation>
     </message>
     <message>
         <source>Additional options</source>
-        <translation type="vanished">追加オプション</translation>
+        <translation>追加オプション</translation>
     </message>
 </context>
 <context>
@@ -18046,27 +20889,27 @@ step and attach hard disks later using the VM Settings dialog.&lt;/p&gt;</source
     </message>
     <message>
         <source>Please choose where to create the virtual appliance. You can create it on your own computer, on the Sun Cloud service or on an S3 storage server.</source>
-        <translation>仮想アプライアンスをどこに作成するか選択してください。自分のコンピューター、Sun クラウドサービス、またはS3 ストレージサーバーに作成できます。</translation>
+        <translation type="vanished">仮想アプライアンスをどこに作成するか選択してください。自分のコンピューター、Sun クラウドサービス、またはS3 ストレージサーバーに作成できます。</translation>
     </message>
     <message>
         <source>Create on</source>
-        <translation>作成場所</translation>
+        <translation type="vanished">作成場所</translation>
     </message>
     <message>
         <source>&amp;This computer</source>
-        <translation>このコンピューター(&amp;T)</translation>
+        <translation type="vanished">このコンピューター(&amp;T)</translation>
     </message>
     <message>
         <source>Sun &amp;Cloud</source>
-        <translation>Sun Cloud(&amp;C)</translation>
+        <translation type="vanished">Sun Cloud(&amp;C)</translation>
     </message>
     <message>
         <source>&amp;Simple Storage System (S3)</source>
-        <translation>Simple Storage System (S3)(&amp;S)</translation>
+        <translation type="vanished">Simple Storage System (S3)(&amp;S)</translation>
     </message>
     <message>
         <source>Storage settings</source>
-        <translation>ストレージの設定</translation>
+        <translation type="vanished">ストレージの設定</translation>
     </message>
     <message>
         <source>Appliance</source>
@@ -18074,19 +20917,19 @@ step and attach hard disks later using the VM Settings dialog.&lt;/p&gt;</source
     </message>
     <message>
         <source>&amp;Username:</source>
-        <translation>ユーザー名(&amp;U):</translation>
+        <translation type="vanished">ユーザー名(&amp;U):</translation>
     </message>
     <message>
         <source>&amp;Password:</source>
-        <translation>パスワード(&amp;P):</translation>
+        <translation type="vanished">パスワード(&amp;P):</translation>
     </message>
     <message>
         <source>&amp;Hostname:</source>
-        <translation>ホスト名(&amp;H):</translation>
+        <translation type="vanished">ホスト名(&amp;H):</translation>
     </message>
     <message>
         <source>&amp;Bucket:</source>
-        <translation>バケット名(&amp;B):</translation>
+        <translation type="vanished">バケット名(&amp;B):</translation>
     </message>
     <message>
         <source>&amp;File:</source>
@@ -18146,7 +20989,7 @@ step and attach hard disks later using the VM Settings dialog.&lt;/p&gt;</source
     </message>
     <message>
         <source>Write &amp;Manifest file</source>
-        <translation>マニフェストファイルの書き込み(&amp;M)</translation>
+        <translation type="vanished">マニフェストファイルの書き込み(&amp;M)</translation>
     </message>
     <message>
         <source>This is the descriptive information which will be added to the virtual appliance.  You can change it by double clicking on individual lines.</source>
@@ -18158,23 +21001,23 @@ step and attach hard disks later using the VM Settings dialog.&lt;/p&gt;</source
     </message>
     <message>
         <source>Appliance &amp;settings</source>
-        <translation>仮想アプライアンスの設定(&amp;S)</translation>
+        <translation type="vanished">仮想アプライアンスの設定(&amp;S)</translation>
     </message>
     <message>
         <source>&amp;Destination</source>
-        <translation>保存場所(&amp;D)</translation>
+        <translation type="vanished">保存場所(&amp;D)</translation>
     </message>
     <message>
         <source>&amp;Storage settings</source>
-        <translation>ストレージの設定(&amp;S)</translation>
+        <translation type="vanished">ストレージの設定(&amp;S)</translation>
     </message>
     <message>
         <source>&amp;Local Filesystem </source>
-        <translation>ローカルファイルシステム(&amp;L)</translation>
+        <translation type="vanished">ローカルファイルシステム(&amp;L)</translation>
     </message>
     <message>
         <source>Oracle Public Cloud Format Archive (%1)</source>
-        <translation>Oracle Public Cloud フォーマットアーカイブ (%1)</translation>
+        <translation type="vanished">Oracle Public Cloud フォーマットアーカイブ (%1)</translation>
     </message>
     <message>
         <source>Open Virtualization Format 0.9</source>
@@ -18190,7 +21033,7 @@ step and attach hard disks later using the VM Settings dialog.&lt;/p&gt;</source
     </message>
     <message>
         <source>Oracle Public Cloud Format 1.0</source>
-        <translation>Oracle Public Cloud Format 1.0</translation>
+        <translation type="vanished">Oracle Public Cloud Format 1.0</translation>
     </message>
     <message>
         <source>Write in new OVF 2.0 format.</source>
@@ -18198,94 +21041,118 @@ step and attach hard disks later using the VM Settings dialog.&lt;/p&gt;</source
     </message>
     <message>
         <source>Write in Oracle Public Cloud 1.0 format.</source>
-        <translation>Oracle Public Cloud 1.0 フォーマットで書き出します。</translation>
-    </message>
-    <message>
-        <source>Choose a file to export the virtual appliance to...</source>
-        <translation type="vanished">エクスポートする仮想アプライアンスのファイルを選択...</translation>
+        <translation type="vanished">Oracle Public Cloud 1.0 フォーマットで書き出します。</translation>
     </message>
     <message>
         <source>&lt;p&gt;Please choose a format to export the virtual appliance to.&lt;/p&gt;&lt;p&gt;The &lt;b&gt;Open Virtualization Format&lt;/b&gt; supports only &lt;b&gt;ovf&lt;/b&gt; or &lt;b&gt;ova&lt;/b&gt; extensions. If you use the &lt;b&gt;ovf&lt;/b&gt; extension, several files will be written separately. If you use the &lt;b&gt;ova&lt;/b&gt; extension, all the files will be combined into one Open Virtualization Format archive.&lt;/p&gt;&lt;p&gt;The &lt;b&gt;Oracle Cloud Infrastructure&lt;/b&gt; format supports exporting to remote cloud servers only. Main virtual disk of each selected machine will be uploaded to remote server.&lt;/p&gt;</source>
-        <translation type="vanished">&lt;p&gt;エクスポートする仮想アプライアンスのフォーマットを選択してください。&lt;/p&gt;&lt;p&gt;&lt;b&gt;Open Virtualization Format&lt;/b&gt; は 拡張子&lt;b&gt;ovf&lt;/b&gt; または &lt;b&gt;ova&lt;/b&gt; のみ対応しています。拡張子を &lt;b&gt;ovf&lt;/b&gt;にすると、いくつかのファイルが別々に書き込まれます。拡張子を &lt;b&gt;ova&lt;/b&gt; にすると、すべてのファイルが Open Virtualization フォーマットアーカイブに統合されます。&lt;/p&gt;&lt;p&gt;&lt;b&gt;Oracle Cloud Infrastructure&lt;/b&gt; フォーマットはリモートクラウドサーバーへのエクスポートのみをサポートしています。それぞれ選択されているメインの仮想ディスクはリモートサーバーにアップロードされます。&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;エクスポートする仮想アプライアンスのフォーマットを選択してください。&lt;/p&gt;&lt;p&gt;&lt;b&gt;Open Virtualization Format&lt;/b&gt; は 拡張子&lt;b&gt;ovf&lt;/b&gt; または &lt;b&gt;ova&lt;/b&gt; のみ対応しています。拡張子を &lt;b&gt;ovf&lt;/b&gt;にすると、いくつかのファイルが別々に書き込まれます。拡張子を &lt;b&gt;ova&lt;/b&gt; にすると、すべてのファイルが Open Virtualization フォーマットアーカイブに統合されます。&lt;/p&gt;&lt;p&gt;&lt;b&gt;Oracle Cloud Infrastructure&lt;/b&gt; フォーマットはリモートクラウドサーバーへのエクスポートのみをサポートしています。それぞれ選択されているメインの仮想ディスクはリモートサーバーにアップロードされます。&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>Choose a file to export the virtual appliance to...</source>
+        <translation>エクスポートする仮想アプライアンスのファイルを選択...</translation>
     </message>
     <message>
         <source>Export to cloud service provider.</source>
-        <translation type="vanished">クラウドサービスプロバイダーをエクスポートします。</translation>
+        <translation>クラウドサービスプロバイダーをエクスポートします。</translation>
     </message>
     <message>
         <source>MAC Address &amp;Policy:</source>
-        <translation type="vanished">MACアドレスのポリシー(&amp;P):</translation>
+        <translation>MACアドレスのポリシー(&amp;P):</translation>
     </message>
     <message>
         <source>Include all network adapter MAC addresses</source>
-        <translation type="vanished">すべてのネットワークアダプターのMACアドレスを含む</translation>
+        <translation>すべてのネットワークアダプターのMACアドレスを含む</translation>
     </message>
     <message>
         <source>Include only NAT network adapter MAC addresses</source>
-        <translation type="vanished">NATネットワークアダプターのMACアドレスだけを含む</translation>
+        <translation>NATネットワークアダプターのMACアドレスだけを含む</translation>
     </message>
     <message>
         <source>Strip all network adapter MAC addresses</source>
-        <translation type="vanished">すべてのネットワークアダプターのMACアドレスを削除</translation>
+        <translation>すべてのネットワークアダプターのMACアドレスを削除</translation>
     </message>
     <message>
         <source>Include all network adapter MAC addresses in exported appliance archive.</source>
-        <translation type="vanished">エクスポートするアプライアンスアーカイブにすべてのネットワークアダプターのMACアドレスを含みます。</translation>
+        <translation>エクスポートするアプライアンスアーカイブにすべてのネットワークアダプターのMACアドレスを含みます。</translation>
     </message>
     <message>
         <source>Include only NAT network adapter MAC addresses in exported appliance archive.</source>
-        <translation type="vanished">エクスポートするアプライアンスアーカイブにNATネットワークアダプターのMACアドレスだけを含みます。</translation>
+        <translation>エクスポートするアプライアンスアーカイブにNATネットワークアダプターのMACアドレスだけを含みます。</translation>
     </message>
     <message>
         <source>Strip all network adapter MAC addresses from exported appliance archive.</source>
-        <translation type="vanished">エクスポートするアプライアンスアーカイブからすべてのネットワークアダプターのMACアドレスを削除します。</translation>
+        <translation>エクスポートするアプライアンスアーカイブからすべてのネットワークアダプターのMACアドレスを削除します。</translation>
     </message>
     <message>
         <source>Additionally:</source>
-        <translation type="vanished">追加:</translation>
+        <translation>追加:</translation>
     </message>
     <message>
         <source>&amp;Write Manifest file</source>
-        <translation type="vanished">マニフェストファイルを書き出す(&amp;W)</translation>
+        <translation>マニフェストファイルを書き出す(&amp;W)</translation>
     </message>
     <message>
         <source>Include ISO image files in exported VM archive.</source>
-        <translation type="vanished">エクスポートするVMアーカイブにISOイメージを含みます。</translation>
+        <translation>エクスポートするVMアーカイブにISOイメージを含みます。</translation>
     </message>
     <message>
         <source>&amp;Include ISO image files</source>
-        <translation type="vanished">ISOイメージファイルを含む(&amp;I)</translation>
+        <translation>ISOイメージファイルを含む(&amp;I)</translation>
     </message>
     <message>
         <source>&amp;Account:</source>
-        <translation type="vanished">アカウント(&amp;A):</translation>
+        <translation>アカウント(&amp;A):</translation>
     </message>
     <message>
         <source>&lt;p&gt;Please choose a filename to export the virtual appliance to. Besides that you can specify a certain amount of options which affects the size and content of resulting archive.&lt;/p&gt;</source>
-        <translation type="vanished">&lt;p&gt;エクスポートする仮想アプライアンスの名前を入力してください。加えて作成するアーカイブに影響するサイズや内容に関するいくつかのオプションを指定してください。&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;エクスポートする仮想アプライアンスの名前を入力してください。加えて作成するアーカイブに影響するサイズや内容に関するいくつかのオプションを指定してください。&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Virtual system settings</source>
-        <translation type="vanished">仮想システムの設定</translation>
+        <translation>仮想システムの設定</translation>
     </message>
     <message>
         <source>Virtual &amp;system settings</source>
-        <translation type="vanished">仮想システムの設定(&amp;S)</translation>
+        <translation>仮想システムの設定(&amp;S)</translation>
     </message>
     <message>
         <source>Include ISO image files into exported VM archive.</source>
-        <translation type="vanished">エクスポートするVMアーカイブにISOイメージを含みます。</translation>
+        <translation>エクスポートするVMアーカイブにISOイメージを含みます。</translation>
     </message>
     <message>
         <source>&lt;p&gt;Please choose one of cloud service accounts you have registered to export virtual machines to. Make sure profile settings reflected in the underlying table are valid. They will be used to establish network connection required to upload your virtual machine files to a remote cloud facility.&lt;/p&gt;</source>
-        <translation type="vanished">&lt;p&gt;仮想マシンのエクスポートをするため、登録されているクラウドサービスのアカウントを選択してください。表の下部にあるプロファイル設定が反映されるので、正しいかよく確認してください。アップロードにはネットワーク接続の確立が必要で、仮想マシンファイルはリモートクラウドサービスにアップロードされます&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;仮想マシンのエクスポートをするため、登録されているクラウドサービスのアカウントを選択してください。表の下部にあるプロファイル設定が反映されるので、正しいかよく確認してください。アップロードにはネットワーク接続の確立が必要で、仮想マシンファイルはリモートクラウドサービスにアップロードされます&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>Machine Creation:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ask me about it &amp;after exporting disk as custom image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ask me about it &amp;before exporting disk as custom image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Do &amp;not ask me about it, leave custom image for future usage</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This is the descriptive information which will be used to determine settings for a cloud storage your VM being exported to.  You can change it by double clicking on individual lines.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Acquire export form ...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>UIWizardExportAppPageBasic3</name>
     <message>
         <source>Choose a file to export the virtual appliance to...</source>
-        <translation>エクスポートする仮想アプライアンスのファイルを選択...</translation>
+        <translation type="vanished">エクスポートする仮想アプライアンスのファイルを選択...</translation>
     </message>
     <message>
         <source>&lt;p&gt;Please choose a filename to export the OVF/OVA to.&lt;/p&gt;&lt;p&gt;If you use an &lt;i&gt;ova&lt;/i&gt; extension, then all the files will be combined into one Open Virtualization Format Archive.&lt;/p&gt;&lt;p&gt;If you use an &lt;i&gt;ovf&lt;/i&gt; extension, several files will be written separately.&lt;/p&gt;&lt;p&gt;Other extensions are not allowed.&lt;/p&gt;</source>
@@ -18293,22 +21160,22 @@ step and attach hard disks later using the VM Settings dialog.&lt;/p&gt;</source
     </message>
     <message>
         <source>Please complete the additional fields like the username, password and the bucket, and provide a filename for the OVF target.</source>
-        <translation>ユーザー名、パスワードおよびバケット名などの追加フィールドをすべて指定してください。最後にOVFターゲットのファイル名を指定しなければなりません。</translation>
+        <translation type="vanished">ユーザー名、パスワードおよびバケット名などの追加フィールドをすべて指定してください。最後にOVFターゲットのファイル名を指定しなければなりません。</translation>
     </message>
     <message>
         <source>Please complete the additional fields like the username, password, hostname and the bucket, and provide a filename for the OVF target.</source>
-        <translation>ユーザー名、パスワード、ホスト名およびバケット名などの追加フィールドをすべて指定してください。最後にOVFターゲットのファイル名を指定しなければなりません。</translation>
+        <translation type="vanished">ユーザー名、パスワード、ホスト名およびバケット名などの追加フィールドをすべて指定してください。最後にOVFターゲットのファイル名を指定しなければなりません。</translation>
     </message>
     <message>
         <source>&lt;p&gt;Please choose a filename to export the virtual appliance to.&lt;/p&gt;&lt;p&gt;The &lt;b&gt;Open Virtualization Format&lt;/b&gt; supports only &lt;b&gt;ovf&lt;/b&gt; or &lt;b&gt;ova&lt;/b&gt; extensions. &lt;br&gt;If you use the &lt;b&gt;ovf&lt;/b&gt; extension, several files will be written separately.&lt;br&gt;If you use the &lt;b&gt;ova&lt;/b&gt; extension, all the files will be combined into one Open Virtualization Format archive.&lt;/p&gt;&lt;p&gt;The &lt;b&gt;Oracle Public Cloud Format&lt;/b&gt; supports only the &lt;b&gt;tar.gz&lt;/b&gt; extension.&lt;br&gt;Each virtual disk file will be written separately.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;エクスポートする仮想アプライアンスのファイル名を選択してください。&lt;/p&gt;&lt;p&gt;&lt;b&gt;Open Virtualization Format&lt;/b&gt; がサポートしているのは拡張子 &lt;b&gt;ovf&lt;/b&gt; または &lt;b&gt;ova&lt;/b&gt; だけです。&lt;br&gt;拡張子 &lt;b&gt;ovf&lt;/b&gt; にすると、いくつかのファイルが分割して書き込まれます。&lt;br&gt;拡張子 &lt;b&gt;ova&lt;/b&gt; にすると、全てのファイルが一つのOpen Virtualization Formatアーカイブに結合されます。&lt;/p&gt;&lt;p&gt;&lt;b&gt;Oracle Public Cloud Format&lt;/b&gt; がサポートしているのは拡張子 &lt;b&gt;tar.gz&lt;/b&gt; だけです。&lt;br&gt;それぞれの仮想ディスクファイルが分割して書き込まれます。&lt;/p&gt;</translation>
+        <translation type="vanished">&lt;p&gt;エクスポートする仮想アプライアンスのファイル名を選択してください。&lt;/p&gt;&lt;p&gt;&lt;b&gt;Open Virtualization Format&lt;/b&gt; がサポートしているのは拡張子 &lt;b&gt;ovf&lt;/b&gt; または &lt;b&gt;ova&lt;/b&gt; だけです。&lt;br&gt;拡張子 &lt;b&gt;ovf&lt;/b&gt; にすると、いくつかのファイルが分割して書き込まれます。&lt;br&gt;拡張子 &lt;b&gt;ova&lt;/b&gt; にすると、全てのファイルが一つのOpen Virtualization Formatアーカイブに結合されます。&lt;/p&gt;&lt;p&gt;&lt;b&gt;Oracle Public Cloud Format&lt;/b&gt; がサポートしているのは拡張子 &lt;b&gt;tar.gz&lt;/b&gt; だけです。&lt;br&gt;それぞれの仮想ディスクファイルが分割して書き込まれます。&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
     <name>UIWizardExportAppPageExpert</name>
     <message>
         <source>Choose a file to export the virtual appliance to...</source>
-        <translation>エクスポートする仮想アプライアンスのファイルを選択...</translation>
+        <translation type="vanished">エクスポートする仮想アプライアンスのファイルを選択...</translation>
     </message>
 </context>
 <context>
@@ -18358,7 +21225,7 @@ step and attach hard disks later using the VM Settings dialog.&lt;/p&gt;</source
     </message>
     <message>
         <source>&lt;p&gt;VirtualBox currently supports importing appliances saved in the Open Virtualization Format (OVF). To continue, select the file to import below.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;VirtualBoxは今のところOpen Virtualizasion Format (OVF)で保存された仮想アプライアンスのインポートだけをサポートしています。継続するには、下欄でインポートするファイルを選択してください。&lt;/p&gt;</translation>
+        <translation type="vanished">&lt;p&gt;VirtualBoxは今のところOpen Virtualizasion Format (OVF)で保存された仮想アプライアンスのインポートだけをサポートしています。継続するには、下欄でインポートするファイルを選択してください。&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Choose a virtual appliance file to import...</source>
@@ -18419,6 +21286,141 @@ step and attach hard disks later using the VM Settings dialog.&lt;/p&gt;</source
     <message>
         <source>You can modify the base folder which will host all the virtual machines. Home folders can also be individually (per virtual machine) modified.</source>
         <translation type="vanished">すべての仮想マシンをホストするベースフォルダーを変更することができます。ホームフォルダーを個々（仮想マシンごと）に変更することもできます。</translation>
+    </message>
+    <message>
+        <source>Importing Appliance ...</source>
+        <translation type="unfinished">仮想アプライアンスのインポート...</translation>
+    </message>
+    <message>
+        <source>Local File System</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import from local file system.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import from cloud service provider.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;File:</source>
+        <translation type="unfinished">ファイル(&amp;F):</translation>
+    </message>
+    <message>
+        <source>&amp;Account:</source>
+        <translation type="unfinished">アカウント(&amp;A):</translation>
+    </message>
+    <message>
+        <source>&amp;Machines:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;Please choose one of cloud service accounts you have registered to import virtual machine from.  Corresponding machines list will be updated.  To continue, select one of machines to import below.&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;Please choose a file to import the virtual appliance from.  VirtualBox currently supports importing appliances saved in the Open Virtualization Format (OVF).  To continue, select the file to import below.&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>These are the the suggested settings of the cloud VM import procedure, they are influencing the resulting local VM instance. You can change many of the properties shown by double-clicking on the items and disable others using the check boxes below.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Source</source>
+        <translation type="unfinished">ソース</translation>
+    </message>
+    <message>
+        <source>Settings</source>
+        <translation type="unfinished">設定</translation>
+    </message>
+    <message>
+        <source>Acquire cloud instances ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Read appliance ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Acquire import form ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please choose the source to import appliance from.  This can be a local file system to import OVF archive or one of known cloud service providers to import cloud VM from.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Source:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>UIWizardNewCloudVM</name>
+    <message>
+        <source>Create Cloud Machine ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create Cloud Virtual Machine</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create</source>
+        <translation type="unfinished">作成</translation>
+    </message>
+    <message>
+        <source>Destination to create</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please choose the destination to create cloud virtual machine in.  This can be one of known cloud service providers below.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create VM for cloud service provider.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;Please choose one of cloud service accounts you have registered to create virtual machine for.  Existing custom images list will be updated.  To continue, select one of custom images to create virtual machine on the basis of it.&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Account:</source>
+        <translation type="unfinished">アカウント(&amp;A):</translation>
+    </message>
+    <message>
+        <source>&amp;Images:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cloud Virtual Machine settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>These are the the suggested settings of the cloud VM creation procedure, they are influencing the resulting cloud VM instance.  You can change many of the properties shown by double-clicking on the items and disable others using the check boxes below.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Destination</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Settings</source>
+        <translation type="unfinished">設定</translation>
+    </message>
+    <message>
+        <source>Acquire launch form ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Acquire cloud images ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Destination:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -18588,7 +21590,7 @@ step and attach hard disks later using the VM Settings dialog.&lt;/p&gt;</source
     </message>
     <message>
         <source>Please choose a descriptive name for the new virtual machine and select the type of operating system you intend to install on it. The name you choose will be used throughout VirtualBox to identify this machine.</source>
-        <translation>新しい仮想マシンの記述名を指定し、インストールするオペレーティングシステムのタイプを選択してください。入力した名前はVirtualBoxでこのマシンを特定するのに使われます。</translation>
+        <translation type="vanished">新しい仮想マシンの記述名を指定し、インストールするオペレーティングシステムのタイプを選択してください。入力した名前はVirtualBoxでこのマシンを特定するのに使われます。</translation>
     </message>
     <message>
         <source>Memory size</source>
@@ -18672,7 +21674,7 @@ step and attach hard disks later using the VM Settings dialog.&lt;/p&gt;</source
     </message>
     <message>
         <source>Please choose a descriptive name and destination folder for the new virtual machine and select the type of operating system you intend to install on it. The name you choose will be used throughout VirtualBox to identify this machine.</source>
-        <translation type="vanished">新しい仮想マシンの記述名と保存フォルダーを指定し、インストールするオペレーティングシステムのタイプを選択してください。入力した名前はVirtualBoxでこのマシンを特定するのに使われます。</translation>
+        <translation>新しい仮想マシンの記述名と保存フォルダーを指定し、インストールするオペレーティングシステムのタイプを選択してください。入力した名前はVirtualBoxでこのマシンを特定するのに使われます。</translation>
     </message>
 </context>
 <context>
@@ -19906,22 +22908,22 @@ Version %1</source>
     <message>
         <source>Unknown device %1:%2</source>
         <comment>USB device details</comment>
-        <translation>不明なデバイス %1:%2</translation>
+        <translation type="vanished">不明なデバイス %1:%2</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;Vendor ID: %1&lt;/nobr&gt;&lt;br&gt;&lt;nobr&gt;Product ID: %2&lt;/nobr&gt;&lt;br&gt;&lt;nobr&gt;Revision: %3&lt;/nobr&gt;</source>
         <comment>USB device tooltip</comment>
-        <translation>&lt;nobr&gt;ベンダーID: %1&lt;/nobr&gt;&lt;br&gt;&lt;nobr&gt;プロダクトID: %2&lt;/nobr&gt;&lt;br&gt;&lt;nobr&gt;リビジョン: %3&lt;/nobr&gt;</translation>
+        <translation type="vanished">&lt;nobr&gt;ベンダーID: %1&lt;/nobr&gt;&lt;br&gt;&lt;nobr&gt;プロダクトID: %2&lt;/nobr&gt;&lt;br&gt;&lt;nobr&gt;リビジョン: %3&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;Serial No. %1&lt;/nobr&gt;</source>
         <comment>USB device tooltip</comment>
-        <translation>&lt;br&gt;&lt;nobr&gt;シリアルNo. %1&lt;/nobr&gt;</translation>
+        <translation type="vanished">&lt;br&gt;&lt;nobr&gt;シリアルNo. %1&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;State: %1&lt;/nobr&gt;</source>
         <comment>USB device tooltip</comment>
-        <translation>&lt;br&gt;&lt;nobr&gt;状態: %1&lt;/nobr&gt;</translation>
+        <translation type="vanished">&lt;br&gt;&lt;nobr&gt;状態: %1&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>Name</source>
@@ -20056,7 +23058,7 @@ Version %1</source>
     <message>
         <source>Adapter %1</source>
         <comment>details report (network)</comment>
-        <translation>アダプター %1</translation>
+        <translation type="vanished">アダプター %1</translation>
     </message>
     <message>
         <source>Disabled</source>
@@ -20110,47 +23112,47 @@ Version %1</source>
     <message>
         <source>Powered Off</source>
         <comment>MachineState</comment>
-        <translation>電源オフ</translation>
+        <translation type="vanished">電源オフ</translation>
     </message>
     <message>
         <source>Saved</source>
         <comment>MachineState</comment>
-        <translation>保存</translation>
+        <translation type="vanished">保存</translation>
     </message>
     <message>
         <source>Aborted</source>
         <comment>MachineState</comment>
-        <translation>中断</translation>
+        <translation type="vanished">中断</translation>
     </message>
     <message>
         <source>Running</source>
         <comment>MachineState</comment>
-        <translation>実行中</translation>
+        <translation type="vanished">実行中</translation>
     </message>
     <message>
         <source>Paused</source>
         <comment>MachineState</comment>
-        <translation>一時停止</translation>
+        <translation type="vanished">一時停止</translation>
     </message>
     <message>
         <source>Starting</source>
         <comment>MachineState</comment>
-        <translation>起動中</translation>
+        <translation type="vanished">起動中</translation>
     </message>
     <message>
         <source>Stopping</source>
         <comment>MachineState</comment>
-        <translation>停止中</translation>
+        <translation type="vanished">停止中</translation>
     </message>
     <message>
         <source>Saving</source>
         <comment>MachineState</comment>
-        <translation>保存中</translation>
+        <translation type="vanished">保存中</translation>
     </message>
     <message>
         <source>Restoring</source>
         <comment>MachineState</comment>
-        <translation>復元中</translation>
+        <translation type="vanished">復元中</translation>
     </message>
     <message>
         <source>Discarding</source>
@@ -20170,7 +23172,7 @@ Version %1</source>
     <message>
         <source>Spawning</source>
         <comment>SessionState</comment>
-        <translation>生成中</translation>
+        <translation type="vanished">生成中</translation>
     </message>
     <message>
         <source>Closing</source>
@@ -20180,12 +23182,12 @@ Version %1</source>
     <message>
         <source>None</source>
         <comment>DeviceType</comment>
-        <translation>なし</translation>
+        <translation type="vanished">なし</translation>
     </message>
     <message>
         <source>Floppy</source>
         <comment>DeviceType</comment>
-        <translation>フロッピー</translation>
+        <translation type="vanished">フロッピー</translation>
     </message>
     <message>
         <source>CD/DVD</source>
@@ -20195,12 +23197,12 @@ Version %1</source>
     <message>
         <source>Hard Disk</source>
         <comment>DeviceType</comment>
-        <translation>ハードディスク</translation>
+        <translation type="vanished">ハードディスク</translation>
     </message>
     <message>
         <source>Network</source>
         <comment>DeviceType</comment>
-        <translation>ネットワーク</translation>
+        <translation type="vanished">ネットワーク</translation>
     </message>
     <message>
         <source>Normal</source>
@@ -20260,42 +23262,42 @@ Version %1</source>
     <message>
         <source>Null Audio Driver</source>
         <comment>AudioDriverType</comment>
-        <translation>Null Audio Driver</translation>
+        <translation type="vanished">Null Audio Driver</translation>
     </message>
     <message>
         <source>Windows Multimedia</source>
         <comment>AudioDriverType</comment>
-        <translation>Windows マルチメディア</translation>
+        <translation type="vanished">Windows マルチメディア</translation>
     </message>
     <message>
         <source>OSS Audio Driver</source>
         <comment>AudioDriverType</comment>
-        <translation>OSS オーディオドライバー</translation>
+        <translation type="vanished">OSS オーディオドライバー</translation>
     </message>
     <message>
         <source>ALSA Audio Driver</source>
         <comment>AudioDriverType</comment>
-        <translation>ALSA オーディオドライバー</translation>
+        <translation type="vanished">ALSA オーディオドライバー</translation>
     </message>
     <message>
         <source>Windows DirectSound</source>
         <comment>AudioDriverType</comment>
-        <translation>Windows DirectSound</translation>
+        <translation type="vanished">Windows DirectSound</translation>
     </message>
     <message>
         <source>CoreAudio</source>
         <comment>AudioDriverType</comment>
-        <translation>CoreAudio</translation>
+        <translation type="vanished">CoreAudio</translation>
     </message>
     <message>
         <source>Not attached</source>
         <comment>NetworkAttachmentType</comment>
-        <translation>未割り当て</translation>
+        <translation type="vanished">未割り当て</translation>
     </message>
     <message>
         <source>NAT</source>
         <comment>NetworkAttachmentType</comment>
-        <translation>NAT</translation>
+        <translation type="vanished">NAT</translation>
     </message>
     <message>
         <source>Host Interface</source>
@@ -20305,57 +23307,57 @@ Version %1</source>
     <message>
         <source>Internal Network</source>
         <comment>NetworkAttachmentType</comment>
-        <translation>内部ネットワーク</translation>
+        <translation type="vanished">内部ネットワーク</translation>
     </message>
     <message>
         <source>Generic Driver</source>
         <comment>NetworkAttachmentType</comment>
-        <translation>汎用ドライバー</translation>
+        <translation type="vanished">汎用ドライバー</translation>
     </message>
     <message>
         <source>LsiLogic SAS</source>
         <comment>StorageControllerType</comment>
-        <translation>LsiLogic SAS</translation>
+        <translation type="vanished">LsiLogic SAS</translation>
     </message>
     <message>
         <source>Not supported</source>
         <comment>USBDeviceState</comment>
-        <translation>未サポート</translation>
+        <translation type="vanished">未サポート</translation>
     </message>
     <message>
         <source>USB Tablet</source>
         <comment>PointingHIDType</comment>
-        <translation>USBタブレット</translation>
+        <translation type="vanished">USBタブレット</translation>
     </message>
     <message>
         <source>USB Multi-Touch Tablet</source>
         <comment>PointingHIDType</comment>
-        <translation>USB マルチタッチタブレット</translation>
+        <translation type="vanished">USB マルチタッチタブレット</translation>
     </message>
     <message>
         <source>Unavailable</source>
         <comment>USBDeviceState</comment>
-        <translation>利用不可</translation>
+        <translation type="vanished">利用不可</translation>
     </message>
     <message>
         <source>Busy</source>
         <comment>USBDeviceState</comment>
-        <translation>ビジー</translation>
+        <translation type="vanished">ビジー</translation>
     </message>
     <message>
         <source>Available</source>
         <comment>USBDeviceState</comment>
-        <translation>利用可能</translation>
+        <translation type="vanished">利用可能</translation>
     </message>
     <message>
         <source>Held</source>
         <comment>USBDeviceState</comment>
-        <translation>保持</translation>
+        <translation type="vanished">保持</translation>
     </message>
     <message>
         <source>Captured</source>
         <comment>USBDeviceState</comment>
-        <translation>キャプチャー</translation>
+        <translation type="vanished">キャプチャー</translation>
     </message>
     <message>
         <source>&lt;i&gt;Checking...&lt;/i&gt;</source>
@@ -20370,22 +23372,22 @@ Version %1</source>
     <message>
         <source>Disabled</source>
         <comment>ClipboardType</comment>
-        <translation>無効</translation>
+        <translation type="vanished">無効</translation>
     </message>
     <message>
         <source>Host To Guest</source>
         <comment>ClipboardType</comment>
-        <translation>ホストOSからゲストOSへ</translation>
+        <translation type="vanished">ホストOSからゲストOSへ</translation>
     </message>
     <message>
         <source>Guest To Host</source>
         <comment>ClipboardType</comment>
-        <translation>ゲストOSからホストOSへ</translation>
+        <translation type="vanished">ゲストOSからホストOSへ</translation>
     </message>
     <message>
         <source>Bidirectional</source>
         <comment>ClipboardType</comment>
-        <translation>双方向</translation>
+        <translation type="vanished">双方向</translation>
     </message>
     <message>
         <source>Select a directory</source>
@@ -20443,32 +23445,32 @@ Version %1</source>
     <message>
         <source>Disconnected</source>
         <comment>PortMode</comment>
-        <translation>切断</translation>
+        <translation type="vanished">切断</translation>
     </message>
     <message>
         <source>Host Pipe</source>
         <comment>PortMode</comment>
-        <translation>ホストにパイプ</translation>
+        <translation type="vanished">ホストにパイプ</translation>
     </message>
     <message>
         <source>Host Device</source>
         <comment>PortMode</comment>
-        <translation>ホストデバイス</translation>
+        <translation type="vanished">ホストデバイス</translation>
     </message>
     <message>
         <source>PIIX3</source>
         <comment>ChipsetType</comment>
-        <translation>PIIX3</translation>
+        <translation type="vanished">PIIX3</translation>
     </message>
     <message>
         <source>ICH9</source>
         <comment>ChipsetType</comment>
-        <translation>ICH9</translation>
+        <translation type="vanished">ICH9</translation>
     </message>
     <message>
         <source>User-defined</source>
         <comment>serial port</comment>
-        <translation>ユーザー定義</translation>
+        <translation type="vanished">ユーザー定義</translation>
     </message>
     <message>
         <source>Custom Hard Disk</source>
@@ -20478,7 +23480,7 @@ Version %1</source>
     <message>
         <source>VT-x/AMD-V</source>
         <comment>details report</comment>
-        <translation>VT-x/AMD-V</translation>
+        <translation type="vanished">VT-x/AMD-V</translation>
     </message>
     <message>
         <source>PAE/NX</source>
@@ -20529,7 +23531,7 @@ Version %1</source>
     <message>
         <source>Execution Cap</source>
         <comment>details report</comment>
-        <translation>使用率制限</translation>
+        <translation type="vanished">使用率制限</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;%1%&lt;/nobr&gt;</source>
@@ -20581,63 +23583,63 @@ Version %1</source>
     </message>
     <message>
         <source>Please choose a virtual optical disk file</source>
-        <translation>仮想光学ディスクファイルを選択してください</translation>
+        <translation type="vanished">仮想光学ディスクファイルを選択してください</translation>
     </message>
     <message>
         <source>All virtual optical disk files (%1)</source>
-        <translation>すべての仮想光学ディスクファイル (%1)</translation>
+        <translation type="vanished">すべての仮想光学ディスクファイル (%1)</translation>
     </message>
     <message>
         <source>Please choose a virtual floppy disk file</source>
-        <translation>仮想フロッピーディスクファイルを選択してください</translation>
+        <translation type="vanished">仮想フロッピーディスクファイルを選択してください</translation>
     </message>
     <message>
         <source>All virtual floppy disk files (%1)</source>
-        <translation>すべての仮想フロッピーディスクファイル (%1)</translation>
+        <translation type="vanished">すべての仮想フロッピーディスクファイル (%1)</translation>
     </message>
     <message>
         <source>VDI (VirtualBox Disk Image)</source>
-        <translation>VDI (VirtualBox Disk Image)</translation>
+        <translation type="vanished">VDI (VirtualBox Disk Image)</translation>
     </message>
     <message>
         <source>VMDK (Virtual Machine Disk)</source>
-        <translation>VMDK (Virtual Machine Disk)</translation>
+        <translation type="vanished">VMDK (Virtual Machine Disk)</translation>
     </message>
     <message>
         <source>VHD (Virtual Hard Disk)</source>
-        <translation>VHD (Virtual Hard Disk)</translation>
+        <translation type="vanished">VHD (Virtual Hard Disk)</translation>
     </message>
     <message>
         <source>HDD (Parallels Hard Disk)</source>
-        <translation>HDD (Parallels Hard Disk)</translation>
+        <translation type="vanished">HDD (Parallels Hard Disk)</translation>
     </message>
     <message>
         <source>QED (QEMU enhanced disk)</source>
-        <translation>QED (QEMU enhanced disk)</translation>
+        <translation type="vanished">QED (QEMU enhanced disk)</translation>
     </message>
     <message>
         <source>QCOW (QEMU Copy-On-Write)</source>
-        <translation>QCOW (QEMU Copy-On-Write)</translation>
+        <translation type="vanished">QCOW (QEMU Copy-On-Write)</translation>
     </message>
     <message>
         <source>USB</source>
         <comment>DeviceType</comment>
-        <translation>USB</translation>
+        <translation type="vanished">USB</translation>
     </message>
     <message>
         <source>Shared Folder</source>
         <comment>DeviceType</comment>
-        <translation>共有フォルダー</translation>
+        <translation type="vanished">共有フォルダー</translation>
     </message>
     <message>
         <source>IDE</source>
         <comment>StorageBus</comment>
-        <translation>IDE</translation>
+        <translation type="vanished">IDE</translation>
     </message>
     <message>
         <source>SATA</source>
         <comment>StorageBus</comment>
-        <translation>SATA</translation>
+        <translation type="vanished">SATA</translation>
     </message>
     <message>
         <source>Primary</source>
@@ -20672,37 +23674,37 @@ Version %1</source>
     <message>
         <source>Solaris Audio</source>
         <comment>AudioDriverType</comment>
-        <translation>Solaris オーディオ</translation>
+        <translation type="vanished">Solaris オーディオ</translation>
     </message>
     <message>
         <source>PulseAudio</source>
         <comment>AudioDriverType</comment>
-        <translation>PulseAudio</translation>
+        <translation type="vanished">PulseAudio</translation>
     </message>
     <message>
         <source>ICH AC97</source>
         <comment>AudioControllerType</comment>
-        <translation>ICH AC97</translation>
+        <translation type="vanished">ICH AC97</translation>
     </message>
     <message>
         <source>SoundBlaster 16</source>
         <comment>AudioControllerType</comment>
-        <translation>SoundBlaster 16</translation>
+        <translation type="vanished">SoundBlaster 16</translation>
     </message>
     <message>
         <source>PCnet-PCI II (Am79C970A)</source>
         <comment>NetworkAdapterType</comment>
-        <translation>PCnet-PCI II (Am79C970A)</translation>
+        <translation type="vanished">PCnet-PCI II (Am79C970A)</translation>
     </message>
     <message>
         <source>PCnet-FAST III (Am79C973)</source>
         <comment>NetworkAdapterType</comment>
-        <translation>PCnet-FAST III (Am79C973)</translation>
+        <translation type="vanished">PCnet-FAST III (Am79C973)</translation>
     </message>
     <message>
         <source>Intel PRO/1000 MT Desktop (82540EM)</source>
         <comment>NetworkAdapterType</comment>
-        <translation>Intel PRO/1000 MT Desktop (82540EM)</translation>
+        <translation type="vanished">Intel PRO/1000 MT Desktop (82540EM)</translation>
     </message>
     <message>
         <source>PIIX3</source>
@@ -20717,47 +23719,47 @@ Version %1</source>
     <message>
         <source>Intel PRO/1000 T Server (82543GC)</source>
         <comment>NetworkAdapterType</comment>
-        <translation>Intel PRO/1000 T Server (82543GC)</translation>
+        <translation type="vanished">Intel PRO/1000 T Server (82543GC)</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;Vendor ID: %1&lt;/nobr&gt;</source>
         <comment>USB filter tooltip</comment>
-        <translation>&lt;nobr&gt;ベンダーID: %1&lt;/nobr&gt;</translation>
+        <translation type="vanished">&lt;nobr&gt;ベンダーID: %1&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;Product ID: %2&lt;/nobr&gt;</source>
         <comment>USB filter tooltip</comment>
-        <translation>&lt;nobr&gt;プロダクトID: %2&lt;/nobr&gt;</translation>
+        <translation type="vanished">&lt;nobr&gt;プロダクトID: %2&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;Revision: %3&lt;/nobr&gt;</source>
         <comment>USB filter tooltip</comment>
-        <translation>&lt;nobr&gt;リビジョン: %3&lt;/nobr&gt;</translation>
+        <translation type="vanished">&lt;nobr&gt;リビジョン: %3&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;Product: %4&lt;/nobr&gt;</source>
         <comment>USB filter tooltip</comment>
-        <translation>&lt;nobr&gt;製品: %4&lt;/nobr&gt;</translation>
+        <translation type="vanished">&lt;nobr&gt;製品: %4&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;Manufacturer: %5&lt;/nobr&gt;</source>
         <comment>USB filter tooltip</comment>
-        <translation>&lt;nobr&gt;メーカー: %5&lt;/nobr&gt;</translation>
+        <translation type="vanished">&lt;nobr&gt;メーカー: %5&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;Serial No.: %1&lt;/nobr&gt;</source>
         <comment>USB filter tooltip</comment>
-        <translation>&lt;nobr&gt;シリアルNo.: %1&lt;/nobr&gt;</translation>
+        <translation type="vanished">&lt;nobr&gt;シリアルNo.: %1&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;Port: %1&lt;/nobr&gt;</source>
         <comment>USB filter tooltip</comment>
-        <translation>&lt;nobr&gt;ポート: %1&lt;/nobr&gt;</translation>
+        <translation type="vanished">&lt;nobr&gt;ポート: %1&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;State: %1&lt;/nobr&gt;</source>
         <comment>USB filter tooltip</comment>
-        <translation>&lt;nobr&gt;状態: %1&lt;/nobr&gt;</translation>
+        <translation type="vanished">&lt;nobr&gt;状態: %1&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>host interface, %1</source>
@@ -20807,12 +23809,12 @@ Version %1</source>
     <message>
         <source>Checking...</source>
         <comment>medium</comment>
-        <translation>確認中...</translation>
+        <translation type="vanished">確認中...</translation>
     </message>
     <message>
         <source>Inaccessible</source>
         <comment>medium</comment>
-        <translation>アクセスできません</translation>
+        <translation type="vanished">アクセスできません</translation>
     </message>
     <message>
         <source>&lt;hr&gt;Some of the files in this hard disk chain are inaccessible. Please use the Virtual Media Manager in &lt;b&gt;Show Differencing Hard Disks&lt;/b&gt; mode to inspect these files.</source>
@@ -20830,17 +23832,17 @@ Version %1</source>
     <message>
         <source>Enabled</source>
         <comment>details report (3D Acceleration)</comment>
-        <translation>有効</translation>
+        <translation type="vanished">有効</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details report (3D Acceleration)</comment>
-        <translation>無効</translation>
+        <translation type="vanished">無効</translation>
     </message>
     <message>
         <source>Setting Up</source>
         <comment>MachineState</comment>
-        <translation>セットアップ</translation>
+        <translation type="vanished">セットアップ</translation>
     </message>
     <message>
         <source>Differencing</source>
@@ -20880,7 +23882,7 @@ Version %1</source>
     <message>
         <source>SCSI</source>
         <comment>StorageBus</comment>
-        <translation>SCSI</translation>
+        <translation type="vanished">SCSI</translation>
     </message>
     <message>
         <source>Bridged Network</source>
@@ -20895,32 +23897,32 @@ Version %1</source>
     <message>
         <source>PIIX3</source>
         <comment>StorageControllerType</comment>
-        <translation>PIIX3</translation>
+        <translation type="vanished">PIIX3</translation>
     </message>
     <message>
         <source>PIIX4</source>
         <comment>StorageControllerType</comment>
-        <translation>PIIX4</translation>
+        <translation type="vanished">PIIX4</translation>
     </message>
     <message>
         <source>ICH6</source>
         <comment>StorageControllerType</comment>
-        <translation>ICH6</translation>
+        <translation type="vanished">ICH6</translation>
     </message>
     <message>
         <source>AHCI</source>
         <comment>StorageControllerType</comment>
-        <translation>AHCI</translation>
+        <translation type="vanished">AHCI</translation>
     </message>
     <message>
         <source>Lsilogic</source>
         <comment>StorageControllerType</comment>
-        <translation>Lsilogic</translation>
+        <translation type="vanished">Lsilogic</translation>
     </message>
     <message>
         <source>BusLogic</source>
         <comment>StorageControllerType</comment>
-        <translation>BusLogic</translation>
+        <translation type="vanished">BusLogic</translation>
     </message>
     <message>
         <source>Bridged adapter, %1</source>
@@ -20935,27 +23937,27 @@ Version %1</source>
     <message>
         <source>Intel PRO/1000 MT Server (82545EM)</source>
         <comment>NetworkAdapterType</comment>
-        <translation>Intel PRO/1000 MT Server (82545EM)</translation>
+        <translation type="vanished">Intel PRO/1000 MT Server (82545EM)</translation>
     </message>
     <message>
         <source>Bridged Adapter</source>
         <comment>NetworkAttachmentType</comment>
-        <translation>ブリッジアダプター</translation>
+        <translation type="vanished">ブリッジアダプター</translation>
     </message>
     <message>
         <source>Host-only Adapter</source>
         <comment>NetworkAttachmentType</comment>
-        <translation>ホストオンリーアダプター</translation>
+        <translation type="vanished">ホストオンリーアダプター</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;%1 MB&lt;/nobr&gt;</source>
         <comment>details report</comment>
-        <translation>&lt;nobr&gt;%1 MB&lt;/nobr&gt;</translation>
+        <translation type="vanished">&lt;nobr&gt;%1 MB&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>Processor(s)</source>
         <comment>details report</comment>
-        <translation>プロセッサー数</translation>
+        <translation type="vanished">プロセッサー数</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;%1&lt;/nobr&gt;</source>
@@ -20990,7 +23992,7 @@ Version %1</source>
     <message>
         <source>Raw File</source>
         <comment>PortMode</comment>
-        <translation>Rawファイル</translation>
+        <translation type="vanished">Rawファイル</translation>
     </message>
     <message>
         <source>Enabled</source>
@@ -21000,7 +24002,7 @@ Version %1</source>
     <message>
         <source>Unknown device</source>
         <comment>USB device details</comment>
-        <translation>不明なデバイス</translation>
+        <translation type="vanished">不明なデバイス</translation>
     </message>
     <message>
         <source>Screens</source>
@@ -21076,232 +24078,232 @@ Version %1</source>
     </message>
     <message>
         <source>All files (*)</source>
-        <translation>すべてのファイル(*)</translation>
+        <translation type="vanished">すべてのファイル(*)</translation>
     </message>
     <message>
         <source>Teleported</source>
         <comment>MachineState</comment>
-        <translation>テレポーテーション</translation>
+        <translation type="vanished">テレポーテーション</translation>
     </message>
     <message>
         <source>Guru Meditation</source>
         <comment>MachineState</comment>
-        <translation>瞑想中(システムエラー)</translation>
+        <translation type="vanished">瞑想中(システムエラー)</translation>
     </message>
     <message>
         <source>Teleporting</source>
         <comment>MachineState</comment>
-        <translation>テレポーテーション中</translation>
+        <translation type="vanished">テレポーテーション中</translation>
     </message>
     <message>
         <source>Taking Live Snapshot</source>
         <comment>MachineState</comment>
-        <translation>スナップショットを作成中</translation>
+        <translation type="vanished">スナップショットを作成中</translation>
     </message>
     <message>
         <source>Teleporting Paused VM</source>
         <comment>MachineState</comment>
-        <translation>仮想マシンのテレポーテーションを中断</translation>
+        <translation type="vanished">仮想マシンのテレポーテーションを中断</translation>
     </message>
     <message>
         <source>Restoring Snapshot</source>
         <comment>MachineState</comment>
-        <translation>スナップショットに復元中</translation>
+        <translation type="vanished">スナップショットに復元中</translation>
     </message>
     <message>
         <source>Deleting Snapshot</source>
         <comment>MachineState</comment>
-        <translation>スナップショットを削除中</translation>
+        <translation type="vanished">スナップショットを削除中</translation>
     </message>
     <message>
         <source>Fault Tolerant Syncing</source>
         <comment>MachineState</comment>
-        <translation>フォールトトレラントの同期中</translation>
+        <translation type="vanished">フォールトトレラントの同期中</translation>
     </message>
     <message>
         <source>Unlocked</source>
         <comment>SessionState</comment>
-        <translation>アンロック</translation>
+        <translation type="vanished">アンロック</translation>
     </message>
     <message>
         <source>Locked</source>
         <comment>SessionState</comment>
-        <translation>ロック</translation>
+        <translation type="vanished">ロック</translation>
     </message>
     <message>
         <source>Unlocking</source>
         <comment>SessionState</comment>
-        <translation>アンロック中</translation>
+        <translation type="vanished">アンロック中</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>DragAndDropType</comment>
-        <translation>無効</translation>
+        <translation type="vanished">無効</translation>
     </message>
     <message>
         <source>Host To Guest</source>
         <comment>DragAndDropType</comment>
-        <translation>ホストOSからゲストOSへ</translation>
+        <translation type="vanished">ホストOSからゲストOSへ</translation>
     </message>
     <message>
         <source>Guest To Host</source>
         <comment>DragAndDropType</comment>
-        <translation>ゲストOSからホストOSへ</translation>
+        <translation type="vanished">ゲストOSからホストOSへ</translation>
     </message>
     <message>
         <source>Bidirectional</source>
         <comment>DragAndDropType</comment>
-        <translation>双方向</translation>
+        <translation type="vanished">双方向</translation>
     </message>
     <message>
         <source>PS/2 Mouse</source>
         <comment>PointingHIDType</comment>
-        <translation>PS/2 マウス</translation>
+        <translation type="vanished">PS/2 マウス</translation>
     </message>
     <message>
         <source>USB Mouse</source>
         <comment>PointingHIDType</comment>
-        <translation>USBマウス</translation>
+        <translation type="vanished">USBマウス</translation>
     </message>
     <message>
         <source>PS/2 and USB Mouse</source>
         <comment>PointingHIDType</comment>
-        <translation>PS/2とUSBマウス</translation>
+        <translation type="vanished">PS/2とUSBマウス</translation>
     </message>
     <message>
         <source>Normal</source>
         <comment>MediumType</comment>
-        <translation>通常</translation>
+        <translation type="vanished">通常</translation>
     </message>
     <message>
         <source>Immutable</source>
         <comment>MediumType</comment>
-        <translation>変更不可</translation>
+        <translation type="vanished">変更不可</translation>
     </message>
     <message>
         <source>Writethrough</source>
         <comment>MediumType</comment>
-        <translation>ライトスルー</translation>
+        <translation type="vanished">ライトスルー</translation>
     </message>
     <message>
         <source>Shareable</source>
         <comment>MediumType</comment>
-        <translation>共有可能</translation>
+        <translation type="vanished">共有可能</translation>
     </message>
     <message>
         <source>Readonly</source>
         <comment>MediumType</comment>
-        <translation>読み込み専用</translation>
+        <translation type="vanished">読み込み専用</translation>
     </message>
     <message>
         <source>Multi-attach</source>
         <comment>MediumType</comment>
-        <translation>複数割り当て</translation>
+        <translation type="vanished">複数割り当て</translation>
     </message>
     <message>
         <source>Dynamically allocated storage</source>
         <comment>MediumVariant</comment>
-        <translation>可変サイズのストレージ</translation>
+        <translation type="vanished">可変サイズのストレージ</translation>
     </message>
     <message>
         <source>Dynamically allocated differencing storage</source>
         <comment>MediumVariant</comment>
-        <translation>可変サイズの差分ストレージ</translation>
+        <translation type="vanished">可変サイズの差分ストレージ</translation>
     </message>
     <message>
         <source>Fixed size storage</source>
         <comment>MediumVariant</comment>
-        <translation>固定サイズのストレージ</translation>
+        <translation type="vanished">固定サイズのストレージ</translation>
     </message>
     <message>
         <source>Dynamically allocated storage split into files of less than 2GB</source>
         <comment>MediumVariant</comment>
-        <translation>2GB以下のファイルで分割する可変サイズのストレージ</translation>
+        <translation type="vanished">2GB以下のファイルで分割する可変サイズのストレージ</translation>
     </message>
     <message>
         <source>Dynamically allocated differencing storage split into files of less than 2GB</source>
         <comment>MediumVariant</comment>
-        <translation>2GB以下のファイルで分割する可変サイズの差分ストレージ</translation>
+        <translation type="vanished">2GB以下のファイルで分割する可変サイズの差分ストレージ</translation>
     </message>
     <message>
         <source>Fixed size storage split into files of less than 2GB</source>
         <comment>MediumVariant</comment>
-        <translation>2GB以下のファイルで分割する固定サイズのストレージ</translation>
+        <translation type="vanished">2GB以下のファイルで分割する固定サイズのストレージ</translation>
     </message>
     <message>
         <source>Dynamically allocated compressed storage</source>
         <comment>MediumVariant</comment>
-        <translation>可変サイズの圧縮ストレージ</translation>
+        <translation type="vanished">可変サイズの圧縮ストレージ</translation>
     </message>
     <message>
         <source>Dynamically allocated differencing compressed storage</source>
         <comment>MediumVariant</comment>
-        <translation>可変サイズの差分圧縮ストレージ</translation>
+        <translation type="vanished">可変サイズの差分圧縮ストレージ</translation>
     </message>
     <message>
         <source>Fixed size ESX storage</source>
         <comment>MediumVariant</comment>
-        <translation>固定サイズのESXストレージ</translation>
+        <translation type="vanished">固定サイズのESXストレージ</translation>
     </message>
     <message>
         <source>Fixed size storage on raw disk</source>
         <comment>MediumVariant</comment>
-        <translation>固定サイズのrawディスク</translation>
+        <translation type="vanished">固定サイズのrawディスク</translation>
     </message>
     <message>
         <source>NAT Network</source>
         <comment>NetworkAttachmentType</comment>
-        <translation>NATネットワーク</translation>
+        <translation type="vanished">NATネットワーク</translation>
     </message>
     <message>
         <source>Deny</source>
         <comment>NetworkAdapterPromiscModePolicy</comment>
-        <translation>拒否</translation>
+        <translation type="vanished">拒否</translation>
     </message>
     <message>
         <source>Allow VMs</source>
         <comment>NetworkAdapterPromiscModePolicy</comment>
-        <translation>許可したVM</translation>
+        <translation type="vanished">許可したVM</translation>
     </message>
     <message>
         <source>Allow All</source>
         <comment>NetworkAdapterPromiscModePolicy</comment>
-        <translation>すべて許可</translation>
+        <translation type="vanished">すべて許可</translation>
     </message>
     <message>
         <source>Ignore</source>
         <comment>USBDeviceFilterAction</comment>
-        <translation>無視</translation>
+        <translation type="vanished">無視</translation>
     </message>
     <message>
         <source>Hold</source>
         <comment>USBDeviceFilterAction</comment>
-        <translation>保持</translation>
+        <translation type="vanished">保持</translation>
     </message>
     <message>
         <source>Floppy</source>
         <comment>StorageBus</comment>
-        <translation>フロッピー</translation>
+        <translation type="vanished">フロッピー</translation>
     </message>
     <message>
         <source>SAS</source>
         <comment>StorageBus</comment>
-        <translation>SAS</translation>
+        <translation type="vanished">SAS</translation>
     </message>
     <message>
         <source>USB</source>
         <comment>StorageControllerType</comment>
-        <translation>USB</translation>
+        <translation type="vanished">USB</translation>
     </message>
     <message>
         <source>UDP</source>
         <comment>NATProtocol</comment>
-        <translation>UDP</translation>
+        <translation type="vanished">UDP</translation>
     </message>
     <message>
         <source>TCP</source>
         <comment>NATProtocol</comment>
-        <translation>TCP</translation>
+        <translation type="vanished">TCP</translation>
     </message>
     <message>
         <source>Device %1</source>
@@ -21366,27 +24368,27 @@ Version %1</source>
     <message>
         <source>Null</source>
         <comment>AuthType</comment>
-        <translation>Null</translation>
+        <translation type="vanished">Null</translation>
     </message>
     <message>
         <source>External</source>
         <comment>AuthType</comment>
-        <translation>外部</translation>
+        <translation type="vanished">外部</translation>
     </message>
     <message>
         <source>Guest</source>
         <comment>AuthType</comment>
-        <translation>ゲスト</translation>
+        <translation type="vanished">ゲスト</translation>
     </message>
     <message>
         <source>Intel HD Audio</source>
         <comment>AudioControllerType</comment>
-        <translation>Intel HD オーディオ</translation>
+        <translation type="vanished">Intel HD オーディオ</translation>
     </message>
     <message>
         <source>Paravirtualized Network (virtio-net)</source>
         <comment>NetworkAdapterType</comment>
-        <translation>準仮想化ネットワーク (virtio-net)</translation>
+        <translation type="vanished">準仮想化ネットワーク (virtio-net)</translation>
     </message>
     <message>
         <source>VDE Adapter</source>
@@ -21406,7 +24408,7 @@ Version %1</source>
     <message>
         <source>I82078</source>
         <comment>StorageControllerType</comment>
-        <translation>I82078</translation>
+        <translation type="vanished">I82078</translation>
     </message>
     <message>
         <source>and</source>
@@ -21420,90 +24422,90 @@ Version %1</source>
     <message>
         <source>B</source>
         <comment>size suffix Bytes</comment>
-        <translation>B</translation>
+        <translation type="vanished">B</translation>
     </message>
     <message>
         <source>KB</source>
         <comment>size suffix KBytes=1024 Bytes</comment>
-        <translation>KB</translation>
+        <translation type="vanished">KB</translation>
     </message>
     <message>
         <source>MB</source>
         <comment>size suffix MBytes=1024 KBytes</comment>
-        <translation>MB</translation>
+        <translation type="vanished">MB</translation>
     </message>
     <message>
         <source>GB</source>
         <comment>size suffix GBytes=1024 MBytes</comment>
-        <translation>GB</translation>
+        <translation type="vanished">GB</translation>
     </message>
     <message>
         <source>TB</source>
         <comment>size suffix TBytes=1024 GBytes</comment>
-        <translation>TB</translation>
+        <translation type="vanished">TB</translation>
     </message>
     <message>
         <source>PB</source>
         <comment>size suffix PBytes=1024 TBytes</comment>
-        <translation>PB</translation>
+        <translation type="vanished">PB</translation>
     </message>
     <message>
         <source>Empty</source>
         <comment>medium</comment>
-        <translation>空</translation>
+        <translation type="vanished">空</translation>
     </message>
     <message>
         <source>Host Drive &apos;%1&apos;</source>
         <comment>medium</comment>
-        <translation>ホストドライブ &apos;%1&apos;</translation>
+        <translation type="vanished">ホストドライブ &apos;%1&apos;</translation>
     </message>
     <message>
         <source>Host Drive %1 (%2)</source>
         <comment>medium</comment>
-        <translation>ホストドライブ %1 (%2)</translation>
+        <translation type="vanished">ホストドライブ %1 (%2)</translation>
     </message>
     <message>
         <source>&lt;p style=white-space:pre&gt;Type (Format):  %1 (%2)&lt;/p&gt;</source>
         <comment>medium</comment>
-        <translation>&lt;p style=white-space:pre&gt;タイプ (形式):  %1 (%2)&lt;/p&gt;</translation>
+        <translation type="vanished">&lt;p style=white-space:pre&gt;タイプ (形式):  %1 (%2)&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;p&gt;Attached to:  %1&lt;/p&gt;</source>
         <comment>image</comment>
-        <translation>&lt;p&gt;割り当て:  %1&lt;/p&gt;</translation>
+        <translation type="vanished">&lt;p&gt;割り当て:  %1&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;i&gt;Not Attached&lt;/i&gt;</source>
         <comment>image</comment>
-        <translation>&lt;i&gt;未割り当て&lt;/i&gt;</translation>
+        <translation type="vanished">&lt;i&gt;未割り当て&lt;/i&gt;</translation>
     </message>
     <message>
         <source>&lt;i&gt;Checking accessibility...&lt;/i&gt;</source>
         <comment>medium</comment>
-        <translation>&lt;i&gt;アクセス可否を確認中...&lt;/i&gt;</translation>
+        <translation type="vanished">&lt;i&gt;アクセス可否を確認中...&lt;/i&gt;</translation>
     </message>
     <message>
         <source>Failed to check accessibility of disk image files.</source>
         <comment>medium</comment>
-        <translation>メディアのアクセス可否の確認に失敗しました。</translation>
+        <translation type="vanished">メディアのアクセス可否の確認に失敗しました。</translation>
     </message>
     <message>
         <source>&lt;b&gt;No disk image file selected&lt;/b&gt;</source>
         <comment>medium</comment>
-        <translation>&lt;b&gt;メディア 未選択&lt;/b&gt;</translation>
+        <translation type="vanished">&lt;b&gt;メディア 未選択&lt;/b&gt;</translation>
     </message>
     <message>
         <source>You can also change this while the machine is running.</source>
-        <translation>仮想マシンの動作中、これを変更することができます。</translation>
+        <translation type="vanished">仮想マシンの動作中、これを変更することができます。</translation>
     </message>
     <message>
         <source>&lt;b&gt;No disk image files available&lt;/b&gt;</source>
         <comment>medium</comment>
-        <translation>&lt;b&gt;メディア 利用不可&lt;/b&gt;</translation>
+        <translation type="vanished">&lt;b&gt;メディア 利用不可&lt;/b&gt;</translation>
     </message>
     <message>
         <source>You can create or add disk image files in the virtual machine settings.</source>
-        <translation>仮想マシン設定でディスクイメージファイルを作成ないし追加できます。</translation>
+        <translation type="vanished">仮想マシン設定でディスクイメージファイルを作成ないし追加できます。</translation>
     </message>
     <message>
         <source>You can create disk image files using the virtual media manager.</source>
@@ -21512,7 +24514,7 @@ Version %1</source>
     <message>
         <source>Attaching this hard disk will be performed indirectly using a newly created differencing hard disk.</source>
         <comment>medium</comment>
-        <translation>このハードディスクの割り当ては、新規作成された差分ハードディスクの使用により、間接的に実行されます。</translation>
+        <translation type="vanished">このハードディスクの割り当ては、新規作成された差分ハードディスクの使用により、間接的に実行されます。</translation>
     </message>
     <message>
         <source>Some of the files in this hard disk chain are inaccessible. Please use the Virtual Media Manager in &lt;b&gt;Show Differencing Hard Disks&lt;/b&gt; mode to inspect these files.</source>
@@ -21522,41 +24524,41 @@ Version %1</source>
     <message>
         <source>This base hard disk is indirectly attached using the following differencing hard disk:</source>
         <comment>medium</comment>
-        <translation>このベースハードディスクは以下の差分ハードディスクを使用して間接的に割り当てられます:</translation>
+        <translation type="vanished">このベースハードディスクは以下の差分ハードディスクを使用して間接的に割り当てられます:</translation>
     </message>
     <message numerus="yes">
         <source>%n year(s)</source>
-        <translation>
+        <translation type="vanished">
             <numerusform>%n 年</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>%n month(s)</source>
-        <translation>
+        <translation type="vanished">
             <numerusform>%n 月</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>%n day(s)</source>
-        <translation>
+        <translation type="vanished">
             <numerusform>%n 日</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>%n hour(s)</source>
-        <translation>
+        <translation type="vanished">
             <numerusform>%n 時間</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>%n minute(s)</source>
-        <translation>
+        <translation type="vanished">
             <numerusform>%n 分</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>%n second(s)</source>
-        <translation>
+        <translation type="vanished">
             <numerusform>%n 秒</numerusform>
         </translation>
     </message>
@@ -21582,12 +24584,12 @@ Version %1</source>
     </message>
     <message>
         <source>Nested Paging</source>
-        <translation>ネステッドページング</translation>
+        <translation type="vanished">ネステッドページング</translation>
     </message>
     <message>
         <source>Unrestricted Execution</source>
         <translatorcomment>CPUのレジスタ名なのでそのまま</translatorcomment>
-        <translation>Unrestricted Execution</translation>
+        <translation type="vanished">Unrestricted Execution</translation>
     </message>
     <message>
         <source>MB</source>
@@ -21596,92 +24598,92 @@ Version %1</source>
     </message>
     <message>
         <source>Adapter %1</source>
-        <translation>アダプター %1</translation>
+        <translation type="vanished">アダプター %1</translation>
     </message>
     <message>
         <source>IDE Primary Master</source>
         <comment>StorageSlot</comment>
-        <translation>IDE プライマリマスター</translation>
+        <translation type="vanished">IDE プライマリマスター</translation>
     </message>
     <message>
         <source>IDE Primary Slave</source>
         <comment>StorageSlot</comment>
-        <translation>IDE プライマリスレーブ</translation>
+        <translation type="vanished">IDE プライマリスレーブ</translation>
     </message>
     <message>
         <source>IDE Secondary Master</source>
         <comment>StorageSlot</comment>
-        <translation>IDE セカンダリマスター</translation>
+        <translation type="vanished">IDE セカンダリマスター</translation>
     </message>
     <message>
         <source>IDE Secondary Slave</source>
         <comment>StorageSlot</comment>
-        <translation>IDE セカンダリスレーブ</translation>
+        <translation type="vanished">IDE セカンダリスレーブ</translation>
     </message>
     <message>
         <source>SATA Port %1</source>
         <comment>StorageSlot</comment>
-        <translation>SATA ポート %1</translation>
+        <translation type="vanished">SATA ポート %1</translation>
     </message>
     <message>
         <source>SCSI Port %1</source>
         <comment>StorageSlot</comment>
-        <translation>SCSI ポート %1</translation>
+        <translation type="vanished">SCSI ポート %1</translation>
     </message>
     <message>
         <source>SAS Port %1</source>
         <comment>StorageSlot</comment>
-        <translation>SAS ポート %1</translation>
+        <translation type="vanished">SAS ポート %1</translation>
     </message>
     <message>
         <source>Floppy Device %1</source>
         <comment>StorageSlot</comment>
-        <translation>フロッピーデバイス %1</translation>
+        <translation type="vanished">フロッピーデバイス %1</translation>
     </message>
     <message>
         <source>USB Port %1</source>
         <comment>StorageSlot</comment>
-        <translation>USB ポート %1</translation>
+        <translation type="vanished">USB ポート %1</translation>
     </message>
     <message>
         <source>General</source>
         <comment>DetailsElementType</comment>
-        <translation>一般</translation>
+        <translation type="vanished">一般</translation>
     </message>
     <message>
         <source>Preview</source>
         <comment>DetailsElementType</comment>
-        <translation>プレビュー</translation>
+        <translation type="vanished">プレビュー</translation>
     </message>
     <message>
         <source>System</source>
         <comment>DetailsElementType</comment>
-        <translation>システム</translation>
+        <translation type="vanished">システム</translation>
     </message>
     <message>
         <source>Display</source>
         <comment>DetailsElementType</comment>
-        <translation>ディスプレイ</translation>
+        <translation type="vanished">ディスプレイ</translation>
     </message>
     <message>
         <source>Storage</source>
         <comment>DetailsElementType</comment>
-        <translation>ストレージ</translation>
+        <translation type="vanished">ストレージ</translation>
     </message>
     <message>
         <source>Audio</source>
         <comment>DetailsElementType</comment>
-        <translation>オーディオ</translation>
+        <translation type="vanished">オーディオ</translation>
     </message>
     <message>
         <source>Network</source>
         <comment>DetailsElementType</comment>
-        <translation>ネットワーク</translation>
+        <translation type="vanished">ネットワーク</translation>
     </message>
     <message>
         <source>Serial ports</source>
         <comment>DetailsElementType</comment>
-        <translation>シリアルポート</translation>
+        <translation type="vanished">シリアルポート</translation>
     </message>
     <message>
         <source>Parallel ports</source>
@@ -21691,17 +24693,17 @@ Version %1</source>
     <message>
         <source>USB</source>
         <comment>DetailsElementType</comment>
-        <translation>USB</translation>
+        <translation type="vanished">USB</translation>
     </message>
     <message>
         <source>Shared folders</source>
         <comment>DetailsElementType</comment>
-        <translation>共有フォルダー</translation>
+        <translation type="vanished">共有フォルダー</translation>
     </message>
     <message>
         <source>Description</source>
         <comment>DetailsElementType</comment>
-        <translation>説明</translation>
+        <translation type="vanished">説明</translation>
     </message>
     <message>
         <source>Please choose a location for new virtual hard drive file</source>
@@ -21710,117 +24712,117 @@ Version %1</source>
     <message>
         <source>off</source>
         <comment>guest monitor status</comment>
-        <translation>オフ</translation>
+        <translation type="vanished">オフ</translation>
     </message>
     <message>
         <source>Paravirtualization Interface</source>
         <comment>details report</comment>
-        <translation>準仮想化インターフェース</translation>
+        <translation type="vanished">準仮想化インターフェース</translation>
     </message>
     <message>
         <source>None</source>
         <comment>ParavirtProvider</comment>
-        <translation>なし</translation>
+        <translation type="vanished">なし</translation>
     </message>
     <message>
         <source>Default</source>
         <comment>ParavirtProvider</comment>
-        <translation>デフォルト</translation>
+        <translation type="vanished">デフォルト</translation>
     </message>
     <message>
         <source>Legacy</source>
         <comment>ParavirtProvider</comment>
-        <translation>Legacy</translation>
+        <translation type="vanished">Legacy</translation>
     </message>
     <message>
         <source>Minimal</source>
         <comment>ParavirtProvider</comment>
-        <translation>Minimal</translation>
+        <translation type="vanished">Minimal</translation>
     </message>
     <message>
         <source>Hyper-V</source>
         <comment>ParavirtProvider</comment>
-        <translation>Hyper-V</translation>
+        <translation type="vanished">Hyper-V</translation>
     </message>
     <message>
         <source>New dynamically allocated storage</source>
         <comment>MediumVariant</comment>
-        <translation>新しい可変サイズのストレージ</translation>
+        <translation type="vanished">新しい可変サイズのストレージ</translation>
     </message>
     <message>
         <source>Active</source>
         <comment>details report (VT-x/AMD-V)</comment>
-        <translation>有効</translation>
+        <translation type="vanished">有効</translation>
     </message>
     <message>
         <source>Inactive</source>
         <comment>details report (VT-x/AMD-V)</comment>
-        <translation>無効</translation>
+        <translation type="vanished">無効</translation>
     </message>
     <message>
         <source>Active</source>
         <comment>details report (Nested Paging)</comment>
-        <translation>有効</translation>
+        <translation type="vanished">有効</translation>
     </message>
     <message>
         <source>Inactive</source>
         <comment>details report (Nested Paging)</comment>
-        <translation>無効</translation>
+        <translation type="vanished">無効</translation>
     </message>
     <message>
         <source>Active</source>
         <comment>details report (Unrestricted Execution)</comment>
-        <translation>有効</translation>
+        <translation type="vanished">有効</translation>
     </message>
     <message>
         <source>Inactive</source>
         <comment>details report (Unrestricted Execution)</comment>
-        <translation>無効</translation>
+        <translation type="vanished">無効</translation>
     </message>
     <message>
         <source>Taking Snapshot</source>
         <comment>MachineState</comment>
-        <translation>スナップショット作成中</translation>
+        <translation type="vanished">スナップショット作成中</translation>
     </message>
     <message>
         <source>Taking Online Snapshot</source>
         <comment>MachineState</comment>
-        <translation>オンラインスナップショットを作成中</translation>
+        <translation type="vanished">オンラインスナップショットを作成中</translation>
     </message>
     <message>
         <source>KVM</source>
         <comment>ParavirtProvider</comment>
-        <translation>KVM</translation>
+        <translation type="vanished">KVM</translation>
     </message>
     <message>
         <source>Optical</source>
         <comment>DeviceType</comment>
-        <translation>光学</translation>
+        <translation type="vanished">光学</translation>
     </message>
     <message>
         <source>TCP</source>
         <comment>PortMode</comment>
-        <translation>TCP</translation>
+        <translation type="vanished">TCP</translation>
     </message>
     <message>
         <source>OHCI</source>
         <comment>USBControllerType</comment>
-        <translation>OHCI</translation>
+        <translation type="vanished">OHCI</translation>
     </message>
     <message>
         <source>EHCI</source>
         <comment>USBControllerType</comment>
-        <translation>EHCI</translation>
+        <translation type="vanished">EHCI</translation>
     </message>
     <message>
         <source>xHCI</source>
         <comment>USBControllerType</comment>
-        <translation>xHCI</translation>
+        <translation type="vanished">xHCI</translation>
     </message>
     <message>
         <source>User interface</source>
         <comment>DetailsElementType</comment>
-        <translation>ユーザーインターフェース</translation>
+        <translation type="vanished">ユーザーインターフェース</translation>
     </message>
     <message>
         <source>(Optical Drive)</source>
@@ -21844,84 +24846,84 @@ Version %1</source>
     <message>
         <source>Encrypted</source>
         <comment>medium</comment>
-        <translation>暗号化</translation>
+        <translation type="vanished">暗号化</translation>
     </message>
     <message>
         <source>Please choose a virtual hard disk file</source>
-        <translation>仮想ハードディスクファイルを選択してください</translation>
+        <translation type="vanished">仮想ハードディスクファイルを選択してください</translation>
     </message>
     <message>
         <source>All virtual hard disk files (%1)</source>
-        <translation>すべての仮想ハードディスクファイル (%1)</translation>
+        <translation type="vanished">すべての仮想ハードディスクファイル (%1)</translation>
     </message>
     <message>
         <source>Some of the files in this hard disk chain are inaccessible. Please use the Virtual Medium Manager to inspect these files.</source>
         <comment>medium</comment>
-        <translation>ハードディスクチェーン中のいくつかのメディアにアクセスできません。仮想メディアマネージャーを使用して、これらのメディアを確認してください。</translation>
+        <translation type="vanished">ハードディスクチェーン中のいくつかのメディアにアクセスできません。仮想メディアマネージャーを使用して、これらのメディアを確認してください。</translation>
     </message>
     <message>
         <source>Please choose a location for new virtual hard disk file</source>
-        <translation>新しい仮想ハードディスクファイルの場所を選択</translation>
+        <translation type="vanished">新しい仮想ハードディスクファイルの場所を選択</translation>
     </message>
     <message>
         <source>USB</source>
         <comment>StorageBus</comment>
-        <translation>USB</translation>
+        <translation type="vanished">USB</translation>
     </message>
     <message>
         <source>PCIe</source>
         <comment>StorageBus</comment>
-        <translation>PCIe</translation>
+        <translation type="vanished">PCIe</translation>
     </message>
     <message>
         <source>NVMe</source>
         <comment>StorageControllerType</comment>
-        <translation>NVMe</translation>
+        <translation type="vanished">NVMe</translation>
     </message>
     <message>
         <source>NVMe Port %1</source>
         <comment>StorageSlot</comment>
-        <translation>NVMe ポート %1</translation>
+        <translation type="vanished">NVMe ポート %1</translation>
     </message>
     <message>
         <source>General</source>
         <comment>InformationElementType</comment>
-        <translation>一般</translation>
+        <translation type="vanished">一般</translation>
     </message>
     <message>
         <source>Preview</source>
         <comment>InformationElementType</comment>
-        <translation>プレビュー</translation>
+        <translation type="vanished">プレビュー</translation>
     </message>
     <message>
         <source>System</source>
         <comment>InformationElementType</comment>
-        <translation>システム</translation>
+        <translation type="vanished">システム</translation>
     </message>
     <message>
         <source>Display</source>
         <comment>InformationElementType</comment>
-        <translation>ディスプレイ</translation>
+        <translation type="vanished">ディスプレイ</translation>
     </message>
     <message>
         <source>Storage</source>
         <comment>InformationElementType</comment>
-        <translation>ストレージ</translation>
+        <translation type="vanished">ストレージ</translation>
     </message>
     <message>
         <source>Audio</source>
         <comment>InformationElementType</comment>
-        <translation>オーディオ</translation>
+        <translation type="vanished">オーディオ</translation>
     </message>
     <message>
         <source>Network</source>
         <comment>InformationElementType</comment>
-        <translation>ネットワーク</translation>
+        <translation type="vanished">ネットワーク</translation>
     </message>
     <message>
         <source>Serial ports</source>
         <comment>InformationElementType</comment>
-        <translation>シリアルポート</translation>
+        <translation type="vanished">シリアルポート</translation>
     </message>
     <message>
         <source>Parallel ports</source>
@@ -21931,103 +24933,113 @@ Version %1</source>
     <message>
         <source>USB</source>
         <comment>InformationElementType</comment>
-        <translation>USB</translation>
+        <translation type="vanished">USB</translation>
     </message>
     <message>
         <source>Shared folders</source>
         <comment>InformationElementType</comment>
-        <translation>共有フォルダー</translation>
+        <translation type="vanished">共有フォルダー</translation>
     </message>
     <message>
         <source>User interface</source>
         <comment>InformationElementType</comment>
-        <translation>ユーザーインターフェース</translation>
+        <translation type="vanished">ユーザーインターフェース</translation>
     </message>
     <message>
         <source>Description</source>
         <comment>InformationElementType</comment>
-        <translation>説明</translation>
+        <translation type="vanished">説明</translation>
     </message>
     <message>
         <source>Runtime attributes</source>
         <comment>InformationElementType</comment>
-        <translation>ランタイム属性</translation>
+        <translation type="vanished">ランタイム属性</translation>
     </message>
     <message>
         <source>Storage statistics</source>
         <comment>InformationElementType</comment>
-        <translation>ストレージ統計</translation>
+        <translation type="vanished">ストレージ統計</translation>
     </message>
     <message>
         <source>Network statistics</source>
         <comment>InformationElementType</comment>
-        <translation>ネットワーク 統計</translation>
+        <translation type="vanished">ネットワーク 統計</translation>
     </message>
     <message>
         <source>Hard Disks</source>
         <comment>IndicatorType</comment>
-        <translation>ハードディスク</translation>
+        <translation type="vanished">ハードディスク</translation>
     </message>
     <message>
         <source>Optical Disks</source>
         <comment>IndicatorType</comment>
-        <translation>光学ディスク</translation>
+        <translation type="vanished">光学ディスク</translation>
     </message>
     <message>
         <source>Floppy Disks</source>
         <comment>IndicatorType</comment>
-        <translation>フロッピーディスク</translation>
+        <translation type="vanished">フロッピーディスク</translation>
     </message>
     <message>
         <source>Network</source>
         <comment>IndicatorType</comment>
-        <translation>ネットワーク</translation>
+        <translation type="vanished">ネットワーク</translation>
     </message>
     <message>
         <source>USB</source>
         <comment>IndicatorType</comment>
-        <translation>USB</translation>
+        <translation type="vanished">USB</translation>
     </message>
     <message>
         <source>Shared Folders</source>
         <comment>IndicatorType</comment>
-        <translation>共有フォルダー</translation>
+        <translation type="vanished">共有フォルダー</translation>
     </message>
     <message>
         <source>Display</source>
         <comment>IndicatorType</comment>
         <translatorcomment>表示？</translatorcomment>
-        <translation>ディスプレイ</translation>
+        <translation type="vanished">ディスプレイ</translation>
     </message>
     <message>
         <source>Video Capture</source>
         <comment>IndicatorType</comment>
-        <translation>ビデオキャプチャー</translation>
+        <translation type="vanished">ビデオキャプチャー</translation>
     </message>
     <message>
         <source>Features</source>
         <comment>IndicatorType</comment>
-        <translation>機能</translation>
+        <translation type="vanished">機能</translation>
     </message>
     <message>
         <source>Mouse</source>
         <comment>IndicatorType</comment>
-        <translation>マウス</translation>
+        <translation type="vanished">マウス</translation>
     </message>
     <message>
         <source>Keyboard</source>
         <comment>IndicatorType</comment>
-        <translation>キーボード</translation>
+        <translation type="vanished">キーボード</translation>
     </message>
     <message>
         <source>Differencing</source>
         <comment>MediumType</comment>
-        <translation>差分</translation>
+        <translation type="vanished">差分</translation>
     </message>
     <message>
         <source>Audio</source>
         <comment>IndicatorType</comment>
-        <translation>オーディオ</translation>
+        <translation type="vanished">オーディオ</translation>
+    </message>
+    <message>
+        <source>not set</source>
+        <comment>details report (execution engine)</comment>
+        <translation type="vanished">未設定</translation>
+    </message>
+    <message>
+        <source>Execution engine</source>
+        <comment>details report</comment>
+        <translation type="vanished">実行エンジン</translation>
     </message>
     <message>
         <source>Processors</source>
@@ -22037,6 +25049,10 @@ Version %1</source>
     <message>
         <source>Name</source>
         <translation type="vanished">名前</translation>
+    </message>
+    <message>
+        <source>OS</source>
+        <translation type="vanished">OS</translation>
     </message>
     <message>
         <source>Location</source>
@@ -22051,6 +25067,14 @@ Version %1</source>
         <translation type="vanished">RAM</translation>
     </message>
     <message>
+        <source>CPU Count</source>
+        <translation type="vanished">CPU数</translation>
+    </message>
+    <message>
+        <source>CPU Execution Cap</source>
+        <translation type="vanished">CPU使用率制限</translation>
+    </message>
+    <message>
         <source>Boot Order</source>
         <translation type="vanished">起動順序</translation>
     </message>
@@ -22059,24 +25083,72 @@ Version %1</source>
         <translation type="vanished">チップセットのタイプ</translation>
     </message>
     <message>
+        <source>Firmware</source>
+        <translation type="vanished">ファームウェア</translation>
+    </message>
+    <message>
         <source>Acceleration</source>
         <translation type="vanished">アクセラレーション</translation>
+    </message>
+    <message>
+        <source>VRAM</source>
+        <translation type="vanished">VRAM</translation>
+    </message>
+    <message>
+        <source>Screen Count</source>
+        <translation type="vanished">スクリーン数</translation>
+    </message>
+    <message>
+        <source>Scale Factor</source>
+        <translation type="vanished">表示倍率</translation>
+    </message>
+    <message>
+        <source>VRDE</source>
+        <translation type="vanished">VRDE</translation>
+    </message>
+    <message>
+        <source>Recording</source>
+        <translation type="vanished">レコーディング</translation>
     </message>
     <message>
         <source>Hard Disks</source>
         <translation type="vanished">ハードディスク</translation>
     </message>
     <message>
+        <source>Optical Devices</source>
+        <translation type="vanished">光学デバイス</translation>
+    </message>
+    <message>
+        <source>Floppy Devices</source>
+        <translation type="vanished">フロッピーデバイス</translation>
+    </message>
+    <message>
+        <source>Driver</source>
+        <translation type="vanished">ドライバー</translation>
+    </message>
+    <message>
         <source>Controller</source>
         <translation type="vanished">コントローラー</translation>
+    </message>
+    <message>
+        <source>Input/Output</source>
+        <translation type="vanished">入出力</translation>
     </message>
     <message>
         <source>NAT</source>
         <translation type="vanished">NAT</translation>
     </message>
     <message>
+        <source>Bridget Adapter</source>
+        <translation type="vanished">ブリッジアダプター</translation>
+    </message>
+    <message>
         <source>Internal Network</source>
         <translation type="vanished">内部ネットワーク</translation>
+    </message>
+    <message>
+        <source>Host Only Adapter</source>
+        <translation type="vanished">ホストオンリーアダプター</translation>
     </message>
     <message>
         <source>Generic Driver</source>
@@ -22105,6 +25177,23 @@ Version %1</source>
     <message>
         <source>Device Filters</source>
         <translation type="vanished">デバイスフィルター</translation>
+    </message>
+    <message>
+        <source>Menu Bar</source>
+        <translation type="vanished">メニューバー</translation>
+    </message>
+    <message>
+        <source>Status Bar</source>
+        <translation type="vanished">ステータスバー</translation>
+    </message>
+    <message>
+        <source>Mini Toolbar</source>
+        <translation type="vanished">ミニ ツールバー</translation>
+    </message>
+    <message>
+        <source>Recording</source>
+        <comment>IndicatorType</comment>
+        <translation type="vanished">レコーディング</translation>
     </message>
     <message>
         <source>VDI (VirtualBox Disk Image)</source>
@@ -22137,105 +25226,13 @@ Version %1</source>
         <translation type="vanished">QCOW (QEMU Copy-On-Write)</translation>
     </message>
     <message>
+        <source>Please select files to be on the VISO</source>
+        <translation type="vanished">VISOにあるファイルを選択</translation>
+    </message>
+    <message>
         <source>None</source>
         <comment>GraphicsControllerType</comment>
         <translation type="vanished">なし</translation>
-    </message>
-    <message>
-        <source>Disconnected</source>
-        <comment>serial port</comment>
-        <translation type="vanished">切断</translation>
-    </message>
-    <message>
-        <source>not set</source>
-        <comment>details report (execution engine)</comment>
-        <translation type="vanished">未設定</translation>
-    </message>
-    <message>
-        <source>Execution engine</source>
-        <comment>details report</comment>
-        <translation type="vanished">実行エンジン</translation>
-    </message>
-    <message>
-        <source>OS</source>
-        <translation type="vanished">OS</translation>
-    </message>
-    <message>
-        <source>CPU Count</source>
-        <translation type="vanished">CPU数</translation>
-    </message>
-    <message>
-        <source>CPU Execution Cap</source>
-        <translation type="vanished">CPU使用率制限</translation>
-    </message>
-    <message>
-        <source>Firmware</source>
-        <translation type="vanished">ファームウェア</translation>
-    </message>
-    <message>
-        <source>VRAM</source>
-        <translation type="vanished">VRAM</translation>
-    </message>
-    <message>
-        <source>Screen Count</source>
-        <translation type="vanished">スクリーン数</translation>
-    </message>
-    <message>
-        <source>Scale Factor</source>
-        <translation type="vanished">表示倍率</translation>
-    </message>
-    <message>
-        <source>VRDE</source>
-        <translation type="vanished">VRDE</translation>
-    </message>
-    <message>
-        <source>Recording</source>
-        <translation type="vanished">レコーディング</translation>
-    </message>
-    <message>
-        <source>Optical Devices</source>
-        <translation type="vanished">光学デバイス</translation>
-    </message>
-    <message>
-        <source>Floppy Devices</source>
-        <translation type="vanished">フロッピーデバイス</translation>
-    </message>
-    <message>
-        <source>Driver</source>
-        <translation type="vanished">ドライバー</translation>
-    </message>
-    <message>
-        <source>Input/Output</source>
-        <translation type="vanished">入出力</translation>
-    </message>
-    <message>
-        <source>Bridget Adapter</source>
-        <translation type="vanished">ブリッジアダプター</translation>
-    </message>
-    <message>
-        <source>Host Only Adapter</source>
-        <translation type="vanished">ホストオンリーアダプター</translation>
-    </message>
-    <message>
-        <source>Menu Bar</source>
-        <translation type="vanished">メニューバー</translation>
-    </message>
-    <message>
-        <source>Status Bar</source>
-        <translation type="vanished">ステータスバー</translation>
-    </message>
-    <message>
-        <source>Mini Toolbar</source>
-        <translation type="vanished">ミニ ツールバー</translation>
-    </message>
-    <message>
-        <source>Recording</source>
-        <comment>IndicatorType</comment>
-        <translation type="vanished">レコーディング</translation>
-    </message>
-    <message>
-        <source>Please select files to be on the VISO</source>
-        <translation type="vanished">VISOにあるファイルを選択</translation>
     </message>
     <message>
         <source>VBoxVGA</source>
@@ -22275,6 +25272,11 @@ Version %1</source>
         <source>Not Attached</source>
         <comment>network adapter</comment>
         <translation type="vanished">未割り当て</translation>
+    </message>
+    <message>
+        <source>Disconnected</source>
+        <comment>serial port</comment>
+        <translation type="vanished">切断</translation>
     </message>
 </context>
 <context>

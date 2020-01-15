@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2010-2017 Oracle Corporation
+ * Copyright (C) 2010-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -15,6 +15,7 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
+#define LOG_GROUP LOG_GROUP_MAIN_PROGRESS
 #include <iprt/types.h>
 
 #include "ProgressProxyImpl.h"
@@ -22,12 +23,11 @@
 #include "VirtualBoxImpl.h"
 #include "VirtualBoxErrorInfoImpl.h"
 
-#include "Logging.h"
+#include "LoggingNew.h"
 
 #include <iprt/time.h>
 #include <iprt/semaphore.h>
-
-#include <VBox/err.h>
+#include <iprt/errcore.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 // ProgressProxy class
@@ -58,7 +58,7 @@ HRESULT ProgressProxy::init(
                             VirtualBox *pParent,
 #endif
                             IUnknown *pInitiator,
-                            CBSTR bstrDescription,
+                            Utf8Str strDescription,
                             BOOL fCancelable)
 {
     mfMultiOperation = false;
@@ -71,11 +71,11 @@ HRESULT ProgressProxy::init(
                           pParent,
 #endif
                           pInitiator,
-                          bstrDescription,
+                          strDescription,
                           fCancelable,
                           1 /* cOperations */,
                           1 /* ulTotalOperationsWeight */,
-                          bstrDescription /* bstrFirstOperationDescription */,
+                          strDescription /* strFirstOperationDescription */,
                           1 /* ulFirstOperationWeight */);
 }
 
@@ -94,10 +94,10 @@ HRESULT ProgressProxy::init(
                             VirtualBox *pParent,
 #endif
                             IUnknown *pInitiator,
-                            CBSTR bstrDescription,
+                            Utf8Str strDescription,
                             BOOL fCancelable,
                             ULONG uTotalOperationsWeight,
-                            CBSTR bstrFirstOperationDescription,
+                            Utf8Str strFirstOperationDescription,
                             ULONG uFirstOperationWeight,
                             ULONG cOtherProgressObjectOperations)
 {
@@ -111,11 +111,11 @@ HRESULT ProgressProxy::init(
                           pParent,
 #endif
                           pInitiator,
-                          bstrDescription,
+                          strDescription,
                           fCancelable,
                           1 + cOtherProgressObjectOperations /* cOperations */,
                           uTotalOperationsWeight,
-                          bstrFirstOperationDescription,
+                          strFirstOperationDescription,
                           uFirstOperationWeight);
 }
 

@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2017 Oracle Corporation
+ * Copyright (C) 2017-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -260,6 +260,20 @@ static const CUEKEYWORDDESC g_aCueKeywords[] =
 /*********************************************************************************************************************************
 *   Internal Functions                                                                                                           *
 *********************************************************************************************************************************/
+
+
+/**
+ * Converts a MSF formatted address value read from the given buffer
+ * to an LBA number. MSF 00:00:00 equals LBA 0.
+ *
+ * @returns The LBA number.
+ * @param   pbBuf               The buffer to read the MSF formatted address
+ *                              from.
+ */
+DECLINLINE(uint32_t) cueMSF2LBA(const uint8_t *pbBuf)
+{
+    return (pbBuf[0] * 60 + pbBuf[1]) * 75 + pbBuf[2];
+}
 
 /**
  * Ensures that the region list can hold up to the given number of tracks.
@@ -836,7 +850,7 @@ static int cueParseIndex(PCUEIMAGE pThis, PCUETOKENIZER pTokenizer,
                 abMsf[2] = pToken->Type.Msf.u8Frame;
 
                 *pu8Index = (uint8_t)u64Index;
-                *pu64Lba  = scsiMSF2LBA(&abMsf[0]);
+                *pu64Lba  = cueMSF2LBA(&abMsf[0]);
                 cueTokenizerConsume(pTokenizer);
             }
             else
@@ -1417,9 +1431,9 @@ static PCVDREGIONDESC cueRegionQueryByOffset(PCUEIMAGE pThis, uint64_t uOffset)
 
 /** @copydoc VDIMAGEBACKEND::pfnProbe */
 static DECLCALLBACK(int) cueProbe(const char *pszFilename, PVDINTERFACE pVDIfsDisk,
-                                  PVDINTERFACE pVDIfsImage, VDTYPE *penmType)
+                                  PVDINTERFACE pVDIfsImage, VDTYPE enmDesiredType, VDTYPE *penmType)
 {
-    RT_NOREF1(pVDIfsDisk);
+    RT_NOREF(pVDIfsDisk, enmDesiredType);
     LogFlowFunc(("pszFilename=\"%s\" pVDIfsDisk=%#p pVDIfsImage=%#p\n", pszFilename, pVDIfsDisk, pVDIfsImage));
     int rc = VINF_SUCCESS;
 

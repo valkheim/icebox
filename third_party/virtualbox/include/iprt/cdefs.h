@@ -3,7 +3,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -23,8 +23,11 @@
  * terms and conditions of either the GPL or the CDDL or both.
  */
 
-#ifndef ___iprt_cdefs_h
-#define ___iprt_cdefs_h
+#ifndef IPRT_INCLUDED_cdefs_h
+#define IPRT_INCLUDED_cdefs_h
+#ifndef RT_WITHOUT_PRAGMA_ONCE
+# pragma once
+#endif
 
 
 /** @defgroup grp_rt_cdefs  IPRT Common Definitions and Macros
@@ -62,7 +65,6 @@
 # define RT_ARCH_SPARC64
 # define IN_RING0
 # define IN_RING3
-# define IN_RC
 # define IN_RC
 # define IN_RT_RC
 # define IN_RT_R0
@@ -241,19 +243,16 @@
 #endif
 
 
-/** @def __X86__
- * Indicates that we're compiling for the X86 architecture.
- * @deprecated
- */
-
-/** @def __AMD64__
- * Indicates that we're compiling for the AMD64 architecture.
- * @deprecated
- */
 #if !defined(__X86__) && !defined(__AMD64__) && (defined(RT_ARCH_AMD64) || defined(RT_ARCH_X86))
 # if defined(RT_ARCH_AMD64)
+/** Indicates that we're compiling for the AMD64 architecture.
+ * @deprecated
+ */
 #  define __AMD64__
 # elif defined(RT_ARCH_X86)
+/** Indicates that we're compiling for the X86 architecture.
+ * @deprecated
+ */
 #  define __X86__
 # else
 #  error "Check what predefined macros your compiler uses to indicate architecture."
@@ -296,7 +295,7 @@
  * Used to indicate that we're compiling code which is running
  * in the Raw-mode Context (implies R0).
  */
-#if !defined(IN_RING3) && !defined(IN_RING0) && !defined(IN_RC) && !defined(IN_RC)
+#if !defined(IN_RING3) && !defined(IN_RING0) && !defined(IN_RC)
 # error "You must define which context the compiled code should run in; IN_RING3, IN_RING0 or IN_RC"
 #endif
 #if (defined(IN_RING3) && (defined(IN_RING0) || defined(IN_RC)) ) \
@@ -310,7 +309,7 @@
  * Defines the bit count of the current context.
  */
 #if !defined(ARCH_BITS) || defined(DOXYGEN_RUNNING)
-# if defined(RT_ARCH_AMD64) || defined(RT_ARCH_SPARC64)
+# if defined(RT_ARCH_AMD64) || defined(RT_ARCH_SPARC64) || defined(DOXYGEN_RUNNING)
 #  define ARCH_BITS 64
 # elif !defined(__I86__) || !defined(__WATCOMC__)
 #  define ARCH_BITS 32
@@ -352,7 +351,7 @@
  * Defines the host architecture bit count.
  */
 #if !defined(HC_ARCH_BITS) || defined(DOXYGEN_RUNNING)
-# ifndef IN_RC
+# if !defined(IN_RC) || defined(DOXYGEN_RUNNING)
 #  define HC_ARCH_BITS ARCH_BITS
 # else
 #  define HC_ARCH_BITS 32
@@ -362,8 +361,8 @@
 /** @def GC_ARCH_BITS
  * Defines the guest architecture bit count.
  */
-#if !defined(GC_ARCH_BITS) && !defined(DOXYGEN_RUNNING)
-# ifdef VBOX_WITH_64_BITS_GUESTS
+#if !defined(GC_ARCH_BITS) || defined(DOXYGEN_RUNNING)
+# if defined(VBOX_WITH_64_BITS_GUESTS) || defined(DOXYGEN_RUNNING)
 #  define GC_ARCH_BITS  64
 # else
 #  define GC_ARCH_BITS  32
@@ -389,17 +388,6 @@
 #  define R0_ARCH_BITS ARCH_BITS
 # else
 #  define R0_ARCH_BITS HC_ARCH_BITS
-# endif
-#endif
-
-/** @def GC_ARCH_BITS
- * Defines the guest architecture bit count.
- */
-#if !defined(GC_ARCH_BITS) || defined(DOXYGEN_RUNNING)
-# ifdef IN_RC
-#  define GC_ARCH_BITS ARCH_BITS
-# else
-#  define GC_ARCH_BITS 32
 # endif
 #endif
 
@@ -729,12 +717,27 @@
  * @param   R0Type  The R0 type.
  * @remark  For pointers used only in one context use RCPTRTYPE(), R3R0PTRTYPE(), R3PTRTYPE() or R0PTRTYPE().
  */
-#ifdef IN_RC
+#if defined(IN_RC) && !defined(DOXYGEN_RUNNING)
 # define CTXTYPE(GCType, R3Type, R0Type)  GCType
-#elif defined(IN_RING3)
+#elif defined(IN_RING3) || defined(DOXYGEN_RUNNING)
 # define CTXTYPE(GCType, R3Type, R0Type)  R3Type
 #else
 # define CTXTYPE(GCType, R3Type, R0Type)  R0Type
+#endif
+
+/** @def CTX_EXPR
+ * Expression selector for avoiding \#ifdef's.
+ *
+ * @param   a_R3Expr    The R3 expression.
+ * @param   a_R0Expr    The R0 expression.
+ * @param   a_RCExpr    The RC expression.
+ */
+#if defined(IN_RC) && !defined(DOXYGEN_RUNNING)
+# define CTX_EXPR(a_R3Expr, a_R0Expr, a_RCExpr)  a_RCExpr
+#elif defined(IN_RING0) && !defined(DOXYGEN_RUNNING)
+# define CTX_EXPR(a_R3Expr, a_R0Expr, a_RCExpr)  a_R0Expr
+#else
+# define CTX_EXPR(a_R3Expr, a_R0Expr, a_RCExpr)  a_R3Expr
 #endif
 
 /** @def RCPTRTYPE
@@ -745,6 +748,13 @@
  * @param   RCType  The RC type.
  */
 #define RCPTRTYPE(RCType)       CTXTYPE(RCType, RTRCPTR, RTRCPTR)
+
+/** @def RGPTRTYPE
+ * This will become RCPTRTYPE once we've convered all uses of RCPTRTYPE to this.
+ *
+ * @param   RCType  The RC type.
+ */
+#define RGPTRTYPE(RCType)       CTXTYPE(RCType, RTGCPTR, RTGCPTR)
 
 /** @def R3R0PTRTYPE
  * Declare a pointer which is used in HC, is explicitly valid in ring 3 and 0,
@@ -790,7 +800,7 @@
  * @param   var     Identifier name.
  * @deprecated Use CTX_SUFF. Do NOT use this for new code.
  */
-#ifdef IN_RC
+#if defined(IN_RC) && !defined(DOXYGEN_RUNNING)
 # define CTXSUFF(var)       var##GC
 # define OTHERCTXSUFF(var)  var##HC
 #else
@@ -806,9 +816,9 @@
  * @param   var     Identifier name.
  * @deprecated Use CTX_SUFF. Do NOT use this for new code.
  */
-#ifdef IN_RC
+#if defined(IN_RC) && !defined(DOXYGEN_RUNNING)
 # define CTXALLSUFF(var)    var##GC
-#elif defined(IN_RING0)
+#elif defined(IN_RING0) && !defined(DOXYGEN_RUNNING)
 # define CTXALLSUFF(var)    var##R0
 #else
 # define CTXALLSUFF(var)    var##R3
@@ -823,9 +833,9 @@
  *
  * @remark  This will replace CTXALLSUFF and CTXSUFF before long.
  */
-#ifdef IN_RC
+#if defined(IN_RC) && !defined(DOXYGEN_RUNNING)
 # define CTX_SUFF(var)      var##RC
-#elif defined(IN_RING0)
+#elif defined(IN_RING0) && !defined(DOXYGEN_RUNNING)
 # define CTX_SUFF(var)      var##R0
 #else
 # define CTX_SUFF(var)      var##R3
@@ -841,7 +851,7 @@
  *
  * @remark  This will replace CTXALLSUFF and CTXSUFF before long.
  */
-#ifdef IN_RING3
+#if defined(IN_RING3) || defined(DOXYGEN_RUNNING)
 # define CTX_SUFF_Z(var)    var##R3
 #else
 # define CTX_SUFF_Z(var)    var##RZ
@@ -865,7 +875,7 @@
  * @param   last    Surname.
  * @deprecated use CTX_MID or CTX_MID_Z
  */
-#ifdef IN_RC
+#if defined(IN_RC) && !defined(DOXYGEN_RUNNING)
 # define CTXMID(first, last)        first##GC##last
 # define OTHERCTXMID(first, last)   first##HC##last
 #else
@@ -882,9 +892,9 @@
  * @param   last    Surname.
  * @deprecated use CTX_MID or CTX_MID_Z
  */
-#ifdef IN_RC
+#if defined(IN_RC) && !defined(DOXYGEN_RUNNING)
 # define CTXALLMID(first, last)     first##GC##last
-#elif defined(IN_RING0)
+#elif defined(IN_RING0) && !defined(DOXYGEN_RUNNING)
 # define CTXALLMID(first, last)     first##R0##last
 #else
 # define CTXALLMID(first, last)     first##R3##last
@@ -898,9 +908,9 @@
  * @param   first   First name.
  * @param   last    Surname.
  */
-#ifdef IN_RC
+#if defined(IN_RC) && !defined(DOXYGEN_RUNNING)
 # define CTX_MID(first, last)       first##RC##last
-#elif defined(IN_RING0)
+#elif defined(IN_RING0) && !defined(DOXYGEN_RUNNING)
 # define CTX_MID(first, last)       first##R0##last
 #else
 # define CTX_MID(first, last)       first##R3##last
@@ -1109,11 +1119,61 @@
 #endif
 
 
+/** @def RT_OVERRIDE
+ * Wrapper for the C++11 override keyword.
+ *
+ * @remarks Recognized by g++ starting 4.7, however causes pedantic warnings
+ *          when used without officially enabling the C++11 features.
+ */
+#ifdef __cplusplus
+# if RT_MSC_PREREQ_EX(RT_MSC_VER_VS2012, 0)
+#  define RT_OVERRIDE           override
+# elif RT_GNUC_PREREQ(4, 7)
+#  if __cplusplus >= 201100
+#   define RT_OVERRIDE          override
+#  else
+#   define RT_OVERRIDE
+#  endif
+# else
+#  define RT_OVERRIDE
+# endif
+#else
+# define RT_OVERRIDE
+#endif
+
+/** @def RT_NOEXCEPT
+ * Wrapper for the C++11 noexcept keyword (only true form).
+ */
+/** @def RT_NOEXCEPT_EX
+ * Wrapper for the C++11 noexcept keyword with expression.
+ */
+#ifdef __cplusplus
+# if RT_MSC_PREREQ_EX(RT_MSC_VER_VS2015, 0)
+#  define RT_NOEXCEPT           noexcept
+#  define RT_NOEXCEPT_EX(expr)  noexcept(expr)
+# elif RT_GNUC_PREREQ(7, 0)
+#  if __cplusplus >= 201100
+#   define RT_NOEXCEPT          noexcept
+#   define RT_NOEXCEPT_EX(expr) noexcept(expr)
+#  else
+#   define RT_NOEXCEPT
+#   define RT_NOEXCEPT_EX(expr)
+#  endif
+# else
+#  define RT_NOEXCEPT
+#  define RT_NOEXCEPT_EX(expr)
+# endif
+#else
+# define RT_NOEXCEPT
+# define RT_NOEXCEPT_EX(expr)
+#endif
+
+
 /** @def RT_FALL_THROUGH
  * Tell the compiler that we're falling through to the next case in a switch.
  * @sa RT_FALL_THRU  */
 #if RT_GNUC_PREREQ(7, 0)
-# define RT_FALL_THROUGH()      __attribute__((fallthrough))
+# define RT_FALL_THROUGH()      __attribute__((__fallthrough__))
 #else
 # define RT_FALL_THROUGH()      (void)0
 #endif
@@ -1166,6 +1226,8 @@
 # if __GNUC__ >= 3 /* not entirely sure when this was added */
 #  define RT_COMPILER_SUPPORTS_VA_ARGS
 # endif
+#elif defined(__WATCOMC__)
+# define RT_COMPILER_SUPPORTS_VA_ARGS
 #endif
 
 
@@ -1260,6 +1322,26 @@
  */
 #define DECLASMTYPE(type)       type RTCALL
 
+/** @def RT_ASM_DECL_PRAGMA_WATCOM
+ * How to declare a assembly method prototype with watcom \#pragma aux definition.  */
+/** @def RT_ASM_DECL_PRAGMA_WATCOM_386
+ * Same as RT_ASM_DECL_PRAGMA_WATCOM, but there is no 16-bit version when
+ * 8086, 80186 or 80286 is selected as the target CPU. */
+#if defined(__WATCOMC__) && ARCH_BITS == 16 && defined(RT_ARCH_X86)
+# define RT_ASM_DECL_PRAGMA_WATCOM(type) type
+# if defined(__SW_0) || defined(__SW_1) || defined(__SW_2)
+#  define RT_ASM_DECL_PRAGMA_WATCOM_386(type)   DECLASM(type)
+# else
+#  define RT_ASM_DECL_PRAGMA_WATCOM_386(type)   type
+# endif
+#elif defined(__WATCOMC__) && ARCH_BITS == 32 && defined(RT_ARCH_X86)
+# define RT_ASM_DECL_PRAGMA_WATCOM(type)        type
+# define RT_ASM_DECL_PRAGMA_WATCOM_386(type)    type
+#else
+# define RT_ASM_DECL_PRAGMA_WATCOM(type)        DECLASM(type)
+# define RT_ASM_DECL_PRAGMA_WATCOM_386(type)    DECLASM(type)
+#endif
+
 /** @def DECL_NO_RETURN
  * How to declare a function which does not return.
  * @note This macro can be combined with other macros, for example
@@ -1338,7 +1420,7 @@
  * @param   name    The name of the struct/union/class member.
  * @param   args    The argument list enclosed in parentheses.
  */
-#ifdef IN_RING3
+#if defined(IN_RING3) || defined(DOXYGEN_RUNNING)
 # define DECLR3CALLBACKMEMBER(type, name, args)  DECLCALLBACKMEMBER(type, name) args
 #else
 # define DECLR3CALLBACKMEMBER(type, name, args)  RTR3PTR name
@@ -1350,10 +1432,15 @@
  * @param   name    The name of the struct/union/class member.
  * @param   args    The argument list enclosed in parentheses.
  */
-#ifdef IN_RC
+#if defined(IN_RC) || defined(DOXYGEN_RUNNING)
 # define DECLRCCALLBACKMEMBER(type, name, args)  DECLCALLBACKMEMBER(type, name)  args
 #else
 # define DECLRCCALLBACKMEMBER(type, name, args)  RTRCPTR name
+#endif
+#if defined(IN_RC) || defined(DOXYGEN_RUNNING)
+# define DECLRGCALLBACKMEMBER(type, name, args)  DECLCALLBACKMEMBER(type, name)  args
+#else
+# define DECLRGCALLBACKMEMBER(type, name, args)  RTRGPTR name
 #endif
 
 /** @def DECLR0CALLBACKMEMBER
@@ -1362,7 +1449,7 @@
  * @param   name    The name of the struct/union/class member.
  * @param   args    The argument list enclosed in parentheses.
  */
-#ifdef IN_RING0
+#if defined(IN_RING0) || defined(DOXYGEN_RUNNING)
 # define DECLR0CALLBACKMEMBER(type, name, args)  DECLCALLBACKMEMBER(type, name) args
 #else
 # define DECLR0CALLBACKMEMBER(type, name, args)  RTR0PTR name
@@ -1373,9 +1460,9 @@
  * @param   type    The return type of the function declaration.
  * @remarks Don't use this macro on C++ methods.
  */
-#ifdef __GNUC__
+#if defined(__GNUC__) && !defined(DOXYGEN_RUNNING)
 # define DECLINLINE(type) static __inline__ type
-#elif defined(__cplusplus)
+#elif defined(__cplusplus) || defined(DOXYGEN_RUNNING)
 # define DECLINLINE(type) static inline type
 #elif defined(_MSC_VER)
 # define DECLINLINE(type) static _inline type
@@ -2403,6 +2490,45 @@
  */
 #define RT_ELEMENTS(aArray)                     ( sizeof(aArray) / sizeof((aArray)[0]) )
 
+/** @def RT_SAFE_SUBSCRIPT
+ * Safe array subscript using modulo and size_t cast.
+ * @param   a_Array     The array.
+ * @param   a_idx       The array index, cast to size_t to ensure unsigned.
+ */
+#define RT_SAFE_SUBSCRIPT(a_Array, a_idx)      (a_Array)[(size_t)(a_idx) % RT_ELEMENTS(a_Array)]
+
+/** @def RT_SAFE_SUBSCRIPT32
+ * Safe array subscript using modulo and uint32_t cast.
+ * @param   a_Array     The array.
+ * @param   a_idx       The array index, cast to size_t to ensure unsigned.
+ * @note    Only consider using this if array size is not power of two.
+ */
+#define RT_SAFE_SUBSCRIPT32(a_Array, a_idx)    (a_Array)[(uint32_t)(a_idx) % RT_ELEMENTS(a_Array)]
+
+/** @def RT_SAFE_SUBSCRIPT16
+ * Safe array subscript using modulo and uint16_t cast.
+ * @param   a_Array     The array.
+ * @param   a_idx       The array index, cast to size_t to ensure unsigned.
+ * @note    Only consider using this if array size is not power of two.
+ */
+#define RT_SAFE_SUBSCRIPT16(a_Array, a_idx)     (a_Array)[(uint16_t)(a_idx) % RT_ELEMENTS(a_Array)]
+
+/** @def RT_SAFE_SUBSCRIPT8
+ * Safe array subscript using modulo and uint8_t cast.
+ * @param   a_Array     The array.
+ * @param   a_idx       The array index, cast to size_t to ensure unsigned.
+ * @note    Only consider using this if array size is not power of two.
+ */
+#define RT_SAFE_SUBSCRIPT8(a_Array, a_idx)      (a_Array)[(uint8_t)(a_idx) % RT_ELEMENTS(a_Array)]
+
+/** @def RT_SAFE_SUBSCRIPT_NC
+ * Safe array subscript using modulo but no cast.
+ * @param   a_Array     The array.
+ * @param   a_idx       The array index - assumes unsigned type.
+ * @note    Only consider using this if array size is not power of two.
+ */
+#define RT_SAFE_SUBSCRIPT_NC(a_Array, a_idx)    (a_Array)[(a_idx) % RT_ELEMENTS(a_Array)]
+
 /** @def RT_FLEXIBLE_ARRAY
  * What to up inside the square brackets when declaring a structure member
  * with a flexible size.
@@ -2611,28 +2737,28 @@
 
 /** @def RT_BYTE1
  * Gets the first byte of something. */
-#define RT_BYTE1(a)                             ( (a)         & 0xff )
+#define RT_BYTE1(a)                             ( (uint8_t)((a)         & 0xff) )
 /** @def RT_BYTE2
  * Gets the second byte of something. */
-#define RT_BYTE2(a)                             ( ((a) >>  8) & 0xff )
+#define RT_BYTE2(a)                             ( (uint8_t)(((a) >>  8) & 0xff) )
 /** @def RT_BYTE3
  * Gets the second byte of something. */
-#define RT_BYTE3(a)                             ( ((a) >> 16) & 0xff )
+#define RT_BYTE3(a)                             ( (uint8_t)(((a) >> 16) & 0xff) )
 /** @def RT_BYTE4
  * Gets the fourth byte of something. */
-#define RT_BYTE4(a)                             ( ((a) >> 24) & 0xff )
+#define RT_BYTE4(a)                             ( (uint8_t)(((a) >> 24) & 0xff) )
 /** @def RT_BYTE5
  * Gets the fifth byte of something. */
-#define RT_BYTE5(a)                             ( ((a) >> 32) & 0xff )
+#define RT_BYTE5(a)                             ( (uint8_t)(((a) >> 32) & 0xff) )
 /** @def RT_BYTE6
  * Gets the sixth byte of something. */
-#define RT_BYTE6(a)                             ( ((a) >> 40) & 0xff )
+#define RT_BYTE6(a)                             ( (uint8_t)(((a) >> 40) & 0xff) )
 /** @def RT_BYTE7
  * Gets the seventh byte of something. */
-#define RT_BYTE7(a)                             ( ((a) >> 48) & 0xff )
+#define RT_BYTE7(a)                             ( (uint8_t)(((a) >> 48) & 0xff) )
 /** @def RT_BYTE8
  * Gets the eight byte of something. */
-#define RT_BYTE8(a)                             ( ((a) >> 56) & 0xff )
+#define RT_BYTE8(a)                             ( (uint8_t)(((a) >> 56) & 0xff) )
 
 
 /** @def RT_LODWORD
@@ -3107,7 +3233,7 @@
 /** @def RT_NOREF11
  * RT_NOREF_PV shorthand taking eleven parameters.  */
 #define RT_NOREF11(var1, var2, var3, var4, var5, var6, var7, var8, var9, var10, var11) \
-    RT_NOREF_PV(var1); RT_NOREF10(var2, var3, var4, var5, var6, var7, var8, var9, var10)
+    RT_NOREF_PV(var1); RT_NOREF10(var2, var3, var4, var5, var6, var7, var8, var9, var10, var11)
 /** @def RT_NOREF12
  * RT_NOREF_PV shorthand taking twelve parameters.  */
 #define RT_NOREF12(var1, var2, var3, var4, var5, var6, var7, var8, var9, var10, var11, var12) \
@@ -3380,17 +3506,21 @@
  */
 /** 1 hour expressed in nanoseconds (64-bit). */
 #define RT_NS_1HOUR             UINT64_C(3600000000000)
+/** 30 minutes expressed in nanoseconds (64-bit). */
+#define RT_NS_30MIN             UINT64_C(1800000000000)
+/** 5 minutes expressed in nanoseconds (64-bit). */
+#define RT_NS_5MIN              UINT64_C(300000000000)
 /** 1 minute expressed in nanoseconds (64-bit). */
 #define RT_NS_1MIN              UINT64_C(60000000000)
-/** 45 second expressed in nanoseconds. */
+/** 45 seconds expressed in nanoseconds (64-bit). */
 #define RT_NS_45SEC             UINT64_C(45000000000)
-/** 30 second expressed in nanoseconds. */
+/** 30 seconds expressed in nanoseconds (64-bit). */
 #define RT_NS_30SEC             UINT64_C(30000000000)
-/** 20 second expressed in nanoseconds. */
+/** 20 seconds expressed in nanoseconds (64-bit). */
 #define RT_NS_20SEC             UINT64_C(20000000000)
-/** 15 second expressed in nanoseconds. */
+/** 15 seconds expressed in nanoseconds (64-bit). */
 #define RT_NS_15SEC             UINT64_C(15000000000)
-/** 10 second expressed in nanoseconds. */
+/** 10 seconds expressed in nanoseconds (64-bit). */
 #define RT_NS_10SEC             UINT64_C(10000000000)
 /** 1 second expressed in nanoseconds. */
 #define RT_NS_1SEC              UINT32_C(1000000000)
@@ -3398,6 +3528,10 @@
 #define RT_NS_100MS             UINT32_C(100000000)
 /** 10 millsecond expressed in nanoseconds. */
 #define RT_NS_10MS              UINT32_C(10000000)
+/** 8 millsecond expressed in nanoseconds. */
+#define RT_NS_8MS               UINT32_C(8000000)
+/** 2 millsecond expressed in nanoseconds. */
+#define RT_NS_2MS               UINT32_C(2000000)
 /** 1 millsecond expressed in nanoseconds. */
 #define RT_NS_1MS               UINT32_C(1000000)
 /** 100 microseconds expressed in nanoseconds. */
@@ -3424,8 +3558,24 @@
 
 /** 1 hour expressed in microseconds. */
 #define RT_US_1HOUR             UINT32_C(3600000000)
+/** 30 minutes expressed in microseconds. */
+#define RT_US_30MIN             UINT32_C(1800000000)
+/** 5 minutes expressed in microseconds. */
+#define RT_US_5MIN              UINT32_C(300000000)
 /** 1 minute expressed in microseconds. */
 #define RT_US_1MIN              UINT32_C(60000000)
+/** 45 seconds expressed in microseconds. */
+#define RT_US_45SEC             UINT32_C(45000000)
+/** 30 seconds expressed in microseconds. */
+#define RT_US_30SEC             UINT32_C(30000000)
+/** 20 seconds expressed in microseconds. */
+#define RT_US_20SEC             UINT32_C(20000000)
+/** 15 seconds expressed in microseconds. */
+#define RT_US_15SEC             UINT32_C(15000000)
+/** 10 seconds expressed in microseconds. */
+#define RT_US_10SEC             UINT32_C(10000000)
+/** 5 seconds expressed in microseconds. */
+#define RT_US_5SEC              UINT32_C(5000000)
 /** 1 second expressed in microseconds. */
 #define RT_US_1SEC              UINT32_C(1000000)
 /** 100 millsecond expressed in microseconds. */
@@ -3437,8 +3587,24 @@
 
 /** 1 hour expressed in microseconds - 64-bit type. */
 #define RT_US_1HOUR_64          UINT64_C(3600000000)
+/** 30 minutes expressed in microseconds - 64-bit type. */
+#define RT_US_30MIN_64          UINT64_C(1800000000)
+/** 5 minutes expressed in microseconds - 64-bit type. */
+#define RT_US_5MIN_64           UINT64_C(300000000)
 /** 1 minute expressed in microseconds - 64-bit type. */
 #define RT_US_1MIN_64           UINT64_C(60000000)
+/** 45 seconds expressed in microseconds - 64-bit type. */
+#define RT_US_45SEC_64          UINT64_C(45000000)
+/** 30 seconds expressed in microseconds - 64-bit type. */
+#define RT_US_30SEC_64          UINT64_C(30000000)
+/** 20 seconds expressed in microseconds - 64-bit type. */
+#define RT_US_20SEC_64          UINT64_C(20000000)
+/** 15 seconds expressed in microseconds - 64-bit type. */
+#define RT_US_15SEC_64          UINT64_C(15000000)
+/** 10 seconds expressed in microseconds - 64-bit type. */
+#define RT_US_10SEC_64          UINT64_C(10000000)
+/** 5 seconds expressed in microseconds - 64-bit type. */
+#define RT_US_5SEC_64           UINT64_C(5000000)
 /** 1 second expressed in microseconds - 64-bit type. */
 #define RT_US_1SEC_64           UINT64_C(1000000)
 /** 100 millsecond expressed in microseconds - 64-bit type. */
@@ -3450,15 +3616,47 @@
 
 /** 1 hour expressed in milliseconds. */
 #define RT_MS_1HOUR             UINT32_C(3600000)
+/** 30 minutes expressed in milliseconds. */
+#define RT_MS_30MIN             UINT32_C(1800000)
+/** 5 minutes expressed in milliseconds. */
+#define RT_MS_5MIN              UINT32_C(300000)
 /** 1 minute expressed in milliseconds. */
 #define RT_MS_1MIN              UINT32_C(60000)
+/** 45 seconds expressed in milliseconds. */
+#define RT_MS_45SEC             UINT32_C(45000)
+/** 30 seconds expressed in milliseconds. */
+#define RT_MS_30SEC             UINT32_C(30000)
+/** 20 seconds expressed in milliseconds. */
+#define RT_MS_20SEC             UINT32_C(20000)
+/** 15 seconds expressed in milliseconds. */
+#define RT_MS_15SEC             UINT32_C(15000)
+/** 10 seconds expressed in milliseconds. */
+#define RT_MS_10SEC             UINT32_C(10000)
+/** 5 seconds expressed in milliseconds. */
+#define RT_MS_5SEC              UINT32_C(5000)
 /** 1 second expressed in milliseconds. */
 #define RT_MS_1SEC              UINT32_C(1000)
 
 /** 1 hour expressed in milliseconds - 64-bit type. */
 #define RT_MS_1HOUR_64          UINT64_C(3600000)
+/** 30 minutes expressed in milliseconds - 64-bit type. */
+#define RT_MS_30MIN_64          UINT64_C(1800000)
+/** 5 minutes expressed in milliseconds - 64-bit type. */
+#define RT_MS_5MIN_64           UINT64_C(300000)
 /** 1 minute expressed in milliseconds - 64-bit type. */
 #define RT_MS_1MIN_64           UINT64_C(60000)
+/** 45 seconds expressed in milliseconds - 64-bit type. */
+#define RT_MS_45SEC_64          UINT64_C(45000)
+/** 30 seconds expressed in milliseconds - 64-bit type. */
+#define RT_MS_30SEC_64          UINT64_C(30000)
+/** 20 seconds expressed in milliseconds - 64-bit type. */
+#define RT_MS_20SEC_64          UINT64_C(20000)
+/** 15 seconds expressed in milliseconds - 64-bit type. */
+#define RT_MS_15SEC_64          UINT64_C(15000)
+/** 10 seconds expressed in milliseconds - 64-bit type. */
+#define RT_MS_10SEC_64          UINT64_C(10000)
+/** 5 seconds expressed in milliseconds - 64-bit type. */
+#define RT_MS_5SEC_64           UINT64_C(5000)
 /** 1 second expressed in milliseconds - 64-bit type. */
 #define RT_MS_1SEC_64           UINT64_C(1000)
 
@@ -3636,12 +3834,10 @@
 #define _(s) gettext(s)
 
 
-/** @def __PRETTY_FUNCTION__
- *  With GNU C we'd like to use the builtin __PRETTY_FUNCTION__, so define that
- *  for the other compilers.
- */
-#if !defined(__GNUC__) && !defined(__PRETTY_FUNCTION__)
-# ifdef _MSC_VER
+#if (!defined(__GNUC__) && !defined(__PRETTY_FUNCTION__)) || defined(DOXYGEN_RUNNING)
+# if defined(_MSC_VER) || defined(DOXYGEN_RUNNING)
+/** With GNU C we'd like to use the builtin __PRETTY_FUNCTION__, so define that
+ * for the other compilers. */
 #  define __PRETTY_FUNCTION__    __FUNCSIG__
 # else
 #  define __PRETTY_FUNCTION__    __FUNCTION__
@@ -3957,5 +4153,5 @@
 
 /** @} */
 
-#endif
+#endif /* !IPRT_INCLUDED_cdefs_h */
 

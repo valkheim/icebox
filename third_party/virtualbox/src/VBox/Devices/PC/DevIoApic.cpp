@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2016-2017 Oracle Corporation
+ * Copyright (C) 2016-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -40,26 +40,10 @@
 
 /** Implementation specified by the "Intel I/O Controller Hub 9
  *  (ICH9) Family" */
-#define IOAPIC_HARDWARE_VERSION_ICH9            1
+#define IOAPIC_VERSION_ICH9                     0x20
 /** Implementation specified by the "82093AA I/O Advanced Programmable Interrupt
 Controller" */
-#define IOAPIC_HARDWARE_VERSION_82093AA         2
-/** The IO APIC implementation to use. */
-#define IOAPIC_HARDWARE_VERSION                 IOAPIC_HARDWARE_VERSION_ICH9
-
-#if IOAPIC_HARDWARE_VERSION == IOAPIC_HARDWARE_VERSION_82093AA
-/** The version. */
-# define IOAPIC_VERSION                         0x11
-/** The ID mask. */
-# define IOAPIC_ID_MASK                         0x0f
-#elif IOAPIC_HARDWARE_VERSION == IOAPIC_HARDWARE_VERSION_ICH9
-/** The version. */
-# define IOAPIC_VERSION                         0x20
-/** The ID mask. */
-# define IOAPIC_ID_MASK                         0xff
-#else
-# error "Implement me"
-#endif
+#define IOAPIC_VERSION_82093AA                  0x11
 
 /** The default MMIO base physical address. */
 #define IOAPIC_MMIO_BASE_PHYSADDR               UINT64_C(0xfec00000)
@@ -71,7 +55,9 @@ Controller" */
 /** The number of interrupt input pins. */
 #define IOAPIC_NUM_INTR_PINS                    24
 /** Maximum redirection entires. */
-#define IOAPIC_MAX_REDIR_ENTRIES                (IOAPIC_NUM_INTR_PINS - 1)
+#define IOAPIC_MAX_RTE_INDEX                    (IOAPIC_NUM_INTR_PINS - 1)
+/** Reduced RTEs used by SIO.A (82379AB). */
+#define IOAPIC_REDUCED_MAX_RTE_INDEX            (16 - 1)
 
 /** Version register - Gets the version. */
 #define IOAPIC_VER_GET_VER(a_Reg)               ((a_Reg) & 0xff)
@@ -88,7 +74,7 @@ Controller" */
 #define IOAPIC_ARB_GET_ID(a_Reg)                ((a_Reg) >> 24 & 0xf)
 
 /** ID register - Gets the ID. */
-#define IOAPIC_ID_GET_ID(a_Reg)                 ((a_Reg) >> 24 & IOAPIC_ID_MASK)
+#define IOAPIC_ID_GET_ID(a_Reg)                 ((a_Reg) >> 24 & 0xff)
 
 /** Redirection table entry - Vector. */
 #define IOAPIC_RTE_VECTOR                       UINT64_C(0xff)
@@ -134,28 +120,27 @@ Controller" */
 /** Redirection table entry - Gets the vector. */
 #define IOAPIC_RTE_GET_VECTOR(a_Reg)            ((a_Reg) & IOAPIC_RTE_VECTOR)
 
-#if IOAPIC_HARDWARE_VERSION == IOAPIC_HARDWARE_VERSION_82093AA
-/** Redirection table entry - Valid write mask. */
-#define IOAPIC_RTE_VALID_WRITE_MASK             (  IOAPIC_RTE_DEST     | IOAPIC_RTE_MASK      | IOAPIC_RTE_TRIGGER_MODE \
+/** Redirection table entry - Valid write mask for 82093AA. */
+#define IOAPIC_RTE_VALID_WRITE_MASK_82093AA     (  IOAPIC_RTE_DEST     | IOAPIC_RTE_MASK      | IOAPIC_RTE_TRIGGER_MODE \
                                                  | IOAPIC_RTE_POLARITY | IOAPIC_RTE_DEST_MODE | IOAPIC_RTE_DELIVERY_MODE \
                                                  | IOAPIC_RTE_VECTOR)
-/** Redirection table entry - Valid read mask. */
-# define IOAPIC_RTE_VALID_READ_MASK             (  IOAPIC_RTE_DEST       | IOAPIC_RTE_MASK          | IOAPIC_RTE_TRIGGER_MODE \
+/** Redirection table entry - Valid read mask for 82093AA. */
+#define IOAPIC_RTE_VALID_READ_MASK_82093AA      (  IOAPIC_RTE_DEST       | IOAPIC_RTE_MASK          | IOAPIC_RTE_TRIGGER_MODE \
                                                  | IOAPIC_RTE_REMOTE_IRR | IOAPIC_RTE_POLARITY      | IOAPIC_RTE_DELIVERY_STATUS \
                                                  | IOAPIC_RTE_DEST_MODE  | IOAPIC_RTE_DELIVERY_MODE | IOAPIC_RTE_VECTOR)
-#elif IOAPIC_HARDWARE_VERSION == IOAPIC_HARDWARE_VERSION_ICH9
-/** Redirection table entry - Valid write mask (incl. remote IRR). */
+
+/** Redirection table entry - Valid write mask for ICH9. */
 /** @note The remote IRR bit has been reverted to read-only as it turns out the
  *        ICH9 spec. is wrong, see @bugref{8386#c46}. */
-#define IOAPIC_RTE_VALID_WRITE_MASK             (  IOAPIC_RTE_DEST       | IOAPIC_RTE_MASK      | IOAPIC_RTE_TRIGGER_MODE \
+#define IOAPIC_RTE_VALID_WRITE_MASK_ICH9        (  IOAPIC_RTE_DEST       | IOAPIC_RTE_MASK      | IOAPIC_RTE_TRIGGER_MODE \
                                                  /*| IOAPIC_RTE_REMOTE_IRR */| IOAPIC_RTE_POLARITY  | IOAPIC_RTE_DEST_MODE \
                                                  | IOAPIC_RTE_DELIVERY_MODE | IOAPIC_RTE_VECTOR)
-/** Redirection table entry - Valid read mask (incl. ExtDestID). */
-# define IOAPIC_RTE_VALID_READ_MASK             (  IOAPIC_RTE_DEST            | IOAPIC_RTE_EXT_DEST_ID | IOAPIC_RTE_MASK \
+/** Redirection table entry - Valid read mask (incl. ExtDestID) for ICH9. */
+#define IOAPIC_RTE_VALID_READ_MASK_ICH9         (  IOAPIC_RTE_DEST            | IOAPIC_RTE_EXT_DEST_ID | IOAPIC_RTE_MASK \
                                                  | IOAPIC_RTE_TRIGGER_MODE    | IOAPIC_RTE_REMOTE_IRR  | IOAPIC_RTE_POLARITY \
                                                  | IOAPIC_RTE_DELIVERY_STATUS | IOAPIC_RTE_DEST_MODE   | IOAPIC_RTE_DELIVERY_MODE \
                                                  | IOAPIC_RTE_VECTOR)
-#endif
+
 /** Redirection table entry - Trigger mode edge. */
 #define IOAPIC_RTE_TRIGGER_MODE_EDGE            0
 /** Redirection table entry - Trigger mode level. */
@@ -169,27 +154,24 @@ Controller" */
 /** Index of indirect registers in the I/O APIC register table. */
 #define IOAPIC_INDIRECT_INDEX_ID                0x0
 #define IOAPIC_INDIRECT_INDEX_VERSION           0x1
-#if IOAPIC_HARDWARE_VERSION == IOAPIC_HARDWARE_VERSION_82093AA
-# define IOAPIC_INDIRECT_INDEX_ARB              0x2
-#endif
-#define IOAPIC_INDIRECT_INDEX_REDIR_TBL_START   0x10
-#define IOAPIC_INDIRECT_INDEX_REDIR_TBL_END     0x3F
+#define IOAPIC_INDIRECT_INDEX_ARB               0x2     /* Older I/O APIC only. */
+#define IOAPIC_INDIRECT_INDEX_REDIR_TBL_START   0x10    /* First valid RTE register index. */
+#define IOAPIC_INDIRECT_INDEX_RTE_END           0x3F    /* Last valid RTE register index (24 RTEs). */
+#define IOAPIC_REDUCED_INDIRECT_INDEX_RTE_END   0x2F    /* Last valid RTE register index (16 RTEs). */
 
 /** Offset of direct registers in the I/O APIC MMIO space. */
 #define IOAPIC_DIRECT_OFF_INDEX                 0x00
 #define IOAPIC_DIRECT_OFF_DATA                  0x10
-#if IOAPIC_HARDWARE_VERSION == IOAPIC_HARDWARE_VERSION_ICH9
-# define IOAPIC_DIRECT_OFF_EOI                  0x40
-#endif
+#define IOAPIC_DIRECT_OFF_EOI                   0x40    /* Newer I/O APIC only. */
 
 /* Use PDM critsect for now for I/O APIC locking, see @bugref{8245#c121}. */
 #define IOAPIC_WITH_PDM_CRITSECT
 #ifdef IOAPIC_WITH_PDM_CRITSECT
-# define IOAPIC_LOCK(pThis, rcBusy)         (pThis)->CTX_SUFF(pIoApicHlp)->pfnLock((pThis)->CTX_SUFF(pDevIns), (rcBusy))
-# define IOAPIC_UNLOCK(pThis)               (pThis)->CTX_SUFF(pIoApicHlp)->pfnUnlock((pThis)->CTX_SUFF(pDevIns))
+# define IOAPIC_LOCK(a_pDevIns, a_pThis, a_pThisCC, rcBusy)  (a_pThisCC)->pIoApicHlp->pfnLock((a_pDevIns), (rcBusy))
+# define IOAPIC_UNLOCK(a_pDevIns, a_pThis, a_pThisCC)        (a_pThisCC)->pIoApicHlp->pfnUnlock((a_pDevIns))
 #else
-# define IOAPIC_LOCK(pThis, rcBusy)         PDMCritSectEnter(&(pThis)->CritSect, (rcBusy))
-# define IOAPIC_UNLOCK(pThis)               PDMCritSectLeave(&(pThis)->CritSect)
+# define IOAPIC_LOCK(a_pDevIns, a_pThis, a_pThisCC, rcBusy)  PDMDevHlpCritSectEnter((a_pDevIns), &(a_pThis)->CritSect, (rcBusy))
+# define IOAPIC_UNLOCK(a_pDevIns, a_pThis, a_pThisCC)        PDMDevHlpCritSectLeave((a_pDevIns), &(a_pThis)->CritSect)
 #endif
 
 
@@ -197,48 +179,48 @@ Controller" */
 *   Structures and Typedefs                                                                                                      *
 *********************************************************************************************************************************/
 /**
- * The per-VM I/O APIC device state.
+ * The shared I/O APIC device state.
  */
 typedef struct IOAPIC
 {
-    /** The device instance - R3 Ptr. */
-    PPDMDEVINSR3            pDevInsR3;
-    /** The IOAPIC helpers - R3 Ptr. */
-    PCPDMIOAPICHLPR3        pIoApicHlpR3;
-
-    /** The device instance - R0 Ptr. */
-    PPDMDEVINSR0            pDevInsR0;
-    /** The IOAPIC helpers - R0 Ptr. */
-    PCPDMIOAPICHLPR0        pIoApicHlpR0;
-
-    /** The device instance - RC Ptr. */
-    PPDMDEVINSRC            pDevInsRC;
-    /** The IOAPIC helpers - RC Ptr. */
-    PCPDMIOAPICHLPRC        pIoApicHlpRC;
-
     /** The ID register. */
     uint8_t volatile        u8Id;
     /** The index register. */
     uint8_t volatile        u8Index;
     /** Number of CPUs. */
     uint8_t                 cCpus;
+    /** I/O APIC version. */
+    uint8_t                 u8ApicVer;
+    /** I/O APIC ID mask. */
+    uint8_t                 u8IdMask;
+    /** Maximum Redirection Table Entry (RTE) Entry. */
+    uint8_t                 u8MaxRte;
+    /** Last valid RTE indirect register index. */
+    uint8_t                 u8LastRteRegIdx;
     /* Alignment padding. */
-    uint8_t                 u8Padding0[5];
+    uint8_t                 u8Padding0[1];
+    /** Redirection table entry - Valid write mask. */
+    uint64_t                u64RteWriteMask;
+    /** Redirection table entry - Valid read mask. */
+    uint64_t                u64RteReadMask;
 
     /** The redirection table registers. */
     uint64_t                au64RedirTable[IOAPIC_NUM_INTR_PINS];
     /** The IRQ tags and source IDs for each pin (tracing purposes). */
     uint32_t                au32TagSrc[IOAPIC_NUM_INTR_PINS];
 
-    /** Alignment padding. */
-    uint32_t                u32Padding2;
     /** The internal IRR reflecting state of the interrupt lines. */
     uint32_t                uIrr;
+    /** Alignment padding. */
+    uint32_t                u32Padding2;
 
 #ifndef IOAPIC_WITH_PDM_CRITSECT
     /** The critsect for updating to the RTEs. */
     PDMCRITSECT             CritSect;
 #endif
+
+    /** The MMIO region. */
+    IOMMMIOHANDLE           hMmio;
 
 #ifdef VBOX_WITH_STATISTICS
     /** Number of MMIO reads in RZ. */
@@ -278,15 +260,57 @@ typedef struct IOAPIC
     STAMCOUNTER             StatEoiReceived;
 #endif
 } IOAPIC;
-/** Pointer to IOAPIC data. */
-typedef IOAPIC *PIOAPIC;
-/** Pointer to a const IOAPIC data. */
-typedef IOAPIC const *PCIOAPIC;
 AssertCompileMemberAlignment(IOAPIC, au64RedirTable, 8);
+/** Pointer to shared IOAPIC data. */
+typedef IOAPIC *PIOAPIC;
+/** Pointer to const shared IOAPIC data. */
+typedef IOAPIC const *PCIOAPIC;
+
+
+/**
+ * The I/O APIC device state for ring-3.
+ */
+typedef struct IOAPICR3
+{
+    /** The IOAPIC helpers. */
+    R3PTRTYPE(PCPDMIOAPICHLP)   pIoApicHlp;
+} IOAPICR3;
+/** Pointer to the I/O APIC device state for ring-3. */
+typedef IOAPICR3 *PIOAPICR3;
+
+
+/**
+ * The I/O APIC device state for ring-0.
+ */
+typedef struct IOAPICR0
+{
+    /** The IOAPIC helpers. */
+    R0PTRTYPE(PCPDMIOAPICHLP)   pIoApicHlp;
+} IOAPICR0;
+/** Pointer to the I/O APIC device state for ring-0. */
+typedef IOAPICR0 *PIOAPICR0;
+
+
+/**
+ * The I/O APIC device state for raw-mode.
+ */
+typedef struct IOAPICRC
+{
+    /** The IOAPIC helpers. */
+    RCPTRTYPE(PCPDMIOAPICHLP)   pIoApicHlp;
+} IOAPICRC;
+/** Pointer to the I/O APIC device state for raw-mode. */
+typedef IOAPICRC *PIOAPICRC;
+
+
+/** The I/O APIC device state for the current context. */
+typedef CTX_SUFF(IOAPIC) IOAPICCC;
+/** Pointer to the I/O APIC device state for the current context. */
+typedef CTX_SUFF(PIOAPIC) PIOAPICCC;
+
 
 #ifndef VBOX_DEVICE_STRUCT_TESTCASE
 
-#if IOAPIC_HARDWARE_VERSION == IOAPIC_HARDWARE_VERSION_82093AA
 /**
  * Gets the arbitration register.
  *
@@ -297,7 +321,6 @@ DECLINLINE(uint32_t) ioapicGetArb(void)
     Log2(("IOAPIC: ioapicGetArb: returns 0\n"));
     return 0;
 }
-#endif
 
 
 /**
@@ -305,9 +328,9 @@ DECLINLINE(uint32_t) ioapicGetArb(void)
  *
  * @returns The version.
  */
-DECLINLINE(uint32_t) ioapicGetVersion(void)
+DECLINLINE(uint32_t) ioapicGetVersion(PCIOAPIC pThis)
 {
-    uint32_t uValue = RT_MAKE_U32(IOAPIC_VERSION, IOAPIC_MAX_REDIR_ENTRIES);
+    uint32_t uValue = RT_MAKE_U32(pThis->u8ApicVer, pThis->u8MaxRte);
     Log2(("IOAPIC: ioapicGetVersion: returns %#RX32\n", uValue));
     return uValue;
 }
@@ -316,13 +339,13 @@ DECLINLINE(uint32_t) ioapicGetVersion(void)
 /**
  * Sets the ID register.
  *
- * @param   pThis       Pointer to the IOAPIC instance.
+ * @param   pThis       The shared I/O APIC device state.
  * @param   uValue      The value to set.
  */
 DECLINLINE(void) ioapicSetId(PIOAPIC pThis, uint32_t uValue)
 {
     Log2(("IOAPIC: ioapicSetId: uValue=%#RX32\n", uValue));
-    ASMAtomicWriteU8(&pThis->u8Id, (uValue >> 24) & IOAPIC_ID_MASK);
+    ASMAtomicWriteU8(&pThis->u8Id, (uValue >> 24) & pThis->u8IdMask);
 }
 
 
@@ -330,11 +353,11 @@ DECLINLINE(void) ioapicSetId(PIOAPIC pThis, uint32_t uValue)
  * Gets the ID register.
  *
  * @returns The ID.
- * @param   pThis       Pointer to the IOAPIC instance.
+ * @param   pThis       The shared I/O APIC device state.
  */
 DECLINLINE(uint32_t) ioapicGetId(PCIOAPIC pThis)
 {
-    uint32_t uValue = (uint32_t)(pThis->u8Id & IOAPIC_ID_MASK) << 24;
+    uint32_t uValue = (uint32_t)pThis->u8Id << 24;
     Log2(("IOAPIC: ioapicGetId: returns %#RX32\n", uValue));
     return uValue;
 }
@@ -343,7 +366,7 @@ DECLINLINE(uint32_t) ioapicGetId(PCIOAPIC pThis)
 /**
  * Sets the index register.
  *
- * @param pThis     Pointer to the IOAPIC instance.
+ * @param pThis     The shared I/O APIC device state.
  * @param uValue    The value to set.
  */
 DECLINLINE(void) ioapicSetIndex(PIOAPIC pThis, uint32_t uValue)
@@ -370,14 +393,16 @@ DECLINLINE(uint32_t) ioapicGetIndex(PCIOAPIC pThis)
  * Signals the next pending interrupt for the specified Redirection Table Entry
  * (RTE).
  *
- * @param   pThis       The IOAPIC instance.
- * @param   idxRte      The index of the RTE.
+ * @param   pDevIns     The device instance.
+ * @param   pThis       The shared I/O APIC device state.
+ * @param   pThisCC     The I/O APIC device state for the current context.
+ * @param   idxRte      The index of the RTE (validated).
  *
  * @remarks It is the responsibility of the caller to verify that an interrupt is
  *          pending for the pin corresponding to the RTE before calling this
  *          function.
  */
-static void ioapicSignalIntrForRte(PIOAPIC pThis, uint8_t idxRte)
+static void ioapicSignalIntrForRte(PPDMDEVINS pDevIns, PIOAPIC pThis, PIOAPICCC pThisCC, uint8_t idxRte)
 {
 #ifndef IOAPIC_WITH_PDM_CRITSECT
     Assert(PDMCritSectIsOwner(&pThis->CritSect));
@@ -413,14 +438,14 @@ static void ioapicSignalIntrForRte(PIOAPIC pThis, uint8_t idxRte)
         /*
          * Deliver to the local APIC via the system/3-wire-APIC bus.
          */
-        int rc = pThis->CTX_SUFF(pIoApicHlp)->pfnApicBusDeliver(pThis->CTX_SUFF(pDevIns),
-                                                                u8Dest,
-                                                                u8DestMode,
-                                                                u8DeliveryMode,
-                                                                u8Vector,
-                                                                u8Polarity,
-                                                                u8TriggerMode,
-                                                                u32TagSrc);
+        int rc = pThisCC->pIoApicHlp->pfnApicBusDeliver(pDevIns,
+                                                        u8Dest,
+                                                        u8DestMode,
+                                                        u8DeliveryMode,
+                                                        u8Vector,
+                                                        u8Polarity,
+                                                        u8TriggerMode,
+                                                        u32TagSrc);
         /* Can't reschedule to R3. */
         Assert(rc == VINF_SUCCESS || rc == VERR_APIC_INTR_DISCARDED);
 #ifdef DEBUG_ramshankar
@@ -452,17 +477,20 @@ static void ioapicSignalIntrForRte(PIOAPIC pThis, uint8_t idxRte)
  * Gets the redirection table entry.
  *
  * @returns The redirection table entry.
- * @param   pThis       Pointer to the IOAPIC instance.
+ * @param   pThis       The shared I/O APIC device state.
  * @param   uIndex      The index value.
  */
 DECLINLINE(uint32_t) ioapicGetRedirTableEntry(PCIOAPIC pThis, uint32_t uIndex)
 {
     uint8_t const idxRte = (uIndex - IOAPIC_INDIRECT_INDEX_REDIR_TBL_START) >> 1;
+    AssertMsgReturn(idxRte < RT_ELEMENTS(pThis->au64RedirTable),
+                    ("Invalid index %u, expected < %u\n", idxRte, RT_ELEMENTS(pThis->au64RedirTable)),
+                    UINT32_MAX);
     uint32_t uValue;
     if (!(uIndex & 1))
-        uValue = RT_LO_U32(pThis->au64RedirTable[idxRte]) & RT_LO_U32(IOAPIC_RTE_VALID_READ_MASK);
+        uValue = RT_LO_U32(pThis->au64RedirTable[idxRte]) & RT_LO_U32(pThis->u64RteReadMask);
     else
-        uValue = RT_HI_U32(pThis->au64RedirTable[idxRte]) & RT_HI_U32(IOAPIC_RTE_VALID_READ_MASK);
+        uValue = RT_HI_U32(pThis->au64RedirTable[idxRte]) & RT_HI_U32(pThis->u64RteReadMask);
 
     LogFlow(("IOAPIC: ioapicGetRedirTableEntry: uIndex=%#RX32 idxRte=%u returns %#RX32\n", uIndex, idxRte, uValue));
     return uValue;
@@ -472,17 +500,22 @@ DECLINLINE(uint32_t) ioapicGetRedirTableEntry(PCIOAPIC pThis, uint32_t uIndex)
 /**
  * Sets the redirection table entry.
  *
- * @param   pThis       Pointer to the IOAPIC instance.
+ * @returns Strict VBox status code (VINF_IOM_R3_MMIO_WRITE / VINF_SUCCESS).
+ * @param   pDevIns     The device instance.
+ * @param   pThis       The shared I/O APIC device state.
+ * @param   pThisCC     The I/O APIC device state for the current context.
  * @param   uIndex      The index value.
  * @param   uValue      The value to set.
  */
-static int ioapicSetRedirTableEntry(PIOAPIC pThis, uint32_t uIndex, uint32_t uValue)
+static VBOXSTRICTRC ioapicSetRedirTableEntry(PPDMDEVINS pDevIns, PIOAPIC pThis, PIOAPICCC pThisCC,
+                                             uint32_t uIndex, uint32_t uValue)
 {
     uint8_t const idxRte = (uIndex - IOAPIC_INDIRECT_INDEX_REDIR_TBL_START) >> 1;
-    AssertMsg(idxRte < RT_ELEMENTS(pThis->au64RedirTable), ("Invalid index %u, expected <= %u\n", idxRte,
-                                                            RT_ELEMENTS(pThis->au64RedirTable)));
+    AssertMsgReturn(idxRte < RT_ELEMENTS(pThis->au64RedirTable),
+                    ("Invalid index %u, expected < %u\n", idxRte, RT_ELEMENTS(pThis->au64RedirTable)),
+                    VINF_SUCCESS);
 
-    int rc = IOAPIC_LOCK(pThis, VINF_IOM_R3_MMIO_WRITE);
+    VBOXSTRICTRC rc = IOAPIC_LOCK(pDevIns, pThis, pThisCC, VINF_IOM_R3_MMIO_WRITE);
     if (rc == VINF_SUCCESS)
     {
         /*
@@ -495,16 +528,16 @@ static int ioapicSetRedirTableEntry(PIOAPIC pThis, uint32_t uIndex, uint32_t uVa
         uint64_t const u64Rte = pThis->au64RedirTable[idxRte];
         if (!(uIndex & 1))
         {
-            uint32_t const u32RtePreserveLo = RT_LO_U32(u64Rte) & ~RT_LO_U32(IOAPIC_RTE_VALID_WRITE_MASK);
-            uint32_t const u32RteNewLo      = (uValue & RT_LO_U32(IOAPIC_RTE_VALID_WRITE_MASK)) | u32RtePreserveLo;
+            uint32_t const u32RtePreserveLo = RT_LO_U32(u64Rte) & ~RT_LO_U32(pThis->u64RteWriteMask);
+            uint32_t const u32RteNewLo      = (uValue & RT_LO_U32(pThis->u64RteWriteMask)) | u32RtePreserveLo;
             uint64_t const u64RteHi         = u64Rte & UINT64_C(0xffffffff00000000);
             pThis->au64RedirTable[idxRte]   = u64RteHi | u32RteNewLo;
         }
         else
         {
-            uint32_t const u32RtePreserveHi = RT_HI_U32(u64Rte) & ~RT_HI_U32(IOAPIC_RTE_VALID_WRITE_MASK);
+            uint32_t const u32RtePreserveHi = RT_HI_U32(u64Rte) & ~RT_HI_U32(pThis->u64RteWriteMask);
             uint32_t const u32RteLo         = RT_LO_U32(u64Rte);
-            uint64_t const u64RteNewHi      = ((uint64_t)((uValue & RT_HI_U32(IOAPIC_RTE_VALID_WRITE_MASK)) | u32RtePreserveHi) << 32);
+            uint64_t const u64RteNewHi      = ((uint64_t)((uValue & RT_HI_U32(pThis->u64RteWriteMask)) | u32RtePreserveHi) << 32);
             pThis->au64RedirTable[idxRte]   = u64RteNewHi | u32RteLo;
         }
 
@@ -513,9 +546,9 @@ static int ioapicSetRedirTableEntry(PIOAPIC pThis, uint32_t uIndex, uint32_t uVa
          */
         uint32_t const uPinMask = UINT32_C(1) << idxRte;
         if (pThis->uIrr & uPinMask)
-            ioapicSignalIntrForRte(pThis, idxRte);
+            ioapicSignalIntrForRte(pDevIns, pThis, pThisCC, idxRte);
 
-        IOAPIC_UNLOCK(pThis);
+        IOAPIC_UNLOCK(pDevIns, pThis, pThisCC);
         LogFlow(("IOAPIC: ioapicSetRedirTableEntry: uIndex=%#RX32 idxRte=%u uValue=%#RX32\n", uIndex, idxRte, uValue));
     }
     else
@@ -529,13 +562,14 @@ static int ioapicSetRedirTableEntry(PIOAPIC pThis, uint32_t uIndex, uint32_t uVa
  * Gets the data register.
  *
  * @returns The data value.
- * @param pThis     Pointer to the IOAPIC instance.
+ * @param pThis     The shared I/O APIC device state.
  */
 static uint32_t ioapicGetData(PCIOAPIC pThis)
 {
     uint8_t const uIndex = pThis->u8Index;
+    RT_UNTRUSTED_NONVOLATILE_COPY_FENCE();
     if (   uIndex >= IOAPIC_INDIRECT_INDEX_REDIR_TBL_START
-        && uIndex <= IOAPIC_INDIRECT_INDEX_REDIR_TBL_END)
+        && uIndex <= pThis->u8LastRteRegIdx)
         return ioapicGetRedirTableEntry(pThis, uIndex);
 
     uint32_t uValue;
@@ -546,14 +580,16 @@ static uint32_t ioapicGetData(PCIOAPIC pThis)
             break;
 
         case IOAPIC_INDIRECT_INDEX_VERSION:
-            uValue = ioapicGetVersion();
+            uValue = ioapicGetVersion(pThis);
             break;
 
-#if IOAPIC_HARDWARE_VERSION == IOAPIC_HARDWARE_VERSION_82093AA
         case IOAPIC_INDIRECT_INDEX_ARB:
-            uValue = ioapicGetArb();
-            break;
-#endif
+            if (pThis->u8ApicVer == IOAPIC_VERSION_82093AA)
+            {
+                uValue = ioapicGetArb();
+                break;
+            }
+            RT_FALL_THRU();
 
         default:
             uValue = UINT32_C(0xffffffff);
@@ -567,17 +603,21 @@ static uint32_t ioapicGetData(PCIOAPIC pThis)
 /**
  * Sets the data register.
  *
- * @param pThis     Pointer to the IOAPIC instance.
- * @param uValue    The value to set.
+ * @returns Strict VBox status code.
+ * @param   pDevIns     The device instance.
+ * @param   pThis       The shared I/O APIC device state.
+ * @param   pThisCC     The I/O APIC device state for the current context.
+ * @param   uValue      The value to set.
  */
-static int ioapicSetData(PIOAPIC pThis, uint32_t uValue)
+static VBOXSTRICTRC ioapicSetData(PPDMDEVINS pDevIns, PIOAPIC pThis, PIOAPICCC pThisCC, uint32_t uValue)
 {
     uint8_t const uIndex = pThis->u8Index;
+    RT_UNTRUSTED_NONVOLATILE_COPY_FENCE();
     LogFlow(("IOAPIC: ioapicSetData: uIndex=%#x uValue=%#RX32\n", uIndex, uValue));
 
     if (   uIndex >= IOAPIC_INDIRECT_INDEX_REDIR_TBL_START
-        && uIndex <= IOAPIC_INDIRECT_INDEX_REDIR_TBL_END)
-        return ioapicSetRedirTableEntry(pThis, uIndex, uValue);
+        && uIndex <= pThis->u8LastRteRegIdx)
+        return ioapicSetRedirTableEntry(pDevIns, pThis, pThisCC, uIndex, uValue);
 
     if (uIndex == IOAPIC_INDIRECT_INDEX_ID)
         ioapicSetId(pThis, uValue);
@@ -589,16 +629,17 @@ static int ioapicSetData(PIOAPIC pThis, uint32_t uValue)
 
 
 /**
- * @interface_method_impl{PDMIOAPICREG,pfnSetEoiR3}
+ * @interface_method_impl{PDMIOAPICREG,pfnSetEoi}
  */
-PDMBOTHCBDECL(int) ioapicSetEoi(PPDMDEVINS pDevIns, uint8_t u8Vector)
+static DECLCALLBACK(VBOXSTRICTRC) ioapicSetEoi(PPDMDEVINS pDevIns, uint8_t u8Vector)
 {
-    PIOAPIC pThis = PDMINS_2_DATA(pDevIns, PIOAPIC);
+    PIOAPIC   pThis   = PDMDEVINS_2_DATA(pDevIns, PIOAPIC);
+    PIOAPICCC pThisCC = PDMDEVINS_2_DATA_CC(pDevIns, PIOAPICCC);
     STAM_COUNTER_INC(&pThis->CTX_SUFF_Z(StatSetEoi));
     LogFlow(("IOAPIC: ioapicSetEoi: u8Vector=%#x (%u)\n", u8Vector, u8Vector));
 
     bool fRemoteIrrCleared = false;
-    int rc = IOAPIC_LOCK(pThis, VINF_IOM_R3_MMIO_WRITE);
+    VBOXSTRICTRC rc = IOAPIC_LOCK(pDevIns, pThis, pThisCC, VINF_IOM_R3_MMIO_WRITE);
     if (rc == VINF_SUCCESS)
     {
         for (uint8_t idxRte = 0; idxRte < RT_ELEMENTS(pThis->au64RedirTable); idxRte++)
@@ -620,11 +661,11 @@ PDMBOTHCBDECL(int) ioapicSetEoi(PPDMDEVINS pDevIns, uint8_t u8Vector)
                  */
                 uint32_t const uPinMask = UINT32_C(1) << idxRte;
                 if (pThis->uIrr & uPinMask)
-                    ioapicSignalIntrForRte(pThis, idxRte);
+                    ioapicSignalIntrForRte(pDevIns, pThis, pThisCC, idxRte);
             }
         }
 
-        IOAPIC_UNLOCK(pThis);
+        IOAPIC_UNLOCK(pDevIns, pThis, pThisCC);
         AssertMsg(fRemoteIrrCleared, ("Failed to clear remote IRR for vector %#x (%u)\n", u8Vector, u8Vector));
     }
     else
@@ -635,24 +676,25 @@ PDMBOTHCBDECL(int) ioapicSetEoi(PPDMDEVINS pDevIns, uint8_t u8Vector)
 
 
 /**
- * @interface_method_impl{PDMIOAPICREG,pfnSetIrqR3}
+ * @interface_method_impl{PDMIOAPICREG,pfnSetIrq}
  */
-PDMBOTHCBDECL(void) ioapicSetIrq(PPDMDEVINS pDevIns, int iIrq, int iLevel, uint32_t uTagSrc)
+static DECLCALLBACK(void) ioapicSetIrq(PPDMDEVINS pDevIns, int iIrq, int iLevel, uint32_t uTagSrc)
 {
-#define IOAPIC_ASSERT_IRQ(a_idxRte, a_PinMask)       do { \
+#define IOAPIC_ASSERT_IRQ(a_idxRte, a_PinMask) do { \
         pThis->au32TagSrc[(a_idxRte)] = !pThis->au32TagSrc[(a_idxRte)] ? uTagSrc : RT_BIT_32(31); \
         pThis->uIrr |= a_PinMask; \
-        ioapicSignalIntrForRte(pThis, (a_idxRte)); \
+        ioapicSignalIntrForRte(pDevIns, pThis, pThisCC, (a_idxRte)); \
     } while (0)
 
-    PIOAPIC pThis = PDMINS_2_DATA(pDevIns, PIOAPIC);
+    PIOAPIC   pThis   = PDMDEVINS_2_DATA(pDevIns, PIOAPIC);
+    PIOAPICCC pThisCC = PDMDEVINS_2_DATA_CC(pDevIns, PIOAPICCC);
     LogFlow(("IOAPIC: ioapicSetIrq: iIrq=%d iLevel=%d uTagSrc=%#x\n", iIrq, iLevel, uTagSrc));
 
     STAM_COUNTER_INC(&pThis->CTX_SUFF_Z(StatSetIrq));
 
-    if (RT_LIKELY(iIrq >= 0 && iIrq < (int)RT_ELEMENTS(pThis->au64RedirTable)))
+    if (RT_LIKELY((unsigned)iIrq < RT_ELEMENTS(pThis->au64RedirTable)))
     {
-        int rc = IOAPIC_LOCK(pThis, VINF_SUCCESS);
+        int rc = IOAPIC_LOCK(pDevIns, pThis, pThisCC, VINF_SUCCESS);
         AssertRC(rc);
 
         uint8_t  const idxRte        = iIrq;
@@ -670,7 +712,7 @@ PDMBOTHCBDECL(void) ioapicSetIrq(PPDMDEVINS pDevIns, int iIrq, int iLevel, uint3
         if (!fActive)
         {
             pThis->uIrr &= ~uPinMask;
-            IOAPIC_UNLOCK(pThis);
+            IOAPIC_UNLOCK(pDevIns, pThis, pThisCC);
             return;
         }
 
@@ -723,18 +765,18 @@ PDMBOTHCBDECL(void) ioapicSetIrq(PPDMDEVINS pDevIns, int iIrq, int iLevel, uint3
             IOAPIC_ASSERT_IRQ(idxRte, uPinMask);
         }
 
-        IOAPIC_UNLOCK(pThis);
+        IOAPIC_UNLOCK(pDevIns, pThis, pThisCC);
     }
 #undef IOAPIC_ASSERT_IRQ
 }
 
 
 /**
- * @interface_method_impl{PDMIOAPICREG,pfnSendMsiR3}
+ * @interface_method_impl{PDMIOAPICREG,pfnSendMsi}
  */
-PDMBOTHCBDECL(void) ioapicSendMsi(PPDMDEVINS pDevIns, RTGCPHYS GCPhys, uint32_t uValue, uint32_t uTagSrc)
+static DECLCALLBACK(void) ioapicSendMsi(PPDMDEVINS pDevIns, RTGCPHYS GCPhys, uint32_t uValue, uint32_t uTagSrc)
 {
-    PCIOAPIC pThis = PDMINS_2_DATA(pDevIns, PCIOAPIC);
+    PIOAPICCC pThisCC = PDMDEVINS_2_DATA_CC(pDevIns, PIOAPICCC);
     LogFlow(("IOAPIC: ioapicSendMsi: GCPhys=%#RGp uValue=%#RX32\n", GCPhys, uValue));
 
     /*
@@ -757,32 +799,32 @@ PDMBOTHCBDECL(void) ioapicSendMsi(PPDMDEVINS pDevIns, RTGCPHYS GCPhys, uint32_t 
     /*
      * Deliver to the local APIC via the system/3-wire-APIC bus.
      */
-    int rc = pThis->CTX_SUFF(pIoApicHlp)->pfnApicBusDeliver(pDevIns,
-                                                            u8DestAddr,
-                                                            u8DestMode,
-                                                            u8DeliveryMode,
-                                                            u8Vector,
-                                                            0 /* u8Polarity - N/A */,
-                                                            u8TriggerMode,
-                                                            uTagSrc);
+    int rc = pThisCC->pIoApicHlp->pfnApicBusDeliver(pDevIns,
+                                                    u8DestAddr,
+                                                    u8DestMode,
+                                                    u8DeliveryMode,
+                                                    u8Vector,
+                                                    0 /* u8Polarity - N/A */,
+                                                    u8TriggerMode,
+                                                    uTagSrc);
     /* Can't reschedule to R3. */
     Assert(rc == VINF_SUCCESS || rc == VERR_APIC_INTR_DISCARDED); NOREF(rc);
 }
 
 
 /**
- * @callback_method_impl{FNIOMMMIOREAD}
+ * @callback_method_impl{FNIOMMMIONEWREAD}
  */
-PDMBOTHCBDECL(int) ioapicMmioRead(PPDMDEVINS pDevIns, void *pvUser, RTGCPHYS GCPhysAddr, void *pv, unsigned cb)
+static DECLCALLBACK(VBOXSTRICTRC) ioapicMmioRead(PPDMDEVINS pDevIns, void *pvUser, RTGCPHYS off, void *pv, unsigned cb)
 {
-    PIOAPIC pThis = PDMINS_2_DATA(pDevIns, PIOAPIC);
+    PIOAPIC pThis = PDMDEVINS_2_DATA(pDevIns, PIOAPIC);
     STAM_COUNTER_INC(&pThis->CTX_SUFF_Z(StatMmioRead));
     Assert(cb == 4); RT_NOREF_PV(cb); /* registered for dwords only */
     RT_NOREF_PV(pvUser);
 
-    int       rc      = VINF_SUCCESS;
-    uint32_t *puValue = (uint32_t *)pv;
-    uint32_t  offReg  = GCPhysAddr & IOAPIC_MMIO_REG_MASK;
+    VBOXSTRICTRC rc      = VINF_SUCCESS;
+    uint32_t    *puValue = (uint32_t *)pv;
+    uint32_t     offReg  = off & IOAPIC_MMIO_REG_MASK;
     switch (offReg)
     {
         case IOAPIC_DIRECT_OFF_INDEX:
@@ -794,7 +836,7 @@ PDMBOTHCBDECL(int) ioapicMmioRead(PPDMDEVINS pDevIns, void *pvUser, RTGCPHYS GCP
             break;
 
         default:
-            Log2(("IOAPIC: ioapicMmioRead: Invalid offset. GCPhysAddr=%#RGp offReg=%#x\n", GCPhysAddr, offReg));
+            Log2(("IOAPIC: ioapicMmioRead: Invalid offset. off=%#RGp offReg=%#x\n", off, offReg));
             rc = VINF_IOM_MMIO_UNUSED_FF;
             break;
     }
@@ -805,23 +847,24 @@ PDMBOTHCBDECL(int) ioapicMmioRead(PPDMDEVINS pDevIns, void *pvUser, RTGCPHYS GCP
 
 
 /**
- * @callback_method_impl{FNIOMMMIOWRITE}
+ * @callback_method_impl{FNIOMMMIONEWWRITE}
  */
-PDMBOTHCBDECL(int) ioapicMmioWrite(PPDMDEVINS pDevIns, void *pvUser, RTGCPHYS GCPhysAddr, void const *pv, unsigned cb)
+static DECLCALLBACK(VBOXSTRICTRC) ioapicMmioWrite(PPDMDEVINS pDevIns, void *pvUser, RTGCPHYS off, void const *pv, unsigned cb)
 {
-    PIOAPIC pThis = PDMINS_2_DATA(pDevIns, PIOAPIC);
+    PIOAPIC   pThis   = PDMDEVINS_2_DATA(pDevIns, PIOAPIC);
+    PIOAPICCC pThisCC = PDMDEVINS_2_DATA_CC(pDevIns, PIOAPICCC);
     RT_NOREF_PV(pvUser);
 
     STAM_COUNTER_INC(&pThis->CTX_SUFF_Z(StatMmioWrite));
 
-    Assert(!(GCPhysAddr & 3));
+    Assert(!(off & 3));
     Assert(cb == 4); RT_NOREF_PV(cb); /* registered for dwords only */
 
+    VBOXSTRICTRC   rc     = VINF_SUCCESS;
     uint32_t const uValue = *(uint32_t const *)pv;
-    uint32_t const offReg = GCPhysAddr & IOAPIC_MMIO_REG_MASK;
+    uint32_t const offReg = off & IOAPIC_MMIO_REG_MASK;
 
-    LogFlow(("IOAPIC: ioapicMmioWrite: pThis=%p GCPhysAddr=%#RGp cb=%u uValue=%#RX32\n", pThis, GCPhysAddr, cb, uValue));
-    int rc = VINF_SUCCESS;
+    LogFlow(("IOAPIC: ioapicMmioWrite: pThis=%p off=%#RGp cb=%u uValue=%#RX32\n", pThis, off, cb, uValue));
     switch (offReg)
     {
         case IOAPIC_DIRECT_OFF_INDEX:
@@ -829,17 +872,18 @@ PDMBOTHCBDECL(int) ioapicMmioWrite(PPDMDEVINS pDevIns, void *pvUser, RTGCPHYS GC
             break;
 
         case IOAPIC_DIRECT_OFF_DATA:
-            rc = ioapicSetData(pThis, uValue);
+            rc = ioapicSetData(pDevIns, pThis, pThisCC, uValue);
             break;
 
-#if IOAPIC_HARDWARE_VERSION == IOAPIC_HARDWARE_VERSION_ICH9
         case IOAPIC_DIRECT_OFF_EOI:
-            rc = ioapicSetEoi(pDevIns, uValue);
+            if (pThis->u8ApicVer == IOAPIC_VERSION_ICH9)
+                rc = ioapicSetEoi(pDevIns, uValue);
+            else
+                Log(("IOAPIC: ioapicMmioWrite: Write to EOI register ignored!\n"));
             break;
-#endif
 
         default:
-            Log2(("IOAPIC: ioapicMmioWrite: Invalid offset. GCPhysAddr=%#RGp offReg=%#x\n", GCPhysAddr, offReg));
+            Log2(("IOAPIC: ioapicMmioWrite: Invalid offset. off=%#RGp offReg=%#x\n", off, offReg));
             break;
     }
 
@@ -850,64 +894,66 @@ PDMBOTHCBDECL(int) ioapicMmioWrite(PPDMDEVINS pDevIns, void *pvUser, RTGCPHYS GC
 #ifdef IN_RING3
 
 /** @interface_method_impl{DBGFREGDESC,pfnGet} */
-static DECLCALLBACK(int) ioapicDbgReg_GetIndex(void *pvUser, PCDBGFREGDESC pDesc, PDBGFREGVAL pValue)
+static DECLCALLBACK(int) ioapicR3DbgReg_GetIndex(void *pvUser, PCDBGFREGDESC pDesc, PDBGFREGVAL pValue)
 {
     RT_NOREF(pDesc);
-    pValue->u32 = ioapicGetIndex(PDMINS_2_DATA((PPDMDEVINS)pvUser, PCIOAPIC));
+    pValue->u32 = ioapicGetIndex(PDMDEVINS_2_DATA((PPDMDEVINS)pvUser, PCIOAPIC));
     return VINF_SUCCESS;
 }
 
 
 /** @interface_method_impl{DBGFREGDESC,pfnSet} */
-static DECLCALLBACK(int) ioapicDbgReg_SetIndex(void *pvUser, PCDBGFREGDESC pDesc, PCDBGFREGVAL pValue, PCDBGFREGVAL pfMask)
+static DECLCALLBACK(int) ioapicR3DbgReg_SetIndex(void *pvUser, PCDBGFREGDESC pDesc, PCDBGFREGVAL pValue, PCDBGFREGVAL pfMask)
 {
     RT_NOREF(pDesc, pfMask);
-    ioapicSetIndex(PDMINS_2_DATA((PPDMDEVINS)pvUser, PIOAPIC), pValue->u8);
+    ioapicSetIndex(PDMDEVINS_2_DATA((PPDMDEVINS)pvUser, PIOAPIC), pValue->u8);
     return VINF_SUCCESS;
 }
 
 
 /** @interface_method_impl{DBGFREGDESC,pfnGet} */
-static DECLCALLBACK(int) ioapicDbgReg_GetData(void *pvUser, PCDBGFREGDESC pDesc, PDBGFREGVAL pValue)
+static DECLCALLBACK(int) ioapicR3DbgReg_GetData(void *pvUser, PCDBGFREGDESC pDesc, PDBGFREGVAL pValue)
 {
     RT_NOREF(pDesc);
-    pValue->u32 = ioapicGetData((PDMINS_2_DATA((PPDMDEVINS)pvUser, PCIOAPIC)));
+    pValue->u32 = ioapicGetData((PDMDEVINS_2_DATA((PPDMDEVINS)pvUser, PCIOAPIC)));
     return VINF_SUCCESS;
 }
 
 
 /** @interface_method_impl{DBGFREGDESC,pfnSet} */
-static DECLCALLBACK(int) ioapicDbgReg_SetData(void *pvUser, PCDBGFREGDESC pDesc, PCDBGFREGVAL pValue, PCDBGFREGVAL pfMask)
+static DECLCALLBACK(int) ioapicR3DbgReg_SetData(void *pvUser, PCDBGFREGDESC pDesc, PCDBGFREGVAL pValue, PCDBGFREGVAL pfMask)
 {
+    PPDMDEVINS pDevIns = (PPDMDEVINS)pvUser;
+    PIOAPIC    pThis   = PDMDEVINS_2_DATA(pDevIns, PIOAPIC);
+    PIOAPICCC  pThisCC = PDMDEVINS_2_DATA_CC(pDevIns, PIOAPICCC);
     RT_NOREF(pDesc, pfMask);
-     return ioapicSetData(PDMINS_2_DATA((PPDMDEVINS)pvUser, PIOAPIC), pValue->u32);
+    return VBOXSTRICTRC_VAL(ioapicSetData(pDevIns, pThis, pThisCC, pValue->u32));
 }
 
 
 /** @interface_method_impl{DBGFREGDESC,pfnGet} */
-static DECLCALLBACK(int) ioapicDbgReg_GetVersion(void *pvUser, PCDBGFREGDESC pDesc, PDBGFREGVAL pValue)
+static DECLCALLBACK(int) ioapicR3DbgReg_GetVersion(void *pvUser, PCDBGFREGDESC pDesc, PDBGFREGVAL pValue)
 {
-    RT_NOREF(pvUser, pDesc);
-    pValue->u32 = ioapicGetVersion();
+    PCIOAPIC pThis = PDMDEVINS_2_DATA((PPDMDEVINS)pvUser, PCIOAPIC);
+    RT_NOREF(pDesc);
+    pValue->u32 = ioapicGetVersion(pThis);
     return VINF_SUCCESS;
 }
-
-
-# if IOAPIC_HARDWARE_VERSION == IOAPIC_HARDWARE_VERSION_82093AA
-/** @interface_method_impl{DBGFREGDESC,pfnGetArb} */
-static DECLCALLBACK(int) ioapicDbgReg_GetArb(void *pvUser, PCDBGFREGDESC pDesc, PDBGFREGVAL pValue)
-{
-    RT_NOREF(pvUser, pDesc);
-    pValue->u32 = ioapicGetArb(PDMINS_2_DATA((PPDMDEVINS)pvUser, PCIOAPIC));
-    return VINF_SUCCESS;
-}
-#endif
 
 
 /** @interface_method_impl{DBGFREGDESC,pfnGet} */
-static DECLCALLBACK(int) ioapicDbgReg_GetRte(void *pvUser, PCDBGFREGDESC pDesc, PDBGFREGVAL pValue)
+static DECLCALLBACK(int) ioapicR3DbgReg_GetArb(void *pvUser, PCDBGFREGDESC pDesc, PDBGFREGVAL pValue)
 {
-    PCIOAPIC pThis = PDMINS_2_DATA((PPDMDEVINS)pvUser, PCIOAPIC);
+    RT_NOREF(pvUser, pDesc);
+    pValue->u32 = ioapicGetArb();
+    return VINF_SUCCESS;
+}
+
+
+/** @interface_method_impl{DBGFREGDESC,pfnGet} */
+static DECLCALLBACK(int) ioapicR3DbgReg_GetRte(void *pvUser, PCDBGFREGDESC pDesc, PDBGFREGVAL pValue)
+{
+    PCIOAPIC pThis = PDMDEVINS_2_DATA((PPDMDEVINS)pvUser, PCIOAPIC);
     Assert(pDesc->offRegister < RT_ELEMENTS(pThis->au64RedirTable));
     pValue->u64 = pThis->au64RedirTable[pDesc->offRegister];
     return VINF_SUCCESS;
@@ -915,10 +961,10 @@ static DECLCALLBACK(int) ioapicDbgReg_GetRte(void *pvUser, PCDBGFREGDESC pDesc, 
 
 
 /** @interface_method_impl{DBGFREGDESC,pfnSet} */
-static DECLCALLBACK(int) ioapicDbgReg_SetRte(void *pvUser, PCDBGFREGDESC pDesc, PCDBGFREGVAL pValue, PCDBGFREGVAL pfMask)
+static DECLCALLBACK(int) ioapicR3DbgReg_SetRte(void *pvUser, PCDBGFREGDESC pDesc, PCDBGFREGVAL pValue, PCDBGFREGVAL pfMask)
 {
     RT_NOREF(pfMask);
-    PIOAPIC pThis = PDMINS_2_DATA((PPDMDEVINS)pvUser, PIOAPIC);
+    PIOAPIC pThis = PDMDEVINS_2_DATA((PPDMDEVINS)pvUser, PIOAPIC);
     /* No locks, no checks, just do it. */
     Assert(pDesc->offRegister < RT_ELEMENTS(pThis->au64RedirTable));
     pThis->au64RedirTable[pDesc->offRegister] = pValue->u64;
@@ -937,9 +983,7 @@ static DBGFREGSUBFIELD const g_aRteSubs[] =
     { "remote_irr",   14,  1,  0,  DBGFREGSUBFIELD_FLAGS_READ_ONLY, NULL, NULL },
     { "trigger_mode", 15,  1,  0,  0, NULL, NULL },
     { "mask",         16,  1,  0,  0, NULL, NULL },
-# if IOAPIC_HARDWARE_VERSION == IOAPIC_HARDWARE_VERSION_ICH9
     { "ext_dest_id",  48,  8,  0,  DBGFREGSUBFIELD_FLAGS_READ_ONLY, NULL, NULL },
-# endif
     { "dest",         56,  8,  0,  0, NULL, NULL },
     DBGFREGSUBFIELD_TERMINATOR()
 };
@@ -948,36 +992,34 @@ static DBGFREGSUBFIELD const g_aRteSubs[] =
 /** Register descriptors for DBGF. */
 static DBGFREGDESC const g_aRegDesc[] =
 {
-    { "index",      DBGFREG_END, DBGFREGVALTYPE_U8,  0,  0, ioapicDbgReg_GetIndex, ioapicDbgReg_SetIndex,    NULL, NULL },
-    { "data",       DBGFREG_END, DBGFREGVALTYPE_U32, 0,  0, ioapicDbgReg_GetData,  ioapicDbgReg_SetData,     NULL, NULL },
-    { "version",    DBGFREG_END, DBGFREGVALTYPE_U32, DBGFREG_FLAGS_READ_ONLY, 0, ioapicDbgReg_GetVersion, NULL, NULL, NULL },
-# if IOAPIC_HARDWARE_VERSION == IOAPIC_HARDWARE_VERSION_82093AA
-    { "arb",        DBGFREG_END, DBGFREGVALTYPE_U32, DBGFREG_FLAGS_READ_ONLY, 0, ioapicDbgReg_GetArb,     NULL, NULL, NULL },
-# endif
-    { "rte0",       DBGFREG_END, DBGFREGVALTYPE_U64, 0,  0, ioapicDbgReg_GetRte, ioapicDbgReg_SetRte, NULL, &g_aRteSubs[0] },
-    { "rte1",       DBGFREG_END, DBGFREGVALTYPE_U64, 0,  1, ioapicDbgReg_GetRte, ioapicDbgReg_SetRte, NULL, &g_aRteSubs[0] },
-    { "rte2",       DBGFREG_END, DBGFREGVALTYPE_U64, 0,  2, ioapicDbgReg_GetRte, ioapicDbgReg_SetRte, NULL, &g_aRteSubs[0] },
-    { "rte3",       DBGFREG_END, DBGFREGVALTYPE_U64, 0,  3, ioapicDbgReg_GetRte, ioapicDbgReg_SetRte, NULL, &g_aRteSubs[0] },
-    { "rte4",       DBGFREG_END, DBGFREGVALTYPE_U64, 0,  4, ioapicDbgReg_GetRte, ioapicDbgReg_SetRte, NULL, &g_aRteSubs[0] },
-    { "rte5",       DBGFREG_END, DBGFREGVALTYPE_U64, 0,  5, ioapicDbgReg_GetRte, ioapicDbgReg_SetRte, NULL, &g_aRteSubs[0] },
-    { "rte6",       DBGFREG_END, DBGFREGVALTYPE_U64, 0,  6, ioapicDbgReg_GetRte, ioapicDbgReg_SetRte, NULL, &g_aRteSubs[0] },
-    { "rte7",       DBGFREG_END, DBGFREGVALTYPE_U64, 0,  7, ioapicDbgReg_GetRte, ioapicDbgReg_SetRte, NULL, &g_aRteSubs[0] },
-    { "rte8",       DBGFREG_END, DBGFREGVALTYPE_U64, 0,  8, ioapicDbgReg_GetRte, ioapicDbgReg_SetRte, NULL, &g_aRteSubs[0] },
-    { "rte9",       DBGFREG_END, DBGFREGVALTYPE_U64, 0,  9, ioapicDbgReg_GetRte, ioapicDbgReg_SetRte, NULL, &g_aRteSubs[0] },
-    { "rte10",      DBGFREG_END, DBGFREGVALTYPE_U64, 0, 10, ioapicDbgReg_GetRte, ioapicDbgReg_SetRte, NULL, &g_aRteSubs[0] },
-    { "rte11",      DBGFREG_END, DBGFREGVALTYPE_U64, 0, 11, ioapicDbgReg_GetRte, ioapicDbgReg_SetRte, NULL, &g_aRteSubs[0] },
-    { "rte12",      DBGFREG_END, DBGFREGVALTYPE_U64, 0, 12, ioapicDbgReg_GetRte, ioapicDbgReg_SetRte, NULL, &g_aRteSubs[0] },
-    { "rte13",      DBGFREG_END, DBGFREGVALTYPE_U64, 0, 13, ioapicDbgReg_GetRte, ioapicDbgReg_SetRte, NULL, &g_aRteSubs[0] },
-    { "rte14",      DBGFREG_END, DBGFREGVALTYPE_U64, 0, 14, ioapicDbgReg_GetRte, ioapicDbgReg_SetRte, NULL, &g_aRteSubs[0] },
-    { "rte15",      DBGFREG_END, DBGFREGVALTYPE_U64, 0, 15, ioapicDbgReg_GetRte, ioapicDbgReg_SetRte, NULL, &g_aRteSubs[0] },
-    { "rte16",      DBGFREG_END, DBGFREGVALTYPE_U64, 0, 16, ioapicDbgReg_GetRte, ioapicDbgReg_SetRte, NULL, &g_aRteSubs[0] },
-    { "rte17",      DBGFREG_END, DBGFREGVALTYPE_U64, 0, 17, ioapicDbgReg_GetRte, ioapicDbgReg_SetRte, NULL, &g_aRteSubs[0] },
-    { "rte18",      DBGFREG_END, DBGFREGVALTYPE_U64, 0, 18, ioapicDbgReg_GetRte, ioapicDbgReg_SetRte, NULL, &g_aRteSubs[0] },
-    { "rte19",      DBGFREG_END, DBGFREGVALTYPE_U64, 0, 19, ioapicDbgReg_GetRte, ioapicDbgReg_SetRte, NULL, &g_aRteSubs[0] },
-    { "rte20",      DBGFREG_END, DBGFREGVALTYPE_U64, 0, 20, ioapicDbgReg_GetRte, ioapicDbgReg_SetRte, NULL, &g_aRteSubs[0] },
-    { "rte21",      DBGFREG_END, DBGFREGVALTYPE_U64, 0, 21, ioapicDbgReg_GetRte, ioapicDbgReg_SetRte, NULL, &g_aRteSubs[0] },
-    { "rte22",      DBGFREG_END, DBGFREGVALTYPE_U64, 0, 22, ioapicDbgReg_GetRte, ioapicDbgReg_SetRte, NULL, &g_aRteSubs[0] },
-    { "rte23",      DBGFREG_END, DBGFREGVALTYPE_U64, 0, 23, ioapicDbgReg_GetRte, ioapicDbgReg_SetRte, NULL, &g_aRteSubs[0] },
+    { "index",      DBGFREG_END, DBGFREGVALTYPE_U8,  0,  0, ioapicR3DbgReg_GetIndex, ioapicR3DbgReg_SetIndex,    NULL, NULL },
+    { "data",       DBGFREG_END, DBGFREGVALTYPE_U32, 0,  0, ioapicR3DbgReg_GetData,  ioapicR3DbgReg_SetData,     NULL, NULL },
+    { "version",    DBGFREG_END, DBGFREGVALTYPE_U32, DBGFREG_FLAGS_READ_ONLY, 0, ioapicR3DbgReg_GetVersion, NULL, NULL, NULL },
+    { "arb",        DBGFREG_END, DBGFREGVALTYPE_U32, DBGFREG_FLAGS_READ_ONLY, 0, ioapicR3DbgReg_GetArb,     NULL, NULL, NULL },
+    { "rte0",       DBGFREG_END, DBGFREGVALTYPE_U64, 0,  0, ioapicR3DbgReg_GetRte, ioapicR3DbgReg_SetRte, NULL, &g_aRteSubs[0] },
+    { "rte1",       DBGFREG_END, DBGFREGVALTYPE_U64, 0,  1, ioapicR3DbgReg_GetRte, ioapicR3DbgReg_SetRte, NULL, &g_aRteSubs[0] },
+    { "rte2",       DBGFREG_END, DBGFREGVALTYPE_U64, 0,  2, ioapicR3DbgReg_GetRte, ioapicR3DbgReg_SetRte, NULL, &g_aRteSubs[0] },
+    { "rte3",       DBGFREG_END, DBGFREGVALTYPE_U64, 0,  3, ioapicR3DbgReg_GetRte, ioapicR3DbgReg_SetRte, NULL, &g_aRteSubs[0] },
+    { "rte4",       DBGFREG_END, DBGFREGVALTYPE_U64, 0,  4, ioapicR3DbgReg_GetRte, ioapicR3DbgReg_SetRte, NULL, &g_aRteSubs[0] },
+    { "rte5",       DBGFREG_END, DBGFREGVALTYPE_U64, 0,  5, ioapicR3DbgReg_GetRte, ioapicR3DbgReg_SetRte, NULL, &g_aRteSubs[0] },
+    { "rte6",       DBGFREG_END, DBGFREGVALTYPE_U64, 0,  6, ioapicR3DbgReg_GetRte, ioapicR3DbgReg_SetRte, NULL, &g_aRteSubs[0] },
+    { "rte7",       DBGFREG_END, DBGFREGVALTYPE_U64, 0,  7, ioapicR3DbgReg_GetRte, ioapicR3DbgReg_SetRte, NULL, &g_aRteSubs[0] },
+    { "rte8",       DBGFREG_END, DBGFREGVALTYPE_U64, 0,  8, ioapicR3DbgReg_GetRte, ioapicR3DbgReg_SetRte, NULL, &g_aRteSubs[0] },
+    { "rte9",       DBGFREG_END, DBGFREGVALTYPE_U64, 0,  9, ioapicR3DbgReg_GetRte, ioapicR3DbgReg_SetRte, NULL, &g_aRteSubs[0] },
+    { "rte10",      DBGFREG_END, DBGFREGVALTYPE_U64, 0, 10, ioapicR3DbgReg_GetRte, ioapicR3DbgReg_SetRte, NULL, &g_aRteSubs[0] },
+    { "rte11",      DBGFREG_END, DBGFREGVALTYPE_U64, 0, 11, ioapicR3DbgReg_GetRte, ioapicR3DbgReg_SetRte, NULL, &g_aRteSubs[0] },
+    { "rte12",      DBGFREG_END, DBGFREGVALTYPE_U64, 0, 12, ioapicR3DbgReg_GetRte, ioapicR3DbgReg_SetRte, NULL, &g_aRteSubs[0] },
+    { "rte13",      DBGFREG_END, DBGFREGVALTYPE_U64, 0, 13, ioapicR3DbgReg_GetRte, ioapicR3DbgReg_SetRte, NULL, &g_aRteSubs[0] },
+    { "rte14",      DBGFREG_END, DBGFREGVALTYPE_U64, 0, 14, ioapicR3DbgReg_GetRte, ioapicR3DbgReg_SetRte, NULL, &g_aRteSubs[0] },
+    { "rte15",      DBGFREG_END, DBGFREGVALTYPE_U64, 0, 15, ioapicR3DbgReg_GetRte, ioapicR3DbgReg_SetRte, NULL, &g_aRteSubs[0] },
+    { "rte16",      DBGFREG_END, DBGFREGVALTYPE_U64, 0, 16, ioapicR3DbgReg_GetRte, ioapicR3DbgReg_SetRte, NULL, &g_aRteSubs[0] },
+    { "rte17",      DBGFREG_END, DBGFREGVALTYPE_U64, 0, 17, ioapicR3DbgReg_GetRte, ioapicR3DbgReg_SetRte, NULL, &g_aRteSubs[0] },
+    { "rte18",      DBGFREG_END, DBGFREGVALTYPE_U64, 0, 18, ioapicR3DbgReg_GetRte, ioapicR3DbgReg_SetRte, NULL, &g_aRteSubs[0] },
+    { "rte19",      DBGFREG_END, DBGFREGVALTYPE_U64, 0, 19, ioapicR3DbgReg_GetRte, ioapicR3DbgReg_SetRte, NULL, &g_aRteSubs[0] },
+    { "rte20",      DBGFREG_END, DBGFREGVALTYPE_U64, 0, 20, ioapicR3DbgReg_GetRte, ioapicR3DbgReg_SetRte, NULL, &g_aRteSubs[0] },
+    { "rte21",      DBGFREG_END, DBGFREGVALTYPE_U64, 0, 21, ioapicR3DbgReg_GetRte, ioapicR3DbgReg_SetRte, NULL, &g_aRteSubs[0] },
+    { "rte22",      DBGFREG_END, DBGFREGVALTYPE_U64, 0, 22, ioapicR3DbgReg_GetRte, ioapicR3DbgReg_SetRte, NULL, &g_aRteSubs[0] },
+    { "rte23",      DBGFREG_END, DBGFREGVALTYPE_U64, 0, 23, ioapicR3DbgReg_GetRte, ioapicR3DbgReg_SetRte, NULL, &g_aRteSubs[0] },
     DBGFREGDESC_TERMINATOR()
 };
 
@@ -988,7 +1030,7 @@ static DBGFREGDESC const g_aRegDesc[] =
 static DECLCALLBACK(void) ioapicR3DbgInfo(PPDMDEVINS pDevIns, PCDBGFINFOHLP pHlp, const char *pszArgs)
 {
     RT_NOREF(pszArgs);
-    PCIOAPIC pThis = PDMINS_2_DATA(pDevIns, PIOAPIC);
+    PCIOAPIC pThis = PDMDEVINS_2_DATA(pDevIns, PIOAPIC);
     LogFlow(("IOAPIC: ioapicR3DbgInfo: pThis=%p pszArgs=%s\n", pThis, pszArgs));
 
     pHlp->pfnPrintf(pHlp, "I/O APIC at %#010x:\n", IOAPIC_MMIO_BASE_PHYSADDR);
@@ -997,24 +1039,26 @@ static DECLCALLBACK(void) ioapicR3DbgInfo(PPDMDEVINS pDevIns, PCDBGFINFOHLP pHlp
     pHlp->pfnPrintf(pHlp, "  ID                      = %#RX32\n", uId);
     pHlp->pfnPrintf(pHlp, "    ID                      = %#x\n",     IOAPIC_ID_GET_ID(uId));
 
-    uint32_t const uVer = ioapicGetVersion();
+    uint32_t const uVer = ioapicGetVersion(pThis);
     pHlp->pfnPrintf(pHlp, "  Version                 = %#RX32\n",  uVer);
     pHlp->pfnPrintf(pHlp, "    Version                 = %#x\n",     IOAPIC_VER_GET_VER(uVer));
     pHlp->pfnPrintf(pHlp, "    Pin Assert Reg. Support = %RTbool\n", IOAPIC_VER_HAS_PRQ(uVer));
     pHlp->pfnPrintf(pHlp, "    Max. Redirection Entry  = %u\n",      IOAPIC_VER_GET_MRE(uVer));
 
-# if IOAPIC_HARDWARE_VERSION == IOAPIC_HARDWARE_VERSION_82093AA
-    uint32_t const uArb = ioapicGetArb();
-    pHlp->pfnPrintf(pHlp, "  Arbitration             = %#RX32\n", uArb);
-    pHlp->pfnPrintf(pHlp, "    Arbitration ID          = %#x\n",     IOAPIC_ARB_GET_ID(uArb));
-# endif
+    if (pThis->u8ApicVer == IOAPIC_VERSION_82093AA)
+    {
+        uint32_t const uArb = ioapicGetArb();
+        pHlp->pfnPrintf(pHlp, "  Arbitration             = %#RX32\n", uArb);
+        pHlp->pfnPrintf(pHlp, "    Arbitration ID          = %#x\n",     IOAPIC_ARB_GET_ID(uArb));
+    }
 
     pHlp->pfnPrintf(pHlp, "  Current index           = %#x\n",     ioapicGetIndex(pThis));
 
     pHlp->pfnPrintf(pHlp, "  I/O Redirection Table and IRR:\n");
     pHlp->pfnPrintf(pHlp, "  idx dst_mode dst_addr mask irr trigger rirr polar dlvr_st dlvr_mode vector\n");
 
-    for (uint8_t idxRte = 0; idxRte < RT_ELEMENTS(pThis->au64RedirTable); idxRte++)
+    uint8_t const idxMaxRte = RT_MIN(pThis->u8MaxRte, RT_ELEMENTS(pThis->au64RedirTable) - 1);
+    for (uint8_t idxRte = 0; idxRte <= idxMaxRte; idxRte++)
     {
         static const char * const s_apszDeliveryModes[] =
         {
@@ -1063,14 +1107,15 @@ static DECLCALLBACK(void) ioapicR3DbgInfo(PPDMDEVINS pDevIns, PCDBGFINFOHLP pHlp
  */
 static DECLCALLBACK(int) ioapicR3SaveExec(PPDMDEVINS pDevIns, PSSMHANDLE pSSM)
 {
-    PCIOAPIC pThis = PDMINS_2_DATA(pDevIns, PCIOAPIC);
+    PCIOAPIC        pThis = PDMDEVINS_2_DATA(pDevIns, PCIOAPIC);
+    PCPDMDEVHLPR3   pHlp  = pDevIns->pHlpR3;
     LogFlow(("IOAPIC: ioapicR3SaveExec\n"));
 
-    SSMR3PutU32(pSSM, pThis->uIrr);
-    SSMR3PutU8(pSSM,  pThis->u8Id);
-    SSMR3PutU8(pSSM,  pThis->u8Index);
+    pHlp->pfnSSMPutU32(pSSM, pThis->uIrr);
+    pHlp->pfnSSMPutU8(pSSM,  pThis->u8Id);
+    pHlp->pfnSSMPutU8(pSSM,  pThis->u8Index);
     for (uint8_t idxRte = 0; idxRte < RT_ELEMENTS(pThis->au64RedirTable); idxRte++)
-        SSMR3PutU64(pSSM, pThis->au64RedirTable[idxRte]);
+        pHlp->pfnSSMPutU64(pSSM, pThis->au64RedirTable[idxRte]);
 
     return VINF_SUCCESS;
 }
@@ -1081,7 +1126,8 @@ static DECLCALLBACK(int) ioapicR3SaveExec(PPDMDEVINS pDevIns, PSSMHANDLE pSSM)
  */
 static DECLCALLBACK(int) ioapicR3LoadExec(PPDMDEVINS pDevIns, PSSMHANDLE pSSM, uint32_t uVersion, uint32_t uPass)
 {
-    PIOAPIC pThis = PDMINS_2_DATA(pDevIns, PIOAPIC);
+    PIOAPIC         pThis = PDMDEVINS_2_DATA(pDevIns, PIOAPIC);
+    PCPDMDEVHLPR3   pHlp  = pDevIns->pHlpR3;
     LogFlow(("APIC: apicR3LoadExec: uVersion=%u uPass=%#x\n", uVersion, uPass));
 
     Assert(uPass == SSM_PASS_FINAL);
@@ -1096,12 +1142,12 @@ static DECLCALLBACK(int) ioapicR3LoadExec(PPDMDEVINS pDevIns, PSSMHANDLE pSSM, u
     }
 
     if (uVersion == IOAPIC_SAVED_STATE_VERSION)
-        SSMR3GetU32(pSSM, (uint32_t *)&pThis->uIrr);
+        pHlp->pfnSSMGetU32(pSSM, &pThis->uIrr);
 
-    SSMR3GetU8(pSSM, (uint8_t *)&pThis->u8Id);
-    SSMR3GetU8(pSSM, (uint8_t *)&pThis->u8Index);
+    pHlp->pfnSSMGetU8V(pSSM, &pThis->u8Id);
+    pHlp->pfnSSMGetU8V(pSSM, &pThis->u8Index);
     for (uint8_t idxRte = 0; idxRte < RT_ELEMENTS(pThis->au64RedirTable); idxRte++)
-        SSMR3GetU64(pSSM, &pThis->au64RedirTable[idxRte]);
+        pHlp->pfnSSMGetU64(pSSM, &pThis->au64RedirTable[idxRte]);
 
     return VINF_SUCCESS;
 }
@@ -1112,11 +1158,12 @@ static DECLCALLBACK(int) ioapicR3LoadExec(PPDMDEVINS pDevIns, PSSMHANDLE pSSM, u
  */
 static DECLCALLBACK(void) ioapicR3Reset(PPDMDEVINS pDevIns)
 {
-    PIOAPIC pThis = PDMINS_2_DATA(pDevIns, PIOAPIC);
+    PIOAPIC   pThis   = PDMDEVINS_2_DATA(pDevIns, PIOAPIC);
+    PIOAPICCC pThisCC = PDMDEVINS_2_DATA_CC(pDevIns, PIOAPICCC);
     LogFlow(("IOAPIC: ioapicR3Reset: pThis=%p\n", pThis));
 
     /* There might be devices threads calling ioapicSetIrq() in parallel, hence the lock. */
-    IOAPIC_LOCK(pThis, VERR_IGNORED);
+    IOAPIC_LOCK(pDevIns, pThis, pThisCC, VERR_IGNORED);
 
     pThis->uIrr    = 0;
     pThis->u8Index = 0;
@@ -1128,7 +1175,7 @@ static DECLCALLBACK(void) ioapicR3Reset(PPDMDEVINS pDevIns)
         pThis->au32TagSrc[idxRte] = 0;
     }
 
-    IOAPIC_UNLOCK(pThis);
+    IOAPIC_UNLOCK(pDevIns, pThis, pThisCC);
 }
 
 
@@ -1137,12 +1184,10 @@ static DECLCALLBACK(void) ioapicR3Reset(PPDMDEVINS pDevIns)
  */
 static DECLCALLBACK(void) ioapicR3Relocate(PPDMDEVINS pDevIns, RTGCINTPTR offDelta)
 {
-    RT_NOREF(offDelta);
-    PIOAPIC pThis = PDMINS_2_DATA(pDevIns, PIOAPIC);
-    LogFlow(("IOAPIC: ioapicR3Relocate: pThis=%p offDelta=%RGi\n", pThis, offDelta));
+    PIOAPICRC pThisRC = PDMINS_2_DATA_RC(pDevIns, PIOAPICRC);
+    LogFlow(("IOAPIC: ioapicR3Relocate: pThis=%p offDelta=%RGi\n", PDMDEVINS_2_DATA(pDevIns, PIOAPIC), offDelta));
 
-    pThis->pDevInsRC    = PDMDEVINS_2_RCPTR(pDevIns);
-    pThis->pIoApicHlpRC = pThis->pIoApicHlpR3->pfnGetRCHelpers(pDevIns);
+    pThisRC->pIoApicHlp += offDelta;
 }
 
 
@@ -1152,7 +1197,7 @@ static DECLCALLBACK(void) ioapicR3Relocate(PPDMDEVINS pDevIns, RTGCINTPTR offDel
 static DECLCALLBACK(int) ioapicR3Destruct(PPDMDEVINS pDevIns)
 {
     PDMDEV_CHECK_VERSIONS_RETURN_QUIET(pDevIns);
-    PIOAPIC pThis = PDMINS_2_DATA(pDevIns, PIOAPIC);
+    PIOAPIC pThis = PDMDEVINS_2_DATA(pDevIns, PIOAPIC);
     LogFlow(("IOAPIC: ioapicR3Destruct: pThis=%p\n", pThis));
 
 # ifndef IOAPIC_WITH_PDM_CRITSECT
@@ -1175,37 +1220,65 @@ static DECLCALLBACK(int) ioapicR3Destruct(PPDMDEVINS pDevIns)
 static DECLCALLBACK(int) ioapicR3Construct(PPDMDEVINS pDevIns, int iInstance, PCFGMNODE pCfg)
 {
     PDMDEV_CHECK_VERSIONS_RETURN(pDevIns);
-    PIOAPIC pThis = PDMINS_2_DATA(pDevIns, PIOAPIC);
+    PIOAPIC         pThis   = PDMDEVINS_2_DATA(pDevIns, PIOAPIC);
+    PIOAPICCC       pThisCC = PDMDEVINS_2_DATA_CC(pDevIns, PIOAPICCC);
+    PCPDMDEVHLPR3   pHlp    = pDevIns->pHlpR3;
     LogFlow(("IOAPIC: ioapicR3Construct: pThis=%p iInstance=%d\n", pThis, iInstance));
     Assert(iInstance == 0); RT_NOREF(iInstance);
 
     /*
-     * Initialize the state data.
-     */
-    pThis->pDevInsR3 = pDevIns;
-    pThis->pDevInsR0 = PDMDEVINS_2_R0PTR(pDevIns);
-    pThis->pDevInsRC = PDMDEVINS_2_RCPTR(pDevIns);
-
-    /*
      * Validate and read the configuration.
      */
-    PDMDEV_VALIDATE_CONFIG_RETURN(pDevIns, "NumCPUs|RZEnabled", "");
+    PDMDEV_VALIDATE_CONFIG_RETURN(pDevIns, "NumCPUs|ChipType", "");
 
     /* The number of CPUs is currently unused, but left in CFGM and saved-state in case an ID of 0 is
        upsets some guest which we haven't yet tested. */
     uint32_t cCpus;
-    int rc = CFGMR3QueryU32Def(pCfg, "NumCPUs", &cCpus, 1);
+    int rc = pHlp->pfnCFGMQueryU32Def(pCfg, "NumCPUs", &cCpus, 1);
     if (RT_FAILURE(rc))
         return PDMDEV_SET_ERROR(pDevIns, rc, N_("Configuration error: Failed to query integer value \"NumCPUs\""));
     pThis->cCpus = (uint8_t)cCpus;
 
-    bool fRZEnabled;
-    rc = CFGMR3QueryBoolDef(pCfg, "RZEnabled", &fRZEnabled, true);
+    char szChipType[16];
+    rc = pHlp->pfnCFGMQueryStringDef(pCfg, "ChipType", &szChipType[0], sizeof(szChipType), "ICH9");
     if (RT_FAILURE(rc))
-        return PDMDEV_SET_ERROR(pDevIns, rc,
-                                N_("Configuration error: Failed to query boolean value \"RZEnabled\""));
+        return PDMDEV_SET_ERROR(pDevIns, rc, N_("Configuration error: Failed to query string value \"ChipType\""));
 
-    Log2(("IOAPIC: cCpus=%u fRZEnabled=%RTbool\n", cCpus, fRZEnabled));
+    if (!strcmp(szChipType, "ICH9"))
+    {
+        /* Newer 2007-ish I/O APIC integrated into ICH southbridges. */
+        pThis->u8ApicVer       = IOAPIC_VERSION_ICH9;
+        pThis->u8IdMask        = 0xff;
+        pThis->u8MaxRte        = IOAPIC_MAX_RTE_INDEX;
+        pThis->u8LastRteRegIdx = IOAPIC_INDIRECT_INDEX_RTE_END;
+        pThis->u64RteWriteMask = IOAPIC_RTE_VALID_WRITE_MASK_ICH9;
+        pThis->u64RteReadMask  = IOAPIC_RTE_VALID_READ_MASK_ICH9;
+    }
+    else if (!strcmp(szChipType, "82093AA"))
+    {
+        /* Older 1995-ish discrete I/O APIC, used in P6 class systems. */
+        pThis->u8ApicVer       = IOAPIC_VERSION_82093AA;
+        pThis->u8IdMask        = 0x0f;
+        pThis->u8MaxRte        = IOAPIC_MAX_RTE_INDEX;
+        pThis->u8LastRteRegIdx = IOAPIC_INDIRECT_INDEX_RTE_END;
+        pThis->u64RteWriteMask = IOAPIC_RTE_VALID_WRITE_MASK_82093AA;
+        pThis->u64RteReadMask  = IOAPIC_RTE_VALID_READ_MASK_82093AA;
+    }
+    else if (!strcmp(szChipType, "82379AB"))
+    {
+        /* Even older 1993-ish I/O APIC built into SIO.A, used in EISA and early PCI systems. */
+        /* Exact same version and behavior as 82093AA, only the number of RTEs is different. */
+        pThis->u8ApicVer       = IOAPIC_VERSION_82093AA;
+        pThis->u8IdMask        = 0x0f;
+        pThis->u8MaxRte        = IOAPIC_REDUCED_MAX_RTE_INDEX;
+        pThis->u8LastRteRegIdx = IOAPIC_REDUCED_INDIRECT_INDEX_RTE_END;
+        pThis->u64RteWriteMask = IOAPIC_RTE_VALID_WRITE_MASK_82093AA;
+        pThis->u64RteReadMask  = IOAPIC_RTE_VALID_READ_MASK_82093AA;
+    }
+    else
+        return PDMDevHlpVMSetError(pDevIns, VERR_PDM_DEVINS_UNKNOWN_CFG_VALUES, RT_SRC_POS,
+                                   N_("I/O APIC configuration error: The \"ChipType\" value \"%s\" is unsupported"), szChipType);
+    Log2(("IOAPIC: cCpus=%u fRZEnabled=%RTbool szChipType=%s\n", cCpus, pDevIns->fR0Enabled | pDevIns->fRCEnabled, szChipType));
 
     /*
      * We will use our own critical section for the IOAPIC device.
@@ -1218,76 +1291,36 @@ static DECLCALLBACK(int) ioapicR3Construct(PPDMDEVINS pDevIns, int iInstance, PC
      * Setup the critical section to protect concurrent writes to the RTEs.
      */
     rc = PDMDevHlpCritSectInit(pDevIns, &pThis->CritSect, RT_SRC_POS, "IOAPIC");
-    if (RT_FAILURE(rc))
-        return PDMDevHlpVMSetError(pDevIns, rc, RT_SRC_POS, N_("IOAPIC: Failed to create critical section. rc=%Rrc"), rc);
+    AssertRCReturn(rc, rc);
 # endif
 
     /*
      * Register the IOAPIC.
      */
     PDMIOAPICREG IoApicReg;
-    RT_ZERO(IoApicReg);
     IoApicReg.u32Version   = PDM_IOAPICREG_VERSION;
-    IoApicReg.pfnSetIrqR3  = ioapicSetIrq;
-    IoApicReg.pfnSendMsiR3 = ioapicSendMsi;
-    IoApicReg.pfnSetEoiR3  = ioapicSetEoi;
-    if (fRZEnabled)
-    {
-        IoApicReg.pszSetIrqRC  = "ioapicSetIrq";
-        IoApicReg.pszSetIrqR0  = "ioapicSetIrq";
-
-        IoApicReg.pszSendMsiRC = "ioapicSendMsi";
-        IoApicReg.pszSendMsiR0 = "ioapicSendMsi";
-
-        IoApicReg.pszSetEoiRC = "ioapicSetEoi";
-        IoApicReg.pszSetEoiR0 = "ioapicSetEoi";
-    }
-    rc = PDMDevHlpIOAPICRegister(pDevIns, &IoApicReg, &pThis->pIoApicHlpR3);
-    if (RT_FAILURE(rc))
-    {
-        AssertMsgFailed(("IOAPIC: PDMDevHlpIOAPICRegister failed! rc=%Rrc\n", rc));
-        return rc;
-    }
+    IoApicReg.pfnSetIrq    = ioapicSetIrq;
+    IoApicReg.pfnSendMsi   = ioapicSendMsi;
+    IoApicReg.pfnSetEoi    = ioapicSetEoi;
+    IoApicReg.u32TheEnd    = PDM_IOAPICREG_VERSION;
+    rc = PDMDevHlpIoApicRegister(pDevIns, &IoApicReg, &pThisCC->pIoApicHlp);
+    AssertRCReturn(rc, rc);
 
     /*
-     * Register MMIO callbacks.
+     * Register MMIO region.
      */
-    rc = PDMDevHlpMMIORegister(pDevIns, IOAPIC_MMIO_BASE_PHYSADDR, IOAPIC_MMIO_SIZE, pThis,
-                               IOMMMIO_FLAGS_READ_DWORD | IOMMMIO_FLAGS_WRITE_DWORD_ZEROED, ioapicMmioWrite, ioapicMmioRead,
-                               "I/O APIC");
-    if (RT_SUCCESS(rc))
-    {
-        if (fRZEnabled)
-        {
-            pThis->pIoApicHlpRC = pThis->pIoApicHlpR3->pfnGetRCHelpers(pDevIns);
-            rc = PDMDevHlpMMIORegisterRC(pDevIns, IOAPIC_MMIO_BASE_PHYSADDR, IOAPIC_MMIO_SIZE, NIL_RTRCPTR /* pvUser */,
-                                         "ioapicMmioWrite", "ioapicMmioRead");
-            AssertRCReturn(rc, rc);
-
-            pThis->pIoApicHlpR0 = pThis->pIoApicHlpR3->pfnGetR0Helpers(pDevIns);
-            rc = PDMDevHlpMMIORegisterR0(pDevIns, IOAPIC_MMIO_BASE_PHYSADDR, IOAPIC_MMIO_SIZE, NIL_RTR0PTR /* pvUser */,
-                                         "ioapicMmioWrite", "ioapicMmioRead");
-            AssertRCReturn(rc, rc);
-        }
-    }
-    else
-    {
-        LogRel(("IOAPIC: PDMDevHlpMMIORegister failed! rc=%Rrc\n", rc));
-        return rc;
-    }
+    rc = PDMDevHlpMmioCreateAndMap(pDevIns, IOAPIC_MMIO_BASE_PHYSADDR, IOAPIC_MMIO_SIZE, ioapicMmioWrite, ioapicMmioRead,
+                                   IOMMMIO_FLAGS_READ_DWORD | IOMMMIO_FLAGS_WRITE_DWORD_ZEROED, "I/O APIC", &pThis->hMmio);
+    AssertRCReturn(rc, rc);
 
     /*
-     * Register saved-state callbacks.
+     * Register the saved state.
      */
     rc = PDMDevHlpSSMRegister(pDevIns, IOAPIC_SAVED_STATE_VERSION, sizeof(*pThis), ioapicR3SaveExec, ioapicR3LoadExec);
-    if (RT_FAILURE(rc))
-    {
-        LogRel(("IOAPIC: PDMDevHlpSSMRegister failed! rc=%Rrc\n", rc));
-        return rc;
-    }
+    AssertRCReturn(rc, rc);
 
     /*
-     * Register debugger info callback.
+     * Register debugger info item.
      */
     rc = PDMDevHlpDBGFInfoRegister(pDevIns, "ioapic", "Display IO APIC state.", ioapicR3DbgInfo);
     AssertRCReturn(rc, rc);
@@ -1295,101 +1328,148 @@ static DECLCALLBACK(int) ioapicR3Construct(PPDMDEVINS pDevIns, int iInstance, PC
     /*
      * Register debugger register access.
      */
-    rc = PDMDevHlpDBGFRegRegister(pDevIns, g_aRegDesc); AssertRC(rc);
+    rc = PDMDevHlpDBGFRegRegister(pDevIns, g_aRegDesc);
     AssertRCReturn(rc, rc);
 
 # ifdef VBOX_WITH_STATISTICS
     /*
      * Statistics.
      */
-    PDMDevHlpSTAMRegister(pDevIns, &pThis->StatMmioReadRZ,  STAMTYPE_COUNTER, "/Devices/IOAPIC/RZ/MmioReadRZ",  STAMUNIT_OCCURENCES, "Number of IOAPIC MMIO reads in RZ.");
-    PDMDevHlpSTAMRegister(pDevIns, &pThis->StatMmioWriteRZ, STAMTYPE_COUNTER, "/Devices/IOAPIC/RZ/MmioWriteRZ", STAMUNIT_OCCURENCES, "Number of IOAPIC MMIO writes in RZ.");
-    PDMDevHlpSTAMRegister(pDevIns, &pThis->StatSetIrqRZ,    STAMTYPE_COUNTER, "/Devices/IOAPIC/RZ/SetIrqRZ",    STAMUNIT_OCCURENCES, "Number of IOAPIC SetIrq calls in RZ.");
-    PDMDevHlpSTAMRegister(pDevIns, &pThis->StatSetEoiRZ,    STAMTYPE_COUNTER, "/Devices/IOAPIC/RZ/SetEoiRZ",    STAMUNIT_OCCURENCES, "Number of IOAPIC SetEoi calls in RZ.");
+    PDMDevHlpSTAMRegister(pDevIns, &pThis->StatMmioReadRZ,  STAMTYPE_COUNTER, "RZ/MmioReadRZ",  STAMUNIT_OCCURENCES, "Number of IOAPIC MMIO reads in RZ.");
+    PDMDevHlpSTAMRegister(pDevIns, &pThis->StatMmioWriteRZ, STAMTYPE_COUNTER, "RZ/MmioWriteRZ", STAMUNIT_OCCURENCES, "Number of IOAPIC MMIO writes in RZ.");
+    PDMDevHlpSTAMRegister(pDevIns, &pThis->StatSetIrqRZ,    STAMTYPE_COUNTER, "RZ/SetIrqRZ",    STAMUNIT_OCCURENCES, "Number of IOAPIC SetIrq calls in RZ.");
+    PDMDevHlpSTAMRegister(pDevIns, &pThis->StatSetEoiRZ,    STAMTYPE_COUNTER, "RZ/SetEoiRZ",    STAMUNIT_OCCURENCES, "Number of IOAPIC SetEoi calls in RZ.");
 
-    PDMDevHlpSTAMRegister(pDevIns, &pThis->StatMmioReadR3,  STAMTYPE_COUNTER, "/Devices/IOAPIC/R3/MmioReadR3",  STAMUNIT_OCCURENCES, "Number of IOAPIC MMIO reads in R3");
-    PDMDevHlpSTAMRegister(pDevIns, &pThis->StatMmioWriteR3, STAMTYPE_COUNTER, "/Devices/IOAPIC/R3/MmioWriteR3", STAMUNIT_OCCURENCES, "Number of IOAPIC MMIO writes in R3.");
-    PDMDevHlpSTAMRegister(pDevIns, &pThis->StatSetIrqR3,    STAMTYPE_COUNTER, "/Devices/IOAPIC/R3/SetIrqR3",    STAMUNIT_OCCURENCES, "Number of IOAPIC SetIrq calls in R3.");
-    PDMDevHlpSTAMRegister(pDevIns, &pThis->StatSetEoiR3,    STAMTYPE_COUNTER, "/Devices/IOAPIC/R3/SetEoiR3",    STAMUNIT_OCCURENCES, "Number of IOAPIC SetEoi calls in R3.");
+    PDMDevHlpSTAMRegister(pDevIns, &pThis->StatMmioReadR3,  STAMTYPE_COUNTER, "R3/MmioReadR3",  STAMUNIT_OCCURENCES, "Number of IOAPIC MMIO reads in R3");
+    PDMDevHlpSTAMRegister(pDevIns, &pThis->StatMmioWriteR3, STAMTYPE_COUNTER, "R3/MmioWriteR3", STAMUNIT_OCCURENCES, "Number of IOAPIC MMIO writes in R3.");
+    PDMDevHlpSTAMRegister(pDevIns, &pThis->StatSetIrqR3,    STAMTYPE_COUNTER, "R3/SetIrqR3",    STAMUNIT_OCCURENCES, "Number of IOAPIC SetIrq calls in R3.");
+    PDMDevHlpSTAMRegister(pDevIns, &pThis->StatSetEoiR3,    STAMTYPE_COUNTER, "R3/SetEoiR3",    STAMUNIT_OCCURENCES, "Number of IOAPIC SetEoi calls in R3.");
 
-    PDMDevHlpSTAMRegister(pDevIns, &pThis->StatRedundantEdgeIntr,   STAMTYPE_COUNTER, "/Devices/IOAPIC/RedundantEdgeIntr",   STAMUNIT_OCCURENCES, "Number of redundant edge-triggered interrupts (no IRR change).");
-    PDMDevHlpSTAMRegister(pDevIns, &pThis->StatRedundantLevelIntr,  STAMTYPE_COUNTER, "/Devices/IOAPIC/RedundantLevelIntr",  STAMUNIT_OCCURENCES, "Number of redundant level-triggered interrupts (no IRR change).");
-    PDMDevHlpSTAMRegister(pDevIns, &pThis->StatSuppressedLevelIntr, STAMTYPE_COUNTER, "/Devices/IOAPIC/SuppressedLevelIntr", STAMUNIT_OCCURENCES, "Number of suppressed level-triggered interrupts by remote IRR.");
+    PDMDevHlpSTAMRegister(pDevIns, &pThis->StatRedundantEdgeIntr,   STAMTYPE_COUNTER, "RedundantEdgeIntr",   STAMUNIT_OCCURENCES, "Number of redundant edge-triggered interrupts (no IRR change).");
+    PDMDevHlpSTAMRegister(pDevIns, &pThis->StatRedundantLevelIntr,  STAMTYPE_COUNTER, "RedundantLevelIntr",  STAMUNIT_OCCURENCES, "Number of redundant level-triggered interrupts (no IRR change).");
+    PDMDevHlpSTAMRegister(pDevIns, &pThis->StatSuppressedLevelIntr, STAMTYPE_COUNTER, "SuppressedLevelIntr", STAMUNIT_OCCURENCES, "Number of suppressed level-triggered interrupts by remote IRR.");
 
-    PDMDevHlpSTAMRegister(pDevIns, &pThis->StatEoiContention,    STAMTYPE_COUNTER, "/Devices/IOAPIC/CritSect/ContentionSetEoi", STAMUNIT_OCCURENCES, "Number of times the critsect is busy during EOI writes causing trips to R3.");
-    PDMDevHlpSTAMRegister(pDevIns, &pThis->StatSetRteContention, STAMTYPE_COUNTER, "/Devices/IOAPIC/CritSect/ContentionSetRte", STAMUNIT_OCCURENCES, "Number of times the critsect is busy during RTE writes causing trips to R3.");
+    PDMDevHlpSTAMRegister(pDevIns, &pThis->StatEoiContention,    STAMTYPE_COUNTER, "CritSect/ContentionSetEoi", STAMUNIT_OCCURENCES, "Number of times the critsect is busy during EOI writes causing trips to R3.");
+    PDMDevHlpSTAMRegister(pDevIns, &pThis->StatSetRteContention, STAMTYPE_COUNTER, "CritSect/ContentionSetRte", STAMUNIT_OCCURENCES, "Number of times the critsect is busy during RTE writes causing trips to R3.");
 
-    PDMDevHlpSTAMRegister(pDevIns, &pThis->StatLevelIrqSent, STAMTYPE_COUNTER, "/Devices/IOAPIC/LevelIntr/Sent", STAMUNIT_OCCURENCES, "Number of level-triggered interrupts sent to the local APIC(s).");
-    PDMDevHlpSTAMRegister(pDevIns, &pThis->StatEoiReceived,  STAMTYPE_COUNTER, "/Devices/IOAPIC/LevelIntr/Recv", STAMUNIT_OCCURENCES, "Number of EOIs received for level-triggered interrupts from the local APIC(s).");
+    PDMDevHlpSTAMRegister(pDevIns, &pThis->StatLevelIrqSent, STAMTYPE_COUNTER, "LevelIntr/Sent", STAMUNIT_OCCURENCES, "Number of level-triggered interrupts sent to the local APIC(s).");
+    PDMDevHlpSTAMRegister(pDevIns, &pThis->StatEoiReceived,  STAMTYPE_COUNTER, "LevelIntr/Recv", STAMUNIT_OCCURENCES, "Number of EOIs received for level-triggered interrupts from the local APIC(s).");
 # endif
 
     /*
      * Init. the device state.
      */
-    LogRel(("IOAPIC: Using implementation 2.0!\n"));
+    LogRel(("IOAPIC: Using implementation 2.0! Chipset type %s\n", szChipType));
     ioapicR3Reset(pDevIns);
 
     return VINF_SUCCESS;
 }
 
+#else /* !IN_RING3 */
+
+/**
+ * @callback_method_impl{PDMDEVREGR0,pfnConstruct}
+ */
+static DECLCALLBACK(int) ioapicRZConstruct(PPDMDEVINS pDevIns)
+{
+    PDMDEV_CHECK_VERSIONS_RETURN(pDevIns);
+    PIOAPIC     pThis   = PDMDEVINS_2_DATA(pDevIns, PIOAPIC);
+    PIOAPICCC   pThisCC = PDMDEVINS_2_DATA_CC(pDevIns, PIOAPICCC);
+
+    int rc = PDMDevHlpSetDeviceCritSect(pDevIns, PDMDevHlpCritSectGetNop(pDevIns));
+    AssertRCReturn(rc, rc);
+
+    PDMIOAPICREG IoApicReg;
+    IoApicReg.u32Version   = PDM_IOAPICREG_VERSION;
+    IoApicReg.pfnSetIrq    = ioapicSetIrq;
+    IoApicReg.pfnSendMsi   = ioapicSendMsi;
+    IoApicReg.pfnSetEoi    = ioapicSetEoi;
+    IoApicReg.u32TheEnd    = PDM_IOAPICREG_VERSION;
+    rc = PDMDevHlpIoApicSetUpContext(pDevIns, &IoApicReg, &pThisCC->pIoApicHlp);
+    AssertRCReturn(rc, rc);
+
+    rc = PDMDevHlpMmioSetUpContext(pDevIns, pThis->hMmio, ioapicMmioWrite, ioapicMmioRead, NULL /*pvUser*/);
+    AssertRCReturn(rc, rc);
+
+    return VINF_SUCCESS;
+}
+
+#endif /* !IN_RING3 */
 
 /**
  * IO APIC device registration structure.
  */
 const PDMDEVREG g_DeviceIOAPIC =
 {
-    /* u32Version */
-    PDM_DEVREG_VERSION,
-    /* szName */
-    "ioapic",
-    /* szRCMod */
-    "VBoxDDRC.rc",
-    /* szR0Mod */
-    "VBoxDDR0.r0",
-    /* pszDescription */
-    "I/O Advanced Programmable Interrupt Controller (IO-APIC) Device",
-    /* fFlags */
-      PDM_DEVREG_FLAGS_HOST_BITS_DEFAULT | PDM_DEVREG_FLAGS_GUEST_BITS_32_64 | PDM_DEVREG_FLAGS_PAE36
-    | PDM_DEVREG_FLAGS_RC | PDM_DEVREG_FLAGS_R0,
-    /* fClass */
-    PDM_DEVREG_CLASS_PIC,
-    /* cMaxInstances */
-    1,
-    /* cbInstance */
-    sizeof(IOAPIC),
-    /* pfnConstruct */
-    ioapicR3Construct,
-    /* pfnDestruct */
-    ioapicR3Destruct,
-    /* pfnRelocate */
-    ioapicR3Relocate,
-    /* pfnMemSetup */
-    NULL,
-    /* pfnPowerOn */
-    NULL,
-    /* pfnReset */
-    ioapicR3Reset,
-    /* pfnSuspend */
-    NULL,
-    /* pfnResume */
-    NULL,
-    /* pfnAttach */
-    NULL,
-    /* pfnDetach */
-    NULL,
-    /* pfnQueryInterface. */
-    NULL,
-    /* pfnInitComplete */
-    NULL,
-    /* pfnPowerOff */
-    NULL,
-    /* pfnSoftReset */
-    NULL,
-    /* u32VersionEnd */
-    PDM_DEVREG_VERSION
+    /* .u32Version = */             PDM_DEVREG_VERSION,
+    /* .uReserved0 = */             0,
+    /* .szName = */                 "ioapic",
+    /* .fFlags = */                 PDM_DEVREG_FLAGS_DEFAULT_BITS | PDM_DEVREG_FLAGS_RZ | PDM_DEVREG_FLAGS_NEW_STYLE
+                                    | PDM_DEVREG_FLAGS_REQUIRE_R0 | PDM_DEVREG_FLAGS_REQUIRE_RC,
+    /* .fClass = */                 PDM_DEVREG_CLASS_PIC,
+    /* .cMaxInstances = */          1,
+    /* .uSharedVersion = */         42,
+    /* .cbInstanceShared = */       sizeof(IOAPIC),
+    /* .cbInstanceCC = */           sizeof(IOAPICCC),
+    /* .cbInstanceRC = */           sizeof(IOAPICRC),
+    /* .cMaxPciDevices = */         0,
+    /* .cMaxMsixVectors = */        0,
+    /* .pszDescription = */         "I/O Advanced Programmable Interrupt Controller (IO-APIC) Device",
+#if defined(IN_RING3)
+    /* .pszRCMod = */               "VBoxDDRC.rc",
+    /* .pszR0Mod = */               "VBoxDDR0.r0",
+    /* .pfnConstruct = */           ioapicR3Construct,
+    /* .pfnDestruct = */            ioapicR3Destruct,
+    /* .pfnRelocate = */            ioapicR3Relocate,
+    /* .pfnMemSetup = */            NULL,
+    /* .pfnPowerOn = */             NULL,
+    /* .pfnReset = */               ioapicR3Reset,
+    /* .pfnSuspend = */             NULL,
+    /* .pfnResume = */              NULL,
+    /* .pfnAttach = */              NULL,
+    /* .pfnDetach = */              NULL,
+    /* .pfnQueryInterface = */      NULL,
+    /* .pfnInitComplete = */        NULL,
+    /* .pfnPowerOff = */            NULL,
+    /* .pfnSoftReset = */           NULL,
+    /* .pfnReserved0 = */           NULL,
+    /* .pfnReserved1 = */           NULL,
+    /* .pfnReserved2 = */           NULL,
+    /* .pfnReserved3 = */           NULL,
+    /* .pfnReserved4 = */           NULL,
+    /* .pfnReserved5 = */           NULL,
+    /* .pfnReserved6 = */           NULL,
+    /* .pfnReserved7 = */           NULL,
+#elif defined(IN_RING0)
+    /* .pfnEarlyConstruct = */      NULL,
+    /* .pfnConstruct = */           ioapicRZConstruct,
+    /* .pfnDestruct = */            NULL,
+    /* .pfnFinalDestruct = */       NULL,
+    /* .pfnRequest = */             NULL,
+    /* .pfnReserved0 = */           NULL,
+    /* .pfnReserved1 = */           NULL,
+    /* .pfnReserved2 = */           NULL,
+    /* .pfnReserved3 = */           NULL,
+    /* .pfnReserved4 = */           NULL,
+    /* .pfnReserved5 = */           NULL,
+    /* .pfnReserved6 = */           NULL,
+    /* .pfnReserved7 = */           NULL,
+#elif defined(IN_RC)
+    /* .pfnConstruct = */           ioapicRZConstruct,
+    /* .pfnReserved0 = */           NULL,
+    /* .pfnReserved1 = */           NULL,
+    /* .pfnReserved2 = */           NULL,
+    /* .pfnReserved3 = */           NULL,
+    /* .pfnReserved4 = */           NULL,
+    /* .pfnReserved5 = */           NULL,
+    /* .pfnReserved6 = */           NULL,
+    /* .pfnReserved7 = */           NULL,
+#else
+# error "Not in IN_RING3, IN_RING0 or IN_RC!"
+#endif
+    /* .u32VersionEnd = */          PDM_DEVREG_VERSION
 };
 
-#endif /* IN_RING3 */
 
 #endif /* !VBOX_DEVICE_STRUCT_TESTCASE */
 

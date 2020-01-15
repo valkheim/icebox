@@ -3,7 +3,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -23,8 +23,11 @@
  * terms and conditions of either the GPL or the CDDL or both.
  */
 
-#ifndef ___VBox_vmm_pdmusb_h
-#define ___VBox_vmm_pdmusb_h
+#ifndef VBOX_INCLUDED_vmm_pdmusb_h
+#define VBOX_INCLUDED_vmm_pdmusb_h
+#ifndef RT_WITHOUT_PRAGMA_ONCE
+# pragma once
+#endif
 
 #include <VBox/vmm/pdmqueue.h>
 #include <VBox/vmm/pdmcritsect.h>
@@ -37,8 +40,8 @@
 #include <VBox/vmm/cfgm.h>
 #include <VBox/vmm/dbgf.h>
 #include <VBox/vmm/mm.h>
-#include <VBox/err.h>
 #include <VBox/vusb.h>
+#include <iprt/errcore.h>
 #include <iprt/stdarg.h>
 
 RT_C_DECLS_BEGIN
@@ -507,7 +510,7 @@ typedef struct PDMUSBHLP
                                             const char *pszFormat, va_list va) RT_IPRT_FORMAT_ATTR(5, 0));
 
     /**
-     * Register a info handler with DBGF,
+     * Register a info handler with DBGF, argv style.
      *
      * @returns VBox status code.
      * @param   pUsbIns             The USB device instance.
@@ -515,7 +518,7 @@ typedef struct PDMUSBHLP
      * @param   pszDesc             The description of the info and any arguments the handler may take.
      * @param   pfnHandler          The handler function to be called to display the info.
      */
-    DECLR3CALLBACKMEMBER(int, pfnDBGFInfoRegister,(PPDMUSBINS pUsbIns, const char *pszName, const char *pszDesc, PFNDBGFHANDLERUSB pfnHandler));
+    DECLR3CALLBACKMEMBER(int, pfnDBGFInfoRegisterArgv,(PPDMUSBINS pUsbIns, const char *pszName, const char *pszDesc, PFNDBGFINFOARGVUSB pfnHandler));
 
     /**
      * Allocate memory which is associated with current VM instance
@@ -998,6 +1001,14 @@ DECLINLINE(void) PDMUsbHlpMMHeapFree(PPDMUSBINS pUsbIns, void *pv)
 }
 
 /**
+ * @copydoc PDMUSBHLP::pfnDBGFInfoRegisterArgv
+ */
+DECLINLINE(int) PDMUsbHlpDBGFInfoRegisterArgv(PPDMUSBINS pUsbIns, const char *pszName, const char *pszDesc, PFNDBGFINFOARGVUSB pfnHandler)
+{
+    return pUsbIns->pHlpR3->pfnDBGFInfoRegisterArgv(pUsbIns, pszName, pszDesc, pfnHandler);
+}
+
+/**
  * @copydoc PDMUSBHLP::pfnTMTimerCreate
  */
 DECLINLINE(int) PDMUsbHlpTMTimerCreate(PPDMUSBINS pUsbIns, TMCLOCK enmClock, PFNTMTIMERUSB pfnCallback, void *pvUser,
@@ -1066,13 +1077,13 @@ typedef DECLCALLBACK(int) FNPDMVBOXUSBREGISTER(PCPDMUSBREGCB pCallbacks, uint32_
 VMMR3DECL(int)  PDMR3UsbCreateEmulatedDevice(PUVM pUVM, const char *pszDeviceName, PCFGMNODE pDeviceNode, PCRTUUID pUuid,
                                              const char *pszCaptureFilename);
 VMMR3DECL(int)  PDMR3UsbCreateProxyDevice(PUVM pUVM, PCRTUUID pUuid, const char *pszBackend, const char *pszAddress, void *pvBackend,
-                                          uint32_t iUsbVersion, uint32_t fMaskedIfs, const char *pszCaptureFilename);
+                                          VUSBSPEED enmSpeed, uint32_t fMaskedIfs, const char *pszCaptureFilename);
 VMMR3DECL(int)  PDMR3UsbDetachDevice(PUVM pUVM, PCRTUUID pUuid);
 VMMR3DECL(bool) PDMR3UsbHasHub(PUVM pUVM);
 VMMR3DECL(int)  PDMR3UsbDriverAttach(PUVM pUVM, const char *pszDevice, unsigned iDevIns, unsigned iLun, uint32_t fFlags,
                                      PPPDMIBASE ppBase);
 VMMR3DECL(int)  PDMR3UsbDriverDetach(PUVM pUVM, const char *pszDevice, unsigned iDevIns, unsigned iLun,
-                                     const char *pszDriver, unsigned iOccurance, uint32_t fFlags);
+                                     const char *pszDriver, unsigned iOccurrence, uint32_t fFlags);
 VMMR3DECL(int)  PDMR3UsbQueryLun(PUVM pUVM, const char *pszDevice, unsigned iInstance, unsigned iLun, PPDMIBASE *ppBase);
 VMMR3DECL(int)  PDMR3UsbQueryDriverOnLun(PUVM pUVM, const char *pszDevice, unsigned iInstance, unsigned iLun,
                                          const char *pszDriver, PPPDMIBASE ppBase);
@@ -1081,4 +1092,4 @@ VMMR3DECL(int)  PDMR3UsbQueryDriverOnLun(PUVM pUVM, const char *pszDevice, unsig
 
 RT_C_DECLS_END
 
-#endif
+#endif /* !VBOX_INCLUDED_vmm_pdmusb_h */

@@ -3,7 +3,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -23,14 +23,17 @@
  * terms and conditions of either the GPL or the CDDL or both.
  */
 
-#ifndef ___iprt_string_h
-#define ___iprt_string_h
+#ifndef IPRT_INCLUDED_string_h
+#define IPRT_INCLUDED_string_h
+#ifndef RT_WITHOUT_PRAGMA_ONCE
+# pragma once
+#endif
 
 #include <iprt/cdefs.h>
 #include <iprt/types.h>
 #include <iprt/assert.h>
 #include <iprt/stdarg.h>
-#include <iprt/err.h> /* for VINF_SUCCESS */
+#include <iprt/errcore.h> /* for VINF_SUCCESS */
 #if defined(RT_OS_LINUX) && defined(__KERNEL__)
   /* no C++ hacks ('new' etc) here anymore! */
 # include <linux/string.h>
@@ -65,10 +68,6 @@
 # include <string.h>
 #endif
 
-/* For the time being: */
-#include <iprt/utf16.h>
-#include <iprt/latin1.h>
-
 /*
  * Supply prototypes for standard string functions provided by
  * IPRT instead of the operating environment.
@@ -92,9 +91,12 @@ char *strpbrk(const char *pszStr, const char *pszChars);
 RT_C_DECLS_END
 #endif
 
-#if (!defined(RT_OS_LINUX) || !defined(_GNU_SOURCE)) && !defined(RT_OS_FREEBSD) && !defined(RT_OS_NETBSD)
+#if (!defined(RT_OS_LINUX) || !defined(_GNU_SOURCE)) \
+ && (!defined(RT_OS_OS2) || !defined(_GNU_SOURCE)) \
+ && !defined(RT_OS_FREEBSD) \
+ && !defined(RT_OS_NETBSD)
 RT_C_DECLS_BEGIN
-void *memrchr(const char *pv, int ch, size_t cb);
+void *memrchr(const void *pv, int ch, size_t cb);
 RT_C_DECLS_END
 #endif
 
@@ -209,7 +211,7 @@ RT_C_DECLS_BEGIN
 #define RTStrUtf8ToCurrentCP(ppszString, pszString)     RTStrUtf8ToCurrentCPTag((ppszString), (pszString), RTSTR_TAG)
 
 /**
- * Allocates tmp buffer with custom tag, translates pszString from UTF8 to
+ * Allocates tmp buffer with custom tag, translates pszString from UTF-8 to
  * current codepage.
  *
  * @returns iprt status code.
@@ -220,6 +222,37 @@ RT_C_DECLS_BEGIN
  * @param   pszTag          Allocation tag used for statistics and such.
  */
 RTR3DECL(int)  RTStrUtf8ToCurrentCPTag(char **ppszString, const char *pszString, const char *pszTag);
+
+/**
+ * Allocates tmp buffer with default tag, translates pszString from UTF-8 to
+ * current codepage, extended version.
+ *
+ * @returns iprt status code.
+ * @param   ppszString      Receives pointer of allocated native CP string.
+ *                          The returned pointer must be freed using RTStrFree().
+ * @param   pszString       UTF-8 string to convert.
+ * @param   cchString       The maximum size in chars (the type) to convert. The conversion stop
+ *                          when it reaches cchString or the string terminator ('\\0').
+ *                          Use RTSTR_MAX to translate the entire string.
+ */
+#define RTStrUtf8ToCurrentCPEx(ppszString, pszString, cchString) \
+    RTStrUtf8ToCurrentCPExTag((ppszString), (pszString), (cchString), RTSTR_TAG)
+
+/**
+ * Allocates tmp buffer with custom tag, translates pszString from UTF8 to
+ * current codepage.
+ *
+ * @returns iprt status code.
+ * @param   ppszString      Receives pointer of allocated native CP string.
+ *                          The returned pointer must be freed using
+ *                          RTStrFree()., const char *pszTag
+ * @param   pszString       UTF-8 string to convert.
+ * @param   cchString       The maximum size in chars (the type) to convert. The conversion stop
+ *                          when it reaches cchString or the string terminator ('\\0').
+ *                          Use RTSTR_MAX to translate the entire string.
+ * @param   pszTag          Allocation tag used for statistics and such.
+ */
+RTR3DECL(int)  RTStrUtf8ToCurrentCPExTag(char **ppszString, const char *pszString, size_t cchString, const char *pszTag);
 
 /**
  * Allocates tmp buffer, translates pszString from current codepage to UTF-8.
@@ -1468,6 +1501,34 @@ RTDECL(char *) RTStrPrevCp(const char *pszStart, const char *psz);
  *                            i.e. a series of space separated bytes formatted as two digit hex value.
  *                            Use the precision to specify the length. Default length is 16 bytes.
  *                            The width, if specified, is ignored.
+ *      - \%RhXd            - Same as \%Rhxd, but takes an additional uint64_t
+ *                            value with the memory start address/offset after
+ *                            the memory pointer.
+ *      - \%RhXD            - Same as \%RhxD, but takes an additional uint64_t
+ *                            value with the memory start address/offset after
+ *                            the memory pointer.
+ *      - \%RhXs            - Same as \%Rhxs, but takes an additional uint64_t
+ *                            value with the memory start address/offset after
+ *                            the memory pointer.
+ *
+ *      - \%Rhcb            - Human readable byte size formatting, using
+ *                            binary unit prefixes (GiB, MiB and such).  Takes a
+ *                            64-bit unsigned integer as input.  Does one
+ *                            decimal point by default, can do 0-3 via precision
+ *                            field.  No rounding when calculating fraction.
+ *                            The space flag add a space between the value and
+ *                            unit.
+ *      - \%RhcB            - Same a \%Rhcb only the 'i' is skipped in the unit.
+ *      - \%Rhci            - SI variant of \%Rhcb, fraction is rounded.
+ *      - \%Rhub            - Human readable number formatting, using
+ *                            binary unit prefixes. Takes a 64-bit unsigned
+ *                            integer as input. Does one decimal point by
+ *                            default, can do 0-3 via precision field.  No
+ *                            rounding when calculating fraction.  The space
+ *                            flag add a space between the value and unit.
+ *      - \%RhuB            - Same a \%Rhub only the 'i' is skipped in the unit.
+ *      - \%Rhui            - SI variant of \%Rhub, fraction is rounded.
+ *
  *      - \%Rrc             - Takes an integer iprt status code as argument. Will insert the
  *                            status code define corresponding to the iprt status code.
  *      - \%Rrs             - Takes an integer iprt status code as argument. Will insert the
@@ -1504,13 +1565,34 @@ RTDECL(char *) RTStrPrevCp(const char *pszStart, const char *psz);
  *      - \%RDtimespec      - Takes a PCRTTIMESPEC.
  *
  *
- * Group 5, XML / HTML escapers:
+ * Group 5, XML / HTML, JSON and URI escapers:
  *      - \%RMas            - Takes a string pointer (const char *) and outputs
  *                            it as an attribute value with the proper escaping.
  *                            This typically ends up in double quotes.
  *
  *      - \%RMes            - Takes a string pointer (const char *) and outputs
  *                            it as an element with the necessary escaping.
+ *
+ *      - \%RMjs            - Takes a string pointer (const char *) and outputs
+ *                            it in quotes with proper JSON escaping.
+ *
+ *      - \%RMpa            - Takes a string pointer (const char *) and outputs
+ *                            it percent-encoded (RFC-3986).  All reserved characters
+ *                            are encoded.
+ *
+ *      - \%RMpf            - Takes a string pointer (const char *) and outputs
+ *                            it percent-encoded (RFC-3986), form style.  This
+ *                            means '+' is used to escape space (' ') and '%2B'
+ *                            is used to escape '+'.
+ *
+ *      - \%RMpp            - Takes a string pointer (const char *) and outputs
+ *                            it percent-encoded (RFC-3986), path style.  This
+ *                            means '/' will not be escaped.
+ *
+ *      - \%RMpq            - Takes a string pointer (const char *) and outputs
+ *                            it percent-encoded (RFC-3986), query style.  This
+ *                            means '+' will not be escaped.
+ *
  *
  * Group 6, CPU Architecture Register dumpers:
  *      - \%RAx86[reg]      - Takes a 64-bit register value if the register is
@@ -2350,7 +2432,7 @@ RTDECL(int) RTStrICmp(const char *psz1, const char *psz2);
  * both have been lower cased.
  *
  * If the string encoding is invalid the function will assert (strict builds)
- * and use RTStrCmp for the remainder of the string.
+ * and use RTStrNCmp for the remainder of the string.
  *
  * @returns < 0 if the first string less than the second string.
  * @returns 0 if the first string identical to the second string.
@@ -2376,9 +2458,29 @@ RTDECL(int) RTStrNICmp(const char *psz1, const char *psz2, size_t cchMax);
  * @returns > 0 if the first string greater than the second string.
  * @param   psz1        First UTF-8 string. Null is allowed.
  * @param   psz2        Second string, 7-bit ASCII. Null is allowed.
- * @sa      RTUtf16ICmpAscii
+ * @sa      RTStrICmp, RTUtf16ICmpAscii
  */
 RTDECL(int) RTStrICmpAscii(const char *psz1, const char *psz2);
+
+/**
+ * Performs a case insensitive string compare between a UTF-8 string and a 7-bit
+ * ASCII string, given a maximum string length.
+ *
+ * This is potentially faster than RTStrNICmp and drags in less dependencies.
+ * It is really handy for hardcoded inputs.
+ *
+ * If the string encoding is invalid the function will assert (strict builds)
+ * and use RTStrNCmp for the remainder of the string.
+ *
+ * @returns < 0 if the first string less than the second string.
+ * @returns 0 if the first string identical to the second string.
+ * @returns > 0 if the first string greater than the second string.
+ * @param   psz1        First UTF-8 string. Null is allowed.
+ * @param   psz2        Second string, 7-bit ASCII. Null is allowed.
+ * @param   cchMax      Maximum string length
+ * @sa      RTStrNICmp, RTUtf16NICmpAscii
+ */
+RTDECL(int) RTStrNICmpAscii(const char *psz1, const char *psz2, size_t cchMax);
 
 /**
  * Checks whether @a pszString starts with @a pszStart.
@@ -2387,7 +2489,7 @@ RTDECL(int) RTStrICmpAscii(const char *psz1, const char *psz2);
  * @param   pszString   The string to check.
  * @param   pszStart    The start string to check for.
  */
-RTDECL(int) RTStrStartsWith(const char *pszString, const char *pszStart);
+RTDECL(bool) RTStrStartsWith(const char *pszString, const char *pszStart);
 
 /**
  * Checks whether @a pszString starts with @a pszStart, case insensitive.
@@ -2396,7 +2498,7 @@ RTDECL(int) RTStrStartsWith(const char *pszString, const char *pszStart);
  * @param   pszString   The string to check.
  * @param   pszStart    The start string to check for.
  */
-RTDECL(int) RTStrIStartsWith(const char *pszString, const char *pszStart);
+RTDECL(bool) RTStrIStartsWith(const char *pszString, const char *pszStart);
 
 /**
  * Locates a case sensitive substring.
@@ -2741,7 +2843,7 @@ RTDECL(int) RTStrToUInt32Ex(const char *pszValue, char **ppszNext, unsigned uBas
 RTDECL(int) RTStrToUInt32Full(const char *pszValue, unsigned uBase, uint32_t *pu32);
 
 /**
- * Converts a string representation of a number to a 64-bit unsigned number.
+ * Converts a string representation of a number to a 32-bit unsigned number.
  * The base is guessed.
  *
  * @returns 32-bit unsigned number on success.
@@ -3085,9 +3187,42 @@ RTDECL(int) RTStrPrintHexBytes(char *pszBuf, size_t cbBuf, void const *pv, size_
  * @param   pszHex      The string containing the hex bytes.
  * @param   pv          Output buffer.
  * @param   cb          The size of the output buffer.
- * @param   fFlags      Must be zero, reserved for future use.
+ * @param   fFlags      RTSTRCONVERTHEXBYTES_F_XXX.
  */
 RTDECL(int) RTStrConvertHexBytes(char const *pszHex, void *pv, size_t cb, uint32_t fFlags);
+
+/** @name RTSTRCONVERTHEXBYTES_F_XXX - Flags for RTStrConvertHexBytes() and RTStrConvertHexBytesEx().
+ * @{  */
+/** Accept colon as a byte separator. */
+#define RTSTRCONVERTHEXBYTES_F_SEP_COLON  RT_BIT(0)
+/** @} */
+
+/**
+ * Converts a string of hex bytes back into binary data, extended version.
+ *
+ * @returns IPRT status code.
+ * @retval  VERR_INVALID_POINTER if any of the pointers are wrong.
+ * @retval  VERR_BUFFER_OVERFLOW if the string contains too many hex bytes.
+ * @retval  VERR_BUFFER_UNDERFLOW if there aren't enough hex bytes to fill up
+ *          the output buffer and *pcbReturned is NULL.
+ * @retval  VINF_BUFFER_UNDERFLOW if there aren't enough hex bytes to fill up
+ *          the output buffer and *pcbReturned is not NULL, *pcbReturned holds
+ *          the actual number of bytes.
+ * @retval  VERR_UNEVEN_INPUT if the input contains a half byte.
+ * @retval  VERR_NO_DIGITS
+ * @retval  VWRN_TRAILING_CHARS
+ * @retval  VWRN_TRAILING_SPACES
+ *
+ * @param   pszHex      The string containing the hex bytes.
+ * @param   pv          Output buffer.
+ * @param   cb          The size of the output buffer.
+ * @param   fFlags      RTSTRCONVERTHEXBYTES_F_XXX.
+ * @param   ppszNext    Set to point at where we stopped decoding hex bytes.
+ *                      Optional.
+ * @param   pcbReturned Where to return the number of bytes found.  Optional.
+ */
+RTDECL(int) RTStrConvertHexBytesEx(char const *pszHex, void *pv, size_t cb, uint32_t fFlags,
+                                   const char **ppszNext, size_t *pcbReturned);
 
 /** @} */
 
@@ -3106,14 +3241,14 @@ typedef PRTSTRSPACECORE *PPRTSTRSPACECORE;
  */
 typedef struct RTSTRSPACECORE
 {
-    /** Hash key. Don't touch. */
-    uint32_t        Key;
     /** Pointer to the left leaf node. Don't touch. */
     PRTSTRSPACECORE pLeft;
     /** Pointer to the left right node. Don't touch. */
     PRTSTRSPACECORE pRight;
-    /** Pointer to the list of string with the same key. Don't touch. */
+    /** Pointer to the list of string with the same hash key value. Don't touch. */
     PRTSTRSPACECORE pList;
+    /** Hash key. Don't touch. */
+    uint32_t        Key;
     /** Height of this tree: max(heigth(left), heigth(right)) + 1. Don't touch */
     unsigned char   uchHeight;
     /** The string length. Read only! */
@@ -3260,9 +3395,53 @@ RTDECL(uint32_t)    RTStrHash1ExNV(size_t cPairs, va_list va);
 
 /** @}  */
 
+
+/** @defgroup rt_str_mem       Raw memory operations.
+ *
+ * @note Following the memchr/memcpy/memcmp/memset tradition and putting these
+ *       in the string.h header rather than in the mem.h one.
+ *
+ * @{ */
+
+/**
+ * Searches @a pvHaystack for a 16-bit sized and aligned @a uNeedle.
+ *
+ * @returns Pointer to the first hit if found, NULL if not found.
+ * @param   pvHaystack      The memory to search.
+ * @param   uNeedle         The 16-bit value to find.
+ * @param   cbHaystack      Size of the memory to search.
+ * @sa      memchr, RTStrMemFind32, RTStrMemFind64
+ */
+RTDECL(uint16_t *) RTStrMemFind16(const void *pvHaystack, uint16_t uNeedle, size_t cbHaystack);
+
+/**
+ * Searches @a pvHaystack for a 32-bit sized and aligned @a uNeedle.
+ *
+ * @returns Pointer to the first hit if found, NULL if not found.
+ * @param   pvHaystack      The memory to search.
+ * @param   uNeedle         The 32-bit value to find.
+ * @param   cbHaystack      Size of the memory to search.
+ * @sa      memchr, RTStrMemFind16, RTStrMemFind64
+ */
+RTDECL(uint32_t *) RTStrMemFind32(const void *pvHaystack, uint32_t uNeedle, size_t cbHaystack);
+
+/**
+ * Searches @a pvHaystack for a 64-bit sized and aligned @a uNeedle.
+ *
+ * @returns Pointer to the first hit if found, NULL if not found.
+ * @param   pvHaystack      The memory to search.
+ * @param   uNeedle         The 64-bit value to find.
+ * @param   cbHaystack      Size of the memory to search.
+ * @sa      memchr, RTStrMemFind16, RTStrMemFind32
+ */
+RTDECL(uint64_t *) RTStrMemFind64(const void *pvHaystack, uint64_t uNeedle, size_t cbHaystack);
+
+/** @}  */
+
+
 /** @} */
 
 RT_C_DECLS_END
 
-#endif
+#endif /* !IPRT_INCLUDED_string_h */
 

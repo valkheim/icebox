@@ -3,7 +3,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -23,8 +23,11 @@
  * terms and conditions of either the GPL or the CDDL or both.
  */
 
-#ifndef ___VBox_vmm_pdmcritsect_h
-#define ___VBox_vmm_pdmcritsect_h
+#ifndef VBOX_INCLUDED_vmm_pdmcritsect_h
+#define VBOX_INCLUDED_vmm_pdmcritsect_h
+#ifndef RT_WITHOUT_PRAGMA_ONCE
+# pragma once
+#endif
 
 #include <VBox/types.h>
 #include <iprt/critsect.h>
@@ -53,7 +56,7 @@ typedef union PDMCRITSECT
 
 VMMR3_INT_DECL(int)     PDMR3CritSectBothTerm(PVM pVM);
 VMMR3_INT_DECL(void)    PDMR3CritSectLeaveAll(PVM pVM);
-VMM_INT_DECL(void)      PDMCritSectBothFF(PVMCPU pVCpu);
+VMM_INT_DECL(void)      PDMCritSectBothFF(PVMCPUCC pVCpu);
 
 
 VMMR3DECL(uint32_t) PDMR3CritSectCountOwned(PVM pVM, char *pszNames, size_t cbNames);
@@ -61,7 +64,7 @@ VMMR3DECL(uint32_t) PDMR3CritSectCountOwned(PVM pVM, char *pszNames, size_t cbNa
 VMMR3DECL(int)      PDMR3CritSectInit(PVM pVM, PPDMCRITSECT pCritSect, RT_SRC_POS_DECL,
                                       const char *pszNameFmt, ...) RT_IPRT_FORMAT_ATTR(6, 7);
 VMMR3DECL(int)      PDMR3CritSectEnterEx(PPDMCRITSECT pCritSect, bool fCallRing3);
-VMMR3DECL(bool)     PDMR3CritSectYield(PPDMCRITSECT pCritSect);
+VMMR3DECL(bool)     PDMR3CritSectYield(PVM pVM, PPDMCRITSECT pCritSect);
 VMMR3DECL(const char *) PDMR3CritSectName(PCPDMCRITSECT pCritSect);
 VMMR3DECL(int)      PDMR3CritSectDelete(PPDMCRITSECT pCritSect);
 #if defined(IN_RING0) || defined(IN_RING3)
@@ -75,7 +78,7 @@ VMMDECL(int)        PDMCritSectTryEnterDebug(PPDMCRITSECT pCritSect, RTHCUINTPTR
 VMMDECL(int)        PDMCritSectLeave(PPDMCRITSECT pCritSect);
 
 VMMDECL(bool)       PDMCritSectIsOwner(PCPDMCRITSECT pCritSect);
-VMMDECL(bool)       PDMCritSectIsOwnerEx(PCPDMCRITSECT pCritSect, PVMCPU pVCpu);
+VMMDECL(bool)       PDMCritSectIsOwnerEx(PCPDMCRITSECT pCritSect, PVMCPUCC pVCpu);
 VMMDECL(bool)       PDMCritSectIsInitialized(PCPDMCRITSECT pCritSect);
 VMMDECL(bool)       PDMCritSectHasWaiters(PCPDMCRITSECT pCritSect);
 VMMDECL(uint32_t)   PDMCritSectGetRecursion(PCPDMCRITSECT pCritSect);
@@ -86,7 +89,7 @@ VMMR3DECL(RCPTRTYPE(PPDMCRITSECT))  PDMR3CritSectGetNopRC(PVM pVM);
 
 /* Strict build: Remap the two enter calls to the debug versions. */
 #ifdef VBOX_STRICT
-# ifdef ___iprt_asm_h
+# ifdef IPRT_INCLUDED_asm_h
 #  define PDMCritSectEnter(pCritSect, rcBusy)   PDMCritSectEnterDebug((pCritSect), (rcBusy), (uintptr_t)ASMReturnAddress(), RT_SRC_POS)
 #  define PDMCritSectTryEnter(pCritSect)        PDMCritSectTryEnterDebug((pCritSect), (uintptr_t)ASMReturnAddress(), RT_SRC_POS)
 # else
@@ -99,5 +102,5 @@ VMMR3DECL(RCPTRTYPE(PPDMCRITSECT))  PDMR3CritSectGetNopRC(PVM pVM);
 
 RT_C_DECLS_END
 
-#endif
+#endif /* !VBOX_INCLUDED_vmm_pdmcritsect_h */
 

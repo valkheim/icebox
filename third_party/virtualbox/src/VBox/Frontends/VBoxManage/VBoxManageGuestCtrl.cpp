@@ -39,7 +39,6 @@
 #include <iprt/asm.h>
 #include <iprt/dir.h>
 #include <iprt/file.h>
-#include <iprt/isofs.h>
 #include <iprt/getopt.h>
 #include <iprt/list.h>
 #include <iprt/path.h>
@@ -130,8 +129,8 @@ typedef struct GCTLCMDDEF
      */
     DECLR3CALLBACKMEMBER(RTEXITCODE, pfnHandler, (struct GCTLCMDCTX *pCtx, int argc, char **argv));
 
-    /** The command usage flags. */
-    uint32_t    fCmdUsage;
+    /** The sub-command scope flags. */
+    uint64_t    fSubcommandScope;
     /** Command context flags (GCTLCMDCTX_F_XXX). */
     uint32_t    fCmdCtx;
 } GCTLCMD;
@@ -183,108 +182,17 @@ typedef struct GCTLCMDCTX
     ComPtr<IGuestSession> pGuestSession;
     /** The guest session ID. */
     ULONG uSessionID;
-    /** Path style, gotten lazily.   */
-    PathStyle_T enmPathStyle;
-
-    /** Gets the path style.  */
-    PathStyle_T getPathStyle()
-    {
-        if (enmPathStyle == (PathStyle_T)0)
-        {
-            HRESULT hrc = pGuestSession->COMGETTER(PathStyle)(&enmPathStyle);
-            if (FAILED(hrc))
-#if RTPATH_STYLE == RTPATH_STR_F_STYLE_DOS
-                enmPathStyle = PathStyle_DOS;
-#else
-                enmPathStyle = PathStyle_UNIX;
-#endif
-        }
-        return enmPathStyle;
-    }
 
 } GCTLCMDCTX, *PGCTLCMDCTX;
 
-
-typedef struct COPYCONTEXT
-{
-    COPYCONTEXT()
-        : fDryRun(false),
-          fHostToGuest(false)
-    {
-    }
-
-    PGCTLCMDCTX pCmdCtx;
-    bool fDryRun;
-    bool fHostToGuest;
-
-} COPYCONTEXT, *PCOPYCONTEXT;
-
-/**
- * An entry for a source element, including an optional DOS-like wildcard (*,?).
- */
-class SOURCEFILEENTRY
-{
-    public:
-
-        SOURCEFILEENTRY(const char *pszSource, const char *pszFilter)
-                        : mSource(pszSource),
-                          mFilter(pszFilter) {}
-
-        SOURCEFILEENTRY(const char *pszSource)
-                        : mSource(pszSource)
-        {
-            Parse(pszSource);
-        }
-
-        const char* GetSource() const
-        {
-            return mSource.c_str();
-        }
-
-        const char* GetFilter() const
-        {
-            return mFilter.c_str();
-        }
-
-    private:
-
-        int Parse(const char *pszPath)
-        {
-            AssertPtrReturn(pszPath, VERR_INVALID_POINTER);
-
-            if (   !RTFileExists(pszPath)
-                && !RTDirExists(pszPath))
-            {
-                /* No file and no directory -- maybe a filter? */
-                char *pszFilename = RTPathFilename(pszPath);
-                if (   pszFilename
-                    && strpbrk(pszFilename, "*?"))
-                {
-                    /* Yep, get the actual filter part. */
-                    mFilter = RTPathFilename(pszPath);
-                    /* Remove the filter from actual sourcec directory name. */
-                    RTPathStripFilename(mSource.mutableRaw());
-                    mSource.jolt();
-                }
-            }
-
-            return VINF_SUCCESS; /** @todo */
-        }
-
-    private:
-
-        Utf8Str mSource;
-        Utf8Str mFilter;
-};
-typedef std::vector<SOURCEFILEENTRY> SOURCEVEC, *PSOURCEVEC;
 
 /**
  * An entry for an element which needs to be copied/created to/on the guest.
  */
 typedef struct DESTFILEENTRY
 {
-    DESTFILEENTRY(Utf8Str strFileName) : mFileName(strFileName) {}
-    Utf8Str mFileName;
+    DESTFILEENTRY(Utf8Str strFilename) : mFilename(strFilename) {}
+    Utf8Str mFilename;
 } DESTFILEENTRY, *PDESTFILEENTRY;
 /*
  * Map for holding destination entries, whereas the key is the destination
@@ -315,35 +223,27 @@ enum kStreamTransform
     kStreamTransform_Dos2Unix,
     kStreamTransform_Unix2Dos
 };
-
-
-/*********************************************************************************************************************************
-*   Internal Functions                                                                                                           *
-*********************************************************************************************************************************/
-static int gctlCopyDirExists(PCOPYCONTEXT pContext, bool bGuest, const char *pszDir, bool *fExists);
-
 #endif /* VBOX_ONLY_DOCS */
 
 
-
-void usageGuestControl(PRTSTREAM pStrm, const char *pcszSep1, const char *pcszSep2, uint32_t uSubCmd)
+void usageGuestControl(PRTSTREAM pStrm, const char *pcszSep1, const char *pcszSep2, uint64_t fSubcommandScope)
 {
-    const uint32_t fAnonSubCmds = USAGE_GSTCTRL_CLOSESESSION
-                                | USAGE_GSTCTRL_LIST
-                                | USAGE_GSTCTRL_CLOSEPROCESS
-                                | USAGE_GSTCTRL_CLOSESESSION
-                                | USAGE_GSTCTRL_UPDATEGA
-                                | USAGE_GSTCTRL_WATCH;
+    const uint64_t fAnonSubCmds = HELP_SCOPE_GSTCTRL_CLOSESESSION
+                                | HELP_SCOPE_GSTCTRL_LIST
+                                | HELP_SCOPE_GSTCTRL_CLOSEPROCESS
+                                | HELP_SCOPE_GSTCTRL_CLOSESESSION
+                                | HELP_SCOPE_GSTCTRL_UPDATEGA
+                                | HELP_SCOPE_GSTCTRL_WATCH;
 
     /*                0         1         2         3         4         5         6         7         8XXXXXXXXXX */
     /*                0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890 */
-    if (~fAnonSubCmds & uSubCmd)
+    if (~fAnonSubCmds & fSubcommandScope)
         RTStrmPrintf(pStrm,
                      "%s guestcontrol %s    <uuid|vmname> [--verbose|-v] [--quiet|-q]\n"
                      "                              [--username <name>] [--domain <domain>]\n"
                      "                              [--passwordfile <file> | --password <password>]\n%s",
-                     pcszSep1, pcszSep2, uSubCmd == ~0U ? "\n" : "");
-    if (uSubCmd & USAGE_GSTCTRL_RUN)
+                     pcszSep1, pcszSep2, (fSubcommandScope & RTMSGREFENTRYSTR_SCOPE_MASK) == RTMSGREFENTRYSTR_SCOPE_GLOBAL ? "\n" : "");
+    if (fSubcommandScope & HELP_SCOPE_GSTCTRL_RUN)
         RTStrmPrintf(pStrm,
                      "                              run [common-options]\n"
                      "                              [--exe <path to executable>] [--timeout <msec>]\n"
@@ -354,7 +254,7 @@ void usageGuestControl(PRTSTREAM pStrm, const char *pcszSep1, const char *pcszSe
                      "                              [--dos2unix] [--unix2dos]\n"
                      "                              -- <program/arg0> [argument1] ... [argumentN]]\n"
                      "\n");
-    if (uSubCmd & USAGE_GSTCTRL_START)
+    if (fSubcommandScope & HELP_SCOPE_GSTCTRL_START)
         RTStrmPrintf(pStrm,
                      "                              start [common-options]\n"
                      "                              [--exe <path to executable>] [--timeout <msec>]\n"
@@ -362,57 +262,57 @@ void usageGuestControl(PRTSTREAM pStrm, const char *pcszSep1, const char *pcszSe
                      "                              [--ignore-operhaned-processes] [--profile]\n"
                      "                              -- <program/arg0> [argument1] ... [argumentN]]\n"
                      "\n");
-    if (uSubCmd & USAGE_GSTCTRL_COPYFROM)
+    if (fSubcommandScope & HELP_SCOPE_GSTCTRL_COPYFROM)
         RTStrmPrintf(pStrm,
                      "                              copyfrom [common-options]\n"
-                     "                              [--dryrun] [--follow] [-R|--recursive]\n"
+                     "                              [--follow] [-R|--recursive]\n"
                      "                              <guest-src0> [guest-src1 [...]] <host-dst>\n"
                      "\n"
                      "                              copyfrom [common-options]\n"
-                     "                              [--dryrun] [--follow] [-R|--recursive]\n"
+                     "                              [--follow] [-R|--recursive]\n"
                      "                              [--target-directory <host-dst-dir>]\n"
                      "                              <guest-src0> [guest-src1 [...]]\n"
                      "\n");
-    if (uSubCmd & USAGE_GSTCTRL_COPYTO)
+    if (fSubcommandScope & HELP_SCOPE_GSTCTRL_COPYTO)
         RTStrmPrintf(pStrm,
                      "                              copyto [common-options]\n"
-                     "                              [--dryrun] [--follow] [-R|--recursive]\n"
+                     "                              [--follow] [-R|--recursive]\n"
                      "                              <host-src0> [host-src1 [...]] <guest-dst>\n"
                      "\n"
                      "                              copyto [common-options]\n"
-                     "                              [--dryrun] [--follow] [-R|--recursive]\n"
+                     "                              [--follow] [-R|--recursive]\n"
                      "                              [--target-directory <guest-dst>]\n"
                      "                              <host-src0> [host-src1 [...]]\n"
                      "\n");
-    if (uSubCmd & USAGE_GSTCTRL_MKDIR)
+    if (fSubcommandScope & HELP_SCOPE_GSTCTRL_MKDIR)
         RTStrmPrintf(pStrm,
                      "                              mkdir|createdir[ectory] [common-options]\n"
                      "                              [--parents] [--mode <mode>]\n"
                      "                              <guest directory> [...]\n"
                      "\n");
-    if (uSubCmd & USAGE_GSTCTRL_RMDIR)
+    if (fSubcommandScope & HELP_SCOPE_GSTCTRL_RMDIR)
         RTStrmPrintf(pStrm,
                      "                              rmdir|removedir[ectory] [common-options]\n"
                      "                              [-R|--recursive]\n"
                      "                              <guest directory> [...]\n"
                      "\n");
-    if (uSubCmd & USAGE_GSTCTRL_RM)
+    if (fSubcommandScope & HELP_SCOPE_GSTCTRL_RM)
         RTStrmPrintf(pStrm,
                      "                              removefile|rm [common-options] [-f|--force]\n"
                      "                              <guest file> [...]\n"
                      "\n");
-    if (uSubCmd & USAGE_GSTCTRL_MV)
+    if (fSubcommandScope & HELP_SCOPE_GSTCTRL_MV)
         RTStrmPrintf(pStrm,
                      "                              mv|move|ren[ame] [common-options]\n"
                      "                              <source> [source1 [...]] <dest>\n"
                      "\n");
-    if (uSubCmd & USAGE_GSTCTRL_MKTEMP)
+    if (fSubcommandScope & HELP_SCOPE_GSTCTRL_MKTEMP)
         RTStrmPrintf(pStrm,
                      "                              mktemp|createtemp[orary] [common-options]\n"
                      "                              [--secure] [--mode <mode>] [--tmpdir <directory>]\n"
                      "                              <template>\n"
                      "\n");
-    if (uSubCmd & USAGE_GSTCTRL_STAT)
+    if (fSubcommandScope & HELP_SCOPE_GSTCTRL_STAT)
         RTStrmPrintf(pStrm,
                      "                              stat [common-options]\n"
                      "                              <file> [...]\n"
@@ -421,38 +321,38 @@ void usageGuestControl(PRTSTREAM pStrm, const char *pcszSep1, const char *pcszSe
     /*
      * Command not requiring authentication.
      */
-    if (fAnonSubCmds & uSubCmd)
+    if (fAnonSubCmds & fSubcommandScope)
     {
         /*                0         1         2         3         4         5         6         7         8XXXXXXXXXX */
         /*                0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890 */
         RTStrmPrintf(pStrm,
                      "%s guestcontrol %s    <uuid|vmname> [--verbose|-v] [--quiet|-q]\n%s",
-                     pcszSep1, pcszSep2, uSubCmd == ~0U ? "\n" : "");
-        if (uSubCmd & USAGE_GSTCTRL_LIST)
+                     pcszSep1, pcszSep2, (fSubcommandScope & RTMSGREFENTRYSTR_SCOPE_MASK) == RTMSGREFENTRYSTR_SCOPE_GLOBAL ? "\n" : "");
+        if (fSubcommandScope & HELP_SCOPE_GSTCTRL_LIST)
             RTStrmPrintf(pStrm,
                      "                              list <all|sessions|processes|files> [common-opts]\n"
                      "\n");
-        if (uSubCmd & USAGE_GSTCTRL_CLOSEPROCESS)
+        if (fSubcommandScope & HELP_SCOPE_GSTCTRL_CLOSEPROCESS)
             RTStrmPrintf(pStrm,
                      "                              closeprocess [common-options]\n"
                      "                              <   --session-id <ID>\n"
                      "                                | --session-name <name or pattern>\n"
                      "                              <PID1> [PID1 [...]]\n"
                      "\n");
-        if (uSubCmd & USAGE_GSTCTRL_CLOSESESSION)
+        if (fSubcommandScope & HELP_SCOPE_GSTCTRL_CLOSESESSION)
             RTStrmPrintf(pStrm,
                      "                              closesession [common-options]\n"
                      "                              <  --all | --session-id <ID>\n"
                      "                                | --session-name <name or pattern> >\n"
                      "\n");
-        if (uSubCmd & USAGE_GSTCTRL_UPDATEGA)
+        if (fSubcommandScope & HELP_SCOPE_GSTCTRL_UPDATEGA)
             RTStrmPrintf(pStrm,
                      "                              updatega|updateguestadditions|updateadditions\n"
                      "                              [--source <guest additions .ISO>]\n"
                      "                              [--wait-start] [common-options]\n"
                      "                              [-- [<argument1>] ... [<argumentN>]]\n"
                      "\n");
-        if (uSubCmd & USAGE_GSTCTRL_WATCH)
+        if (fSubcommandScope & HELP_SCOPE_GSTCTRL_WATCH)
             RTStrmPrintf(pStrm,
                      "                              watch [common-options]\n"
                      "\n");
@@ -666,6 +566,29 @@ const char *gctlFileStatusToText(FileStatus_T enmStatus)
             return "error";
         default:
             break;
+    }
+    return "unknown";
+}
+
+/**
+ * Translates a file system objec type to a string.
+ */
+const char *gctlFsObjTypeToName(FsObjType_T enmType)
+{
+    switch (enmType)
+    {
+        case FsObjType_Unknown:     return "unknown";
+        case FsObjType_Fifo:        return "fifo";
+        case FsObjType_DevChar:     return "char-device";
+        case FsObjType_Directory:   return "directory";
+        case FsObjType_DevBlock:    return "block-device";
+        case FsObjType_File:        return "file";
+        case FsObjType_Symlink:     return "symlink";
+        case FsObjType_Socket:      return "socket";
+        case FsObjType_WhiteOut:    return "white-out";
+#ifdef VBOX_WITH_XPCOM_CPP_ENUM_HACK
+        case FsObjType_32BitHack: break;
+#endif
     }
     return "unknown";
 }
@@ -1042,7 +965,7 @@ static RTEXITCODE gctlCtxPostOptionParsingInit(PGCTLCMDCTX pCtx)
         }
     }
     else
-        rcExit = errorSyntaxEx(USAGE_GUESTCONTROL, pCtx->pCmdDef->fCmdUsage, "No user name specified!");
+        rcExit = errorSyntaxEx(USAGE_GUESTCONTROL, pCtx->pCmdDef->fSubcommandScope, "No user name specified!");
 
     pCtx->fPostOptionParsingInited = rcExit == RTEXITCODE_SUCCESS;
     return rcExit;
@@ -1396,7 +1319,7 @@ static RTEXITCODE gctlHandleRunCommon(PGCTLCMDCTX pCtx, int argc, char **argv, b
                 case 'E':
                     if (   ValueUnion.psz[0] == '\0'
                         || ValueUnion.psz[0] == '=')
-                        return errorSyntaxEx(USAGE_GUESTCONTROL, USAGE_GSTCTRL_RUN,
+                        return errorSyntaxEx(USAGE_GUESTCONTROL, HELP_SCOPE_GSTCTRL_RUN,
                                              "Invalid argument variable[=value]: '%s'", ValueUnion.psz);
                     aEnv.push_back(Bstr(ValueUnion.psz).raw());
                     break;
@@ -1466,14 +1389,14 @@ static RTEXITCODE gctlHandleRunCommon(PGCTLCMDCTX pCtx, int argc, char **argv, b
                     break;
 
                 default:
-                    return errorGetOptEx(USAGE_GUESTCONTROL, USAGE_GSTCTRL_RUN, ch, &ValueUnion);
+                    return errorGetOptEx(USAGE_GUESTCONTROL, HELP_SCOPE_GSTCTRL_RUN, ch, &ValueUnion);
 
             } /* switch */
         } /* while RTGetOpt */
 
         /* Must have something to execute. */
         if (!pszImage || !*pszImage)
-            return errorSyntaxEx(USAGE_GUESTCONTROL, USAGE_GSTCTRL_RUN, "No executable specified!");
+            return errorSyntaxEx(USAGE_GUESTCONTROL, HELP_SCOPE_GSTCTRL_RUN, "No executable specified!");
 
         /*
          * Finalize process creation and wait flags and input/output streams.
@@ -1748,906 +1671,15 @@ static RTEXITCODE gctlHandleRunCommon(PGCTLCMDCTX pCtx, int argc, char **argv, b
 
 static DECLCALLBACK(RTEXITCODE) gctlHandleRun(PGCTLCMDCTX pCtx, int argc, char **argv)
 {
-    return gctlHandleRunCommon(pCtx, argc, argv, true /*fRunCmd*/, USAGE_GSTCTRL_RUN);
+    return gctlHandleRunCommon(pCtx, argc, argv, true /*fRunCmd*/, HELP_SCOPE_GSTCTRL_RUN);
 }
 
 
 static DECLCALLBACK(RTEXITCODE) gctlHandleStart(PGCTLCMDCTX pCtx, int argc, char **argv)
 {
-    return gctlHandleRunCommon(pCtx, argc, argv, false /*fRunCmd*/, USAGE_GSTCTRL_START);
+    return gctlHandleRunCommon(pCtx, argc, argv, false /*fRunCmd*/, HELP_SCOPE_GSTCTRL_START);
 }
 
-
-/** bird: This is just a code conversion tool, flags are better defined by
- *        the preprocessor, in general.  But the code was using obsoleted
- *        main flags for internal purposes (in a uint32_t) without passing them
- *        along, or it seemed that way.  Enum means compiler checks types. */
-enum gctlCopyFlags
-{
-    kGctlCopyFlags_None         = 0,
-    kGctlCopyFlags_Recursive    = RT_BIT(1),
-    kGctlCopyFlags_FollowLinks  = RT_BIT(2)
-};
-
-
-/**
- * Creates a copy context structure which then can be used with various
- * guest control copy functions. Needs to be free'd with gctlCopyContextFree().
- *
- * @return  IPRT status code.
- * @param   pCtx                    Pointer to command context.
- * @param   fDryRun                 Flag indicating if we want to run a dry run only.
- * @param   fHostToGuest            Flag indicating if we want to copy from host to guest
- *                                  or vice versa.
- * @param   strSessionName          Session name (only for identification purposes).
- * @param   ppContext               Pointer which receives the allocated copy context.
- */
-static int gctlCopyContextCreate(PGCTLCMDCTX pCtx, bool fDryRun, bool fHostToGuest,
-                                 const Utf8Str &strSessionName,
-                                 PCOPYCONTEXT *ppContext)
-{
-    RT_NOREF(strSessionName);
-    AssertPtrReturn(pCtx, VERR_INVALID_POINTER);
-
-    int vrc = VINF_SUCCESS;
-    try
-    {
-        PCOPYCONTEXT pContext = new COPYCONTEXT();
-
-        pContext->pCmdCtx = pCtx;
-        pContext->fDryRun = fDryRun;
-        pContext->fHostToGuest = fHostToGuest;
-
-        *ppContext = pContext;
-    }
-    catch (std::bad_alloc &)
-    {
-        vrc = VERR_NO_MEMORY;
-    }
-
-    return vrc;
-}
-
-/**
- * Frees are previously allocated copy context structure.
- *
- * @param   pContext                Pointer to copy context to free.
- */
-static void gctlCopyContextFree(PCOPYCONTEXT pContext)
-{
-    if (pContext)
-        delete pContext;
-}
-
-/**
- * Translates a source path to a destination path (can be both sides,
- * either host or guest). The source root is needed to determine the start
- * of the relative source path which also needs to present in the destination
- * path.
- *
- * @return  IPRT status code.
- * @param   pszSourceRoot           Source root path. No trailing directory slash!
- * @param   pszSource               Actual source to transform. Must begin with
- *                                  the source root path!
- * @param   pszDest                 Destination path.
- * @param   ppszTranslated          Pointer to the allocated, translated destination
- *                                  path. Must be free'd with RTStrFree().
- */
-static int gctlCopyTranslatePath(const char *pszSourceRoot, const char *pszSource,
-                                 const char *pszDest, char **ppszTranslated)
-{
-    AssertPtrReturn(pszSourceRoot, VERR_INVALID_POINTER);
-    AssertPtrReturn(pszSource, VERR_INVALID_POINTER);
-    AssertPtrReturn(pszDest, VERR_INVALID_POINTER);
-    AssertPtrReturn(ppszTranslated, VERR_INVALID_POINTER);
-#if 0 /** @todo r=bird: It does not make sense to apply host path parsing semantics onto guest paths. I hope this code isn't mixing host/guest paths in the same way anywhere else... @bugref{6344} */
-    AssertReturn(RTPathStartsWith(pszSource, pszSourceRoot), VERR_INVALID_PARAMETER);
-#endif
-
-    /* Construct the relative dest destination path by "subtracting" the
-     * source from the source root, e.g.
-     *
-     * source root path = "e:\foo\", source = "e:\foo\bar"
-     * dest = "d:\baz\"
-     * translated = "d:\baz\bar\"
-     */
-    char szTranslated[RTPATH_MAX];
-    size_t srcOff = strlen(pszSourceRoot);
-    AssertReturn(srcOff, VERR_INVALID_PARAMETER);
-
-    char *pszDestPath = RTStrDup(pszDest);
-    AssertPtrReturn(pszDestPath, VERR_NO_MEMORY);
-
-    int vrc;
-    if (!RTPathFilename(pszDestPath))
-    {
-        vrc = RTPathJoin(szTranslated, sizeof(szTranslated),
-                         pszDestPath, &pszSource[srcOff]);
-    }
-    else
-    {
-        char *pszDestFileName = RTStrDup(RTPathFilename(pszDestPath));
-        if (pszDestFileName)
-        {
-            RTPathStripFilename(pszDestPath);
-            vrc = RTPathJoin(szTranslated, sizeof(szTranslated),
-                            pszDestPath, pszDestFileName);
-            RTStrFree(pszDestFileName);
-        }
-        else
-            vrc = VERR_NO_MEMORY;
-    }
-    RTStrFree(pszDestPath);
-
-    if (RT_SUCCESS(vrc))
-    {
-        *ppszTranslated = RTStrDup(szTranslated);
-#if 0
-        RTPrintf("Root: %s, Source: %s, Dest: %s, Translated: %s\n",
-                 pszSourceRoot, pszSource, pszDest, *ppszTranslated);
-#endif
-    }
-    return vrc;
-}
-
-#ifdef DEBUG_andy_disabled
-static int tstTranslatePath()
-{
-    RTAssertSetMayPanic(false /* Do not freak out, please. */);
-
-    static struct
-    {
-        const char *pszSourceRoot;
-        const char *pszSource;
-        const char *pszDest;
-        const char *pszTranslated;
-        int         iResult;
-    } aTests[] =
-    {
-        /* Invalid stuff. */
-        { NULL, NULL, NULL, NULL, VERR_INVALID_POINTER },
-#ifdef RT_OS_WINDOWS
-        /* Windows paths. */
-        { "c:\\foo", "c:\\foo\\bar.txt", "c:\\test", "c:\\test\\bar.txt", VINF_SUCCESS },
-        { "c:\\foo", "c:\\foo\\baz\\bar.txt", "c:\\test", "c:\\test\\baz\\bar.txt", VINF_SUCCESS },
-#else /* RT_OS_WINDOWS */
-        { "/home/test/foo", "/home/test/foo/bar.txt", "/opt/test", "/opt/test/bar.txt", VINF_SUCCESS },
-        { "/home/test/foo", "/home/test/foo/baz/bar.txt", "/opt/test", "/opt/test/baz/bar.txt", VINF_SUCCESS },
-#endif /* !RT_OS_WINDOWS */
-        /* Mixed paths*/
-        /** @todo */
-        { NULL }
-    };
-
-    size_t iTest = 0;
-    for (iTest; iTest < RT_ELEMENTS(aTests); iTest++)
-    {
-        RTPrintf("=> Test %d\n", iTest);
-        RTPrintf("\tSourceRoot=%s, Source=%s, Dest=%s\n",
-                 aTests[iTest].pszSourceRoot, aTests[iTest].pszSource, aTests[iTest].pszDest);
-
-        char *pszTranslated = NULL;
-        int iResult =  gctlCopyTranslatePath(aTests[iTest].pszSourceRoot, aTests[iTest].pszSource,
-                                             aTests[iTest].pszDest, &pszTranslated);
-        if (iResult != aTests[iTest].iResult)
-        {
-            RTPrintf("\tReturned %Rrc, expected %Rrc\n",
-                     iResult, aTests[iTest].iResult);
-        }
-        else if (   pszTranslated
-                 && strcmp(pszTranslated, aTests[iTest].pszTranslated))
-        {
-            RTPrintf("\tReturned translated path %s, expected %s\n",
-                     pszTranslated, aTests[iTest].pszTranslated);
-        }
-
-        if (pszTranslated)
-        {
-            RTPrintf("\tTranslated=%s\n", pszTranslated);
-            RTStrFree(pszTranslated);
-        }
-    }
-
-    return VINF_SUCCESS; /** @todo */
-}
-#endif
-
-/**
- * Creates a directory on the destination, based on the current copy
- * context.
- *
- * @return  IPRT status code.
- * @param   pContext                Pointer to current copy control context.
- * @param   pszDir                  Directory to create.
- */
-static int gctlCopyDirCreate(PCOPYCONTEXT pContext, const char *pszDir)
-{
-    AssertPtrReturn(pContext, VERR_INVALID_POINTER);
-    AssertPtrReturn(pszDir, VERR_INVALID_POINTER);
-
-    bool fDirExists;
-    int vrc = gctlCopyDirExists(pContext, pContext->fHostToGuest, pszDir, &fDirExists);
-    if (   RT_SUCCESS(vrc)
-        && fDirExists)
-    {
-        if (pContext->pCmdCtx->cVerbose)
-            RTPrintf("Directory \"%s\" already exists\n", pszDir);
-        return VINF_SUCCESS;
-    }
-
-    /* If querying for a directory existence fails there's no point of even trying
-     * to create such a directory. */
-    if (RT_FAILURE(vrc))
-        return vrc;
-
-    if (pContext->pCmdCtx->cVerbose)
-        RTPrintf("Creating directory \"%s\" ...\n", pszDir);
-
-    if (pContext->fDryRun)
-        return VINF_SUCCESS;
-
-    if (pContext->fHostToGuest) /* We want to create directories on the guest. */
-    {
-        SafeArray<DirectoryCreateFlag_T> dirCreateFlags;
-        dirCreateFlags.push_back(DirectoryCreateFlag_Parents);
-        HRESULT rc = pContext->pCmdCtx->pGuestSession->DirectoryCreate(Bstr(pszDir).raw(),
-                                                                       0700, ComSafeArrayAsInParam(dirCreateFlags));
-        if (FAILED(rc))
-            vrc = gctlPrintError(pContext->pCmdCtx->pGuestSession, COM_IIDOF(IGuestSession));
-    }
-    else /* ... or on the host. */
-    {
-        vrc = RTDirCreateFullPath(pszDir, 0700);
-        if (vrc == VERR_ALREADY_EXISTS)
-            vrc = VINF_SUCCESS;
-    }
-    return vrc;
-}
-
-/**
- * Checks whether a specific host/guest directory exists.
- *
- * @return  IPRT status code.
- * @param   pContext                Pointer to current copy control context.
- * @param   fOnGuest                true if directory needs to be checked on the guest
- *                                  or false if on the host.
- * @param   pszDir                  Actual directory to check.
- * @param   fExists                 Pointer which receives the result if the
- *                                  given directory exists or not.
- */
-static int gctlCopyDirExists(PCOPYCONTEXT pContext, bool fOnGuest,
-                             const char *pszDir, bool *fExists)
-{
-    AssertPtrReturn(pContext, false);
-    AssertPtrReturn(pszDir, false);
-    AssertPtrReturn(fExists, false);
-
-    int vrc = VINF_SUCCESS;
-    if (fOnGuest)
-    {
-        BOOL fDirExists = FALSE;
-        HRESULT rc = pContext->pCmdCtx->pGuestSession->DirectoryExists(Bstr(pszDir).raw(), FALSE /*followSymlinks*/, &fDirExists);
-        if (SUCCEEDED(rc))
-            *fExists = fDirExists != FALSE;
-        else
-            vrc = gctlPrintError(pContext->pCmdCtx->pGuestSession, COM_IIDOF(IGuestSession));
-    }
-    else
-        *fExists = RTDirExists(pszDir);
-    return vrc;
-}
-
-#if 0 /* unused */
-/**
- * Checks whether a specific directory exists on the destination, based
- * on the current copy context.
- *
- * @return  IPRT status code.
- * @param   pContext                Pointer to current copy control context.
- * @param   pszDir                  Actual directory to check.
- * @param   fExists                 Pointer which receives the result if the
- *                                  given directory exists or not.
- */
-static int gctlCopyDirExistsOnDest(PCOPYCONTEXT pContext, const char *pszDir,
-                                   bool *fExists)
-{
-    return gctlCopyDirExists(pContext, pContext->fHostToGuest,
-                             pszDir, fExists);
-}
-#endif /* unused */
-
-/**
- * Checks whether a specific directory exists on the source, based
- * on the current copy context.
- *
- * @return  IPRT status code.
- * @param   pContext                Pointer to current copy control context.
- * @param   pszDir                  Actual directory to check.
- * @param   fExists                 Pointer which receives the result if the
- *                                  given directory exists or not.
- */
-static int gctlCopyDirExistsOnSource(PCOPYCONTEXT pContext, const char *pszDir,
-                                     bool *fExists)
-{
-    return gctlCopyDirExists(pContext, !pContext->fHostToGuest,
-                             pszDir, fExists);
-}
-
-/**
- * Checks whether a specific host/guest file exists.
- *
- * @return  IPRT status code.
- * @param   pContext                Pointer to current copy control context.
- * @param   bGuest                  true if file needs to be checked on the guest
- *                                  or false if on the host.
- * @param   pszFile                 Actual file to check.
- * @param   fExists                 Pointer which receives the result if the
- *                                  given file exists or not.
- */
-static int gctlCopyFileExists(PCOPYCONTEXT pContext, bool bOnGuest,
-                              const char *pszFile, bool *fExists)
-{
-    AssertPtrReturn(pContext, false);
-    AssertPtrReturn(pszFile, false);
-    AssertPtrReturn(fExists, false);
-
-    int vrc = VINF_SUCCESS;
-    if (bOnGuest)
-    {
-        BOOL fFileExists = FALSE;
-        HRESULT rc = pContext->pCmdCtx->pGuestSession->FileExists(Bstr(pszFile).raw(), FALSE /*followSymlinks*/, &fFileExists);
-        if (SUCCEEDED(rc))
-            *fExists = fFileExists != FALSE;
-        else
-            vrc = gctlPrintError(pContext->pCmdCtx->pGuestSession, COM_IIDOF(IGuestSession));
-    }
-    else
-        *fExists = RTFileExists(pszFile);
-    return vrc;
-}
-
-#if 0 /* unused */
-/**
- * Checks whether a specific file exists on the destination, based on the
- * current copy context.
- *
- * @return  IPRT status code.
- * @param   pContext                Pointer to current copy control context.
- * @param   pszFile                 Actual file to check.
- * @param   fExists                 Pointer which receives the result if the
- *                                  given file exists or not.
- */
-static int gctlCopyFileExistsOnDest(PCOPYCONTEXT pContext, const char *pszFile,
-                                    bool *fExists)
-{
-    return gctlCopyFileExists(pContext, pContext->fHostToGuest,
-                              pszFile, fExists);
-}
-#endif /* unused */
-
-/**
- * Checks whether a specific file exists on the source, based on the
- * current copy context.
- *
- * @return  IPRT status code.
- * @param   pContext                Pointer to current copy control context.
- * @param   pszFile                 Actual file to check.
- * @param   fExists                 Pointer which receives the result if the
- *                                  given file exists or not.
- */
-static int gctlCopyFileExistsOnSource(PCOPYCONTEXT pContext, const char *pszFile,
-                                      bool *fExists)
-{
-    return gctlCopyFileExists(pContext, !pContext->fHostToGuest,
-                              pszFile, fExists);
-}
-
-/**
- * Copies a source file to the destination.
- *
- * @return  IPRT status code.
- * @param   pContext                Pointer to current copy control context.
- * @param   pszFileSource           Source file to copy to the destination.
- * @param   pszFileDest             Name of copied file on the destination.
- * @param   enmFlags                Copy flags. No supported at the moment and
- *                                  needs to be set to 0.
- */
-static int gctlCopyFileToDest(PCOPYCONTEXT pContext, const char *pszFileSource,
-                              const char *pszFileDest, gctlCopyFlags enmFlags)
-{
-    AssertPtrReturn(pContext, VERR_INVALID_POINTER);
-    AssertPtrReturn(pszFileSource, VERR_INVALID_POINTER);
-    AssertPtrReturn(pszFileDest, VERR_INVALID_POINTER);
-    AssertReturn(enmFlags == kGctlCopyFlags_None, VERR_INVALID_PARAMETER); /* No flags supported yet. */
-
-    if (pContext->pCmdCtx->cVerbose)
-        RTPrintf("Copying \"%s\" to \"%s\" ...\n", pszFileSource, pszFileDest);
-
-    if (pContext->fDryRun)
-        return VINF_SUCCESS;
-
-    int vrc = VINF_SUCCESS;
-    ComPtr<IProgress> pProgress;
-    HRESULT rc;
-    if (pContext->fHostToGuest)
-    {
-        SafeArray<FileCopyFlag_T> copyFlags;
-        rc = pContext->pCmdCtx->pGuestSession->FileCopyToGuest(Bstr(pszFileSource).raw(), Bstr(pszFileDest).raw(),
-                                                               ComSafeArrayAsInParam(copyFlags),
-                                                               pProgress.asOutParam());
-    }
-    else
-    {
-        SafeArray<FileCopyFlag_T> copyFlags;
-        rc = pContext->pCmdCtx->pGuestSession->FileCopyFromGuest(Bstr(pszFileSource).raw(), Bstr(pszFileDest).raw(),
-                                                                 ComSafeArrayAsInParam(copyFlags),
-                                                                 pProgress.asOutParam());
-    }
-
-    if (FAILED(rc))
-    {
-        vrc = gctlPrintError(pContext->pCmdCtx->pGuestSession, COM_IIDOF(IGuestSession));
-    }
-    else
-    {
-        if (pContext->pCmdCtx->cVerbose)
-            rc = showProgress(pProgress);
-        else
-            rc = pProgress->WaitForCompletion(-1 /* No timeout */);
-        if (SUCCEEDED(rc))
-            CHECK_PROGRESS_ERROR(pProgress, ("File copy failed"));
-        vrc = gctlPrintProgressError(pProgress);
-    }
-
-    return vrc;
-}
-
-/**
- * Copys a directory (tree) from host to the guest.
- *
- * @return  IPRT status code.
- * @param   pContext                Pointer to current copy control context.
- * @param   pszSource               Source directory on the host to copy to the guest.
- * @param   pszFilter               DOS-style wildcard filter (?, *).  Optional.
- * @param   pszDest                 Destination directory on the guest.
- * @param   enmFlags                Copy flags, such as recursive copying.
- * @param   pszSubDir               Current sub directory to handle. Needs to NULL and only
- *                                  is needed for recursion.
- */
-static int gctlCopyDirToGuest(PCOPYCONTEXT pContext,
-                              const char *pszSource, const char *pszFilter,
-                              const char *pszDest, enum gctlCopyFlags enmFlags,
-                              const char *pszSubDir /* For recursion. */)
-{
-    AssertPtrReturn(pContext, VERR_INVALID_POINTER);
-    AssertPtrReturn(pszSource, VERR_INVALID_POINTER);
-    /* Filter is optional. */
-    AssertPtrReturn(pszDest, VERR_INVALID_POINTER);
-    /* Sub directory is optional. */
-
-    /*
-     * Construct current path.
-     */
-    char szCurDir[RTPATH_MAX];
-    int vrc = RTStrCopy(szCurDir, sizeof(szCurDir), pszSource);
-    if (RT_SUCCESS(vrc) && pszSubDir)
-        vrc = RTPathAppend(szCurDir, sizeof(szCurDir), pszSubDir);
-
-    if (pContext->pCmdCtx->cVerbose)
-        RTPrintf("Processing host directory: %s\n", szCurDir);
-
-    /* Flag indicating whether the current directory was created on the
-     * target or not. */
-    bool fDirCreated = false;
-
-    /*
-     * Open directory without a filter - RTDirOpenFiltered unfortunately
-     * cannot handle sub directories so we have to do the filtering ourselves.
-     */
-    if (RT_SUCCESS(vrc))
-    {
-        RTDIR hDir;
-        vrc = RTDirOpen(&hDir, szCurDir);
-        if (RT_SUCCESS(vrc))
-        {
-            /*
-             * Enumerate the directory tree.
-             */
-            size_t        cbDirEntry = 0;
-            PRTDIRENTRYEX pDirEntry  = NULL;
-            while (RT_SUCCESS(vrc))
-            {
-                vrc = RTDirReadExA(hDir, &pDirEntry, &cbDirEntry, RTFSOBJATTRADD_NOTHING, 0);
-                if (RT_FAILURE(vrc))
-                {
-                    if (vrc == VERR_NO_MORE_FILES)
-                        vrc = VINF_SUCCESS;
-                    break;
-                }
-
-                switch (pDirEntry->Info.Attr.fMode & RTFS_TYPE_MASK)
-                {
-                    case RTFS_TYPE_DIRECTORY:
-                    {
-                        /* Skip "." and ".." entries. */
-                        if (RTDirEntryExIsStdDotLink(pDirEntry))
-                            break;
-
-                        if (pContext->pCmdCtx->cVerbose)
-                            RTPrintf("Directory: %s\n", pDirEntry->szName);
-
-                        if (enmFlags & kGctlCopyFlags_Recursive)
-                        {
-                            char *pszNewSub = NULL;
-                            if (pszSubDir)
-                                pszNewSub = RTPathJoinA(pszSubDir, pDirEntry->szName);
-                            else
-                            {
-                                pszNewSub = RTStrDup(pDirEntry->szName);
-                                RTPathStripTrailingSlash(pszNewSub);
-                            }
-
-                            if (pszNewSub)
-                            {
-                                vrc = gctlCopyDirToGuest(pContext,
-                                                         pszSource, pszFilter,
-                                                         pszDest, enmFlags, pszNewSub);
-                                RTStrFree(pszNewSub);
-                            }
-                            else
-                                vrc = VERR_NO_MEMORY;
-                        }
-                        break;
-                    }
-
-                    case RTFS_TYPE_SYMLINK:
-                        if (   (enmFlags & kGctlCopyFlags_Recursive)
-                            && (enmFlags & kGctlCopyFlags_FollowLinks))
-                        { /* Fall through to next case is intentional. */ }
-                        else
-                            break;
-                        RT_FALL_THRU();
-
-                    case RTFS_TYPE_FILE:
-                    {
-                        if (   pszFilter
-                            && !RTStrSimplePatternMatch(pszFilter, pDirEntry->szName))
-                        {
-                            break; /* Filter does not match. */
-                        }
-
-                        if (pContext->pCmdCtx->cVerbose)
-                            RTPrintf("File: %s\n", pDirEntry->szName);
-
-                        if (!fDirCreated)
-                        {
-                            char *pszDestDir;
-                            vrc = gctlCopyTranslatePath(pszSource, szCurDir, pszDest, &pszDestDir);
-                            if (RT_SUCCESS(vrc))
-                            {
-                                vrc = gctlCopyDirCreate(pContext, pszDestDir);
-                                RTStrFree(pszDestDir);
-
-                                fDirCreated = true;
-                            }
-                        }
-
-                        if (RT_SUCCESS(vrc))
-                        {
-                            char *pszFileSource = RTPathJoinA(szCurDir, pDirEntry->szName);
-                            if (pszFileSource)
-                            {
-                                char *pszFileDest;
-                                vrc = gctlCopyTranslatePath(pszSource, pszFileSource, pszDest, &pszFileDest);
-                                if (RT_SUCCESS(vrc))
-                                {
-                                    vrc = gctlCopyFileToDest(pContext, pszFileSource,
-                                                             pszFileDest, kGctlCopyFlags_None);
-                                    RTStrFree(pszFileDest);
-                                }
-                                RTStrFree(pszFileSource);
-                            }
-                        }
-                        break;
-                    }
-
-                    default:
-                        break;
-                }
-                if (RT_FAILURE(vrc))
-                    break;
-            }
-
-            RTDirReadExAFree(&pDirEntry, &cbDirEntry);
-            RTDirClose(hDir);
-        }
-    }
-    return vrc;
-}
-
-/**
- * Copys a directory (tree) from guest to the host.
- *
- * @return  IPRT status code.
- * @param   pContext                Pointer to current copy control context.
- * @param   pszSource               Source directory on the guest to copy to the host.
- * @param   pszFilter               DOS-style wildcard filter (?, *).  Optional.
- * @param   pszDest                 Destination directory on the host.
- * @param   enmFlags                Copy flags, such as recursive copying.
- * @param   pszSubDir               Current sub directory to handle. Needs to NULL and only
- *                                  is needed for recursion.
- */
-static int gctlCopyDirToHost(PCOPYCONTEXT pContext,
-                             const char *pszSource, const char *pszFilter,
-                             const char *pszDest, gctlCopyFlags enmFlags,
-                             const char *pszSubDir /* For recursion. */)
-{
-    AssertPtrReturn(pContext, VERR_INVALID_POINTER);
-    AssertPtrReturn(pszSource, VERR_INVALID_POINTER);
-    /* Filter is optional. */
-    AssertPtrReturn(pszDest, VERR_INVALID_POINTER);
-    /* Sub directory is optional. */
-
-    /*
-     * Construct current path.
-     */
-    char szCurDir[RTPATH_MAX];
-    int vrc = RTStrCopy(szCurDir, sizeof(szCurDir), pszSource);
-    if (RT_SUCCESS(vrc) && pszSubDir)
-        vrc = RTPathAppend(szCurDir, sizeof(szCurDir), pszSubDir);
-
-    if (RT_FAILURE(vrc))
-        return vrc;
-
-    if (pContext->pCmdCtx->cVerbose)
-        RTPrintf("Processing guest directory: %s\n", szCurDir);
-
-    /* Flag indicating whether the current directory was created on the
-     * target or not. */
-    bool fDirCreated = false;
-    SafeArray<DirectoryOpenFlag_T> dirOpenFlags; /* No flags supported yet. */
-    ComPtr<IGuestDirectory> pDirectory;
-    HRESULT rc = pContext->pCmdCtx->pGuestSession->DirectoryOpen(Bstr(szCurDir).raw(), Bstr(pszFilter).raw(),
-                                                        ComSafeArrayAsInParam(dirOpenFlags),
-                                                        pDirectory.asOutParam());
-    if (FAILED(rc))
-        return gctlPrintError(pContext->pCmdCtx->pGuestSession, COM_IIDOF(IGuestSession));
-    ComPtr<IFsObjInfo> dirEntry;
-    while (true)
-    {
-        rc = pDirectory->Read(dirEntry.asOutParam());
-        if (FAILED(rc))
-            break;
-
-        FsObjType_T enmType;
-        dirEntry->COMGETTER(Type)(&enmType);
-
-        Bstr strName;
-        dirEntry->COMGETTER(Name)(strName.asOutParam());
-
-        switch (enmType)
-        {
-            case FsObjType_Directory:
-            {
-                Assert(!strName.isEmpty());
-
-                /* Skip "." and ".." entries. */
-                if (   !strName.compare(Bstr("."))
-                    || !strName.compare(Bstr("..")))
-                    break;
-
-                if (pContext->pCmdCtx->cVerbose)
-                {
-                    Utf8Str strDir(strName);
-                    RTPrintf("Directory: %s\n", strDir.c_str());
-                }
-
-                if (enmFlags & kGctlCopyFlags_Recursive)
-                {
-                    Utf8Str strDir(strName);
-                    char *pszNewSub = NULL;
-                    if (pszSubDir)
-                        pszNewSub = RTPathJoinA(pszSubDir, strDir.c_str());
-                    else
-                    {
-                        pszNewSub = RTStrDup(strDir.c_str());
-                        RTPathStripTrailingSlash(pszNewSub);
-                    }
-                    if (pszNewSub)
-                    {
-                        vrc = gctlCopyDirToHost(pContext,
-                                                pszSource, pszFilter,
-                                                pszDest, enmFlags, pszNewSub);
-                        RTStrFree(pszNewSub);
-                    }
-                    else
-                        vrc = VERR_NO_MEMORY;
-                }
-                break;
-            }
-
-            case FsObjType_Symlink:
-                if (   (enmFlags & kGctlCopyFlags_Recursive)
-                    && (enmFlags & kGctlCopyFlags_FollowLinks))
-                {
-                    /* Fall through to next case is intentional. */
-                }
-                else
-                    break;
-
-            case FsObjType_File:
-            {
-                Assert(!strName.isEmpty());
-
-                Utf8Str strFile(strName);
-                if (   pszFilter
-                    && !RTStrSimplePatternMatch(pszFilter, strFile.c_str()))
-                {
-                    break; /* Filter does not match. */
-                }
-
-                if (pContext->pCmdCtx->cVerbose)
-                    RTPrintf("File: %s\n", strFile.c_str());
-
-                if (!fDirCreated)
-                {
-                    char *pszDestDir;
-                    vrc = gctlCopyTranslatePath(pszSource, szCurDir,
-                                                pszDest, &pszDestDir);
-                    if (RT_SUCCESS(vrc))
-                    {
-                        vrc = gctlCopyDirCreate(pContext, pszDestDir);
-                        RTStrFree(pszDestDir);
-
-                        fDirCreated = true;
-                    }
-                }
-
-                if (RT_SUCCESS(vrc))
-                {
-                    char *pszFileSource = RTPathJoinA(szCurDir, strFile.c_str());
-                    if (pszFileSource)
-                    {
-                        char *pszFileDest;
-                        vrc = gctlCopyTranslatePath(pszSource, pszFileSource,
-                                                   pszDest, &pszFileDest);
-                        if (RT_SUCCESS(vrc))
-                        {
-                            vrc = gctlCopyFileToDest(pContext, pszFileSource,
-                                                     pszFileDest, kGctlCopyFlags_None);
-                            RTStrFree(pszFileDest);
-                        }
-                        RTStrFree(pszFileSource);
-                    }
-                    else
-                        vrc = VERR_NO_MEMORY;
-                }
-                break;
-            }
-
-            default:
-                RTPrintf("Warning: Directory entry of type %ld not handled, skipping ...\n",
-                         enmType);
-                break;
-        }
-
-        if (RT_FAILURE(vrc))
-            break;
-    }
-
-    if (RT_UNLIKELY(FAILED(rc)))
-    {
-        switch (rc)
-        {
-            case E_ABORT: /* No more directory entries left to process. */
-                break;
-
-            case VBOX_E_FILE_ERROR: /* Current entry cannot be accessed to
-                                       to missing rights. */
-            {
-                RTPrintf("Warning: Cannot access \"%s\", skipping ...\n",
-                         szCurDir);
-                break;
-            }
-
-            default:
-                vrc = gctlPrintError(pDirectory, COM_IIDOF(IGuestDirectory));
-                break;
-        }
-    }
-
-    HRESULT rc2 = pDirectory->Close();
-    if (FAILED(rc2))
-    {
-        int vrc2 = gctlPrintError(pDirectory, COM_IIDOF(IGuestDirectory));
-        if (RT_SUCCESS(vrc))
-            vrc = vrc2;
-    }
-    else if (SUCCEEDED(rc))
-        rc = rc2;
-
-    return vrc;
-}
-
-/**
- * Copys a directory (tree) to the destination, based on the current copy
- * context.
- *
- * @return  IPRT status code.
- * @param   pContext                Pointer to current copy control context.
- * @param   pszSource               Source directory to copy to the destination.
- * @param   pszFilter               DOS-style wildcard filter (?, *).  Optional.
- * @param   pszDest                 Destination directory where to copy in the source
- *                                  source directory.
- * @param   enmFlags                Copy flags, such as recursive copying.
- */
-static int gctlCopyDirToDest(PCOPYCONTEXT pContext,
-                             const char *pszSource, const char *pszFilter,
-                             const char *pszDest, enum gctlCopyFlags enmFlags)
-{
-    if (pContext->fHostToGuest)
-        return gctlCopyDirToGuest(pContext, pszSource, pszFilter,
-                                  pszDest, enmFlags, NULL /* Sub directory, only for recursion. */);
-    return gctlCopyDirToHost(pContext, pszSource, pszFilter,
-                             pszDest, enmFlags, NULL /* Sub directory, only for recursion. */);
-}
-
-/**
- * Creates a source root by stripping file names or filters of the specified source.
- *
- * @return  IPRT status code.
- * @param   pszSource               Source to create source root for.
- * @param   ppszSourceRoot          Pointer that receives the allocated source root. Needs
- *                                  to be free'd with gctlCopyFreeSourceRoot().
- */
-static int gctlCopyCreateSourceRoot(const char *pszSource, char **ppszSourceRoot)
-{
-    AssertPtrReturn(pszSource, VERR_INVALID_POINTER);
-    AssertPtrReturn(ppszSourceRoot, VERR_INVALID_POINTER);
-
-    char *pszNewRoot = RTStrDup(pszSource);
-    if (!pszNewRoot)
-        return VERR_NO_MEMORY;
-
-    size_t lenRoot = strlen(pszNewRoot);
-    if (   lenRoot
-        && (   pszNewRoot[lenRoot - 1] == '/'
-            || pszNewRoot[lenRoot - 1] == '\\')
-       )
-    {
-        pszNewRoot[lenRoot - 1] = '\0';
-    }
-
-    if (   lenRoot > 1
-        && (   pszNewRoot[lenRoot - 2] == '/'
-            || pszNewRoot[lenRoot - 2] == '\\')
-       )
-    {
-        pszNewRoot[lenRoot - 2] = '\0';
-    }
-
-    if (!lenRoot)
-    {
-        /* If there's anything (like a file name or a filter),
-         * strip it! */
-        RTPathStripFilename(pszNewRoot);
-    }
-
-    *ppszSourceRoot = pszNewRoot;
-
-    return VINF_SUCCESS;
-}
-
-/**
- * Frees a previously allocated source root.
- *
- * @return  IPRT status code.
- * @param   pszSourceRoot           Source root to free.
- */
-static void gctlCopyFreeSourceRoot(char *pszSourceRoot)
-{
-    RTStrFree(pszSourceRoot);
-}
 
 static RTEXITCODE gctlHandleCopy(PGCTLCMDCTX pCtx, int argc, char **argv, bool fHostToGuest)
 {
@@ -2669,14 +1701,12 @@ static RTEXITCODE gctlHandleCopy(PGCTLCMDCTX pCtx, int argc, char **argv, bool f
      */
     enum GETOPTDEF_COPY
     {
-        GETOPTDEF_COPY_DRYRUN = 1000,
-        GETOPTDEF_COPY_FOLLOW,
+        GETOPTDEF_COPY_FOLLOW = 1000,
         GETOPTDEF_COPY_TARGETDIR
     };
     static const RTGETOPTDEF s_aOptions[] =
     {
         GCTLCMD_COMMON_OPTION_DEFS()
-        { "--dryrun",              GETOPTDEF_COPY_DRYRUN,           RTGETOPT_REQ_NOTHING },
         { "--follow",              GETOPTDEF_COPY_FOLLOW,           RTGETOPT_REQ_NOTHING },
         { "--recursive",           'R',                             RTGETOPT_REQ_NOTHING },
         { "--target-directory",    GETOPTDEF_COPY_TARGETDIR,        RTGETOPT_REQ_STRING  }
@@ -2687,34 +1717,27 @@ static RTEXITCODE gctlHandleCopy(PGCTLCMDCTX pCtx, int argc, char **argv, bool f
     RTGETOPTSTATE GetState;
     RTGetOptInit(&GetState, argc, argv, s_aOptions, RT_ELEMENTS(s_aOptions), 1, RTGETOPTINIT_FLAGS_OPTS_FIRST);
 
-    Utf8Str strSource;
     bool fDstMustBeDir = false;
     const char *pszDst = NULL;
-    enum gctlCopyFlags enmFlags = kGctlCopyFlags_None;
-    /*bool fCopyRecursive = false; - unused */
-    bool fDryRun = false;
-    uint32_t uUsage = fHostToGuest ? USAGE_GSTCTRL_COPYTO : USAGE_GSTCTRL_COPYFROM;
-
-    SOURCEVEC vecSources;
+    bool fFollow = false;
+    bool fRecursive = false;
+    uint64_t uUsage = fHostToGuest ? HELP_SCOPE_GSTCTRL_COPYTO : HELP_SCOPE_GSTCTRL_COPYFROM;
 
     int vrc = VINF_SUCCESS;
-    while ((ch = RTGetOpt(&GetState, &ValueUnion)) != 0)
+    while (  (ch = RTGetOpt(&GetState, &ValueUnion)) != 0
+           && ch != VINF_GETOPT_NOT_OPTION)
     {
         /* For options that require an argument, ValueUnion has received the value. */
         switch (ch)
         {
             GCTLCMD_COMMON_OPTION_CASES(pCtx, ch, &ValueUnion);
 
-            case GETOPTDEF_COPY_DRYRUN:
-                fDryRun = true;
-                break;
-
             case GETOPTDEF_COPY_FOLLOW:
-                enmFlags = (enum gctlCopyFlags)((uint32_t)enmFlags | kGctlCopyFlags_FollowLinks);
+                fFollow = true;
                 break;
 
             case 'R': /* Recursive processing */
-                enmFlags = (enum gctlCopyFlags)((uint32_t)enmFlags | kGctlCopyFlags_Recursive);
+                fRecursive = true;
                 break;
 
             case GETOPTDEF_COPY_TARGETDIR:
@@ -2722,36 +1745,34 @@ static RTEXITCODE gctlHandleCopy(PGCTLCMDCTX pCtx, int argc, char **argv, bool f
                 fDstMustBeDir = true;
                 break;
 
-            case VINF_GETOPT_NOT_OPTION:
-                /* Last argument and no destination specified with
-                 * --target-directory yet? Then use the current
-                 * (= last) argument as destination. */
-                if (   GetState.argc == GetState.iNext
-                    && pszDst == NULL)
-                    pszDst = ValueUnion.psz;
-                else
-                {
-                    try
-                    {   /* Save the source directory. */
-                        vecSources.push_back(SOURCEFILEENTRY(ValueUnion.psz));
-                    }
-                    catch (std::bad_alloc &)
-                    {
-                        return RTMsgErrorExit(RTEXITCODE_FAILURE, "Out of memory");
-                    }
-                }
-                break;
-
             default:
                 return errorGetOptEx(USAGE_GUESTCONTROL, uUsage, ch, &ValueUnion);
         }
     }
 
-    if (!vecSources.size())
-        return errorSyntaxEx(USAGE_GUESTCONTROL, uUsage, "No source(s) specified!");
+    char **papszSources = RTGetOptNonOptionArrayPtr(&GetState);
+    size_t cSources = &argv[argc] - papszSources;
+
+    if (!cSources)
+        return errorSyntaxEx(USAGE_GUESTCONTROL, uUsage, "No sources specified!");
+
+    /* Unless a --target-directory is given, the last argument is the destination, so
+       bump it from the source list. */
+    if (pszDst == NULL && cSources >= 2)
+        pszDst = papszSources[--cSources];
 
     if (pszDst == NULL)
         return errorSyntaxEx(USAGE_GUESTCONTROL, uUsage, "No destination specified!");
+
+    char szAbsDst[RTPATH_MAX];
+    if (!fHostToGuest)
+    {
+        vrc = RTPathAbs(pszDst, szAbsDst, sizeof(szAbsDst));
+        if (RT_SUCCESS(vrc))
+            pszDst = szAbsDst;
+        else
+            return RTMsgErrorExitFailure("RTPathAbs failed on '%s': %Rrc", pszDst, vrc);
+    }
 
     RTEXITCODE rcExit = gctlCtxPostOptionParsingInit(pCtx);
     if (rcExit != RTEXITCODE_SUCCESS)
@@ -2766,170 +1787,146 @@ static RTEXITCODE gctlHandleCopy(PGCTLCMDCTX pCtx, int argc, char **argv, bool f
             RTPrintf("Copying from host to guest ...\n");
         else
             RTPrintf("Copying from guest to host ...\n");
-        if (fDryRun)
-            RTPrintf("Dry run - no files copied!\n");
     }
 
-    /* Create the copy context -- it contains all information
-     * the routines need to know when handling the actual copying. */
-    PCOPYCONTEXT pContext = NULL;
-    vrc = gctlCopyContextCreate(pCtx, fDryRun, fHostToGuest,
-                                  fHostToGuest
-                                ? "VBoxManage Guest Control - Copy to guest"
-                                : "VBoxManage Guest Control - Copy from guest", &pContext);
-    if (RT_FAILURE(vrc))
-    {
-        RTMsgError("Unable to create copy context, rc=%Rrc\n", vrc);
-        return RTEXITCODE_FAILURE;
-    }
-
-    /* If --target-directory was used, make sure it ends with a slash or the
-       API may treat it as the destination file: */
-    Utf8Str strDstBuf;
-    if (fDstMustBeDir)
-    {
-        size_t cchDst = strlen(pszDst);
-        if (   cchDst == 0
-            || (   pszDst[cchDst - 1] != '/'
-                && (   pCtx->getPathStyle() != PathStyle_DOS
-                    || (pszDst[cchDst - 1] != '\\' && pszDst[cchDst - 1] != ':'))))
-        {
-            strDstBuf = pszDst;
-            strDstBuf.append(pCtx->getPathStyle() == PathStyle_DOS ? '\\' : '/');
-            pszDst = strDstBuf.c_str();
-        }
-    }
-
-/** @todo r=bird: RTPathFilename and RTPathStripFilename won't work
- * correctly on non-windows hosts when the guest is from the DOS world (Windows,
- * OS/2, DOS).  The host doesn't know about DOS slashes, only UNIX slashes and
- * will get the wrong idea if some dilligent user does:
+    HRESULT           rc = S_OK;
+    ComPtr<IProgress> pProgress;
+/** @todo r=bird: This codes does nothing to handle the case where there are
+ * multiple sources.  You need to do serveral thing before thats handled
+ * correctly.  For starters the progress object handling needs to be moved
+ * inside the loop.  Next you need to check what the destination is, because you
+ * can only copy multiple source files/directories to another directory.  You
+ * actually need to check whether the target exists and is a directory
+ * regardless of you have 1 or 10 source files/dirs.
  *
- *      copyto myfile.txt 'C:\guestfile.txt'
- * or
- *      copyto myfile.txt 'D:guestfile.txt'
+ * Btw. the original approach to error handling here was APPALING.  If some file
+ * couldn't be stat'ed or if it was a file/directory, you only spat out messages
+ * in verbose mode and never set the status code.
  *
- * @bugref{6344}
+ * The handling of the wildcard filtering expressions in sources was also just
+ * skipped.   I've corrected this, but you still need to make up your mind wrt
+ * wildcards or not.
+ *
+ * Update: I've kicked out the whole SourceFileEntry/vecSources stuff as we can
+ *         use argv directly without any unnecessary copying.  You just have to
+ *         look for the wildcards inside this loop instead.
  */
-    if (!RTPathFilename(pszDst))
+    NOREF(fDstMustBeDir);
+    if (cSources != 1)
+        return RTMsgErrorExitFailure("Only one source file or directory at the moment.");
+    for (size_t iSrc = 0; iSrc < cSources; iSrc++)
     {
-        vrc = gctlCopyDirCreate(pContext, pszDst);
-    }
-    else
-    {
-        /* We assume we got a file name as destination -- so strip
-         * the actual file name and make sure the appropriate
-         * directories get created. */
-        char *pszDstDir = RTStrDup(pszDst);
-        AssertPtr(pszDstDir);
-        RTPathStripFilename(pszDstDir);
-        vrc = gctlCopyDirCreate(pContext, pszDstDir);
-        RTStrFree(pszDstDir);
-    }
+        const char *pszSource = papszSources[iSrc];
 
-    if (RT_SUCCESS(vrc))
-    {
-        /*
-         * Here starts the actual fun!
-         * Handle all given sources one by one.
-         */
-        for (unsigned long s = 0; s < vecSources.size(); s++)
+        /* Check if the source contains any wilecards in the last component, if so we
+           don't know how to deal with it yet and refuse. */
+        const char *pszSrcFinalComp = RTPathFilename(pszSource);
+        if (pszSrcFinalComp && strpbrk(pszSrcFinalComp, "*?"))
+            rcExit = RTMsgErrorExitFailure("Skipping '%s' because wildcard expansion isn't implemented yet\n", pszSource);
+        else if (fHostToGuest)
         {
-            char *pszSource = RTStrDup(vecSources[s].GetSource());
-            AssertPtrBreakStmt(pszSource, vrc = VERR_NO_MEMORY);
-            const char *pszFilter = vecSources[s].GetFilter();
-            if (!strlen(pszFilter))
-                pszFilter = NULL; /* If empty filter then there's no filter :-) */
-
-            char *pszSourceRoot;
-            vrc = gctlCopyCreateSourceRoot(pszSource, &pszSourceRoot);
-            if (RT_FAILURE(vrc))
+            /*
+             * Source is host, destination guest.
+             */
+            char szAbsSrc[RTPATH_MAX];
+            vrc = RTPathAbs(pszSource, szAbsSrc, sizeof(szAbsSrc));
+            if (RT_SUCCESS(vrc))
             {
-                RTMsgError("Unable to create source root, rc=%Rrc\n", vrc);
-                break;
-            }
-
-            if (pCtx->cVerbose)
-                RTPrintf("Source: %s\n", pszSource);
-
-            /** @todo Files with filter?? */
-            bool fSourceIsFile = false;
-            bool fSourceExists;
-
-            size_t cchSource = strlen(pszSource);
-            if (   cchSource > 1
-                && RTPATH_IS_SLASH(pszSource[cchSource - 1]))
-            {
-                if (pszFilter) /* Directory with filter (so use source root w/o the actual filter). */
-                    vrc = gctlCopyDirExistsOnSource(pContext, pszSourceRoot, &fSourceExists);
-                else /* Regular directory without filter. */
-                    vrc = gctlCopyDirExistsOnSource(pContext, pszSource, &fSourceExists);
-
-                if (fSourceExists)
+                RTFSOBJINFO ObjInfo;
+                vrc = RTPathQueryInfo(szAbsSrc, &ObjInfo, RTFSOBJATTRADD_NOTHING);
+                if (RT_SUCCESS(vrc))
                 {
-                    /* Strip trailing slash from our source element so that other functions
-                     * can use this stuff properly (like RTPathStartsWith). */
-                    RTPathStripTrailingSlash(pszSource);
-                }
-            }
-            else
-            {
-                vrc = gctlCopyFileExistsOnSource(pContext, pszSource, &fSourceExists);
-                if (   RT_SUCCESS(vrc)
-                    && fSourceExists)
-                {
-                    fSourceIsFile = true;
-                }
-            }
-
-            if (   RT_SUCCESS(vrc)
-                && fSourceExists)
-            {
-                if (fSourceIsFile)
-                {
-                    /* Single file. */
-                    char *pszDstFile;
-                    vrc = gctlCopyTranslatePath(pszSourceRoot, pszSource, pszDst, &pszDstFile);
-                    if (RT_SUCCESS(vrc))
+                    if (RTFS_IS_FILE(ObjInfo.Attr.fMode))
                     {
-                        vrc = gctlCopyFileToDest(pContext, pszSource, pszDstFile, kGctlCopyFlags_None);
-                        RTStrFree(pszDstFile);
+                        if (pCtx->cVerbose)
+                            RTPrintf("File '%s' -> '%s'\n", szAbsSrc, pszDst);
+
+                        SafeArray<FileCopyFlag_T> copyFlags;
+                        rc = pCtx->pGuestSession->FileCopyToGuest(Bstr(szAbsSrc).raw(), Bstr(pszDst).raw(),
+                                                                  ComSafeArrayAsInParam(copyFlags), pProgress.asOutParam());
+                    }
+                    else if (RTFS_IS_DIRECTORY(ObjInfo.Attr.fMode))
+                    {
+                        if (pCtx->cVerbose)
+                            RTPrintf("Directory '%s' -> '%s'\n", szAbsSrc, pszDst);
+
+                        SafeArray<DirectoryCopyFlag_T> copyFlags;
+                        copyFlags.push_back(DirectoryCopyFlag_CopyIntoExisting);
+                        rc = pCtx->pGuestSession->DirectoryCopyToGuest(Bstr(szAbsSrc).raw(), Bstr(pszDst).raw(),
+                                                                       ComSafeArrayAsInParam(copyFlags), pProgress.asOutParam());
                     }
                     else
-                        RTMsgError("Unable to translate path for \"%s\", rc=%Rrc\n", pszSource, vrc);
+                        rcExit = RTMsgErrorExitFailure("Not a file or directory: %s\n", szAbsSrc);
                 }
                 else
+                    rcExit = RTMsgErrorExitFailure("RTPathQueryInfo failed on '%s': %Rrc", szAbsSrc, vrc);
+            }
+            else
+                rcExit = RTMsgErrorExitFailure("RTPathAbs failed on '%s': %Rrc", pszSource, vrc);
+        }
+        else
+        {
+            /*
+             * Source guest, destination host.
+             */
+            /* We need to query the source type on the guest first in order to know which copy flavor we need. */
+            ComPtr<IGuestFsObjInfo> pFsObjInfo;
+            rc = pCtx->pGuestSession->FsObjQueryInfo(Bstr(pszSource).raw(), TRUE  /* fFollowSymlinks */, pFsObjInfo.asOutParam());
+            if (SUCCEEDED(rc))
+            {
+                FsObjType_T enmObjType;
+                CHECK_ERROR(pFsObjInfo,COMGETTER(Type)(&enmObjType));
+                if (SUCCEEDED(rc))
                 {
-                    /* Directory (with filter?). */
-                    vrc = gctlCopyDirToDest(pContext, pszSource, pszFilter, pszDst, enmFlags);
+                    /* Take action according to source file. */
+                    if (enmObjType == FsObjType_Directory)
+                    {
+                        if (pCtx->cVerbose)
+                            RTPrintf("Directory '%s' -> '%s'\n", pszSource, pszDst);
+
+                        SafeArray<DirectoryCopyFlag_T> aCopyFlags;
+                        aCopyFlags.push_back(DirectoryCopyFlag_CopyIntoExisting);
+                        rc = pCtx->pGuestSession->DirectoryCopyFromGuest(Bstr(pszSource).raw(), Bstr(pszDst).raw(),
+                                                                         ComSafeArrayAsInParam(aCopyFlags), pProgress.asOutParam());
+                    }
+                    else if (enmObjType == FsObjType_File)
+                    {
+                        if (pCtx->cVerbose)
+                            RTPrintf("File '%s' -> '%s'\n", pszSource, pszDst);
+
+                        SafeArray<FileCopyFlag_T> aCopyFlags;
+                        rc = pCtx->pGuestSession->FileCopyFromGuest(Bstr(pszSource).raw(), Bstr(pszDst).raw(),
+                                                                    ComSafeArrayAsInParam(aCopyFlags), pProgress.asOutParam());
+                    }
+                    else
+                        rcExit = RTMsgErrorExitFailure("Not a file or directory: %s\n", pszSource);
                 }
+                else
+                    rcExit = RTEXITCODE_FAILURE;
             }
-
-            gctlCopyFreeSourceRoot(pszSourceRoot);
-
-            if (   RT_SUCCESS(vrc)
-                && !fSourceExists)
-            {
-                RTMsgError("Warning: Source \"%s\" does not exist, skipping!\n",
-                           pszSource);
-                RTStrFree(pszSource);
-                continue;
-            }
-            else if (RT_FAILURE(vrc))
-            {
-                RTMsgError("Error processing \"%s\", rc=%Rrc\n",
-                           pszSource, vrc);
-                RTStrFree(pszSource);
-                break;
-            }
-
-            RTStrFree(pszSource);
+            else
+                rcExit = RTMsgErrorExitFailure("FsObjQueryInfo failed on '%s': %Rhrc", pszSource, rc);
         }
     }
 
-    gctlCopyContextFree(pContext);
+    if (FAILED(rc))
+    {
+        vrc = gctlPrintError(pCtx->pGuestSession, COM_IIDOF(IGuestSession));
+    }
+    else if (pProgress.isNotNull())
+    {
+        if (pCtx->cVerbose)
+            rc = showProgress(pProgress);
+        else
+            rc = pProgress->WaitForCompletion(-1 /* No timeout */);
+        if (SUCCEEDED(rc))
+            CHECK_PROGRESS_ERROR(pProgress, ("File copy failed"));
+        vrc = gctlPrintProgressError(pProgress);
+    }
+    if (RT_FAILURE(vrc))
+        rcExit = RTEXITCODE_FAILURE;
 
-    return RT_SUCCESS(vrc) ? RTEXITCODE_SUCCESS : RTEXITCODE_FAILURE;
+    return rcExit;
 }
 
 static DECLCALLBACK(RTEXITCODE) gctlHandleCopyFrom(PGCTLCMDCTX pCtx, int argc, char **argv)
@@ -2942,7 +1939,7 @@ static DECLCALLBACK(RTEXITCODE) gctlHandleCopyTo(PGCTLCMDCTX pCtx, int argc, cha
     return gctlHandleCopy(pCtx, argc, argv, true /* Host to guest */);
 }
 
-static DECLCALLBACK(RTEXITCODE) handleCtrtMkDir(PGCTLCMDCTX pCtx, int argc, char **argv)
+static DECLCALLBACK(RTEXITCODE) gctrlHandleMkDir(PGCTLCMDCTX pCtx, int argc, char **argv)
 {
     AssertPtrReturn(pCtx, RTEXITCODE_FAILURE);
 
@@ -2958,7 +1955,7 @@ static DECLCALLBACK(RTEXITCODE) handleCtrtMkDir(PGCTLCMDCTX pCtx, int argc, char
     RTGETOPTSTATE GetState;
     RTGetOptInit(&GetState, argc, argv, s_aOptions, RT_ELEMENTS(s_aOptions), 1, RTGETOPTINIT_FLAGS_OPTS_FIRST);
 
-    SafeArray<DirectoryCreateFlag_T> dirCreateFlags;
+    SafeArray<DirectoryCreateFlag_T> aDirCreateFlags;
     uint32_t    fDirMode     = 0; /* Default mode. */
     uint32_t    cDirsCreated = 0;
     RTEXITCODE  rcExit       = RTEXITCODE_SUCCESS;
@@ -2975,7 +1972,7 @@ static DECLCALLBACK(RTEXITCODE) handleCtrtMkDir(PGCTLCMDCTX pCtx, int argc, char
                 break;
 
             case 'P': /* Create parents */
-                dirCreateFlags.push_back(DirectoryCreateFlag_Parents);
+                aDirCreateFlags.push_back(DirectoryCreateFlag_Parents);
                 break;
 
             case VINF_GETOPT_NOT_OPTION:
@@ -3009,7 +2006,7 @@ static DECLCALLBACK(RTEXITCODE) handleCtrtMkDir(PGCTLCMDCTX pCtx, int argc, char
                 {
                     HRESULT rc;
                     CHECK_ERROR(pCtx->pGuestSession, DirectoryCreate(Bstr(ValueUnion.psz).raw(),
-                                                                     fDirMode, ComSafeArrayAsInParam(dirCreateFlags)));
+                                                                     fDirMode, ComSafeArrayAsInParam(aDirCreateFlags)));
                     if (FAILED(rc))
                         rcExit = RTEXITCODE_FAILURE;
                 }
@@ -3020,12 +2017,12 @@ static DECLCALLBACK(RTEXITCODE) handleCtrtMkDir(PGCTLCMDCTX pCtx, int argc, char
                 break;
 
             default:
-                return errorGetOptEx(USAGE_GUESTCONTROL, USAGE_GSTCTRL_MKDIR, ch, &ValueUnion);
+                return errorGetOptEx(USAGE_GUESTCONTROL, HELP_SCOPE_GSTCTRL_MKDIR, ch, &ValueUnion);
         }
     }
 
     if (!cDirsCreated)
-        return errorSyntaxEx(USAGE_GUESTCONTROL, USAGE_GSTCTRL_MKDIR, "No directory to create specified!");
+        return errorSyntaxEx(USAGE_GUESTCONTROL, HELP_SCOPE_GSTCTRL_MKDIR, "No directory to create specified!");
     return rcExit;
 }
 
@@ -3071,7 +2068,7 @@ static DECLCALLBACK(RTEXITCODE) gctlHandleRmDir(PGCTLCMDCTX pCtx, int argc, char
                     if (rcExit != RTEXITCODE_SUCCESS)
                         return rcExit;
                     if (pCtx->cVerbose)
-                        RTPrintf("Removing %RU32 directorie%ss...\n", argc - GetState.iNext + 1, fRecursive ? "trees" : "");
+                        RTPrintf("Removing %RU32 directorie%s(s)...\n", argc - GetState.iNext + 1, fRecursive ? "tree" : "");
                 }
                 if (g_fGuestCtrlCanceled)
                     return RTMsgErrorExit(RTEXITCODE_FAILURE, "rmdir was interrupted by Ctrl-C (%u left)\n",
@@ -3141,12 +2138,12 @@ static DECLCALLBACK(RTEXITCODE) gctlHandleRmDir(PGCTLCMDCTX pCtx, int argc, char
             }
 
             default:
-                return errorGetOptEx(USAGE_GUESTCONTROL, USAGE_GSTCTRL_RMDIR, ch, &ValueUnion);
+                return errorGetOptEx(USAGE_GUESTCONTROL, HELP_SCOPE_GSTCTRL_RMDIR, ch, &ValueUnion);
         }
     }
 
     if (!cDirRemoved)
-        return errorSyntaxEx(USAGE_GUESTCONTROL, USAGE_GSTCTRL_RMDIR, "No directory to remove specified!");
+        return errorSyntaxEx(USAGE_GUESTCONTROL, HELP_SCOPE_GSTCTRL_RMDIR, "No directory to remove specified!");
     return rcExit;
 }
 
@@ -3217,12 +2214,12 @@ static DECLCALLBACK(RTEXITCODE) gctlHandleRm(PGCTLCMDCTX pCtx, int argc, char **
                 break;
 
             default:
-                return errorGetOptEx(USAGE_GUESTCONTROL, USAGE_GSTCTRL_RM, ch, &ValueUnion);
+                return errorGetOptEx(USAGE_GUESTCONTROL, HELP_SCOPE_GSTCTRL_RM, ch, &ValueUnion);
         }
     }
 
     if (!cFilesDeleted && !fForce)
-        return errorSyntaxEx(USAGE_GUESTCONTROL, USAGE_GSTCTRL_RM, "No file to remove specified!");
+        return errorSyntaxEx(USAGE_GUESTCONTROL, HELP_SCOPE_GSTCTRL_RM, "No file to remove specified!");
     return rcExit;
 }
 
@@ -3233,6 +2230,7 @@ static DECLCALLBACK(RTEXITCODE) gctlHandleMv(PGCTLCMDCTX pCtx, int argc, char **
     static const RTGETOPTDEF s_aOptions[] =
     {
         GCTLCMD_COMMON_OPTION_DEFS()
+/** @todo Missing --force/-f flag.   */
     };
 
     int ch;
@@ -3269,7 +2267,7 @@ static DECLCALLBACK(RTEXITCODE) gctlHandleMv(PGCTLCMDCTX pCtx, int argc, char **
                     break;
 
                 default:
-                    return errorGetOptEx(USAGE_GUESTCONTROL, USAGE_GSTCTRL_MV, ch, &ValueUnion);
+                    return errorGetOptEx(USAGE_GUESTCONTROL, HELP_SCOPE_GSTCTRL_MV, ch, &ValueUnion);
             }
         }
     }
@@ -3283,10 +2281,10 @@ static DECLCALLBACK(RTEXITCODE) gctlHandleMv(PGCTLCMDCTX pCtx, int argc, char **
 
     size_t cSources = vecSources.size();
     if (!cSources)
-        return errorSyntaxEx(USAGE_GUESTCONTROL, USAGE_GSTCTRL_MV,
+        return errorSyntaxEx(USAGE_GUESTCONTROL, HELP_SCOPE_GSTCTRL_MV,
                              "No source(s) to move specified!");
     if (cSources < 2)
-        return errorSyntaxEx(USAGE_GUESTCONTROL, USAGE_GSTCTRL_MV,
+        return errorSyntaxEx(USAGE_GUESTCONTROL, HELP_SCOPE_GSTCTRL_MV,
                              "No destination specified!");
 
     RTEXITCODE rcExit = gctlCtxPostOptionParsingInit(pCtx);
@@ -3299,68 +2297,78 @@ static DECLCALLBACK(RTEXITCODE) gctlHandleMv(PGCTLCMDCTX pCtx, int argc, char **
 
     HRESULT rc = S_OK;
 
+    /* Destination must be a directory when specifying multiple sources. */
     if (cSources > 1)
     {
-        BOOL fExists = FALSE;
-        rc = pCtx->pGuestSession->DirectoryExists(Bstr(pszDst).raw(), FALSE /*followSymlinks*/, &fExists);
-        if (FAILED(rc) || !fExists)
-            return RTMsgErrorExit(RTEXITCODE_FAILURE, "Destination must be a directory when specifying multiple sources\n");
+        ComPtr<IGuestFsObjInfo> pFsObjInfo;
+        rc = pCtx->pGuestSession->FsObjQueryInfo(Bstr(pszDst).raw(), FALSE /*followSymlinks*/, pFsObjInfo.asOutParam());
+        if (FAILED(rc))
+        {
+            return RTMsgErrorExit(RTEXITCODE_FAILURE, "Destination does not exist\n");
+        }
+        else
+        {
+            FsObjType_T enmObjType = FsObjType_Unknown; /* Shut up MSC */
+            rc = pFsObjInfo->COMGETTER(Type)(&enmObjType);
+            if (SUCCEEDED(rc))
+            {
+                if (enmObjType != FsObjType_Directory)
+                    return RTMsgErrorExit(RTEXITCODE_FAILURE, "Destination must be a directory when specifying multiple sources\n");
+            }
+            else
+                return RTMsgErrorExit(RTEXITCODE_FAILURE, "Unable to determine destination type: %Rhrc\n", rc);
+        }
     }
 
     /*
      * Rename (move) the entries.
      */
     if (pCtx->cVerbose)
-        RTPrintf("Renaming %RU32 %s ...\n", cSources, cSources > 1 ? "entries" : "entry");
+        RTPrintf("Renaming %RU32 %s ...\n", cSources, cSources > 1 ? "sources" : "source");
 
     std::vector< Utf8Str >::iterator it = vecSources.begin();
-    while (   (it != vecSources.end())
+    while (   it != vecSources.end()
            && !g_fGuestCtrlCanceled)
     {
-        Utf8Str strCurSource = (*it);
+        Utf8Str strSrcCur = (*it);
 
         ComPtr<IGuestFsObjInfo> pFsObjInfo;
         FsObjType_T enmObjType = FsObjType_Unknown; /* Shut up MSC */
-        rc = pCtx->pGuestSession->FsObjQueryInfo(Bstr(strCurSource).raw(), FALSE /*followSymlinks*/, pFsObjInfo.asOutParam());
+        rc = pCtx->pGuestSession->FsObjQueryInfo(Bstr(strSrcCur).raw(), FALSE /*followSymlinks*/, pFsObjInfo.asOutParam());
         if (SUCCEEDED(rc))
             rc = pFsObjInfo->COMGETTER(Type)(&enmObjType);
         if (FAILED(rc))
         {
-            if (pCtx->cVerbose)
-                RTPrintf("Warning: Cannot stat for element \"%s\": No such element\n",
-                         strCurSource.c_str());
+            RTPrintf("Cannot stat \"%s\": No such file or directory\n", strSrcCur.c_str());
             ++it;
             continue; /* Skip. */
         }
 
+        char *pszDstCur = NULL;
+
+        if (cSources > 1)
+        {
+            pszDstCur = RTPathJoinA(pszDst, RTPathFilename(strSrcCur.c_str()));
+        }
+        else
+            pszDstCur = RTStrDup(pszDst);
+
+        AssertPtrBreakStmt(pszDstCur, VERR_NO_MEMORY);
+
         if (pCtx->cVerbose)
             RTPrintf("Renaming %s \"%s\" to \"%s\" ...\n",
                      enmObjType == FsObjType_Directory ? "directory" : "file",
-                     strCurSource.c_str(), pszDst);
+                     strSrcCur.c_str(), pszDstCur);
 
         if (!fDryrun)
         {
-            if (enmObjType == FsObjType_Directory)
-            {
-                CHECK_ERROR_BREAK(pCtx->pGuestSession, FsObjRename(Bstr(strCurSource).raw(),
-                                                                   Bstr(pszDst).raw(),
-                                                                   ComSafeArrayAsInParam(aRenameFlags)));
-
-                /* Break here, since it makes no sense to rename mroe than one source to
-                 * the same directory. */
-/** @todo r=bird: You are being kind of windowsy (or just DOSish) about the 'sense' part here,
- * while being totaly buggy about the behavior. 'VBoxGuest guestcontrol ren dir1 dir2 dstdir' will
- * stop after 'dir1' and SILENTLY ignore dir2.  If you tried this on Windows, you'd see an error
- * being displayed.  If you 'man mv' on a nearby unixy system, you'd see that they've made perfect
- * sense out of any situation with more than one source. */
-                it = vecSources.end();
-                break;
-            }
-            else
-                CHECK_ERROR_BREAK(pCtx->pGuestSession, FsObjRename(Bstr(strCurSource).raw(),
-                                                                   Bstr(pszDst).raw(),
-                                                                   ComSafeArrayAsInParam(aRenameFlags)));
+            CHECK_ERROR(pCtx->pGuestSession, FsObjRename(Bstr(strSrcCur).raw(),
+                                                         Bstr(pszDstCur).raw(),
+                                                         ComSafeArrayAsInParam(aRenameFlags)));
+            /* Keep going with next item in case of errors. */
         }
+
+        RTStrFree(pszDstCur);
 
         ++it;
     }
@@ -3424,26 +2432,24 @@ static DECLCALLBACK(RTEXITCODE) gctlHandleMkTemp(PGCTLCMDCTX pCtx, int argc, cha
                 break;
 
             case VINF_GETOPT_NOT_OPTION:
-            {
                 if (strTemplate.isEmpty())
                     strTemplate = ValueUnion.psz;
                 else
-                    return errorSyntaxEx(USAGE_GUESTCONTROL, USAGE_GSTCTRL_MKTEMP,
+                    return errorSyntaxEx(USAGE_GUESTCONTROL, HELP_SCOPE_GSTCTRL_MKTEMP,
                                          "More than one template specified!\n");
                 break;
-            }
 
             default:
-                return errorGetOptEx(USAGE_GUESTCONTROL, USAGE_GSTCTRL_MKTEMP, ch, &ValueUnion);
+                return errorGetOptEx(USAGE_GUESTCONTROL, HELP_SCOPE_GSTCTRL_MKTEMP, ch, &ValueUnion);
         }
     }
 
     if (strTemplate.isEmpty())
-        return errorSyntaxEx(USAGE_GUESTCONTROL, USAGE_GSTCTRL_MKTEMP,
+        return errorSyntaxEx(USAGE_GUESTCONTROL, HELP_SCOPE_GSTCTRL_MKTEMP,
                              "No template specified!");
 
     if (!fDirectory)
-        return errorSyntaxEx(USAGE_GUESTCONTROL, USAGE_GSTCTRL_MKTEMP,
+        return errorSyntaxEx(USAGE_GUESTCONTROL, HELP_SCOPE_GSTCTRL_MKTEMP,
                              "Creating temporary files is currently not supported!");
 
     RTEXITCODE rcExit = gctlCtxPostOptionParsingInit(pCtx);
@@ -3472,13 +2478,13 @@ static DECLCALLBACK(RTEXITCODE) gctlHandleMkTemp(PGCTLCMDCTX pCtx, int argc, cha
     HRESULT rc = S_OK;
     if (fDirectory)
     {
-        Bstr directory;
+        Bstr bstrDirectory;
         CHECK_ERROR(pCtx->pGuestSession, DirectoryCreateTemp(Bstr(strTemplate).raw(),
                                                              fMode, Bstr(strTempDir).raw(),
                                                              fSecure,
-                                                             directory.asOutParam()));
+                                                             bstrDirectory.asOutParam()));
         if (SUCCEEDED(rc))
-            RTPrintf("Directory name: %ls\n", directory.raw());
+            RTPrintf("Directory name: %ls\n", bstrDirectory.raw());
     }
     else
     {
@@ -3509,9 +2515,8 @@ static DECLCALLBACK(RTEXITCODE) gctlHandleStat(PGCTLCMDCTX pCtx, int argc, char 
     RTGETOPTSTATE GetState;
     RTGetOptInit(&GetState, argc, argv, s_aOptions, RT_ELEMENTS(s_aOptions), 1, RTGETOPTINIT_FLAGS_OPTS_FIRST);
 
-    DESTDIRMAP mapObjs;
-
-    while ((ch = RTGetOpt(&GetState, &ValueUnion)) != 0)
+    while (  (ch = RTGetOpt(&GetState, &ValueUnion)) != 0
+           && ch != VINF_GETOPT_NOT_OPTION)
     {
         /* For options that require an argument, ValueUnion has received the value. */
         switch (ch)
@@ -3522,76 +2527,108 @@ static DECLCALLBACK(RTEXITCODE) gctlHandleStat(PGCTLCMDCTX pCtx, int argc, char 
             case 'f': /* File-system */
             case 'c': /* Format */
             case 't': /* Terse */
-                return errorSyntaxEx(USAGE_GUESTCONTROL, USAGE_GSTCTRL_STAT,
+                return errorSyntaxEx(USAGE_GUESTCONTROL, HELP_SCOPE_GSTCTRL_STAT,
                                      "Command \"%s\" not implemented yet!", ValueUnion.psz);
 
-            case VINF_GETOPT_NOT_OPTION:
-                mapObjs[ValueUnion.psz]; /* Add element to check to map. */
-                break;
-
             default:
-                return errorGetOptEx(USAGE_GUESTCONTROL, USAGE_GSTCTRL_STAT, ch, &ValueUnion);
+                return errorGetOptEx(USAGE_GUESTCONTROL, HELP_SCOPE_GSTCTRL_STAT, ch, &ValueUnion);
         }
     }
 
-    size_t cObjs = mapObjs.size();
-    if (!cObjs)
-        return errorSyntaxEx(USAGE_GUESTCONTROL, USAGE_GSTCTRL_STAT,
-                             "No element(s) to check specified!");
+    if (ch != VINF_GETOPT_NOT_OPTION)
+        return errorSyntaxEx(USAGE_GUESTCONTROL, HELP_SCOPE_GSTCTRL_STAT, "Nothing to stat!");
 
     RTEXITCODE rcExit = gctlCtxPostOptionParsingInit(pCtx);
     if (rcExit != RTEXITCODE_SUCCESS)
         return rcExit;
 
-    HRESULT rc;
 
     /*
-     * Doing the checks.
+     * Do the file stat'ing.
      */
-    DESTDIRMAPITER it = mapObjs.begin();
-    while (it != mapObjs.end())
+    while (ch == VINF_GETOPT_NOT_OPTION)
     {
         if (pCtx->cVerbose)
-            RTPrintf("Checking for element \"%s\" ...\n", it->first.c_str());
+            RTPrintf("Checking for element \"%s\" ...\n", ValueUnion.psz);
 
         ComPtr<IGuestFsObjInfo> pFsObjInfo;
-        rc = pCtx->pGuestSession->FsObjQueryInfo(Bstr(it->first).raw(), FALSE /*followSymlinks*/, pFsObjInfo.asOutParam());
-        if (FAILED(rc))
+        HRESULT hrc = pCtx->pGuestSession->FsObjQueryInfo(Bstr(ValueUnion.psz).raw(), FALSE /*followSymlinks*/,
+                                                          pFsObjInfo.asOutParam());
+        if (FAILED(hrc))
         {
-            /* If there's at least one element which does not exist on the guest,
-             * drop out with exitcode 1. */
+            /** @todo r=bird: There might be other reasons why we end up here than
+             * non-existing "element" (object or file, please, nobody calls it elements). */
             if (pCtx->cVerbose)
-                RTPrintf("Cannot stat for element \"%s\": No such element\n",
-                         it->first.c_str());
+                RTPrintf("Failed to stat '%s': No such file\n", ValueUnion.psz);
             rcExit = RTEXITCODE_FAILURE;
         }
         else
         {
-            FsObjType_T objType;
-            pFsObjInfo->COMGETTER(Type)(&objType); /** @todo What about error checking? */
-            switch (objType)
-            {
-                case FsObjType_File:
-                    RTPrintf("Element \"%s\" found: Is a file\n", it->first.c_str());
-                    break;
+            RTPrintf("  File: '%s'\n", ValueUnion.psz); /** @todo escape this name. */
 
-                case FsObjType_Directory:
-                    RTPrintf("Element \"%s\" found: Is a directory\n", it->first.c_str());
-                    break;
+            FsObjType_T enmType = FsObjType_Unknown;
+            CHECK_ERROR2I(pFsObjInfo, COMGETTER(Type)(&enmType));
+            LONG64      cbObject = 0;
+            CHECK_ERROR2I(pFsObjInfo, COMGETTER(ObjectSize)(&cbObject));
+            LONG64      cbAllocated = 0;
+            CHECK_ERROR2I(pFsObjInfo, COMGETTER(AllocatedSize)(&cbAllocated));
+            LONG        uid = 0;
+            CHECK_ERROR2I(pFsObjInfo, COMGETTER(UID)(&uid));
+            LONG        gid = 0;
+            CHECK_ERROR2I(pFsObjInfo, COMGETTER(GID)(&gid));
+            Bstr        bstrUsername;
+            CHECK_ERROR2I(pFsObjInfo, COMGETTER(UserName)(bstrUsername.asOutParam()));
+            Bstr        bstrGroupName;
+            CHECK_ERROR2I(pFsObjInfo, COMGETTER(GroupName)(bstrGroupName.asOutParam()));
+            Bstr        bstrAttribs;
+            CHECK_ERROR2I(pFsObjInfo, COMGETTER(FileAttributes)(bstrAttribs.asOutParam()));
+            LONG64      idNode = 0;
+            CHECK_ERROR2I(pFsObjInfo, COMGETTER(NodeId)(&idNode));
+            ULONG       uDevNode = 0;
+            CHECK_ERROR2I(pFsObjInfo, COMGETTER(NodeIdDevice)(&uDevNode));
+            ULONG       uDeviceNo = 0;
+            CHECK_ERROR2I(pFsObjInfo, COMGETTER(DeviceNumber)(&uDeviceNo));
+            ULONG       cHardLinks = 1;
+            CHECK_ERROR2I(pFsObjInfo, COMGETTER(HardLinks)(&cHardLinks));
+            LONG64      nsBirthTime = 0;
+            CHECK_ERROR2I(pFsObjInfo, COMGETTER(BirthTime)(&nsBirthTime));
+            LONG64      nsChangeTime = 0;
+            CHECK_ERROR2I(pFsObjInfo, COMGETTER(ChangeTime)(&nsChangeTime));
+            LONG64      nsModificationTime = 0;
+            CHECK_ERROR2I(pFsObjInfo, COMGETTER(ModificationTime)(&nsModificationTime));
+            LONG64      nsAccessTime = 0;
+            CHECK_ERROR2I(pFsObjInfo, COMGETTER(AccessTime)(&nsAccessTime));
 
-                case FsObjType_Symlink:
-                    RTPrintf("Element \"%s\" found: Is a symlink\n", it->first.c_str());
-                    break;
+            RTPrintf("  Size: %-17RU64 Alloc: %-19RU64 Type: %s\n", cbObject, cbAllocated, gctlFsObjTypeToName(enmType));
+            RTPrintf("Device: %#-17RX32 INode: %-18RU64 Links: %u\n", uDevNode, idNode, cHardLinks);
 
-                default:
-                    RTPrintf("Element \"%s\" found, type unknown (%ld)\n", it->first.c_str(), objType);
-                    break;
-            }
+            Utf8Str strAttrib(bstrAttribs);
+            char *pszMode    = strAttrib.mutableRaw();
+            char *pszAttribs = strchr(pszMode, ' ');
+            if (pszAttribs)
+                do *pszAttribs++ = '\0';
+                while (*pszAttribs == ' ');
+            else
+                pszAttribs = strchr(pszMode, '\0');
+            if (uDeviceNo != 0)
+                RTPrintf("  Mode: %-16s Attrib: %-17s Dev ID: %#RX32\n", pszMode, pszAttribs, uDeviceNo);
+            else
+                RTPrintf("  Mode: %-16s Attrib: %s\n", pszMode, pszAttribs);
 
-            /** @todo Show more information about this element. */
+            RTPrintf(" Owner: %4d/%-12ls Group: %4d/%ls\n", uid, bstrUsername.raw(),  gid, bstrGroupName.raw());
+
+            RTTIMESPEC  TimeSpec;
+            char        szTmp[RTTIME_STR_LEN];
+            RTPrintf(" Birth: %s\n", RTTimeSpecToString(RTTimeSpecSetNano(&TimeSpec, nsBirthTime), szTmp, sizeof(szTmp)));
+            RTPrintf("Change: %s\n", RTTimeSpecToString(RTTimeSpecSetNano(&TimeSpec, nsChangeTime), szTmp, sizeof(szTmp)));
+            RTPrintf("Modify: %s\n", RTTimeSpecToString(RTTimeSpecSetNano(&TimeSpec, nsModificationTime), szTmp, sizeof(szTmp)));
+            RTPrintf("Access: %s\n", RTTimeSpecToString(RTTimeSpecSetNano(&TimeSpec, nsAccessTime), szTmp, sizeof(szTmp)));
+
+            /* Skiping: Generation ID - only the ISO9660 VFS sets this.  FreeBSD user flags. */
         }
 
-        ++it;
+        /* Next file. */
+        ch = RTGetOpt(&GetState, &ValueUnion);
     }
 
     return rcExit;
@@ -3645,7 +2682,7 @@ static DECLCALLBACK(RTEXITCODE) gctlHandleUpdateAdditions(PGCTLCMDCTX pCtx, int 
                 break;
 
             default:
-                return errorGetOptEx(USAGE_GUESTCONTROL, USAGE_GSTCTRL_UPDATEGA, ch, &ValueUnion);
+                return errorGetOptEx(USAGE_GUESTCONTROL, HELP_SCOPE_GSTCTRL_UPDATEGA, ch, &ValueUnion);
         }
     }
 
@@ -3696,10 +2733,10 @@ static DECLCALLBACK(RTEXITCODE) gctlHandleUpdateAdditions(PGCTLCMDCTX pCtx, int 
 
         ComPtr<IProgress> pProgress;
         CHECK_ERROR(pCtx->pGuest, UpdateGuestAdditions(Bstr(strSource).raw(),
-                                                ComSafeArrayAsInParam(aArgs),
-                                                /* Wait for whole update process to complete. */
-                                                ComSafeArrayAsInParam(aUpdateFlags),
-                                                pProgress.asOutParam()));
+                                                       ComSafeArrayAsInParam(aArgs),
+                                                       /* Wait for whole update process to complete. */
+                                                       ComSafeArrayAsInParam(aUpdateFlags),
+                                                       pProgress.asOutParam()));
         if (FAILED(rc))
             vrc = gctlPrintError(pCtx->pGuest, COM_IIDOF(IGuest));
         else
@@ -3763,18 +2800,18 @@ static DECLCALLBACK(RTEXITCODE) gctlHandleList(PGCTLCMDCTX pCtx, int argc, char 
                 else if (!RTStrICmp(ValueUnion.psz, "all"))
                     fListAll = true;
                 else
-                    return errorSyntaxEx(USAGE_GUESTCONTROL, USAGE_GSTCTRL_LIST,
+                    return errorSyntaxEx(USAGE_GUESTCONTROL, HELP_SCOPE_GSTCTRL_LIST,
                                          "Unknown list: '%s'", ValueUnion.psz);
                 fSeenListArg = true;
                 break;
 
             default:
-                return errorGetOptEx(USAGE_GUESTCONTROL, USAGE_GSTCTRL_UPDATEGA, ch, &ValueUnion);
+                return errorGetOptEx(USAGE_GUESTCONTROL, HELP_SCOPE_GSTCTRL_UPDATEGA, ch, &ValueUnion);
         }
     }
 
     if (!fSeenListArg)
-        return errorSyntaxEx(USAGE_GUESTCONTROL, USAGE_GSTCTRL_LIST, "Missing list name");
+        return errorSyntaxEx(USAGE_GUESTCONTROL, HELP_SCOPE_GSTCTRL_LIST, "Missing list name");
     Assert(fListAll || fListSessions);
 
     RTEXITCODE rcExit = gctlCtxPostOptionParsingInit(pCtx);
@@ -3861,7 +2898,7 @@ static DECLCALLBACK(RTEXITCODE) gctlHandleList(PGCTLCMDCTX pCtx, int argc, char 
                                     ULONG idFile;
                                     CHECK_ERROR_BREAK(pCurFile, COMGETTER(Id)(&idFile));
                                     Bstr strName;
-                                    CHECK_ERROR_BREAK(pCurFile, COMGETTER(FileName)(strName.asOutParam()));
+                                    CHECK_ERROR_BREAK(pCurFile, COMGETTER(Filename)(strName.asOutParam()));
                                     FileStatus_T fileStatus;
                                     CHECK_ERROR_BREAK(pCurFile, COMGETTER(Status)(&fileStatus));
 
@@ -3886,7 +2923,7 @@ static DECLCALLBACK(RTEXITCODE) gctlHandleList(PGCTLCMDCTX pCtx, int argc, char 
             RTPrintf("No active guest sessions found\n");
     }
 
-    if (FAILED(rc))
+    if (FAILED(rc)) /** @todo yeah, right... Only the last error? */
         rcExit = RTEXITCODE_FAILURE;
 
     return rcExit;
@@ -3909,7 +2946,7 @@ static DECLCALLBACK(RTEXITCODE) gctlHandleCloseProcess(PGCTLCMDCTX pCtx, int arg
     RTGetOptInit(&GetState, argc, argv, s_aOptions, RT_ELEMENTS(s_aOptions), 1, RTGETOPTINIT_FLAGS_OPTS_FIRST);
 
     std::vector < uint32_t > vecPID;
-    ULONG ulSessionID = UINT32_MAX;
+    ULONG idSession = UINT32_MAX;
     Utf8Str strSessionName;
 
     while ((ch = RTGetOpt(&GetState, &ValueUnion)) != 0)
@@ -3924,7 +2961,7 @@ static DECLCALLBACK(RTEXITCODE) gctlHandleCloseProcess(PGCTLCMDCTX pCtx, int arg
                 break;
 
             case 'i': /* Session ID */
-                ulSessionID = ValueUnion.u32;
+                idSession = ValueUnion.u32;
                 break;
 
             case VINF_GETOPT_NOT_OPTION:
@@ -3949,30 +2986,29 @@ static DECLCALLBACK(RTEXITCODE) gctlHandleCloseProcess(PGCTLCMDCTX pCtx, int arg
                         }
                     }
                     else
-                        return errorSyntaxEx(USAGE_GUESTCONTROL, USAGE_GSTCTRL_CLOSEPROCESS, "Invalid PID value: 0");
+                        return errorSyntaxEx(USAGE_GUESTCONTROL, HELP_SCOPE_GSTCTRL_CLOSEPROCESS, "Invalid PID value: 0");
                 }
                 else
-                    return errorSyntaxEx(USAGE_GUESTCONTROL, USAGE_GSTCTRL_CLOSEPROCESS,
-                                         "Error parsing PID value: %Rrc", rc);
+                    return errorSyntaxEx(USAGE_GUESTCONTROL, HELP_SCOPE_GSTCTRL_CLOSEPROCESS, "Error parsing PID value: %Rrc", rc);
                 break;
             }
 
             default:
-                return errorGetOptEx(USAGE_GUESTCONTROL, USAGE_GSTCTRL_CLOSEPROCESS, ch, &ValueUnion);
+                return errorGetOptEx(USAGE_GUESTCONTROL, HELP_SCOPE_GSTCTRL_CLOSEPROCESS, ch, &ValueUnion);
         }
     }
 
     if (vecPID.empty())
-        return errorSyntaxEx(USAGE_GUESTCONTROL, USAGE_GSTCTRL_CLOSEPROCESS,
+        return errorSyntaxEx(USAGE_GUESTCONTROL, HELP_SCOPE_GSTCTRL_CLOSEPROCESS,
                              "At least one PID must be specified to kill!");
 
     if (   strSessionName.isEmpty()
-        && ulSessionID == UINT32_MAX)
-        return errorSyntaxEx(USAGE_GUESTCONTROL, USAGE_GSTCTRL_CLOSEPROCESS, "No session ID specified!");
+        && idSession == UINT32_MAX)
+        return errorSyntaxEx(USAGE_GUESTCONTROL, HELP_SCOPE_GSTCTRL_CLOSEPROCESS, "No session ID specified!");
 
     if (   strSessionName.isNotEmpty()
-        && ulSessionID != UINT32_MAX)
-        return errorSyntaxEx(USAGE_GUESTCONTROL, USAGE_GSTCTRL_CLOSEPROCESS,
+        && idSession != UINT32_MAX)
+        return errorSyntaxEx(USAGE_GUESTCONTROL, HELP_SCOPE_GSTCTRL_CLOSEPROCESS,
                              "Either session ID or name (pattern) must be specified");
 
     RTEXITCODE rcExit = gctlCtxPostOptionParsingInit(pCtx);
@@ -3986,13 +3022,12 @@ static DECLCALLBACK(RTEXITCODE) gctlHandleCloseProcess(PGCTLCMDCTX pCtx, int arg
     do
     {
         uint32_t uProcsTerminated = 0;
-        bool fSessionFound = false;
 
         SafeIfaceArray <IGuestSession> collSessions;
         CHECK_ERROR_BREAK(pCtx->pGuest, COMGETTER(Sessions)(ComSafeArrayAsOutParam(collSessions)));
         size_t cSessions = collSessions.size();
 
-        uint32_t uSessionsHandled = 0;
+        uint32_t cSessionsHandled = 0;
         for (size_t i = 0; i < cSessions; i++)
         {
             pSession = collSessions[i];
@@ -4003,20 +3038,16 @@ static DECLCALLBACK(RTEXITCODE) gctlHandleCloseProcess(PGCTLCMDCTX pCtx, int arg
             Bstr strName;
             CHECK_ERROR_BREAK(pSession, COMGETTER(Name)(strName.asOutParam()));
             Utf8Str strNameUtf8(strName); /* Session name */
-            if (strSessionName.isEmpty()) /* Search by ID. Slow lookup. */
-            {
-                fSessionFound = uID == ulSessionID;
-            }
-            else /* ... or by naming pattern. */
-            {
-                if (RTStrSimplePatternMatch(strSessionName.c_str(), strNameUtf8.c_str()))
-                    fSessionFound = true;
-            }
 
+            bool fSessionFound;
+            if (strSessionName.isEmpty()) /* Search by ID. Slow lookup. */
+                fSessionFound = uID == idSession;
+            else /* ... or by naming pattern. */
+                fSessionFound = RTStrSimplePatternMatch(strSessionName.c_str(), strNameUtf8.c_str());
             if (fSessionFound)
             {
                 AssertStmt(!pSession.isNull(), break);
-                uSessionsHandled++;
+                cSessionsHandled++;
 
                 SafeIfaceArray <IGuestProcess> collProcs;
                 CHECK_ERROR_BREAK(pSession, COMGETTER(Processes)(ComSafeArrayAsOutParam(collProcs)));
@@ -4048,9 +3079,9 @@ static DECLCALLBACK(RTEXITCODE) gctlHandleCloseProcess(PGCTLCMDCTX pCtx, int arg
                     }
                     else
                     {
-                        if (ulSessionID != UINT32_MAX)
+                        if (idSession != UINT32_MAX)
                             RTPrintf("No matching process(es) for session ID %RU32 found\n",
-                                     ulSessionID);
+                                     idSession);
                     }
 
                     pProcess.setNull();
@@ -4060,7 +3091,7 @@ static DECLCALLBACK(RTEXITCODE) gctlHandleCloseProcess(PGCTLCMDCTX pCtx, int arg
             }
         }
 
-        if (!uSessionsHandled)
+        if (!cSessionsHandled)
             RTPrintf("No matching session(s) found\n");
 
         if (uProcsTerminated)
@@ -4097,7 +3128,7 @@ static DECLCALLBACK(RTEXITCODE) gctlHandleCloseSession(PGCTLCMDCTX pCtx, int arg
     RTGETOPTSTATE GetState;
     RTGetOptInit(&GetState, argc, argv, s_aOptions, RT_ELEMENTS(s_aOptions), 1, RTGETOPTINIT_FLAGS_OPTS_FIRST);
 
-    ULONG ulSessionID = UINT32_MAX;
+    ULONG idSession = UINT32_MAX;
     Utf8Str strSessionName;
 
     while ((ch = RTGetOpt(&GetState, &ValueUnion)) != 0)
@@ -4112,7 +3143,7 @@ static DECLCALLBACK(RTEXITCODE) gctlHandleCloseSession(PGCTLCMDCTX pCtx, int arg
                 break;
 
             case 'i': /* Session ID */
-                ulSessionID = ValueUnion.u32;
+                idSession = ValueUnion.u32;
                 break;
 
             case GETOPTDEF_SESSIONCLOSE_ALL:
@@ -4123,18 +3154,18 @@ static DECLCALLBACK(RTEXITCODE) gctlHandleCloseSession(PGCTLCMDCTX pCtx, int arg
                 /** @todo Supply a CSV list of IDs or patterns to close?
                  *  break; */
             default:
-                return errorGetOptEx(USAGE_GUESTCONTROL, USAGE_GSTCTRL_CLOSESESSION, ch, &ValueUnion);
+                return errorGetOptEx(USAGE_GUESTCONTROL, HELP_SCOPE_GSTCTRL_CLOSESESSION, ch, &ValueUnion);
         }
     }
 
     if (   strSessionName.isEmpty()
-        && ulSessionID == UINT32_MAX)
-        return errorSyntaxEx(USAGE_GUESTCONTROL, USAGE_GSTCTRL_CLOSESESSION,
+        && idSession == UINT32_MAX)
+        return errorSyntaxEx(USAGE_GUESTCONTROL, HELP_SCOPE_GSTCTRL_CLOSESESSION,
                              "No session ID specified!");
 
     if (   !strSessionName.isEmpty()
-        && ulSessionID != UINT32_MAX)
-        return errorSyntaxEx(USAGE_GUESTCONTROL, USAGE_GSTCTRL_CLOSESESSION,
+        && idSession != UINT32_MAX)
+        return errorSyntaxEx(USAGE_GUESTCONTROL, HELP_SCOPE_GSTCTRL_CLOSESESSION,
                              "Either session ID or name (pattern) must be specified");
 
     RTEXITCODE rcExit = gctlCtxPostOptionParsingInit(pCtx);
@@ -4145,7 +3176,6 @@ static DECLCALLBACK(RTEXITCODE) gctlHandleCloseSession(PGCTLCMDCTX pCtx, int arg
 
     do
     {
-        bool fSessionFound = false;
         size_t cSessionsHandled = 0;
 
         SafeIfaceArray <IGuestSession> collSessions;
@@ -4163,16 +3193,11 @@ static DECLCALLBACK(RTEXITCODE) gctlHandleCloseSession(PGCTLCMDCTX pCtx, int arg
             CHECK_ERROR_BREAK(pSession, COMGETTER(Name)(strName.asOutParam()));
             Utf8Str strNameUtf8(strName); /* Session name */
 
+            bool fSessionFound;
             if (strSessionName.isEmpty()) /* Search by ID. Slow lookup. */
-            {
-                fSessionFound = uID == ulSessionID;
-            }
+                fSessionFound = uID == idSession;
             else /* ... or by naming pattern. */
-            {
-                if (RTStrSimplePatternMatch(strSessionName.c_str(), strNameUtf8.c_str()))
-                    fSessionFound = true;
-            }
-
+                fSessionFound = RTStrSimplePatternMatch(strSessionName.c_str(), strNameUtf8.c_str());
             if (fSessionFound)
             {
                 cSessionsHandled++;
@@ -4227,7 +3252,7 @@ static DECLCALLBACK(RTEXITCODE) gctlHandleWatch(PGCTLCMDCTX pCtx, int argc, char
 
             case VINF_GETOPT_NOT_OPTION:
             default:
-                return errorGetOptEx(USAGE_GUESTCONTROL, USAGE_GSTCTRL_WATCH, ch, &ValueUnion);
+                return errorGetOptEx(USAGE_GUESTCONTROL, HELP_SCOPE_GSTCTRL_WATCH, ch, &ValueUnion);
         }
     }
 
@@ -4265,6 +3290,9 @@ static DECLCALLBACK(RTEXITCODE) gctlHandleWatch(PGCTLCMDCTX pCtx, int argc, char
         if (pCtx->cVerbose)
             RTPrintf("Waiting for events ...\n");
 
+/** @todo r=bird: This are-we-there-yet approach to things could easily be
+ *        replaced by a global event semaphore that gets signalled from the
+ *        signal handler and the callback event.  Please fix! */
         while (!g_fGuestCtrlCanceled)
         {
             /** @todo Timeout handling (see above)? */
@@ -4312,45 +3340,45 @@ RTEXITCODE handleGuestControl(HandlerArg *pArg)
      */
     static const GCTLCMDDEF s_aCmdDefs[] =
     {
-        { "run",                gctlHandleRun,              USAGE_GSTCTRL_RUN,       0, },
-        { "start",              gctlHandleStart,            USAGE_GSTCTRL_START,     0, },
-        { "copyfrom",           gctlHandleCopyFrom,         USAGE_GSTCTRL_COPYFROM,  0, },
-        { "copyto",             gctlHandleCopyTo,           USAGE_GSTCTRL_COPYTO,    0, },
+        { "run",                gctlHandleRun,              HELP_SCOPE_GSTCTRL_RUN,       0, },
+        { "start",              gctlHandleStart,            HELP_SCOPE_GSTCTRL_START,     0, },
+        { "copyfrom",           gctlHandleCopyFrom,         HELP_SCOPE_GSTCTRL_COPYFROM,  0, },
+        { "copyto",             gctlHandleCopyTo,           HELP_SCOPE_GSTCTRL_COPYTO,    0, },
 
-        { "mkdir",              handleCtrtMkDir,            USAGE_GSTCTRL_MKDIR,     0, },
-        { "md",                 handleCtrtMkDir,            USAGE_GSTCTRL_MKDIR,     0, },
-        { "createdirectory",    handleCtrtMkDir,            USAGE_GSTCTRL_MKDIR,     0, },
-        { "createdir",          handleCtrtMkDir,            USAGE_GSTCTRL_MKDIR,     0, },
+        { "mkdir",              gctrlHandleMkDir,           HELP_SCOPE_GSTCTRL_MKDIR,     0, },
+        { "md",                 gctrlHandleMkDir,           HELP_SCOPE_GSTCTRL_MKDIR,     0, },
+        { "createdirectory",    gctrlHandleMkDir,           HELP_SCOPE_GSTCTRL_MKDIR,     0, },
+        { "createdir",          gctrlHandleMkDir,           HELP_SCOPE_GSTCTRL_MKDIR,     0, },
 
-        { "rmdir",              gctlHandleRmDir,            USAGE_GSTCTRL_RMDIR,     0, },
-        { "removedir",          gctlHandleRmDir,            USAGE_GSTCTRL_RMDIR,     0, },
-        { "removedirectory",    gctlHandleRmDir,            USAGE_GSTCTRL_RMDIR,     0, },
+        { "rmdir",              gctlHandleRmDir,            HELP_SCOPE_GSTCTRL_RMDIR,     0, },
+        { "removedir",          gctlHandleRmDir,            HELP_SCOPE_GSTCTRL_RMDIR,     0, },
+        { "removedirectory",    gctlHandleRmDir,            HELP_SCOPE_GSTCTRL_RMDIR,     0, },
 
-        { "rm",                 gctlHandleRm,               USAGE_GSTCTRL_RM,        0, },
-        { "removefile",         gctlHandleRm,               USAGE_GSTCTRL_RM,        0, },
-        { "erase",              gctlHandleRm,               USAGE_GSTCTRL_RM,        0, },
-        { "del",                gctlHandleRm,               USAGE_GSTCTRL_RM,        0, },
-        { "delete",             gctlHandleRm,               USAGE_GSTCTRL_RM,        0, },
+        { "rm",                 gctlHandleRm,               HELP_SCOPE_GSTCTRL_RM,        0, },
+        { "removefile",         gctlHandleRm,               HELP_SCOPE_GSTCTRL_RM,        0, },
+        { "erase",              gctlHandleRm,               HELP_SCOPE_GSTCTRL_RM,        0, },
+        { "del",                gctlHandleRm,               HELP_SCOPE_GSTCTRL_RM,        0, },
+        { "delete",             gctlHandleRm,               HELP_SCOPE_GSTCTRL_RM,        0, },
 
-        { "mv",                 gctlHandleMv,               USAGE_GSTCTRL_MV,        0, },
-        { "move",               gctlHandleMv,               USAGE_GSTCTRL_MV,        0, },
-        { "ren",                gctlHandleMv,               USAGE_GSTCTRL_MV,        0, },
-        { "rename",             gctlHandleMv,               USAGE_GSTCTRL_MV,        0, },
+        { "mv",                 gctlHandleMv,               HELP_SCOPE_GSTCTRL_MV,        0, },
+        { "move",               gctlHandleMv,               HELP_SCOPE_GSTCTRL_MV,        0, },
+        { "ren",                gctlHandleMv,               HELP_SCOPE_GSTCTRL_MV,        0, },
+        { "rename",             gctlHandleMv,               HELP_SCOPE_GSTCTRL_MV,        0, },
 
-        { "mktemp",             gctlHandleMkTemp,           USAGE_GSTCTRL_MKTEMP,    0, },
-        { "createtemp",         gctlHandleMkTemp,           USAGE_GSTCTRL_MKTEMP,    0, },
-        { "createtemporary",    gctlHandleMkTemp,           USAGE_GSTCTRL_MKTEMP,    0, },
+        { "mktemp",             gctlHandleMkTemp,           HELP_SCOPE_GSTCTRL_MKTEMP,    0, },
+        { "createtemp",         gctlHandleMkTemp,           HELP_SCOPE_GSTCTRL_MKTEMP,    0, },
+        { "createtemporary",    gctlHandleMkTemp,           HELP_SCOPE_GSTCTRL_MKTEMP,    0, },
 
-        { "stat",               gctlHandleStat,             USAGE_GSTCTRL_STAT,      0, },
+        { "stat",               gctlHandleStat,             HELP_SCOPE_GSTCTRL_STAT,      0, },
 
-        { "closeprocess",       gctlHandleCloseProcess,     USAGE_GSTCTRL_CLOSEPROCESS, GCTLCMDCTX_F_SESSION_ANONYMOUS | GCTLCMDCTX_F_NO_SIGNAL_HANDLER, },
-        { "closesession",       gctlHandleCloseSession,     USAGE_GSTCTRL_CLOSESESSION, GCTLCMDCTX_F_SESSION_ANONYMOUS | GCTLCMDCTX_F_NO_SIGNAL_HANDLER, },
-        { "list",               gctlHandleList,             USAGE_GSTCTRL_LIST,         GCTLCMDCTX_F_SESSION_ANONYMOUS | GCTLCMDCTX_F_NO_SIGNAL_HANDLER, },
-        { "watch",              gctlHandleWatch,            USAGE_GSTCTRL_WATCH,        GCTLCMDCTX_F_SESSION_ANONYMOUS | GCTLCMDCTX_F_NO_SIGNAL_HANDLER, },
+        { "closeprocess",       gctlHandleCloseProcess,     HELP_SCOPE_GSTCTRL_CLOSEPROCESS, GCTLCMDCTX_F_SESSION_ANONYMOUS | GCTLCMDCTX_F_NO_SIGNAL_HANDLER, },
+        { "closesession",       gctlHandleCloseSession,     HELP_SCOPE_GSTCTRL_CLOSESESSION, GCTLCMDCTX_F_SESSION_ANONYMOUS | GCTLCMDCTX_F_NO_SIGNAL_HANDLER, },
+        { "list",               gctlHandleList,             HELP_SCOPE_GSTCTRL_LIST,         GCTLCMDCTX_F_SESSION_ANONYMOUS | GCTLCMDCTX_F_NO_SIGNAL_HANDLER, },
+        { "watch",              gctlHandleWatch,            HELP_SCOPE_GSTCTRL_WATCH,        GCTLCMDCTX_F_SESSION_ANONYMOUS | GCTLCMDCTX_F_NO_SIGNAL_HANDLER, },
 
-        {"updateguestadditions",gctlHandleUpdateAdditions,  USAGE_GSTCTRL_UPDATEGA,     GCTLCMDCTX_F_SESSION_ANONYMOUS | GCTLCMDCTX_F_NO_SIGNAL_HANDLER, },
-        { "updateadditions",    gctlHandleUpdateAdditions,  USAGE_GSTCTRL_UPDATEGA,     GCTLCMDCTX_F_SESSION_ANONYMOUS | GCTLCMDCTX_F_NO_SIGNAL_HANDLER, },
-        { "updatega",           gctlHandleUpdateAdditions,  USAGE_GSTCTRL_UPDATEGA,     GCTLCMDCTX_F_SESSION_ANONYMOUS | GCTLCMDCTX_F_NO_SIGNAL_HANDLER, },
+        {"updateguestadditions",gctlHandleUpdateAdditions,  HELP_SCOPE_GSTCTRL_UPDATEGA,     GCTLCMDCTX_F_SESSION_ANONYMOUS | GCTLCMDCTX_F_NO_SIGNAL_HANDLER, },
+        { "updateadditions",    gctlHandleUpdateAdditions,  HELP_SCOPE_GSTCTRL_UPDATEGA,     GCTLCMDCTX_F_SESSION_ANONYMOUS | GCTLCMDCTX_F_NO_SIGNAL_HANDLER, },
+        { "updatega",           gctlHandleUpdateAdditions,  HELP_SCOPE_GSTCTRL_UPDATEGA,     GCTLCMDCTX_F_SESSION_ANONYMOUS | GCTLCMDCTX_F_NO_SIGNAL_HANDLER, },
     };
 
     /*

@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -45,10 +45,12 @@
 #include <sys/sunddi.h>
 #include <sys/file.h>
 #include <sys/priv_names.h>
+#include <vm/hat.h>
 #undef u /* /usr/include/sys/user.h:249:1 is where this is defined to (curproc->p_user). very cool. */
 
 #include "../SUPDrvInternal.h"
 #include <VBox/log.h>
+#include <VBox/param.h>
 #include <VBox/version.h>
 #include <iprt/semaphore.h>
 #include <iprt/spinlock.h>
@@ -63,6 +65,8 @@
 #include <iprt/err.h>
 
 #include "dtrace/SUPDrv.h"
+
+extern caddr_t hat_kpm_pfn2va(pfn_t); /* Found in vm/hat.h on solaris 11.3, but not on older like 10u7. */
 
 
 /*********************************************************************************************************************************
@@ -663,7 +667,7 @@ static int VBoxDrvSolarisWrite(dev_t Dev, struct uio *pUio, cred_t *pCred)
  * Driver ioctl, an alternate entry point for this character driver.
  *
  * @param   Dev             Device number
- * @param   Cmd             Operation identifier
+ * @param   iCmd            Operation identifier
  * @param   pArgs           Arguments from user to driver
  * @param   Mode            Information bitfield (read/write, address space etc.)
  * @param   pCred           User credentials
@@ -671,7 +675,7 @@ static int VBoxDrvSolarisWrite(dev_t Dev, struct uio *pUio, cred_t *pCred)
  *
  * @return  corresponding solaris error code.
  */
-static int VBoxDrvSolarisIOCtl(dev_t Dev, int Cmd, intptr_t pArgs, int Mode, cred_t *pCred, int *pVal)
+static int VBoxDrvSolarisIOCtl(dev_t Dev, int iCmd, intptr_t pArgs, int Mode, cred_t *pCred, int *pVal)
 {
 #ifndef USE_SESSION_HASH
     /*
@@ -707,7 +711,7 @@ static int VBoxDrvSolarisIOCtl(dev_t Dev, int Cmd, intptr_t pArgs, int Mode, cre
     if (!pSession)
     {
         LogRel(("VBoxSupDrvIOCtl: WHAT?!? pSession == NULL! This must be a mistake... pid=%d iCmd=%#x Dev=%#x\n",
-                    (int)Process, Cmd, (int)Dev));
+                    (int)Process, iCmd, (int)Dev));
         return EINVAL;
     }
 #endif
@@ -716,16 +720,15 @@ static int VBoxDrvSolarisIOCtl(dev_t Dev, int Cmd, intptr_t pArgs, int Mode, cre
      * Deal with the two high-speed IOCtl that takes it's arguments from
      * the session and iCmd, and only returns a VBox status code.
      */
-    if (   (   Cmd == SUP_IOCTL_FAST_DO_RAW_RUN
-            || Cmd == SUP_IOCTL_FAST_DO_HM_RUN
-            || Cmd == SUP_IOCTL_FAST_DO_NOP)
+    AssertCompile((SUP_IOCTL_FAST_DO_FIRST & 0xff) == (SUP_IOCTL_FLAG | 64));
+    if (   (unsigned)(iCmd - SUP_IOCTL_FAST_DO_FIRST) < (unsigned)32
         && pSession->fUnrestricted)
     {
-        *pVal = supdrvIOCtlFast(Cmd, pArgs, &g_DevExt, pSession);
+        *pVal = supdrvIOCtlFast(iCmd - SUP_IOCTL_FAST_DO_FIRST, pArgs, &g_DevExt, pSession);
         return 0;
     }
 
-    return VBoxDrvSolarisIOCtlSlow(pSession, Cmd, Mode, pArgs);
+    return VBoxDrvSolarisIOCtlSlow(pSession, iCmd, Mode, pArgs);
 }
 
 
@@ -1275,6 +1278,17 @@ int VBOXCALL    supdrvOSMsrProberModify(RTCPUID idCpu, PSUPMSRPROBER pReq)
 }
 
 #endif /* SUPDRV_WITH_MSR_PROBER */
+
+
+SUPR0DECL(int) SUPR0HCPhysToVirt(RTHCPHYS HCPhys, void **ppv)
+{
+    AssertReturn(!(HCPhys & PAGE_OFFSET_MASK), VERR_INVALID_POINTER);
+    AssertReturn(HCPhys != NIL_RTHCPHYS, VERR_INVALID_POINTER);
+    HCPhys >>= PAGE_SHIFT;
+    AssertReturn(HCPhys <= physmax, VERR_INVALID_POINTER);
+    *ppv = hat_kpm_pfn2va(HCPhys);
+    return VINF_SUCCESS;
+}
 
 
 RTDECL(int) SUPR0Printf(const char *pszFormat, ...)

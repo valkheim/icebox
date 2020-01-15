@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -39,6 +39,7 @@
 #if defined(RT_ARCH_AMD64) || defined(RT_ARCH_X86)
 # include <iprt/asm-amd64-x86.h>
 #endif
+#include <iprt/errcore.h>
 
 
 #if defined(RT_ARCH_AMD64) || defined(RT_ARCH_X86)
@@ -90,6 +91,48 @@ SUPDECL(uint64_t) SUPReadTscWithDelta(PSUPGLOBALINFOPAGE pGip)
                 uint16_t iCpuSet = cbLim - 256 * (ARCH_BITS == 64 ? 16 : 8);
                 iCpuSet &= RTCPUSET_MAX_CPUS - 1;
                 iGipCpu  = pGip->aiCpuFromCpuSetIdx[iCpuSet];
+                break;
+            }
+            if (cTries >= 16)
+            {
+                iGipCpu = UINT16_MAX;
+                break;
+            }
+            cTries++;
+        }
+    }
+    else if (pGip->fGetGipCpu & SUPGIPGETCPU_APIC_ID_EXT_0B)
+    {
+        /* Get APIC ID / 0x1b via the slow CPUID instruction, requires looping. */
+        uint32_t cTries = 0;
+        for (;;)
+        {
+            uint32_t idApic = ASMGetApicIdExt0B();
+            uTsc = ASMReadTSC();
+            if (RT_LIKELY(ASMGetApicIdExt0B() == idApic))
+            {
+                iGipCpu = pGip->aiCpuFromApicId[idApic];
+                break;
+            }
+            if (cTries >= 16)
+            {
+                iGipCpu = UINT16_MAX;
+                break;
+            }
+            cTries++;
+        }
+    }
+    else if (pGip->fGetGipCpu & SUPGIPGETCPU_APIC_ID_EXT_8000001E)
+    {
+        /* Get APIC ID / 0x8000001e via the slow CPUID instruction, requires looping. */
+        uint32_t cTries = 0;
+        for (;;)
+        {
+            uint32_t idApic = ASMGetApicIdExt8000001E();
+            uTsc = ASMReadTSC();
+            if (RT_LIKELY(ASMGetApicIdExt8000001E() == idApic))
+            {
+                iGipCpu = pGip->aiCpuFromApicId[idApic];
                 break;
             }
             if (cTries >= 16)
@@ -201,6 +244,18 @@ DECLINLINE(uint16_t) supGetGipCpuIndex(PSUPGLOBALINFOPAGE pGip)
         ASMReadTscWithAux(&iCpuSet);
         iCpuSet  &= RTCPUSET_MAX_CPUS - 1;
         iGipCpu   = pGip->aiCpuFromCpuSetIdx[iCpuSet];
+    }
+    else if (pGip->fGetGipCpu & SUPGIPGETCPU_APIC_ID_EXT_0B)
+    {
+        /* Get APIC ID via the slow CPUID/0000000B instruction. */
+        uint32_t idApic = ASMGetApicIdExt0B();
+        iGipCpu = pGip->aiCpuFromApicId[idApic];
+    }
+    else if (pGip->fGetGipCpu & SUPGIPGETCPU_APIC_ID_EXT_8000001E)
+    {
+        /* Get APIC ID via the slow CPUID/8000001E instruction. */
+        uint32_t idApic = ASMGetApicIdExt8000001E();
+        iGipCpu = pGip->aiCpuFromApicId[idApic];
     }
     else
     {

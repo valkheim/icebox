@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2011-2017 Oracle Corporation
+ * Copyright (C) 2011-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -27,13 +27,8 @@
 /* specifies whether the vboxVDbgBreakF should break in the debugger
  * windbg seems to have some issues when there is a lot ( >32) of sw breakpoints defined
  * to simplify things we just insert breaks for the case of intensive debugging WDDM driver*/
-#ifndef VBOX_WDDM_WIN8
 int g_bVBoxVDbgBreakF = 0;
 int g_bVBoxVDbgBreakFv = 0;
-#else
-int g_bVBoxVDbgBreakF = 0;
-int g_bVBoxVDbgBreakFv = 0;
-#endif
 #endif
 
 #pragma alloc_text(PAGE, VBoxQueryWinVersion)
@@ -158,7 +153,6 @@ bool VBoxLikesVideoMode(uint32_t display, uint32_t width, uint32_t height, uint3
             req->header.requestType = VMMDevReq_VideoModeSupported;
             req->header.rc          = VERR_GENERAL_FAILURE;
             req->header.reserved1   = 0;
-            req->header.reserved2   = 0;
             req->width  = width;
             req->height = height;
             req->bpp    = bpp;

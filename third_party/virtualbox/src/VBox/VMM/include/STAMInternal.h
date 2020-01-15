@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -15,8 +15,11 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
-#ifndef ___STAMInternal_h
-#define ___STAMInternal_h
+#ifndef VMM_INCLUDED_SRC_include_STAMInternal_h
+#define VMM_INCLUDED_SRC_include_STAMInternal_h
+#ifndef RT_WITHOUT_PRAGMA_ONCE
+# pragma once
+#endif
 
 #include <VBox/cdefs.h>
 #include <VBox/types.h>
@@ -35,11 +38,6 @@ RT_C_DECLS_BEGIN
  * @internal
  * @{
  */
-
-/** Enables the lookup tree.
- * This is an optimization for speeding up registration as well as query. */
-#define STAM_WITH_LOOKUP_TREE
-
 
 /** Pointer to sample descriptor. */
 typedef struct STAMDESC    *PSTAMDESC;
@@ -123,6 +121,8 @@ typedef struct STAMDESC
     }                   u;
     /** Unit. */
     STAMUNIT            enmUnit;
+    /** The refresh group number (STAM_REFRESH_GRP_XXX). */
+    uint8_t             iRefreshGroup;
     /** Description. */
     const char         *pszDesc;
 } STAMDESC;
@@ -174,4 +174,4 @@ typedef STAMUSERPERVM *PSTAMUSERPERVM;
 
 RT_C_DECLS_END
 
-#endif
+#endif /* !VMM_INCLUDED_SRC_include_STAMInternal_h */

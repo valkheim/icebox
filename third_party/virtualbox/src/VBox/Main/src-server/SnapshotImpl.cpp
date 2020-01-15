@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -15,8 +15,12 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
-#include "Logging.h"
+#define LOG_GROUP LOG_GROUP_MAIN_SNAPSHOT
+#include <set>
+#include <map>
+
 #include "SnapshotImpl.h"
+#include "LoggingNew.h"
 
 #include "MachineImpl.h"
 #include "MediumImpl.h"
@@ -38,7 +42,7 @@
 #include <iprt/cpp/utils.h>
 
 #include <VBox/param.h>
-#include <VBox/err.h>
+#include <iprt/errcore.h>
 
 #include <VBox/settings.h>
 
@@ -651,14 +655,14 @@ void Snapshot::i_updateSavedStatePathsImpl(const Utf8Str &strOldPath,
     LogFlowThisFunc(("Snap[%s].statePath={%s}\n", m->strName.c_str(), path.c_str()));
 
     /* state file may be NULL (for offline snapshots) */
-    if (    path.length()
+    if (    path.isNotEmpty()
          && RTPathStartsWith(path.c_str(), strOldPath.c_str())
        )
     {
         m->pMachine->mSSData->strStateFilePath = Utf8StrFmt("%s%s",
                                                             strNewPath.c_str(),
                                                             path.c_str() + strOldPath.length());
-        LogFlowThisFunc(("-> updated: {%s}\n", path.c_str()));
+        LogFlowThisFunc(("-> updated: {%s}\n", m->pMachine->mSSData->strStateFilePath.c_str()));
     }
 
     for (SnapshotsList::const_iterator it = m->llChildren.begin();
@@ -668,6 +672,32 @@ void Snapshot::i_updateSavedStatePathsImpl(const Utf8Str &strOldPath,
         Snapshot *pChild = *it;
         pChild->i_updateSavedStatePathsImpl(strOldPath, strNewPath);
     }
+}
+
+/**
+ *  Checks if the specified path change affects the saved state file path of
+ *  this snapshot or any of its (grand-)children and updates it accordingly.
+ *
+ *  Intended to be called by Machine::openConfigLoader() only.
+ *
+ *  @param  strOldPath old path (full)
+ *  @param  strNewPath new path (full)
+ *
+ *  @note Locks the machine (for the snapshots tree) +  this object + children for writing.
+ */
+void Snapshot::i_updateSavedStatePaths(const Utf8Str &strOldPath,
+                                       const Utf8Str &strNewPath)
+{
+    LogFlowThisFunc(("aOldPath={%s} aNewPath={%s}\n", strOldPath.c_str(), strNewPath.c_str()));
+
+    AutoCaller autoCaller(this);
+    AssertComRC(autoCaller.rc());
+
+    // snapshots tree is protected by machine lock
+    AutoWriteLock alock(m->pMachine COMMA_LOCKVAL_SRC_POS);
+
+    // call the implementation under the tree lock
+    i_updateSavedStatePathsImpl(strOldPath, strNewPath);
 }
 
 /**
@@ -709,7 +739,40 @@ bool Snapshot::i_sharesSavedStateFile(const Utf8Str &strPath,
 
 
 /**
- *  Checks if the specified path change affects the saved state file path of
+ * Internal implementation for Snapshot::updateNVRAMPaths (below).
+ * @param   strOldPath
+ * @param   strNewPath
+ */
+void Snapshot::i_updateNVRAMPathsImpl(const Utf8Str &strOldPath,
+                                      const Utf8Str &strNewPath)
+{
+    AutoWriteLock alock(this COMMA_LOCKVAL_SRC_POS);
+
+    const Utf8Str path = m->pMachine->mBIOSSettings->i_getNonVolatileStorageFile();
+    LogFlowThisFunc(("Snap[%s].nvramPath={%s}\n", m->strName.c_str(), path.c_str()));
+
+    /* NVRAM filename may be empty */
+    if (    path.isNotEmpty()
+         && RTPathStartsWith(path.c_str(), strOldPath.c_str())
+       )
+    {
+        m->pMachine->mBIOSSettings->i_updateNonVolatileStorageFile(Utf8StrFmt("%s%s",
+                                                                              strNewPath.c_str(),
+                                                                              path.c_str() + strOldPath.length()));
+        LogFlowThisFunc(("-> updated: {%s}\n", m->pMachine->mBIOSSettings->i_getNonVolatileStorageFile().c_str()));
+    }
+
+    for (SnapshotsList::const_iterator it = m->llChildren.begin();
+         it != m->llChildren.end();
+         ++it)
+    {
+        Snapshot *pChild = *it;
+        pChild->i_updateNVRAMPathsImpl(strOldPath, strNewPath);
+    }
+}
+
+/**
+ *  Checks if the specified path change affects the NVRAM file path of
  *  this snapshot or any of its (grand-)children and updates it accordingly.
  *
  *  Intended to be called by Machine::openConfigLoader() only.
@@ -719,8 +782,8 @@ bool Snapshot::i_sharesSavedStateFile(const Utf8Str &strPath,
  *
  *  @note Locks the machine (for the snapshots tree) +  this object + children for writing.
  */
-void Snapshot::i_updateSavedStatePaths(const Utf8Str &strOldPath,
-                                       const Utf8Str &strNewPath)
+void Snapshot::i_updateNVRAMPaths(const Utf8Str &strOldPath,
+                                  const Utf8Str &strNewPath)
 {
     LogFlowThisFunc(("aOldPath={%s} aNewPath={%s}\n", strOldPath.c_str(), strNewPath.c_str()));
 
@@ -839,7 +902,7 @@ HRESULT Snapshot::i_uninitOne(AutoWriteLock &writeLock,
         return rc;
 
     // report the saved state file if it's not on the list yet
-    if (!m->pMachine->mSSData->strStateFilePath.isEmpty())
+    if (m->pMachine->mSSData->strStateFilePath.isNotEmpty())
     {
         bool fFound = false;
         for (std::list<Utf8Str>::const_iterator it = llFilenames.begin();
@@ -856,6 +919,10 @@ HRESULT Snapshot::i_uninitOne(AutoWriteLock &writeLock,
         if (!fFound)
             llFilenames.push_back(m->pMachine->mSSData->strStateFilePath);
     }
+
+    Utf8Str strNVRAMFile = m->pMachine->mBIOSSettings->i_getNonVolatileStorageFile();
+    if (strNVRAMFile.isNotEmpty() && RTFileExists(strNVRAMFile.c_str()))
+        llFilenames.push_back(strNVRAMFile);
 
     i_beginSnapshotDelete();
     uninit();
@@ -1081,6 +1148,14 @@ HRESULT SnapshotMachine::init(SessionMachine *aSessionMachine,
     rc = mBIOSSettings->initCopy(this, pMachine->mBIOSSettings);
     if (FAILED(rc)) return rc;
 
+    unconst(mRecordingSettings).createObject();
+    rc = mRecordingSettings->initCopy(this, pMachine->mRecordingSettings);
+    if (FAILED(rc)) return rc;
+
+    unconst(mGraphicsAdapter).createObject();
+    rc = mGraphicsAdapter->initCopy(this, pMachine->mGraphicsAdapter);
+    if (FAILED(rc)) return rc;
+
     unconst(mVRDEServer).createObject();
     rc = mVRDEServer->initCopy(this, pMachine->mVRDEServer);
     if (FAILED(rc)) return rc;
@@ -1202,6 +1277,12 @@ HRESULT SnapshotMachine::initFromSettings(Machine *aMachine,
 
     unconst(mBIOSSettings).createObject();
     mBIOSSettings->init(this);
+
+    unconst(mRecordingSettings).createObject();
+    mRecordingSettings->init(this);
+
+    unconst(mGraphicsAdapter).createObject();
+    mGraphicsAdapter->init(this);
 
     unconst(mVRDEServer).createObject();
     mVRDEServer->init(this);
@@ -1565,14 +1646,16 @@ HRESULT SessionMachine::takeSnapshot(const com::Utf8Str &aName,
                                                    !!fPause,
                                                    mHWData->mMemorySize,
                                                    fTakingSnapshotOnline);
+    MachineState_T const machineStateBackup = pTask->m_machineStateBackup;
     rc = pTask->createThread();
+    pTask = NULL;
     if (FAILED(rc))
         return rc;
 
     /* set the proper machine state (note: after creating a Task instance) */
     if (fTakingSnapshotOnline)
     {
-        if (pTask->m_machineStateBackup != MachineState_Paused && !fPause)
+        if (machineStateBackup != MachineState_Paused && !fPause)
             i_setMachineState(MachineState_LiveSnapshotting);
         else
             i_setMachineState(MachineState_OnlineSnapshotting);
@@ -1582,7 +1665,7 @@ HRESULT SessionMachine::takeSnapshot(const com::Utf8Str &aName,
         i_setMachineState(MachineState_Snapshotting);
 
     aId = snapshotId;
-    pTask->m_pProgress.queryInterfaceTo(aProgress.asOutParam());
+    pProgress.queryInterfaceTo(aProgress.asOutParam());
 
     return rc;
 }
@@ -1628,6 +1711,9 @@ void SessionMachine::i_takeSnapshotHandler(TakeSnapshotTask &task)
 
     bool fBeganTakingSnapshot = false;
     BOOL fSuspendedBySave     = FALSE;
+
+    std::set<ComObjPtr<Medium> > pMediumsForNotify;
+    std::map<Guid, DeviceType_T> uIdsForNotify;
 
     try
     {
@@ -1746,7 +1832,7 @@ void SessionMachine::i_takeSnapshotHandler(TakeSnapshotTask &task)
             else
                 LogRel(("Machine: skipped saving state as part of online snapshot\n"));
 
-            if (!task.m_pProgress->i_notifyPointOfNoReturn())
+            if (FAILED(task.m_pProgress->NotifyPointOfNoReturn()))
                 throw setError(E_FAIL, tr("Canceled"));
 
             // STEP 4: reattach hard disks
@@ -1765,6 +1851,59 @@ void SessionMachine::i_takeSnapshotHandler(TakeSnapshotTask &task)
             alock.acquire();
             if (FAILED(rc))
                 throw rc;
+        }
+
+        // Handle NVRAM file snapshotting
+        Utf8Str strNVRAM = mBIOSSettings->i_getNonVolatileStorageFile();
+        Utf8Str strNVRAMSnap = pSnapshotMachine->i_getSnapshotNVRAMFilename();
+        if (strNVRAM.isNotEmpty() && strNVRAMSnap.isNotEmpty() && RTFileExists(strNVRAM.c_str()))
+        {
+            Utf8Str strNVRAMSnapAbs;
+            i_calculateFullPath(strNVRAMSnap, strNVRAMSnapAbs);
+            rc = VirtualBox::i_ensureFilePathExists(strNVRAMSnapAbs, true /* fCreate */);
+            if (FAILED(rc))
+                throw rc;
+            int vrc = RTFileCopy(strNVRAM.c_str(), strNVRAMSnapAbs.c_str());
+            if (RT_FAILURE(vrc))
+                throw setErrorBoth(VBOX_E_IPRT_ERROR, vrc,
+                                   tr("Could not copy NVRAM file '%s' to '%s' (%Rrc)"),
+                                   strNVRAM.c_str(), strNVRAMSnapAbs.c_str(), vrc);
+            pSnapshotMachine->mBIOSSettings->i_updateNonVolatileStorageFile(strNVRAMSnap);
+        }
+
+        // store parent of newly created diffs before commit for notify
+        {
+            MediumAttachmentList &oldAtts = *mMediumAttachments.backedUpData();
+            for (MediumAttachmentList::const_iterator
+                 it = mMediumAttachments->begin();
+                 it != mMediumAttachments->end();
+                 ++it)
+            {
+                MediumAttachment *pAttach = *it;
+                Medium *pMedium = pAttach->i_getMedium();
+                if (!pMedium)
+                    continue;
+
+                bool fFound = false;
+                /* was this medium attached before? */
+                for (MediumAttachmentList::iterator
+                     oldIt = oldAtts.begin();
+                     oldIt != oldAtts.end();
+                     ++oldIt)
+                {
+                    MediumAttachment *pOldAttach = *oldIt;
+                    if (pOldAttach->i_getMedium() == pMedium)
+                    {
+                        fFound = true;
+                        break;
+                    }
+                }
+                if (!fFound)
+                {
+                    pMediumsForNotify.insert(pMedium->i_getParent());
+                    uIdsForNotify[pMedium->i_getId()] = pMedium->i_getDeviceType();
+                }
+            }
         }
 
         /*
@@ -1868,6 +2007,24 @@ void SessionMachine::i_takeSnapshotHandler(TakeSnapshotTask &task)
 
     if (SUCCEEDED(rc))
         mParent->i_onSnapshotTaken(mData->mUuid, task.m_uuidSnapshot);
+
+    if (SUCCEEDED(rc))
+    {
+        for (std::map<Guid, DeviceType_T>::const_iterator it = uIdsForNotify.begin();
+             it != uIdsForNotify.end();
+             ++it)
+        {
+            mParent->i_onMediumRegistered(it->first, it->second, TRUE);
+        }
+
+        for (std::set<ComObjPtr<Medium> >::const_iterator it = pMediumsForNotify.begin();
+             it != pMediumsForNotify.end();
+             ++it)
+        {
+            if (it->isNotNull())
+                mParent->i_onMediumConfigChanged(*it);
+        }
+    }
     LogFlowThisFuncLeave();
 }
 
@@ -2064,6 +2221,7 @@ HRESULT SessionMachine::restoreSnapshot(const ComPtr<ISnapshot> &aSnapshot,
                                                          "RestoreSnap",
                                                          pSnapshot);
     rc = pTask->createThread();
+    pTask = NULL;
     if (FAILED(rc))
         return rc;
 
@@ -2112,6 +2270,8 @@ void SessionMachine::i_restoreSnapshotHandler(RestoreSnapshotTask &task)
 
     HRESULT rc = S_OK;
     Guid snapshotId;
+    std::set<ComObjPtr<Medium> > pMediumsForNotify;
+    std::map<Guid, std::pair<DeviceType_T, BOOL> > uIdsForNotify;
 
     try
     {
@@ -2203,9 +2363,51 @@ void SessionMachine::i_restoreSnapshotHandler(RestoreSnapshotTask &task)
                 // online snapshot: then share the state file
                 mSSData->strStateFilePath = strSnapshotStateFile;
 
+            const Utf8Str srcNVRAM(pSnapshotMachine->mBIOSSettings->i_getNonVolatileStorageFile());
+            const Utf8Str dstNVRAM(mBIOSSettings->i_getNonVolatileStorageFile());
+            if (dstNVRAM.isNotEmpty() && RTFileExists(dstNVRAM.c_str()))
+                RTFileDelete(dstNVRAM.c_str());
+            if (srcNVRAM.isNotEmpty() && dstNVRAM.isNotEmpty() && RTFileExists(srcNVRAM.c_str()))
+                RTFileCopy(srcNVRAM.c_str(), dstNVRAM.c_str());
+
             LogFlowThisFunc(("Setting new current snapshot {%RTuuid}\n", task.m_pSnapshot->i_getId().raw()));
             /* make the snapshot we restored from the current snapshot */
             mData->mCurrentSnapshot = task.m_pSnapshot;
+        }
+
+        // store parent of newly created diffs for notify
+        {
+            MediumAttachmentList &oldAtts = *mMediumAttachments.backedUpData();
+            for (MediumAttachmentList::const_iterator
+                 it = mMediumAttachments->begin();
+                 it != mMediumAttachments->end();
+                 ++it)
+            {
+                MediumAttachment *pAttach = *it;
+                Medium *pMedium = pAttach->i_getMedium();
+                if (!pMedium)
+                    continue;
+
+                bool fFound = false;
+                /* was this medium attached before? */
+                for (MediumAttachmentList::iterator
+                     oldIt = oldAtts.begin();
+                     oldIt != oldAtts.end();
+                     ++oldIt)
+                {
+                    MediumAttachment *pOldAttach = *oldIt;
+                    if (pOldAttach->i_getMedium() == pMedium)
+                    {
+                        fFound = true;
+                        break;
+                    }
+                }
+                if (!fFound)
+                {
+                    pMediumsForNotify.insert(pMedium->i_getParent());
+                    uIdsForNotify[pMedium->i_getId()] = std::pair<DeviceType_T, BOOL>(pMedium->i_getDeviceType(), TRUE);
+                }
+            }
         }
 
         /* grab differencing hard disks from the old attachments that will
@@ -2306,11 +2508,19 @@ void SessionMachine::i_restoreSnapshotHandler(RestoreSnapshotTask &task)
             ComObjPtr<Medium> &pMedium = *it;
             LogFlowThisFunc(("Deleting old current state in differencing image '%s'\n", pMedium->i_getName().c_str()));
 
+            ComObjPtr<Medium> pParent = pMedium->i_getParent();
+            // store the id here because it becomes NULL after deleting storage.
+            com::Guid id = pMedium->i_getId();
             HRESULT rc2 = pMedium->i_deleteStorage(NULL /* aProgress */,
-                                                   true /* aWait */);
+                                                   true /* aWait */,
+                                                   false /* aNotify */);
             // ignore errors here because we cannot roll back after i_saveSettings() above
             if (SUCCEEDED(rc2))
+            {
+                pMediumsForNotify.insert(pParent);
+                uIdsForNotify[id] = std::pair<DeviceType_T, BOOL>(pMedium->i_getDeviceType(), FALSE);
                 pMedium->uninit();
+            }
         }
     }
     catch (HRESULT aRC)
@@ -2337,7 +2547,22 @@ void SessionMachine::i_restoreSnapshotHandler(RestoreSnapshotTask &task)
     task.m_pProgress->i_notifyComplete(rc);
 
     if (SUCCEEDED(rc))
+    {
         mParent->i_onSnapshotRestored(mData->mUuid, snapshotId);
+        for (std::map<Guid, std::pair<DeviceType_T, BOOL> >::const_iterator it = uIdsForNotify.begin();
+             it != uIdsForNotify.end();
+             ++it)
+        {
+            mParent->i_onMediumRegistered(it->first, it->second.first, it->second.second);
+        }
+        for (std::set<ComObjPtr<Medium> >::const_iterator it = pMediumsForNotify.begin();
+             it != pMediumsForNotify.end();
+             ++it)
+        {
+            if (it->isNotNull())
+                mParent->i_onMediumConfigChanged(*it);
+        }
+    }
 
     LogFlowThisFunc(("Done restoring snapshot (rc=%08X)\n", rc));
 
@@ -2490,11 +2715,13 @@ HRESULT SessionMachine::i_deleteSnapshot(const com::Guid &aStartId,
     ULONG ulOpCount = 1;            // one for preparations
     ULONG ulTotalWeight = 1;        // one for preparations
 
-    if (pSnapshot->i_getStateFilePath().length())
+    if (pSnapshot->i_getStateFilePath().isNotEmpty())
     {
         ++ulOpCount;
         ++ulTotalWeight;            // assume 1 MB for deleting the state file
     }
+
+    bool fDeleteOnline = mData->mMachineState == MachineState_Running || mData->mMachineState == MachineState_Paused;
 
     // count normal hard disks and add their sizes to the weight
     for (MediumAttachmentList::iterator
@@ -2519,6 +2746,9 @@ HRESULT SessionMachine::i_deleteSnapshot(const com::Guid &aStartId,
             {
                 // normal or immutable media need attention
                 ++ulOpCount;
+                // offline merge includes medium resizing
+                if (!fDeleteOnline)
+                    ++ulOpCount;
                 ulTotalWeight += (ULONG)(pHD->i_getSize() / _1M);
             }
             LogFlowThisFunc(("op %d: considering hard disk attachment %s\n", ulOpCount, pHD->i_getName().c_str()));
@@ -2535,15 +2765,13 @@ HRESULT SessionMachine::i_deleteSnapshot(const com::Guid &aStartId,
                     Bstr(tr("Setting up")).raw(),
                     1);
 
-    bool fDeleteOnline = (   (mData->mMachineState == MachineState_Running)
-                          || (mData->mMachineState == MachineState_Paused));
-
     /* create and start the task on a separate thread */
     DeleteSnapshotTask *pTask = new DeleteSnapshotTask(this, pProgress,
                                                        "DeleteSnap",
                                                        fDeleteOnline,
                                                        pSnapshot);
     rc = pTask->createThread();
+    pTask = NULL;
     if (FAILED(rc))
         return rc;
 
@@ -2686,6 +2914,8 @@ void SessionMachine::i_deleteSnapshotHandler(DeleteSnapshotTask &task)
 
     MediumDeleteRecList toDelete;
     Guid snapshotId;
+    std::set<ComObjPtr<Medium> > pMediumsForNotify;
+    std::map<Guid,DeviceType_T> uIdsForNotify;
 
     try
     {
@@ -2806,8 +3036,8 @@ void SessionMachine::i_deleteSnapshotHandler(DeleteSnapshotTask &task)
             // base image. Important e.g. for medium formats which do not have
             // a file representation such as iSCSI.
 
-            // not going to merge a big source into a small target
-            if (pSource->i_getLogicalSize() > pTarget->i_getLogicalSize())
+            // not going to merge a big source into a small target on online merge. Otherwise it will be resized
+            if (fNeedsOnlineMerge && pSource->i_getLogicalSize() > pTarget->i_getLogicalSize())
             {
                 rc = setError(E_FAIL,
                               tr("Unable to merge storage '%s', because it is smaller than the source image. If you resize it to have a capacity of at least %lld bytes you can retry"),
@@ -2874,13 +3104,13 @@ void SessionMachine::i_deleteSnapshotHandler(DeleteSnapshotTask &task)
         }
 
         {
-            /*check available place on the storage*/
+            /* check available space on the storage */
             RTFOFF pcbTotal = 0;
             RTFOFF pcbFree = 0;
             uint32_t pcbBlock = 0;
             uint32_t pcbSector = 0;
-            std::multimap<uint32_t,uint64_t> neededStorageFreeSpace;
-            std::map<uint32_t,const char*> serialMapToStoragePath;
+            std::multimap<uint32_t, uint64_t> neededStorageFreeSpace;
+            std::map<uint32_t, const char*> serialMapToStoragePath;
 
             for (MediumDeleteRecList::const_iterator
                  it = toDelete.begin();
@@ -2916,10 +3146,16 @@ void SessionMachine::i_deleteSnapshotHandler(DeleteSnapshotTask &task)
 
                     pSource_local->COMGETTER(Size)((LONG64*)&diskSize);
 
+                    /** @todo r=klaus this is too pessimistic... should take
+                     * the current size and maximum size of the target image
+                     * into account, because a X GB image with Y GB capacity
+                     * can only grow by Y-X GB (ignoring overhead, which
+                     * unfortunately is hard to estimate, some have next to
+                     * nothing, some have a certain percentage...) */
                     /* store needed free space in multimap */
-                    neededStorageFreeSpace.insert(std::make_pair(pu32Serial,diskSize));
+                    neededStorageFreeSpace.insert(std::make_pair(pu32Serial, diskSize));
                     /* linking storage UID with snapshot path, it is a helper container (just for easy finding needed path) */
-                    serialMapToStoragePath.insert(std::make_pair(pu32Serial,pTarget_local->i_getLocationFull().c_str()));
+                    serialMapToStoragePath.insert(std::make_pair(pu32Serial, pTarget_local->i_getLocationFull().c_str()));
                 }
             }
 
@@ -2928,7 +3164,7 @@ void SessionMachine::i_deleteSnapshotHandler(DeleteSnapshotTask &task)
                 std::pair<std::multimap<uint32_t,uint64_t>::iterator,std::multimap<uint32_t,uint64_t>::iterator> ret;
                 uint64_t commonSourceStoragesSize = 0;
 
-                /* find all records in multimap with identical storage UID*/
+                /* find all records in multimap with identical storage UID */
                 ret = neededStorageFreeSpace.equal_range(neededStorageFreeSpace.begin()->first);
                 std::multimap<uint32_t,uint64_t>::const_iterator it_ns = ret.first;
 
@@ -2937,7 +3173,7 @@ void SessionMachine::i_deleteSnapshotHandler(DeleteSnapshotTask &task)
                     commonSourceStoragesSize += it_ns->second;
                 }
 
-                /* find appropriate path by storage UID*/
+                /* find appropriate path by storage UID */
                 std::map<uint32_t,const char*>::const_iterator it_sm = serialMapToStoragePath.find(ret.first->first);
                 /* get info about a storage */
                 if (it_sm == serialMapToStoragePath.end())
@@ -2950,7 +3186,7 @@ void SessionMachine::i_deleteSnapshotHandler(DeleteSnapshotTask &task)
                     throw rc;
                 }
 
-                int vrc = RTFsQuerySizes(it_sm->second, &pcbTotal, &pcbFree,&pcbBlock, &pcbSector);
+                int vrc = RTFsQuerySizes(it_sm->second, &pcbTotal, &pcbFree, &pcbBlock, &pcbSector);
                 if (RT_FAILURE(vrc))
                 {
                     rc = setError(E_FAIL,
@@ -3025,7 +3261,11 @@ void SessionMachine::i_deleteSnapshotHandler(DeleteSnapshotTask &task)
                 ulWeight = (ULONG)(pMedium->i_getSize() / _1M);
             }
 
-            task.m_pProgress->SetNextOperation(BstrFmt(tr("Merging differencing image '%s'"),
+            const char *pszOperationText = it->mfNeedsOnlineMerge ?
+                                             tr("Merging differencing image '%s'")
+                                           : tr("Resizing before merge differencing image '%s'");
+
+            task.m_pProgress->SetNextOperation(BstrFmt(pszOperationText,
                                                pMedium->i_getName().c_str()).raw(),
                                                ulWeight);
 
@@ -3050,10 +3290,17 @@ void SessionMachine::i_deleteSnapshotHandler(DeleteSnapshotTask &task)
                     Assert(pMedium->i_getState() == MediumState_Deleting);
                     /* No need to hold the lock any longer. */
                     mLock.release();
+                    ComObjPtr<Medium> pParent = pMedium->i_getParent();
+                    Guid uMedium = pMedium->i_getId();
+                    DeviceType_T uMediumType = pMedium->i_getDeviceType();
                     rc = pMedium->i_deleteStorage(&task.m_pProgress,
-                                                  true /* aWait */);
+                                                  true /* aWait */,
+                                                  false /* aNotify */);
                     if (FAILED(rc))
                         throw rc;
+
+                    pMediumsForNotify.insert(pParent);
+                    uIdsForNotify[uMedium] = uMediumType;
 
                     // need to uninit the deleted medium
                     fNeedSourceUninit = true;
@@ -3061,6 +3308,42 @@ void SessionMachine::i_deleteSnapshotHandler(DeleteSnapshotTask &task)
             }
             else
             {
+                {
+                    //store ids before merging for notify
+                    pMediumsForNotify.insert(it->mpTarget);
+                    if (it->mfMergeForward)
+                        pMediumsForNotify.insert(it->mpSource->i_getParent());
+                    else
+                    {
+                        //children which will be reparented to target
+                        for (MediaList::const_iterator iit = it->mpSource->i_getChildren().begin();
+                             iit != it->mpSource->i_getChildren().end();
+                             ++iit)
+                        {
+                            pMediumsForNotify.insert(*iit);
+                        }
+                    }
+                    if (it->mfMergeForward)
+                    {
+                        for (ComObjPtr<Medium> pTmpMedium = it->mpTarget->i_getParent();
+                             pTmpMedium && pTmpMedium != it->mpSource;
+                             pTmpMedium = pTmpMedium->i_getParent())
+                        {
+                            uIdsForNotify[pTmpMedium->i_getId()] = pTmpMedium->i_getDeviceType();
+                        }
+                        uIdsForNotify[it->mpSource->i_getId()] = it->mpSource->i_getDeviceType();
+                    }
+                    else
+                    {
+                        for (ComObjPtr<Medium> pTmpMedium = it->mpSource;
+                             pTmpMedium && pTmpMedium != it->mpTarget;
+                             pTmpMedium = pTmpMedium->i_getParent())
+                        {
+                            uIdsForNotify[pTmpMedium->i_getId()] = pTmpMedium->i_getDeviceType();
+                        }
+                    }
+                }
+
                 bool fNeedsSave = false;
                 if (it->mfNeedsOnlineMerge)
                 {
@@ -3091,7 +3374,8 @@ void SessionMachine::i_deleteSnapshotHandler(DeleteSnapshotTask &task)
                                                  it->mpChildrenToReparent,
                                                  it->mpMediumLockList,
                                                  &task.m_pProgress,
-                                                 true /* aWait */);
+                                                 true /* aWait */,
+                                                 false /* aNotify */);
                 }
 
                 // If the merge failed, we need to do our best to have a usable
@@ -3201,6 +3485,14 @@ void SessionMachine::i_deleteSnapshotHandler(DeleteSnapshotTask &task)
                 throw rc;
         }
 
+        /* 3a: delete NVRAM file if present. */
+        {
+            Utf8Str NVRAMPath = pSnapMachine->mBIOSSettings->i_getNonVolatileStorageFile();
+            if (NVRAMPath.isNotEmpty() && RTFileExists(NVRAMPath.c_str()))
+                RTFileDelete(NVRAMPath.c_str());
+        }
+
+        /* third pass: */
         {
             // beginSnapshotDelete() needs the machine lock, and the snapshots
             // tree is protected by the machine lock as well
@@ -3258,7 +3550,22 @@ void SessionMachine::i_deleteSnapshotHandler(DeleteSnapshotTask &task)
     task.m_pProgress->i_notifyComplete(mrc);
 
     if (SUCCEEDED(mrc))
+    {
         mParent->i_onSnapshotDeleted(mData->mUuid, snapshotId);
+        for (std::map<Guid, DeviceType_T>::const_iterator it = uIdsForNotify.begin();
+             it != uIdsForNotify.end();
+             ++it)
+        {
+            mParent->i_onMediumRegistered(it->first, it->second, FALSE);
+        }
+        for (std::set<ComObjPtr<Medium> >::const_iterator it = pMediumsForNotify.begin();
+             it != pMediumsForNotify.end();
+             ++it)
+        {
+            if (it->isNotNull())
+                mParent->i_onMediumConfigChanged(*it);
+        }
+    }
 
     LogFlowThisFunc(("Done deleting snapshot (rc=%08X)\n", (HRESULT)mrc));
     LogFlowThisFuncLeave();
@@ -3952,4 +4259,3 @@ HRESULT SessionMachine::finishOnlineMergeMedium()
 
     return S_OK;
 }
-

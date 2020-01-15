@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2009-2017 Oracle Corporation
+ * Copyright (C) 2009-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -117,6 +117,8 @@ typedef struct DMIMAINHDR
     uint8_t         u8TableVersion;
 } *DMIMAINHDRPTR;
 AssertCompileSize(DMIMAINHDR, 15);
+
+AssertCompile(sizeof(SMBIOSHDR) + sizeof(DMIMAINHDR) <= VBOX_DMI_HDR_SIZE);
 
 /** DMI header */
 typedef struct DMIHDR
@@ -430,10 +432,13 @@ static void fwCommonUseHostDMIStrings(void)
  * @param   pCfg                The handle to our config node.
  * @param   cCpus               Number of VCPUs.
  * @param   pcbDmiTables        Size of DMI data in bytes.
- * @param   pcNumDmiTables      Number of DMI tables.
+ * @param   pcDmiTables         Number of DMI tables.
  */
-int FwCommonPlantDMITable(PPDMDEVINS pDevIns, uint8_t *pTable, unsigned cbMax, PCRTUUID pUuid, PCFGMNODE pCfg, uint16_t cCpus, uint16_t *pcbDmiTables, uint16_t *pcNumDmiTables)
+int FwCommonPlantDMITable(PPDMDEVINS pDevIns, uint8_t *pTable, unsigned cbMax, PCRTUUID pUuid, PCFGMNODE pCfg, uint16_t cCpus,
+                          uint16_t *pcbDmiTables, uint16_t *pcDmiTables)
 {
+    PCPDMDEVHLPR3 pHlp = pDevIns->pHlpR3;
+
     /*
      * CFGM Hint!
      *
@@ -468,7 +473,7 @@ int FwCommonPlantDMITable(PPDMDEVINS pDevIns, uint8_t *pTable, unsigned cbMax, P
             pszTmp = default_value; \
         else \
         { \
-            rc = CFGMR3QueryStringDef(pCfg, name, szBuf, sizeof(szBuf), default_value); \
+            rc = pHlp->pfnCFGMQueryStringDef(pCfg, name, szBuf, sizeof(szBuf), default_value); \
             if (RT_FAILURE(rc)) \
             { \
                 if (fHideErrors) \
@@ -505,7 +510,7 @@ int FwCommonPlantDMITable(PPDMDEVINS pDevIns, uint8_t *pTable, unsigned cbMax, P
             variable = g_iDef ## name; \
         else \
         { \
-            rc = CFGMR3QueryS32Def(pCfg, # name, & variable, g_iDef ## name); \
+            rc = pHlp->pfnCFGMQueryS32Def(pCfg, # name, & variable, g_iDef ## name); \
             if (RT_FAILURE(rc)) \
             { \
                 if (fHideErrors) \
@@ -547,25 +552,22 @@ int FwCommonPlantDMITable(PPDMDEVINS pDevIns, uint8_t *pTable, unsigned cbMax, P
 #endif
 
     uint8_t fDmiUseHostInfo;
-    int rc = CFGMR3QueryU8Def(pCfg, "DmiUseHostInfo", &fDmiUseHostInfo, 0);
+    int rc = pHlp->pfnCFGMQueryU8Def(pCfg, "DmiUseHostInfo", &fDmiUseHostInfo, 0);
     if (RT_FAILURE (rc))
-        return PDMDEV_SET_ERROR(pDevIns, rc,
-                                N_("Configuration error: Failed to read \"DmiUseHostInfo\""));
+        return PDMDEV_SET_ERROR(pDevIns, rc, N_("Configuration error: Failed to read \"DmiUseHostInfo\""));
 
     /* Sync up with host default DMI values */
     if (fDmiUseHostInfo)
         fwCommonUseHostDMIStrings();
 
     uint8_t fDmiExposeMemoryTable;
-    rc = CFGMR3QueryU8Def(pCfg, "DmiExposeMemoryTable", &fDmiExposeMemoryTable, 0);
+    rc = pHlp->pfnCFGMQueryU8Def(pCfg, "DmiExposeMemoryTable", &fDmiExposeMemoryTable, 0);
     if (RT_FAILURE (rc))
-        return PDMDEV_SET_ERROR(pDevIns, rc,
-                                N_("Configuration error: Failed to read \"DmiExposeMemoryTable\""));
+        return PDMDEV_SET_ERROR(pDevIns, rc, N_("Configuration error: Failed to read \"DmiExposeMemoryTable\""));
     uint8_t fDmiExposeProcessorInf;
-    rc = CFGMR3QueryU8Def(pCfg, "DmiExposeProcInf", &fDmiExposeProcessorInf, 0);
+    rc = pHlp->pfnCFGMQueryU8Def(pCfg, "DmiExposeProcInf", &fDmiExposeProcessorInf, 0);
     if (RT_FAILURE (rc))
-        return PDMDEV_SET_ERROR(pDevIns, rc,
-                                N_("Configuration error: Failed to read \"DmiExposeProcInf\""));
+        return PDMDEV_SET_ERROR(pDevIns, rc, N_("Configuration error: Failed to read \"DmiExposeProcInf\""));
 
     for  (;; fForceDefault = true, fHideErrors = false)
     {
@@ -580,7 +582,7 @@ int FwCommonPlantDMITable(PPDMDEVINS pDevIns, uint8_t *pTable, unsigned cbMax, P
             pszDmiSystemUuid = NULL;
         else
         {
-            rc = CFGMR3QueryString(pCfg, "DmiSystemUuid", szDmiSystemUuid, sizeof(szDmiSystemUuid));
+            rc = pHlp->pfnCFGMQueryString(pCfg, "DmiSystemUuid", szDmiSystemUuid, sizeof(szDmiSystemUuid));
             if (rc == VERR_CFGM_VALUE_NOT_FOUND)
                 pszDmiSystemUuid = NULL;
             else if (RT_FAILURE(rc))
@@ -936,7 +938,7 @@ int FwCommonPlantDMITable(PPDMDEVINS pDevIns, uint8_t *pTable, unsigned cbMax, P
         *pcbDmiTables = ((uintptr_t)pszStr - (uintptr_t)pTable) + 2;
 
         /* We currently plant 10 DMI tables. Update this if tables number changed. */
-        *pcNumDmiTables = 10;
+        *pcDmiTables = 10;
 
         /* If more fields are added here, fix the size check in DMI_READ_CFG_STR */
 
@@ -955,11 +957,14 @@ int FwCommonPlantDMITable(PPDMDEVINS pDevIns, uint8_t *pTable, unsigned cbMax, P
  * reset.
  *
  * @param   pDevIns         The device instance data.
+ * @param   pHdr            Pointer to the header destination.
  * @param   cbDmiTables     Size of all DMI tables planted in bytes.
  * @param   cNumDmiTables   Number of DMI tables planted.
  */
-void FwCommonPlantSmbiosAndDmiHdrs(PPDMDEVINS pDevIns, uint16_t cbDmiTables, uint16_t cNumDmiTables)
+void FwCommonPlantSmbiosAndDmiHdrs(PPDMDEVINS pDevIns, uint8_t *pHdr, uint16_t cbDmiTables, uint16_t cNumDmiTables)
 {
+    RT_NOREF(pDevIns);
+
     struct
     {
         struct SMBIOSHDR     smbios;
@@ -991,10 +996,14 @@ void FwCommonPlantSmbiosAndDmiHdrs(PPDMDEVINS pDevIns, uint16_t cbDmiTables, uin
 
     aBiosHeaders.dmi.u16TablesLength = cbDmiTables;
     aBiosHeaders.dmi.u16TableEntries = cNumDmiTables;
+    /* NB: The _SM_ table checksum technically covers both the _SM_ part (16 bytes) and the _DMI_ part
+     * (further 15 bytes). However, because the _DMI_ checksum must be zero, the _SM_ checksum can
+     * be calculated independently.
+     */
     aBiosHeaders.smbios.u8Checksum   = fwCommonChecksum((uint8_t*)&aBiosHeaders.smbios, sizeof(aBiosHeaders.smbios));
     aBiosHeaders.dmi.u8Checksum      = fwCommonChecksum((uint8_t*)&aBiosHeaders.dmi,    sizeof(aBiosHeaders.dmi));
 
-    PDMDevHlpPhysWrite(pDevIns, 0xfe300, &aBiosHeaders, sizeof(aBiosHeaders));
+    memcpy(pHdr, &aBiosHeaders, sizeof(aBiosHeaders));
 }
 
 /**
@@ -1163,16 +1172,17 @@ void FwCommonPlantMpsTable(PPDMDEVINS pDevIns, uint8_t *pTable, unsigned cbMax, 
  *
  * Only applicable if IOAPIC is active!
  *
- * @param   pDevIns    The device instance data.
+ * @param   pDevIns         The device instance data.
+ * @param   u32MpTableAddr  The MP table physical address.
  */
-void FwCommonPlantMpsFloatPtr(PPDMDEVINS pDevIns)
+void FwCommonPlantMpsFloatPtr(PPDMDEVINS pDevIns, uint32_t u32MpTableAddr)
 {
     MPSFLOATPTR floatPtr;
     floatPtr.au8Signature[0]       = '_';
     floatPtr.au8Signature[1]       = 'M';
     floatPtr.au8Signature[2]       = 'P';
     floatPtr.au8Signature[3]       = '_';
-    floatPtr.u32MPSAddr            = VBOX_MPS_TABLE_BASE;
+    floatPtr.u32MPSAddr            = u32MpTableAddr;
     floatPtr.u8Length              = 1; /* structure size in paragraphs */
     floatPtr.u8SpecRev             = 4; /* MPS revision 1.4 */
     floatPtr.u8Checksum            = 0;

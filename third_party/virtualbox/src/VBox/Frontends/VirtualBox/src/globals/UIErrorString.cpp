@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -15,23 +15,18 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
-#ifdef VBOX_WITH_PRECOMPILED_HEADERS
-# include <precomp.h>
-#else  /* !VBOX_WITH_PRECOMPILED_HEADERS */
-
 /* Qt includes: */
+#include <QApplication>
 #include <QObject>
 
 /* GUI includes: */
+#include "UICommon.h"
 #include "UIErrorString.h"
-#include "VBoxGlobal.h"
 
 /* COM includes: */
 #include "COMDefs.h"
 #include "CProgress.h"
 #include "CVirtualBoxErrorInfo.h"
-
-#endif /* !VBOX_WITH_PRECOMPILED_HEADERS */
 
 
 /* static */
@@ -169,9 +164,9 @@ QString UIErrorString::errorInfoToString(const COMErrorInfo &comInfo, HRESULT wr
         /* Check if details text written in English (latin1) and translated: */
         if (   strDetailsInfo == QString::fromLatin1(strDetailsInfo.toLatin1())
             && strDetailsInfo != QObject::tr(strDetailsInfo.toLatin1().constData()))
-            strFormatted += QString("<p>%1.</p>").arg(vboxGlobal().emphasize(QObject::tr(strDetailsInfo.toLatin1().constData())));
+            strFormatted += QString("<p>%1.</p>").arg(uiCommon().emphasize(QObject::tr(strDetailsInfo.toLatin1().constData())));
         else
-            strFormatted += QString("<p>%1.</p>").arg(vboxGlobal().emphasize(strDetailsInfo));
+            strFormatted += QString("<p>%1.</p>").arg(uiCommon().emphasize(strDetailsInfo));
     }
 
     strFormatted += "<!--EOM--><table bgcolor=#EEEEEE border=0 cellspacing=5 "

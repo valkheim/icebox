@@ -5,7 +5,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -16,23 +16,19 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
-#ifndef ___vboxclient_vboxclient_h
-# define ___vboxclient_vboxclient_h
+#ifndef GA_INCLUDED_SRC_x11_VBoxClient_VBoxClient_h
+#define GA_INCLUDED_SRC_x11_VBoxClient_VBoxClient_h
+#ifndef RT_WITHOUT_PRAGMA_ONCE
+# pragma once
+#endif
 
 #include <VBox/log.h>
 #include <iprt/cpp/utils.h>
 #include <iprt/string.h>
 
-/** Exit with a fatal error. */
-#define VBClFatalError(format) \
-do { \
-    char *pszMessage = RTStrAPrintf2 format; \
-    LogRel(format); \
-    vbclFatalError(pszMessage); \
-} while(0)
-
-/** Exit with a fatal error. */
-extern DECLNORETURN(void) vbclFatalError(char *pszMessage);
+void VBClLogInfo(const char *pszFormat, ...);
+void VBClLogError(const char *pszFormat, ...);
+void VBClLogFatalError(const char *pszFormat, ...);
 
 /** Call clean-up for the current service and exit. */
 extern void VBClCleanUp(bool fExit = true);
@@ -41,6 +37,8 @@ extern void VBClCleanUp(bool fExit = true);
  * service per invocation. */
 struct VBCLSERVICE
 {
+    /** Returns the (friendly) name of the service. */
+    const char *(*getName)(void);
     /** Get the services default path to pidfile, relative to $HOME */
     /** @todo Should this also have a component relative to the X server number?
      */
@@ -68,7 +66,7 @@ DECLINLINE(int) VBClServiceDefaultHandler(struct VBCLSERVICE **pSelf)
  * process/X11 exits. */
 DECLINLINE(void) VBClServiceDefaultCleanup(struct VBCLSERVICE **ppInterface)
 {
-    NOREF(ppInterface);
+    RT_NOREF(ppInterface);
 }
 
 extern struct VBCLSERVICE **VBClGetClipboardService();
@@ -82,4 +80,4 @@ extern struct VBCLSERVICE **VBClCheck3DService();
 extern struct VBCLSERVICE **VBClDisplaySVGAService();
 extern struct VBCLSERVICE **VBClDisplaySVGAX11Service();
 
-#endif /* !___vboxclient_vboxclient_h */
+#endif /* !GA_INCLUDED_SRC_x11_VBoxClient_VBoxClient_h */

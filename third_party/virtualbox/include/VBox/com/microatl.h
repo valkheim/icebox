@@ -3,7 +3,7 @@
  */
 
 /*
- * Copyright (C) 2016-2017 Oracle Corporation
+ * Copyright (C) 2016-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -23,13 +23,16 @@
  * terms and conditions of either the GPL or the CDDL or both.
  */
 
-#ifndef ___VBox_com_microatl_h
-#define ___VBox_com_microatl_h
+#ifndef VBOX_INCLUDED_com_microatl_h
+#define VBOX_INCLUDED_com_microatl_h
+#ifndef RT_WITHOUT_PRAGMA_ONCE
+# pragma once
+#endif
 
-#include <VBox/cdefs.h> /* VBOX_STRICT */
+#include <VBox/cdefs.h>   /* VBOX_STRICT */
 #include <iprt/assert.h>
 #include <iprt/critsect.h>
-#include <iprt/err.h>
+#include <iprt/errcore.h> /* RT_FAILURE() */
 
 #include <iprt/win/windows.h>
 
@@ -182,7 +185,7 @@ public:
         {
             HRESULT hrc = Lock();
             if (FAILED(hrc))
-            throw hrc;
+                throw hrc;
         }
     }
 
@@ -1046,13 +1049,28 @@ public:
         *pp = NULL;
 
         HRESULT hrc = E_OUTOFMEMORY;
-        CComObject<Base> *p = new(std::nothrow) CComObject<Base>();
+        CComObject<Base> *p = NULL;
+        try
+        {
+            p = new CComObject<Base>();
+        }
+        catch (std::bad_alloc &)
+        {
+            p = NULL;
+        }
         if (p)
         {
             p->InternalFinalConstructAddRef();
-            hrc = p->_AtlInitialConstruct();
-            if (SUCCEEDED(hrc))
-                hrc = p->FinalConstruct();
+            try
+            {
+                hrc = p->_AtlInitialConstruct();
+                if (SUCCEEDED(hrc))
+                    hrc = p->FinalConstruct();
+            }
+            catch (std::bad_alloc &)
+            {
+                hrc = E_OUTOFMEMORY;
+            }
             p->InternalFinalConstructRelease();
             if (FAILED(hrc))
             {
@@ -1353,5 +1371,5 @@ public:
 
 } /* namespace ATL */
 
-#endif /* !___VBox_com_microatl_h */
+#endif /* !VBOX_INCLUDED_com_microatl_h */
 

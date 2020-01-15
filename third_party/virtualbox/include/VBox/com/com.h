@@ -3,7 +3,7 @@
  */
 
 /*
- * Copyright (C) 2005-2017 Oracle Corporation
+ * Copyright (C) 2005-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -23,10 +23,14 @@
  * terms and conditions of either the GPL or the CDDL or both.
  */
 
-#ifndef ___VBox_com_com_h
-#define ___VBox_com_com_h
+#ifndef VBOX_INCLUDED_com_com_h
+#define VBOX_INCLUDED_com_com_h
+#ifndef RT_WITHOUT_PRAGMA_ONCE
+# pragma once
+#endif
 
 #include "VBox/com/defs.h"
+#include "VBox/com/utils.h"
 
 /** @defgroup grp_com   MS COM / XPCOM Abstraction Layer
  * @{
@@ -77,52 +81,6 @@ HRESULT Shutdown();
  */
 void GetInterfaceNameByIID(const GUID &aIID, BSTR *aName);
 
-/**
- *  Returns the VirtualBox user home directory.
- *
- *  On failure, this function will return a path that caused a failure (or
- *  NULL if the failure is not path-related).
- *
- *  On success, this function will try to create the returned directory if it
- *  doesn't exist yet. This may also fail with the corresponding status code.
- *
- *  If @a aDirLen is smaller than RTPATH_MAX then there is a great chance that
- *  this method will return VERR_BUFFER_OVERFLOW.
- *
- *  @param aDir        Buffer to store the directory string in UTF-8 encoding.
- *  @param aDirLen     Length of the supplied buffer including space for the
- *                     terminating null character, in bytes.
- *  @param fCreateDir  Flag whether to create the returned directory on success if it
- *                     doesn't exist.
- *  @return            VBox status code.
- */
-int GetVBoxUserHomeDirectory(char *aDir, size_t aDirLen, bool fCreateDir = true);
-
-/**
- *  Creates a release log file, used both in VBoxSVC and in API clients.
- *
- *  @param pcszEntity       Human readable name of the program.
- *  @param pcszLogFile      Name of the release log file.
- *  @param fFlags           Logger instance flags.
- *  @param pcszGroupSettings Group logging settings.
- *  @param pcszEnvVarBase   Base environment variable name for the logger.
- *  @param fDestFlags       Logger destination flags.
- *  @param cMaxEntriesPerGroup Limit for log entries per group. UINT32_MAX for no limit.
- *  @param cHistory         Number of old log files to keep.
- *  @param uHistoryFileTime Maximum amount of time to put in a log file.
- *  @param uHistoryFileSize Maximum size of a log file before rotating.
- *  @param pErrInfo         Where to return extended error information.
- *                          Optional.
- *
- *  @return         VBox status code.
- */
-int VBoxLogRelCreate(const char *pcszEntity, const char *pcszLogFile,
-                     uint32_t fFlags, const char *pcszGroupSettings,
-                     const char *pcszEnvVarBase, uint32_t fDestFlags,
-                     uint32_t cMaxEntriesPerGroup, uint32_t cHistory,
-                     uint32_t uHistoryFileTime, uint64_t uHistoryFileSize,
-                     PRTERRINFO pErrInfo);
-
 #ifdef RT_OS_WINDOWS
 void PatchComBugs(void);
 #endif
@@ -130,5 +88,5 @@ void PatchComBugs(void);
 } /* namespace com */
 
 /** @} */
-#endif
+#endif /* !VBOX_INCLUDED_com_com_h */
 

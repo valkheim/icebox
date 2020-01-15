@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # $Id: base.py $
-# pylint: disable=C0302
+# pylint: disable=too-many-lines
 
 """
 Base testdriver module.
@@ -8,7 +8,7 @@ Base testdriver module.
 
 __copyright__ = \
 """
-Copyright (C) 2010-2017 Oracle Corporation
+Copyright (C) 2010-2019 Oracle Corporation
 
 This file is part of VirtualBox Open Source Edition (OSE), as
 available from http://www.virtualbox.org. This file is free software;
@@ -27,7 +27,7 @@ CDDL are applicable instead of those of the GPL.
 You may elect to license modified versions of this file under the
 terms and conditions of either the GPL or the CDDL or both.
 """
-__version__ = "$Revision: 118920 $"
+__version__ = "$Revision: 132687 $"
 
 
 # Standard Python imports.
@@ -39,7 +39,8 @@ import stat
 import subprocess
 import sys
 import time
-import thread
+if sys.version_info[0] < 3: import thread;            # pylint: disable=import-error
+else:                       import _thread as thread; # pylint: disable=import-error
 import threading
 import traceback
 import tempfile;
@@ -56,6 +57,10 @@ if sys.platform == 'win32':
 try:    __file__
 except: __file__ = sys.argv[0];
 g_ksValidationKitDir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)));
+
+# Python 3 hacks:
+if sys.version_info[0] >= 3:
+    long = int;     # pylint: disable=redefined-builtin,invalid-name
 
 
 #
@@ -132,7 +137,7 @@ def getDirEnv(sVar, sAlternative = None, fLocalReq = False, fTryCreate = False):
                 reporter.error('the value of env.var. "%s" is not a dir: "%s"' % (sVar, sVal));
                 raise GenError('the value of env.var. "%s" is not a dir: "%s"' % (sVar, sVal));
             try:
-                os.makedirs(sVal, 0700);
+                os.makedirs(sVal, 0o700);
             except:
                 reporter.error('makedirs failed on the value of env.var. "%s": "%s"' % (sVar, sVal));
                 raise GenError('makedirs failed on the value of env.var. "%s": "%s"' % (sVar, sVal));
@@ -216,7 +221,7 @@ def sendUserSignal1(uPid, fSudo = False):
     if sys.platform == 'win32':
         fRc = False;
     else:
-        fRc = __processSudoKill(uPid, signal.SIGUSR1, fSudo); # pylint: disable=E1101
+        fRc = __processSudoKill(uPid, signal.SIGUSR1, fSudo); # pylint: disable=no-member
     return fRc;
 
 def processTerminate(uPid, fSudo = False):
@@ -240,7 +245,7 @@ def processKill(uPid, fSudo = False):
     if sys.platform == 'win32':
         fRc = winbase.processKill(uPid);
     else:
-        fRc = __processSudoKill(uPid, signal.SIGKILL, fSudo); # pylint: disable=E1101
+        fRc = __processSudoKill(uPid, signal.SIGKILL, fSudo); # pylint: disable=no-member
     return fRc;
 
 def processKillWithNameCheck(uPid, sName):
@@ -281,11 +286,12 @@ def processCheckPidAndName(uPid, sName):
     if sys.platform == 'win32':
         fRc = winbase.processCheckPidAndName(uPid, sName);
     else:
-        if sys.platform in ('linux2', ):
+        sOs = utils.getHostOs();
+        if sOs == 'linux':
             asPsCmd = ['/bin/ps',     '-p', '%u' % (uPid,), '-o', 'fname='];
-        elif sys.platform in ('sunos5',):
+        elif sOs == 'solaris':
             asPsCmd = ['/usr/bin/ps', '-p', '%u' % (uPid,), '-o', 'fname='];
-        elif sys.platform in ('darwin',):
+        elif sOs == 'darwin':
             asPsCmd = ['/bin/ps',     '-p', '%u' % (uPid,), '-o', 'ucomm='];
         else:
             asPsCmd = None;
@@ -300,7 +306,7 @@ def processCheckPidAndName(uPid, sName):
                 return False;
 
             # ps fails with non-zero exit code if the pid wasn't found.
-            if iExitCode is not 0:
+            if iExitCode != 0:
                 return False;
             if sCurName is None:
                 return False;
@@ -319,6 +325,46 @@ def processCheckPidAndName(uPid, sName):
             fRc = True;
     return fRc;
 
+def wipeDirectory(sDir):
+    """
+    Deletes all file and sub-directories in sDir, leaving sDir in empty afterwards.
+    Returns the number of errors after logging them as errors.
+    """
+    if not os.path.exists(sDir):
+        return 0;
+
+    try:
+        asNames = os.listdir(sDir);
+    except:
+        return reporter.errorXcpt('os.listdir("%s")' % (sDir));
+
+    cErrors = 0;
+    for sName in asNames:
+        # Build full path and lstat the object.
+        sFullName = os.path.join(sDir, sName)
+        try:
+            oStat = os.lstat(sFullName);
+        except:
+            reporter.errorXcpt('lstat("%s")' % (sFullName,));
+            cErrors = cErrors + 1;
+            continue;
+
+        if stat.S_ISDIR(oStat.st_mode):
+            # Directory - recurse and try remove it.
+            cErrors = cErrors + wipeDirectory(sFullName);
+            try:
+                os.rmdir(sFullName);
+            except:
+                reporter.errorXcpt('rmdir("%s")' % (sFullName,));
+                cErrors = cErrors + 1;
+        else:
+            # File, symlink, fifo or something - remove/unlink.
+            try:
+                os.remove(sFullName);
+            except:
+                reporter.errorXcpt('remove("%s")' % (sFullName,));
+                cErrors = cErrors + 1;
+    return cErrors;
 
 
 #
@@ -362,18 +408,23 @@ class TdTaskBase(object):
     The base task.
     """
 
-    def __init__(self, sCaller):
-        self.sDbgCreated    = '%s: %s' % (utils.getTimePrefix(), sCaller);
-        self.fSignalled     = False;
-        self.__oRLock       = threading.RLock();
-        self.oCv            = threading.Condition(self.__oRLock);
-        self.oOwner         = None;
-        self.msStart        = timestampMilli();
-        self.oLocker        = None;
+    def __init__(self, sCaller, fnProcessEvents = None):
+        self.sDbgCreated        = '%s: %s' % (utils.getTimePrefix(), sCaller);
+        self.fSignalled         = False;
+        self.__oRLock           = threading.RLock();
+        self.oCv                = threading.Condition(self.__oRLock);
+        self.oOwner             = None;
+        self.msStart            = timestampMilli();
+        self.oLocker            = None;
+
+        ## Callback function that takes no parameters and will not be called holding the lock.
+        ## It is a hack to work the XPCOM and COM event queues, so we won't hold back events
+        ## that could block task progress (i.e. hangs VM).
+        self.fnProcessEvents    = fnProcessEvents;
 
     def __del__(self):
         """In case we need it later on."""
-        pass;
+        pass;   # pylint: disable=unnecessary-pass
 
     def toString(self):
         """
@@ -388,7 +439,7 @@ class TdTaskBase(object):
 
     def lockTask(self):
         """ Wrapper around oCv.acquire(). """
-        if True is True: # change to False for debugging deadlocks.
+        if True is True: # change to False for debugging deadlocks. # pylint: disable=comparison-with-itself
             self.oCv.acquire();
         else:
             msStartWait = timestampMilli();
@@ -493,11 +544,14 @@ class TdTaskBase(object):
 
         Overriable.
         """
+        if self.fnProcessEvents:
+            self.fnProcessEvents();
+
         self.lockTask();
 
         fState = self.pollTask(True);
         if not fState:
-            # Don't wait more than 1s.  This allow lazy state polling.
+            # Don't wait more than 1s.  This allow lazy state polling and avoid event processing trouble.
             msStart = timestampMilli();
             while not fState:
                 cMsElapsed = timestampMilli() - msStart;
@@ -511,10 +565,20 @@ class TdTaskBase(object):
                     self.oCv.wait(cMsWait / 1000.0);
                 except:
                     pass;
+
+                if self.fnProcessEvents:
+                    self.unlockTask();
+                    self.fnProcessEvents();
+                    self.lockTask();
+
                 reporter.doPollWork('TdTaskBase.waitForTask');
                 fState = self.pollTask(True);
 
         self.unlockTask();
+
+        if self.fnProcessEvents:
+            self.fnProcessEvents();
+
         return fState;
 
 
@@ -593,7 +657,7 @@ class Process(TdTaskBase):
                 if winbase.processPollByHandle(self.hWin):
                     try:
                         (uPid, uStatus) = os.waitpid(self.hWin, 0);
-                        if uPid == self.hWin or uPid == self.uPid:
+                        if uPid in (self.hWin, self.uPid,):
                             self.hWin.Detach(); # waitpid closed it, so it's now invalid.
                             self.hWin = None;
                             uPid = self.uPid;
@@ -606,7 +670,7 @@ class Process(TdTaskBase):
                     uStatus = 0;        # pylint: disable=redefined-variable-type
             else:
                 try:
-                    (uPid, uStatus) = os.waitpid(self.uPid, os.WNOHANG); # pylint: disable=E1101
+                    (uPid, uStatus) = os.waitpid(self.uPid, os.WNOHANG); # pylint: disable=no-member
                 except:
                     reporter.logXcpt();
                     uPid    = self.uPid;
@@ -731,13 +795,15 @@ class SubTestDriverBase(object):
 
     The test drivers invokes the sub-test drivers in a private manner during
     test execution, but some of the generic bits are done automagically by the
-    base class: options, help, various other actions.
+    base class: options, help, resources, various other actions.
     """
 
-    def __init__(self, sName, oTstDrv):
-        self.sName              = sName;
-        self.oTstDrv            = oTstDrv;
-
+    def __init__(self, oTstDrv, sName, sTestName):
+        self.oTstDrv            = oTstDrv       # type: TestDriverBase
+        self.sName              = sName;        # For use with options (--enable-sub-driver sName:sName2)
+        self.sTestName          = sTestName;    # More descriptive for passing to reporter.testStart().
+        self.asRsrcs            = []            # type: List(str)
+        self.fEnabled           = True;         # TestDriverBase --enable-sub-driver and --disable-sub-driver.
 
     def showUsage(self):
         """
@@ -746,7 +812,7 @@ class SubTestDriverBase(object):
         The default implementation only prints the name.
         """
         reporter.log('');
-        reporter.log('Options for sub-test driver %s:' % (self.sName,));
+        reporter.log('Options for sub-test driver %s (%s):' % (self.sTestName, self.sName,));
         return True;
 
     def parseOption(self, asArgs, iArg):
@@ -764,7 +830,7 @@ class SubTestDriverBase(object):
         return iArg;
 
 
-class TestDriverBase(object): # pylint: disable=R0902
+class TestDriverBase(object): # pylint: disable=too-many-instance-attributes
     """
     The base test driver.
     """
@@ -787,6 +853,9 @@ class TestDriverBase(object): # pylint: disable=R0902
         # Host info.
         self.sHost              = utils.getHostOs();
         self.sHostArch          = utils.getHostArch();
+
+        # Skipped status modifier (see end of innerMain()).
+        self.fBadTestbox        = False;
 
         #
         # Get our bearings and adjust the environment.
@@ -813,7 +882,7 @@ class TestDriverBase(object): # pylint: disable=R0902
                 sTmpDir = '/var/tmp';
             self.sScratchPath = os.path.abspath(os.path.join(sTmpDir, 'VBoxTestTmp'));
             if not os.path.isdir(self.sScratchPath):
-                os.makedirs(self.sScratchPath, 0700);
+                os.makedirs(self.sScratchPath, 0o700);
         os.environ['TESTBOX_PATH_SCRATCH'] = self.sScratchPath;
 
         self.sTestBoxName  = getEnv(   'TESTBOX_NAME', 'local');
@@ -849,7 +918,7 @@ class TestDriverBase(object): # pylint: disable=R0902
         self.secTimeoutFudge = 30;
 
         # List of sub-test drivers (SubTestDriverBase derivatives).
-        self.aoSubTstDrvs    = [];
+        self.aoSubTstDrvs    = [] # type: list(SubTestDriverBase)
 
         # Use the scratch path for temporary files.
         if self.sHost in ['win', 'os2']:
@@ -858,27 +927,6 @@ class TestDriverBase(object): # pylint: disable=R0902
         os.environ['TMPDIR']      = self.sScratchPath;
         os.environ['IPRT_TMPDIR'] = self.sScratchPath; # IPRT/VBox specific.
 
-
-    def dump(self):
-        """
-        For debugging. --> __str__?
-        """
-        print >> sys.stderr, "testdriver.base: sBinPath          = '%s'" % self.sBinPath;
-        print >> sys.stderr, "testdriver.base: sScriptPath       = '%s'" % self.sScriptPath;
-        print >> sys.stderr, "testdriver.base: sScratchPath      = '%s'" % self.sScratchPath;
-        print >> sys.stderr, "testdriver.base: sTestBoxName      = '%s'" % self.sTestBoxName;
-        print >> sys.stderr, "testdriver.base: sBuildPath        = '%s'" % self.sBuildPath;
-        print >> sys.stderr, "testdriver.base: sResourcePath     = '%s'" % self.sResourcePath;
-        print >> sys.stderr, "testdriver.base: sUploadPath       = '%s'" % self.sUploadPath;
-        print >> sys.stderr, "testdriver.base: sTestSetId        = '%s'" % self.sTestSetId;
-        print >> sys.stderr, "testdriver.base: sHost             = '%s'" % self.sHost;
-        print >> sys.stderr, "testdriver.base: sHostArch         = '%s'" % self.sHostArch;
-        print >> sys.stderr, "testdriver.base: asSpecialActions  = '%s'" % self.asSpecialActions;
-        print >> sys.stderr, "testdriver.base: asNormalActions   = '%s'" % self.asNormalActions;
-        print >> sys.stderr, "testdriver.base: asActions         = '%s'" % self.asActions;
-        print >> sys.stderr, "testdriver.base: secTimeoutAbs     = '%s'" % self.secTimeoutAbs;
-        for sVar in sorted(os.environ):
-            print >> sys.stderr, "os.environ[%s] = '%s'" % (sVar, os.environ[sVar],);
 
     #
     # Resource utility methods.
@@ -911,51 +959,12 @@ class TestDriverBase(object): # pylint: disable=R0902
     # Scratch related utility methods.
     #
 
-    def __wipeScratchRecurse(self, sDir):
-        """
-        Deletes all file and sub-directories in sDir.
-        Returns the number of errors.
-        """
-        try:
-            asNames = os.listdir(sDir);
-        except:
-            reporter.errorXcpt('os.listdir("%s")' % (sDir));
-            return False;
-
-        cErrors = 0;
-        for sName in asNames:
-            # Build full path and lstat the object.
-            sFullName = os.path.join(sDir, sName)
-            try:
-                oStat = os.lstat(sFullName);
-            except:
-                reporter.errorXcpt('lstat("%s")' % (sFullName));
-                cErrors = cErrors + 1;
-                continue;
-
-            if stat.S_ISDIR(oStat.st_mode):
-                # Directory - recurse and try remove it.
-                cErrors = cErrors + self.__wipeScratchRecurse(sFullName);
-                try:
-                    os.rmdir(sFullName);
-                except:
-                    reporter.errorXcpt('rmdir("%s")' % (sFullName));
-                    cErrors = cErrors + 1;
-            else:
-                # File, symlink, fifo or something - remove/unlink.
-                try:
-                    os.remove(sFullName);
-                except:
-                    reporter.errorXcpt('remove("%s")' % (sFullName));
-                    cErrors = cErrors + 1;
-        return cErrors;
-
     def wipeScratch(self):
         """
         Removes the content of the scratch directory.
         Returns True on no errors, False + log entries on errors.
         """
-        cErrors = self.__wipeScratchRecurse(self.sScratchPath);
+        cErrors = wipeDirectory(self.sScratchPath);
         return cErrors == 0;
 
     #
@@ -995,6 +1004,16 @@ class TestDriverBase(object): # pylint: disable=R0902
                 assert iNext <= len(asArgs);
                 return iNext;
         return iArgs;
+
+    def findSubTstDrvByShortName(self, sShortName):
+        """
+        Locates a sub-test driver by it's short name.
+        Returns sub-test driver object reference if found, None if not.
+        """
+        for oSubTstDrv in self.aoSubTstDrvs:
+            if oSubTstDrv.sName == sShortName:
+                return oSubTstDrv;
+        return None;
 
 
     #
@@ -1067,7 +1086,7 @@ class TestDriverBase(object): # pylint: disable=R0902
 
     def waitForTasksSleepWorker(self, cMsTimeout):
         """
-        Overriable method that does the sleeping for waitForTask().
+        Overridable method that does the sleeping for waitForTask().
 
         cMsTimeout will not be larger than 1000, so there is normally no need
         to do any additional splitting up of the polling interval.
@@ -1079,7 +1098,7 @@ class TestDriverBase(object): # pylint: disable=R0902
         try:
             self.aoTasks[0].waitForTask(cMsTimeout);
             return True;
-        except Exception, oXcpt:
+        except Exception as oXcpt:
             reporter.log("waitForTasksSleepWorker: %s" % (str(oXcpt),));
             return False;
 
@@ -1334,6 +1353,11 @@ class TestDriverBase(object): # pylint: disable=R0902
         reporter.log('  --no-wipe-clean');
         reporter.log('      Do not wipe clean the scratch area during the two clean up');
         reporter.log('      actions.  This is for facilitating nested test driver execution.');
+        if self.aoSubTstDrvs:
+            reporter.log('  --enable-sub-driver <sub1>[:..]');
+            reporter.log('  --disable-sub-driver <sub1>[:..]');
+            reporter.log('     Enables or disables one or more of the sub drivers: %s'
+                         % (', '.join([oSubTstDrv.sName for oSubTstDrv in self.aoSubTstDrvs]),));
         return True;
 
     def parseOption(self, asArgs, iArg):
@@ -1362,6 +1386,14 @@ class TestDriverBase(object): # pylint: disable=R0902
             reporter.incDebug()
         elif asArgs[iArg] == '--no-wipe-clean':
             self.fNoWipeClean = True;
+        elif asArgs[iArg] in ('--enable-sub-driver', '--disable-sub-driver') and self.aoSubTstDrvs:
+            sOption = asArgs[iArg];
+            iArg = self.requireMoreArgs(1, asArgs, iArg);
+            for sSubTstDrvName in asArgs[iArg].split(':'):
+                oSubTstDrv = self.findSubTstDrvByShortName(sSubTstDrvName);
+                if oSubTstDrv is None:
+                    raise InvalidOption('Unknown sub-test driver given to %s: %s' % (sOption, sSubTstDrvName,));
+                oSubTstDrv.fEnabled = sOption == '--enable-sub-driver';
         elif (asArgs[iArg] == 'all' or asArgs[iArg] in self.asNormalActions) \
           and self.asActions in self.asSpecialActions:
             raise InvalidOption('selected special action "%s" already' % (self.asActions[0], ));
@@ -1397,19 +1429,40 @@ class TestDriverBase(object): # pylint: disable=R0902
         Returns a set of file and/or directory names relative to
         TESTBOX_PATH_RESOURCES.
 
-        Override this.
+        Override this, call super when using sub-test drivers.
         """
-        return [];
+        asRsrcs = [];
+        for oSubTstDrv in self.aoSubTstDrvs:
+            asRsrcs.extend(oSubTstDrv.asRsrcs);
+        return asRsrcs;
 
     def actionExtract(self):
         """
         Handle the action that extracts the test resources for off site use.
         Returns a success indicator and error details with the reporter.
 
-        Usually no need to override this.
+        There is usually no need to override this.
         """
-        reporter.error('the extract action is not implemented')
-        return False;
+        fRc = True;
+        asRsrcs = self.getResourceSet();
+        for iRsrc, sRsrc in enumerate(asRsrcs):
+            reporter.log('Resource #%s: "%s"' % (iRsrc, sRsrc));
+            sSrcPath = os.path.normpath(os.path.abspath(os.path.join(self.sResourcePath, sRsrc.replace('/', os.path.sep))));
+            sDstPath = os.path.normpath(os.path.join(self.sExtractDstPath, sRsrc.replace('/', os.path.sep)));
+
+            sDstDir = os.path.dirname(sDstPath);
+            if not os.path.exists(sDstDir):
+                try:    os.makedirs(sDstDir, 0o775);
+                except: fRc = reporter.errorXcpt('Error creating directory "%s":' % (sDstDir,));
+
+            if os.path.isfile(sSrcPath):
+                try:    utils.copyFileSimple(sSrcPath, sDstPath);
+                except: fRc = reporter.errorXcpt('Error copying "%s" to "%s":' % (sSrcPath, sDstPath,));
+            elif os.path.isdir(sSrcPath):
+                fRc = reporter.error('Extracting directories have not been implemented yet');
+            else:
+                fRc = reporter.error('Missing or unsupported resource type: %s' % (sSrcPath,));
+        return fRc;
 
     def actionVerify(self):
         """
@@ -1443,7 +1496,7 @@ class TestDriverBase(object): # pylint: disable=R0902
                 try:
                     oFile = utils.openNoInherit(sFull, "rb");
                     oFile.close();
-                except Exception, oXcpt:
+                except Exception as oXcpt:
                     reporter.error('The file resource "%s" cannot be accessed: %s' % (sFull, oXcpt));
                     return False;
             elif os.path.isdir(sFull):
@@ -1538,7 +1591,7 @@ class TestDriverBase(object): # pylint: disable=R0902
                 if i > 0:
                     time.sleep(1);
 
-                for iPid in dPids.keys():
+                for iPid in dPids:
                     if not processExists(iPid):
                         reporter.log('%s (%s) terminated' % (dPids[iPid][0], iPid,));
                         self.pidFileRemove(iPid, fQuiet = True);
@@ -1587,6 +1640,7 @@ class TestDriverBase(object): # pylint: disable=R0902
         try:
             iRc = self.innerMain(asArgs);
         except:
+            reporter.logXcpt(cFrames = None);
             try:
                 self.onExit(-1);
             except:
@@ -1596,7 +1650,7 @@ class TestDriverBase(object): # pylint: disable=R0902
         return iRc;
 
 
-    def innerMain(self, asArgs = None): # pylint: disable=R0915
+    def innerMain(self, asArgs = None): # pylint: disable=too-many-statements
         """
         Exception wrapped main() worker.
         """
@@ -1613,9 +1667,9 @@ class TestDriverBase(object): # pylint: disable=R0902
                     if iNext == iArg:
                         raise InvalidOption('unknown option: %s' % (asArgs[iArg]))
                 iArg = iNext;
-        except QuietInvalidOption, oXcpt:
+        except QuietInvalidOption as oXcpt:
             return rtexitcode.RTEXITCODE_SYNTAX;
-        except InvalidOption, oXcpt:
+        except InvalidOption as oXcpt:
             reporter.error(oXcpt.str());
             return rtexitcode.RTEXITCODE_SYNTAX;
         except:
@@ -1702,6 +1756,11 @@ class TestDriverBase(object): # pylint: disable=R0902
 
         # Done
         if fRc is None:
+            if self.fBadTestbox:
+                reporter.log('****************************************************************');
+                reporter.log('*** The test driver SKIPPED the test because of BAD_TESTBOX. ***');
+                reporter.log('****************************************************************');
+                return rtexitcode.RTEXITCODE_BAD_TESTBOX;
             reporter.log('*****************************************');
             reporter.log('*** The test driver SKIPPED the test. ***');
             reporter.log('*****************************************');
@@ -1717,14 +1776,14 @@ class TestDriverBase(object): # pylint: disable=R0902
         return rtexitcode.RTEXITCODE_SUCCESS;
 
 # The old, deprecated name.
-TestDriver = TestDriverBase; # pylint: disable=C0103
+TestDriver = TestDriverBase; # pylint: disable=invalid-name
 
 
 #
 # Unit testing.
 #
 
-# pylint: disable=C0111
+# pylint: disable=missing-docstring
 class TestDriverBaseTestCase(unittest.TestCase):
     def setUp(self):
         self.oTstDrv = TestDriverBase();

@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2016-2017 Oracle Corporation
+ * Copyright (C) 2016-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -15,11 +15,14 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
-#ifndef ___APICInternal_h
-#define ___APICInternal_h
+#ifndef VMM_INCLUDED_SRC_include_APICInternal_h
+#define VMM_INCLUDED_SRC_include_APICInternal_h
+#ifndef RT_WITHOUT_PRAGMA_ONCE
+# pragma once
+#endif
 
 #include <VBox/sup.h>
-#include <VBox/types.h>
+#include <VBox/vmm/pdmdev.h> /* before apic.h! */
 #include <VBox/vmm/apic.h>
 
 /** @defgroup grp_apic_int       Internal
@@ -54,6 +57,11 @@
 #define VMCPU_TO_APICCPU(a_pVCpu)            (&(a_pVCpu)->apic.s)
 #define VM_TO_APIC(a_pVM)                    (&(a_pVM)->apic.s)
 #define VM_TO_APICDEV(a_pVM)                 CTX_SUFF(VM_TO_APIC(a_pVM)->pApicDev)
+#ifdef IN_RING3
+# define VMCPU_TO_DEVINS(a_pVCpu)           ((a_pVCpu)->pVMR3->apic.s.pDevInsR3)
+#elif defined(IN_RING0)
+# define VMCPU_TO_DEVINS(a_pVCpu)           ((a_pVCpu)->pGVM->apicr0.s.pDevInsR0)
+#endif
 
 #define APICCPU_TO_XAPICPAGE(a_ApicCpu)      ((PXAPICPAGE)(CTX_SUFF((a_ApicCpu)->pvApicPage)))
 #define APICCPU_TO_CXAPICPAGE(a_ApicCpu)     ((PCXAPICPAGE)(CTX_SUFF((a_ApicCpu)->pvApicPage)))
@@ -1021,29 +1029,29 @@ AssertCompileMemberOffset(X2APICPAGE, self_ipi,    X2APIC_OFF_SELF_IPI);
  */
 typedef enum APICMSRACCESS
 {
-    /* MSR read while not in x2APIC. */
+    /** MSR read while not in x2APIC. */
     APICMSRACCESS_INVALID_READ_MODE = 0,
-    /* MSR write while not in x2APIC. */
+    /** MSR write while not in x2APIC. */
     APICMSRACCESS_INVALID_WRITE_MODE,
-    /* MSR read for a reserved/unknown/invalid MSR. */
+    /** MSR read for a reserved/unknown/invalid MSR. */
     APICMSRACCESS_READ_RSVD_OR_UNKNOWN,
-    /* MSR write for a reserved/unknown/invalid MSR. */
+    /** MSR write for a reserved/unknown/invalid MSR. */
     APICMSRACCESS_WRITE_RSVD_OR_UNKNOWN,
-    /* MSR read for a write-only MSR. */
+    /** MSR read for a write-only MSR. */
     APICMSRACCESS_READ_WRITE_ONLY,
-    /* MSR write for a read-only MSR. */
+    /** MSR write for a read-only MSR. */
     APICMSRACCESS_WRITE_READ_ONLY,
-    /* MSR read to reserved bits. */
+    /** MSR read to reserved bits. */
     APICMSRACCESS_READ_RSVD_BITS,
-    /* MSR write to reserved bits. */
+    /** MSR write to reserved bits. */
     APICMSRACCESS_WRITE_RSVD_BITS,
-    /* MSR write with invalid value. */
+    /** MSR write with invalid value. */
     APICMSRACCESS_WRITE_INVALID,
     /** MSR write disallowed due to incompatible config. */
     APICMSRACCESS_WRITE_DISALLOWED_CONFIG,
     /** MSR read disallowed due to incompatible config. */
     APICMSRACCESS_READ_DISALLOWED_CONFIG,
-    /* Count of enum members (don't use). */
+    /** Count of enum members (don't use). */
     APICMSRACCESS_COUNT
 } APICMSRACCESS;
 
@@ -1150,40 +1158,32 @@ typedef const APICPIB *PCAPICPIB;
  */
 typedef struct APICDEV
 {
-    /** The device instance - R3 Ptr. */
-    PPDMDEVINSR3                pDevInsR3;
-    /** Alignment padding. */
-    R3PTRTYPE(void *)           pvAlignment0;
-
-    /** The device instance - R0 Ptr. */
-    PPDMDEVINSR0                pDevInsR0;
-    /** Alignment padding. */
-    R0PTRTYPE(void *)           pvAlignment1;
-
-    /** The device instance - RC Ptr. */
-    PPDMDEVINSRC                pDevInsRC;
+    /** The MMIO handle. */
+    IOMMMIOHANDLE               hMmio;
 } APICDEV;
 /** Pointer to an APIC device. */
 typedef APICDEV *PAPICDEV;
 /** Pointer to a const APIC device. */
 typedef APICDEV const *PCAPICDEV;
 
+
+/**
+ * The APIC GVM instance data.
+ */
+typedef struct APICR0PERVM
+{
+    /** The ring-0 device instance. */
+    PPDMDEVINSR0                pDevInsR0;
+} APICR0PERVM;
+
+
 /**
  * APIC VM Instance data.
  */
 typedef struct APIC
 {
-    /** @name The APIC PDM device instance.
-     * @{ */
-    /** The APIC device - R0 ptr. */
-    R0PTRTYPE(PAPICDEV)         pApicDevR0;
-    /** The APIC device - R3 ptr. */
-    R3PTRTYPE(PAPICDEV)         pApicDevR3;
-    /** The APIC device - RC ptr. */
-    RCPTRTYPE(PAPICDEV)         pApicDevRC;
-    /** Alignment padding. */
-    RTRCPTR                     RCPtrAlignment0;
-    /** @} */
+    /** The ring-3 device instance. */
+    PPDMDEVINSR3                pDevInsR3;
 
     /** @name The APIC pending-interrupt bitmap (PIB).
      * @{ */
@@ -1197,14 +1197,8 @@ typedef struct APIC
     R0PTRTYPE(void *)           pvApicPibR0;
     /** The APIC PIB virtual address - R3 ptr. */
     R3PTRTYPE(void *)           pvApicPibR3;
-    /** The APIC PIB virtual address - RC ptr. */
-    RCPTRTYPE(void *)           pvApicPibRC;
-    /** Alignment padding. */
-    RTRCPTR                     RCPtrAlignment1;
     /** The size of the page in bytes. */
     uint32_t                    cbApicPib;
-    /** Alignment padding. */
-    uint32_t                    u32Aligment0;
     /** @} */
 
     /** @name Other miscellaneous data.
@@ -1217,16 +1211,16 @@ typedef struct APIC
     bool                        fSupportsTscDeadline;
     /** Whether this VM has an IO-APIC. */
     bool                        fIoApicPresent;
-    /** Whether RZ is enabled or not (applies to MSR handling as well). */
-    bool                        fRZEnabled;
+    /** Whether R0 is enabled or not (applies to MSR handling as well). */
+    bool                        fR0Enabled;
+    /** Whether RC is enabled or not (applies to MSR handling as well). */
+    bool                        fRCEnabled;
     /** Whether Hyper-V x2APIC compatibility mode is enabled. */
     bool                        fHyperVCompatMode;
     /** Alignment padding. */
-    bool                        afAlignment[2];
+    bool                        afAlignment[1];
     /** The max supported APIC mode from CFGM.  */
     PDMAPICMODE                 enmMaxMode;
-    /** Alignment padding. */
-    uint32_t                    u32Alignment1;
     /** @} */
 } APIC;
 /** Pointer to APIC VM instance data. */
@@ -1234,8 +1228,6 @@ typedef APIC *PAPIC;
 /** Pointer to const APIC VM instance data. */
 typedef APIC const *PCAPIC;
 AssertCompileMemberAlignment(APIC, cbApicPib, 8);
-AssertCompileMemberAlignment(APIC, fVirtApicRegsEnabled, 8);
-AssertCompileMemberAlignment(APIC, enmMaxMode, 8);
 AssertCompileSizeAlignment(APIC, 8);
 
 /**
@@ -1255,10 +1247,6 @@ typedef struct APICCPU
     R0PTRTYPE(void *)           pvApicPageR0;
     /** The APIC page virtual address - R3 ptr. */
     R3PTRTYPE(void *)           pvApicPageR3;
-    /** The APIC page virtual address - RC ptr. */
-    RCPTRTYPE(void *)           pvApicPageRC;
-    /** Alignment padding. */
-    RTRCPTR                     RCPtrAlignment0;
     /** The size of the page in bytes. */
     uint32_t                    cbApicPage;
     /** @} */
@@ -1279,10 +1267,6 @@ typedef struct APICCPU
     R0PTRTYPE(void *)           pvApicPibR0;
     /** The APIC PIB virtual address - R3 ptr. */
     R3PTRTYPE(void *)           pvApicPibR3;
-    /** The APIC PIB virtual address - RC ptr. */
-    RCPTRTYPE(void *)           pvApicPibRC;
-    /** Alignment padding. */
-    RTRCPTR                     RCPtrAlignment1;
     /** The APIC PIB for level-sensitive interrupts. */
     APICPIB                     ApicPibLevel;
     /** @} */
@@ -1294,31 +1278,32 @@ typedef struct APICCPU
     /** Whether the LINT1 interrupt line is active. */
     bool volatile               fActiveLint1;
     /** Alignment padding. */
-    uint8_t                     auAlignment0[6];
+    uint8_t                     auAlignment2[6];
     /** The source tags corresponding to each interrupt vector (debugging). */
     uint32_t                    auSrcTags[256];
     /** @} */
 
     /** @name The APIC timer.
      * @{ */
-    /** The timer - R0 ptr. */
-    PTMTIMERR0                  pTimerR0;
-    /** The timer - R3 ptr. */
-    PTMTIMERR3                  pTimerR3;
-    /** The timer - RC ptr. */
-    PTMTIMERRC                  pTimerRC;
-    /** Alignment padding. */
-    RTRCPTR                     RCPtrAlignment2;
-    /** The timer critical sect protecting @a u64TimerInitial  */
-    PDMCRITSECT                 TimerCritSect;
-    /** The time stamp when the timer was initialized. */
+    /** The timer. */
+    TMTIMERHANDLE               hTimer;
+    /** The time stamp when the timer was initialized.
+     * @note Access protected by the timer critsect.  */
     uint64_t                    u64TimerInitial;
     /** Cache of timer initial count of the frequency hint to TM. */
     uint32_t                    uHintedTimerInitialCount;
     /** Cache of timer shift of the frequency hint to TM. */
     uint32_t                    uHintedTimerShift;
     /** The timer description. */
-    char                        szTimerDesc[32];
+    char                        szTimerDesc[16];
+    /** @} */
+
+    /** @name Log Max counters
+     * @{ */
+    uint32_t                    cLogMaxAccessError;
+    uint32_t                    cLogMaxSetApicBaseAddr;
+    uint32_t                    cLogMaxGetApicBaseAddr;
+    uint32_t                    uAlignment4;
     /** @} */
 
 #ifdef VBOX_WITH_STATISTICS
@@ -1407,17 +1392,6 @@ DECLINLINE(uint8_t) apicGetTimerShift(PCXAPICPAGE pXApicPage)
     return (uShift + 1) & 7;
 }
 
-RT_C_DECLS_BEGIN
-
-
-/** @def APICBOTHCBDECL
- * Macro for declaring a callback which is static in HC and exported in GC.
- */
-#if defined(IN_RC) || defined(IN_RING0)
-# define APICBOTHCBDECL(type)    DECLEXPORT(type)
-#else
-# define APICBOTHCBDECL(type)    DECLCALLBACK(type)
-#endif
 
 const char                   *apicGetModeName(APICMODE enmMode);
 const char                   *apicGetDestFormatName(XAPICDESTFORMAT enmDestFormat);
@@ -1426,36 +1400,25 @@ const char                   *apicGetDestModeName(XAPICDESTMODE enmDestMode);
 const char                   *apicGetTriggerModeName(XAPICTRIGGERMODE enmTriggerMode);
 const char                   *apicGetDestShorthandName(XAPICDESTSHORTHAND enmDestShorthand);
 const char                   *apicGetTimerModeName(XAPICTIMERMODE enmTimerMode);
-void                          apicHintTimerFreq(PAPICCPU pApicCpu, uint32_t uInitialCount, uint8_t uTimerShift);
+void                          apicHintTimerFreq(PPDMDEVINS pDevIns, PAPICCPU pApicCpu, uint32_t uInitialCount, uint8_t uTimerShift);
 APICMODE                      apicGetMode(uint64_t uApicBaseMsr);
 
-APICBOTHCBDECL(uint64_t)      apicGetBaseMsr(PPDMDEVINS pDevIns, PVMCPU pVCpu);
-APICBOTHCBDECL(VBOXSTRICTRC)  apicSetBaseMsr(PPDMDEVINS pDevIns, PVMCPU pVCpu, uint64_t uBase);
-APICBOTHCBDECL(uint8_t)       apicGetTpr(PPDMDEVINS pDevIns, PVMCPU pVCpu, bool *pfPending, uint8_t *pu8PendingIntr);
-APICBOTHCBDECL(void)          apicSetTpr(PPDMDEVINS pDevIns, PVMCPU pVCpu, uint8_t u8Tpr);
-APICBOTHCBDECL(uint64_t)      apicGetTimerFreq(PPDMDEVINS pDevIns);
-APICBOTHCBDECL(int)           apicReadMmio(PPDMDEVINS pDevIns, void *pvUser, RTGCPHYS GCPhysAddr, void *pv, unsigned cb);
-APICBOTHCBDECL(int)           apicWriteMmio(PPDMDEVINS pDevIns, void *pvUser, RTGCPHYS GCPhysAddr, void const *pv, unsigned cb);
-APICBOTHCBDECL(VBOXSTRICTRC)  apicReadMsr(PPDMDEVINS pDevIns,  PVMCPU pVCpu, uint32_t u32Reg, uint64_t *pu64Val);
-APICBOTHCBDECL(VBOXSTRICTRC)  apicWriteMsr(PPDMDEVINS pDevIns, PVMCPU pVCpu, uint32_t u32Reg, uint64_t u64Val);
-APICBOTHCBDECL(int)           apicGetInterrupt(PPDMDEVINS pDevIns,  PVMCPU pVCpu, uint8_t *puVector, uint32_t *puTagSrc);
-APICBOTHCBDECL(VBOXSTRICTRC)  apicLocalInterrupt(PPDMDEVINS pDevIns, PVMCPU pVCpu, uint8_t u8Pin, uint8_t u8Level, int rcRZ);
-APICBOTHCBDECL(int)           apicBusDeliver(PPDMDEVINS pDevIns, uint8_t uDest, uint8_t uDestMode, uint8_t uDeliveryMode,
-                                             uint8_t uVector, uint8_t uPolarity, uint8_t uTriggerMode, uint32_t uSrcTag);
+DECLCALLBACK(VBOXSTRICTRC)    apicReadMmio(PPDMDEVINS pDevIns, void *pvUser, RTGCPHYS off, void *pv, unsigned cb);
+DECLCALLBACK(VBOXSTRICTRC)    apicWriteMmio(PPDMDEVINS pDevIns, void *pvUser, RTGCPHYS off, void const *pv, unsigned cb);
 
-VMM_INT_DECL(bool)            apicPostInterrupt(PVMCPU pVCpu, uint8_t uVector, XAPICTRIGGERMODE enmTriggerMode, uint32_t uSrcTag);
-VMM_INT_DECL(void)            apicStartTimer(PVMCPU pVCpu, uint32_t uInitialCount);
-VMM_INT_DECL(void)            apicStopTimer(PVMCPU pVCpu);
-VMM_INT_DECL(void)            apicSetInterruptFF(PVMCPU pVCpu, PDMAPICIRQ enmType);
-VMM_INT_DECL(void)            apicClearInterruptFF(PVMCPU pVCpu, PDMAPICIRQ enmType);
+bool                          apicPostInterrupt(PVMCPUCC pVCpu, uint8_t uVector, XAPICTRIGGERMODE enmTriggerMode, uint32_t uSrcTag);
+void                          apicStartTimer(PVMCPUCC pVCpu, uint32_t uInitialCount);
+void                          apicClearInterruptFF(PVMCPUCC pVCpu, PDMAPICIRQ enmType);
+void                          apicInitIpi(PVMCPUCC pVCpu);
+void                          apicResetCpu(PVMCPUCC pVCpu, bool fResetApicBaseMsr);
 
-#ifdef IN_RING3
-VMMR3_INT_DECL(void)          apicR3ResetCpu(PVMCPU pVCpu, bool fResetApicBaseMsr);
-#endif
-
-RT_C_DECLS_END
+DECLCALLBACK(int)             apicR3Construct(PPDMDEVINS pDevIns, int iInstance, PCFGMNODE pCfg);
+DECLCALLBACK(int)             apicR3Destruct(PPDMDEVINS pDevIns);
+DECLCALLBACK(void)            apicR3Relocate(PPDMDEVINS pDevIns, RTGCINTPTR offDelta);
+DECLCALLBACK(void)            apicR3Reset(PPDMDEVINS pDevIns);
+DECLCALLBACK(int)             apicR3InitComplete(PPDMDEVINS pDevIns);
 
 /** @} */
 
-#endif
+#endif /* !VMM_INCLUDED_SRC_include_APICInternal_h */
 

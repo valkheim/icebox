@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -15,14 +15,18 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
-#ifndef ____H_GUESTIMPL
-#define ____H_GUESTIMPL
+#ifndef MAIN_INCLUDED_GuestImpl_h
+#define MAIN_INCLUDED_GuestImpl_h
+#ifndef RT_WITHOUT_PRAGMA_ONCE
+# pragma once
+#endif
 
 #include "GuestWrap.h"
 #include "VirtualBoxBase.h"
 #include <iprt/list.h>
 #include <iprt/time.h>
 #include <VBox/ostypes.h>
+#include <VBox/param.h>
 #include <VBox/vmm/stam.h>
 
 #include "AdditionsFacilityImpl.h"
@@ -101,10 +105,15 @@ public:
     }
     uint32_t    i_getAdditionsRevision(void) { return mData.mAdditionsRevision; }
     uint32_t    i_getAdditionsVersion(void) { return mData.mAdditionsVersionFull; }
-    VBOXOSTYPE  i_getGuestOSType(void) { return mData.mOSType; }
+    VBOXOSTYPE  i_getGuestOSType(void) const { return mData.mOSType; }
+    /** Checks if the guest OS type is part of the windows NT family.  */
+    bool        i_isGuestInWindowsNtFamily(void) const
+    {
+        return mData.mOSType < VBOXOSTYPE_OS2 && mData.mOSType >= VBOXOSTYPE_WinNT;
+    }
 #ifdef VBOX_WITH_GUEST_CONTROL
     int         i_dispatchToSession(PVBOXGUESTCTRLHOSTCBCTX pCtxCb, PVBOXGUESTCTRLHOSTCALLBACK pSvcCb);
-    int         i_sessionRemove(GuestSession *pSession);
+    int         i_sessionRemove(uint32_t uSessionID);
     int         i_sessionCreate(const GuestSessionStartupInfo &ssInfo, const GuestCredentials &guestCreds,
                                 ComObjPtr<GuestSession> &pGuestSession);
     inline bool i_sessionExists(uint32_t uSessionID);
@@ -207,7 +216,6 @@ private:
         Utf8Str                     mInterfaceVersion;
 #ifdef VBOX_WITH_GUEST_CONTROL
         GuestSessions               mGuestSessions;
-        uint32_t                    mNextSessionID;
         /** Guest control features (reported by the guest), VBOX_GUESTCTRL_GF_0_XXX. */
         uint64_t                    mfGuestFeatures0;
         /** Guest control features (reported by the guest), VBOX_GUESTCTRL_GF_1_XXX. */
@@ -216,7 +224,7 @@ private:
     } mData;
 
     ULONG                           mMemoryBalloonSize;
-    ULONG                           mStatUpdateInterval;
+    ULONG                           mStatUpdateInterval; /**< In seconds. */
     uint64_t                        mNetStatRx;
     uint64_t                        mNetStatTx;
     uint64_t                        mNetStatLastTs;
@@ -254,5 +262,5 @@ private:
 };
 #define GUEST_MAGIC 0xCEED2006u /** @todo r=andy Not very well defined!? */
 
-#endif // ____H_GUESTIMPL
+#endif /* !MAIN_INCLUDED_GuestImpl_h */
 

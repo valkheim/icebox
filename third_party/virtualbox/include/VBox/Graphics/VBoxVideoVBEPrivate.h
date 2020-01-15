@@ -3,7 +3,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -27,8 +27,11 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef ___VBox_Graphics_VBoxVideoVBEPrivate_h
-#define ___VBox_Graphics_VBoxVideoVBEPrivate_h
+#ifndef VBOX_INCLUDED_Graphics_VBoxVideoVBEPrivate_h
+#define VBOX_INCLUDED_Graphics_VBoxVideoVBEPrivate_h
+#ifndef RT_WITHOUT_PRAGMA_ONCE
+# pragma once
+#endif
 
 #ifdef VBE
 # include <stdint.h>
@@ -172,10 +175,11 @@ typedef struct VBEHeader
 /** The extra port which is used for debug printf. */
 #define VBE_PRINTF_PORT      0x3b7
 
-/*
+/**
  * This one is for compactly storing a list of mode info blocks
  */
-#pragma pack(1) /* pack(1) is important! (you'll get a byte extra for each of the u8 fields elsewise...) */
+#pragma pack(1) /* pack(1) is important! (you'll get a byte extra for each of the u8 fields elsewise...)
+                 * bird: Load of non-sense. You'll get two extra bytes before MaxPixelClock if you don't pack it.  */
 typedef struct ModeInfoBlockCompact
 {
     /* Mandatory information for all VBE revisions */
@@ -237,5 +241,5 @@ typedef struct ModeInfoListItem
 } ModeInfoListItem;
 
 
-#endif /* !___VBox_Graphics_VBoxVideoVBEPrivate_h */
+#endif /* !VBOX_INCLUDED_Graphics_VBoxVideoVBEPrivate_h */
 

@@ -924,8 +924,13 @@ static void vboxNetFltLinuxSkBufToSG(PVBOXNETFLTINS pThis, struct sk_buff *pBuf,
     for (i = 0; i < skb_shinfo(pBuf)->nr_frags; i++)
     {
         skb_frag_t *pFrag = &skb_shinfo(pBuf)->frags[i];
+# if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 4, 0)
+        pSG->aSegs[iSeg].cb = pFrag->bv_len;
+        pSG->aSegs[iSeg].pv = VBOX_SKB_KMAP_FRAG(pFrag) + pFrag->bv_offset;
+# else /* < KERNEL_VERSION(5, 4, 0) */
         pSG->aSegs[iSeg].cb = pFrag->size;
         pSG->aSegs[iSeg].pv = VBOX_SKB_KMAP_FRAG(pFrag) + pFrag->page_offset;
+# endif /* >= KERNEL_VERSION(5, 4, 0) */
         Log6((" %p", pSG->aSegs[iSeg].pv));
         pSG->aSegs[iSeg++].Phys = NIL_RTHCPHYS;
         Assert(iSeg <= pSG->cSegsAlloc);
@@ -940,8 +945,13 @@ static void vboxNetFltLinuxSkBufToSG(PVBOXNETFLTINS pThis, struct sk_buff *pBuf,
         for (i = 0; i < skb_shinfo(pFragBuf)->nr_frags; i++)
         {
             skb_frag_t *pFrag = &skb_shinfo(pFragBuf)->frags[i];
+# if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 4, 0)
+            pSG->aSegs[iSeg].cb = pFrag->bv_len;
+            pSG->aSegs[iSeg].pv = VBOX_SKB_KMAP_FRAG(pFrag) + pFrag->bv_offset;
+# else /* < KERNEL_VERSION(5, 4, 0) */
             pSG->aSegs[iSeg].cb = pFrag->size;
             pSG->aSegs[iSeg].pv = VBOX_SKB_KMAP_FRAG(pFrag) + pFrag->page_offset;
+# endif /* >= KERNEL_VERSION(5, 4, 0) */
             Log6((" %p", pSG->aSegs[iSeg].pv));
             pSG->aSegs[iSeg++].Phys = NIL_RTHCPHYS;
             Assert(iSeg <= pSG->cSegsAlloc);
@@ -1884,38 +1894,16 @@ static int vboxNetFltLinuxAttachToInterface(PVBOXNETFLTINS pThis, struct net_dev
     RTSpinlockRelease(pThis->hSpinlock);
 
     /*
-     * If the above succeeded report GSO capabilities,  if not undo and
-     * release the device.
+     * Report GSO capabilities
      */
-    if (!pDev)
+    Assert(pThis->pSwitchPort);
+    if (vboxNetFltTryRetainBusyNotDisconnected(pThis))
     {
-        Assert(pThis->pSwitchPort);
-        if (vboxNetFltTryRetainBusyNotDisconnected(pThis))
-        {
-            vboxNetFltLinuxReportNicGsoCapabilities(pThis);
-            pThis->pSwitchPort->pfnReportMacAddress(pThis->pSwitchPort, &pThis->u.s.MacAddr);
-            pThis->pSwitchPort->pfnReportPromiscuousMode(pThis->pSwitchPort, vboxNetFltLinuxPromiscuous(pThis));
-            pThis->pSwitchPort->pfnReportNoPreemptDsts(pThis->pSwitchPort, INTNETTRUNKDIR_WIRE | INTNETTRUNKDIR_HOST);
-            vboxNetFltRelease(pThis, true /*fBusy*/);
-        }
-    }
-    else
-    {
-#ifdef VBOXNETFLT_WITH_HOST2WIRE_FILTER
-        vboxNetFltLinuxUnhookDev(pThis, pDev);
-#endif
-        RTSpinlockAcquire(pThis->hSpinlock);
-        ASMAtomicUoWriteNullPtr(&pThis->u.s.pDev);
-        RTSpinlockRelease(pThis->hSpinlock);
-        dev_put(pDev);
-        Log(("vboxNetFltLinuxAttachToInterface: Device %p(%s) released. ref=%d\n",
-             pDev, pDev->name,
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 37)
-             netdev_refcnt_read(pDev)
-#else
-             atomic_read(&pDev->refcnt)
-#endif
-             ));
+        vboxNetFltLinuxReportNicGsoCapabilities(pThis);
+        pThis->pSwitchPort->pfnReportMacAddress(pThis->pSwitchPort, &pThis->u.s.MacAddr);
+        pThis->pSwitchPort->pfnReportPromiscuousMode(pThis->pSwitchPort, vboxNetFltLinuxPromiscuous(pThis));
+        pThis->pSwitchPort->pfnReportNoPreemptDsts(pThis->pSwitchPort, INTNETTRUNKDIR_WIRE | INTNETTRUNKDIR_HOST);
+        vboxNetFltRelease(pThis, true /*fBusy*/);
     }
 
     LogRel(("VBoxNetFlt: attached to '%s' / %RTmac\n", pThis->szName, &pThis->u.s.MacAddr));
@@ -2209,9 +2197,9 @@ static int vboxNetFltLinuxNotifierIPv4Callback(struct notifier_block *self, unsi
     pEventDev = ifa->ifa_dev->dev;
     fMyDev = (pDev == pEventDev);
     Log(("VBoxNetFlt: %s: IPv4 event %s(0x%lx) %s: addr %RTnaipv4 mask %RTnaipv4\n",
-         pDev ? VBOX_NETDEV_NAME(pDev) : "<???>",
+         pDev ? VBOX_NETDEV_NAME(pDev) : "<unknown>",
          vboxNetFltLinuxGetNetDevEventName(ulEventType), ulEventType,
-         pEventDev ? VBOX_NETDEV_NAME(pEventDev) : "<???>",
+         pEventDev ? VBOX_NETDEV_NAME(pEventDev) : "<unknown>",
          ifa->ifa_address, ifa->ifa_mask));
 
     if (pDev != NULL)
@@ -2254,9 +2242,9 @@ static int vboxNetFltLinuxNotifierIPv6Callback(struct notifier_block *self, unsi
     pEventDev = ifa->idev->dev;
     fMyDev = (pDev == pEventDev);
     Log(("VBoxNetFlt: %s: IPv6 event %s(0x%lx) %s: %RTnaipv6\n",
-         pDev ? VBOX_NETDEV_NAME(pDev) : "<???>",
+         pDev ? VBOX_NETDEV_NAME(pDev) : "<unknown>",
          vboxNetFltLinuxGetNetDevEventName(ulEventType), ulEventType,
-         pEventDev ? VBOX_NETDEV_NAME(pEventDev) : "<???>",
+         pEventDev ? VBOX_NETDEV_NAME(pEventDev) : "<unknown>",
          &ifa->addr));
 
     if (pDev != NULL)

@@ -4,7 +4,7 @@
 #
 
 #
-# Copyright (C) 2006-2017 Oracle Corporation
+# Copyright (C) 2006-2019 Oracle Corporation
 #
 # This file is part of VirtualBox Open Source Edition (OSE), as
 # available from http://www.virtualbox.org. This file is free software;
@@ -52,7 +52,6 @@ VBOX_LNX_ADD_ARCH_INST_DIRS       := \
 	$(VBOX_LNX_ADD_INST_OUT_DIR) \
 	$(VBOX_LNX_ADD_INST_BIN_DIR) \
 	$(VBOX_LNX_ADD_INST_SBIN_DIR) \
-	$(if $(VBOX_WITH_CROGL),$(VBOX_LNX_ADD_INST_LIB_DIR),) \
 	$(VBOX_LNX_ADD_INST_INIT_DIR)
 
 # Installation paths for debug symbols
@@ -64,7 +63,6 @@ VBOX_LNX_ADD_DBG_OTHER_DIR        := $(VBOX_LNX_ADD_INST_DBG_DIR)other/
 VBOX_LNX_ADD_DBG_DIRS             := \
 	$(VBOX_LNX_ADD_DBG_BIN_DIR) \
 	$(VBOX_LNX_ADD_DBG_SBIN_DIR) \
-	$(if $(VBOX_WITH_CROGL),$(VBOX_LNX_ADD_DBG_LIB_DIR),) \
 	$(VBOX_LNX_ADD_DBG_OTHER_DIR)
 
 # Script source directories
@@ -121,12 +119,6 @@ VBOX_LNX_ADD_STRIP_BIN += \
 VBOX_LNX_ADD_STRIP_SBIN += \
 	VBoxService \
 	$(if $(VBOX_WITH_LIGHTDM_GREETER),vbox-greeter)
-
-ifdef VBOX_WITH_CROGL
-VBOX_LNX_ADD_STRIP_LIB += \
-	VBoxOGL.so \
-	VBoxEGL.so
-endif
 
 VBOX_LNX_ADD_STRIP_MOD = \
 	vboxmouse_drv_70.so \
@@ -352,23 +344,7 @@ OTHER_CLEAN += \
 #
 # Build test for the Guest Additions kernel modules (kmk check).
 #
-if   defined(VBOX_WITH_TESTCASES) \
- && !defined(VBOX_ONLY_SDK) \
- && !defined(VBOX_ONLY_DOCS) \
- && !defined(VBOX_ONLY_VALIDATIONKIT) \
- && !defined(VBOX_WITHOUT_LINUX_TEST_BUILDS) \
- && "$(KBUILD_TARGET)" == "linux" \
- && "$(KBUILD_HOST_ARCH)" == "$(KBUILD_TARGET_ARCH)"
-
- ifneq ($(KERN_DIR),)
-  save_symvers = vboxguest-src
-  use_symvers = vboxguest-src
-  $(foreach module, vboxguest-src vboxsf-src, $(eval $(VBOX_LINUX_GENERATE_KMOD_TEST)))
-  save_symvers =
-  $(foreach module, vboxvideo-src, $(eval $(VBOX_LINUX_GENERATE_KMOD_TEST)))
- endif
-
-endif
+$(evalcall2 VBOX_LINUX_KMOD_TEST_BUILD_RULE_FN,vboxvideo-src,,)
 
 
 include $(FILE_KBUILD_SUB_FOOTER)
@@ -455,5 +431,5 @@ $(PATH_STAGE_BIN)/additions/VBoxLinuxAdditions.run: \
 		$(CP) -f $(file) $(VBOX_LNX_ADD_INST_STAGE_DIR)$(subst -r$(VBOX_SVN_REV),,$(notdir $(file)))$(NLTAB) )
 	$(QUIET)$(VBOX_MAKESELF) --nocomp $(VBOX_LNX_ADD_INST_STAGE_DIR) $@ \
 		"VirtualBox $(VBOX_VERSION_STRING) Guest Additions for Linux" \
-		/bin/sh ./install.sh "\$$0 1> /dev/null"
+		/bin/sh ./install.sh "\$$0"
 

@@ -6,7 +6,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -57,11 +57,7 @@
 #undef LOG_GROUP
 #include "../Graphics/DevVGA.cpp"
 #undef LOG_GROUP
-#include "../Input/DevPS2.cpp"
-#undef LOG_GROUP
-#include "../Input/PS2K.cpp"
-#undef LOG_GROUP
-#include "../Input/PS2M.cpp"
+#include "../Input/DevPS2.h"
 #ifdef VBOX_WITH_E1000
 # undef LOG_GROUP
 # include "../Network/DevE1000.cpp"
@@ -87,7 +83,7 @@
 #undef LOG_GROUP
 #include "../PC/DevHPET.cpp"
 #undef LOG_GROUP
-#include "../PC/DevLPC.cpp"
+#include "../PC/DevDMA.cpp"
 #undef LOG_GROUP
 #include "../EFI/DevSmc.cpp"
 #undef LOG_GROUP
@@ -110,6 +106,8 @@
 #include "../Parallel/DevParallel.cpp"
 #undef LOG_GROUP
 #include "../Serial/DevSerial.cpp"
+#undef LOG_GROUP
+#include "../Serial/DevOxPcie958.cpp"
 #ifdef VBOX_WITH_AHCI
 # undef LOG_GROUP
 # include "../Storage/DevAHCI.cpp"
@@ -322,19 +320,17 @@ int main()
     CHECK_MEMBER_ALIGNMENT(AC97STATE, CritSect, 8);
 
     CHECK_MEMBER_ALIGNMENT(AHCI, lock, 8);
-    CHECK_MEMBER_ALIGNMENT(AHCI, ahciPort[0], 8);
+    CHECK_MEMBER_ALIGNMENT(AHCI, aPorts[0], 8);
+    CHECK_MEMBER_ALIGNMENT(AHCIR3, aPorts[0], 8);
 
-    CHECK_MEMBER_ALIGNMENT(APICDEV, pDevInsR0, 8);
-    CHECK_MEMBER_ALIGNMENT(APICDEV, pDevInsRC, 8);
-
-    CHECK_MEMBER_ALIGNMENT(ATADevState, cTotalSectors, 8);
-    CHECK_MEMBER_ALIGNMENT(ATADevState, StatATADMA, 8);
-    CHECK_MEMBER_ALIGNMENT(ATADevState, StatReads, 8);
+    CHECK_MEMBER_ALIGNMENT(ATADEVSTATE, cTotalSectors, 8);
+    CHECK_MEMBER_ALIGNMENT(ATADEVSTATE, StatATADMA, 8);
+    CHECK_MEMBER_ALIGNMENT(ATADEVSTATE, StatReads, 8);
     CHECK_MEMBER_ALIGNMENT(ATACONTROLLER, lock, 8);
     CHECK_MEMBER_ALIGNMENT(ATACONTROLLER, StatAsyncOps, 8);
     CHECK_MEMBER_ALIGNMENT(BUSLOGIC, CritSectIntr, 8);
 #ifdef VBOX_WITH_STATISTICS
-    CHECK_MEMBER_ALIGNMENT(DEVPIC, StatSetIrqGC, 8);
+    CHECK_MEMBER_ALIGNMENT(DEVPIC, StatSetIrqRZ, 8);
 #endif
 #ifdef VBOX_WITH_E1000
     CHECK_MEMBER_ALIGNMENT(E1KSTATE, cs, 8);
@@ -348,17 +344,14 @@ int main()
 #ifdef VBOX_WITH_USB
 # ifdef VBOX_WITH_EHCI_IMPL
     CHECK_MEMBER_ALIGNMENT(EHCI, RootHub, 8);
-#  ifdef VBOX_WITH_STATISTICS
-    CHECK_MEMBER_ALIGNMENT(EHCI, StatCanceledIsocUrbs, 8);
-#  endif
 # endif
 # ifdef VBOX_WITH_XHCI_IMPL
-    CHECK_MEMBER_ALIGNMENT(XHCI, pWorkerThread, 8);
-    CHECK_MEMBER_ALIGNMENT(XHCI, IBase, 8);
-    CHECK_MEMBER_ALIGNMENT(XHCI, MMIOBase, 8);
-    CHECK_MEMBER_ALIGNMENT(XHCI, RootHub2, 8);
-    CHECK_MEMBER_ALIGNMENT(XHCI, RootHub3, 8);
+    CHECK_MEMBER_ALIGNMENT(XHCI, aPorts, 8);
+    CHECK_MEMBER_ALIGNMENT(XHCI, aInterrupters, 8);
+    CHECK_MEMBER_ALIGNMENT(XHCI, aInterrupters[0].lock, 8);
+    CHECK_MEMBER_ALIGNMENT(XHCI, aInterrupters[1].lock, 8);
     CHECK_MEMBER_ALIGNMENT(XHCI, cmdr_dqp, 8);
+    CHECK_MEMBER_ALIGNMENT(XHCI, hMmio, 8);
 #  ifdef VBOX_WITH_STATISTICS
     CHECK_MEMBER_ALIGNMENT(XHCI, StatErrorIsocUrbs, 8);
     CHECK_MEMBER_ALIGNMENT(XHCI, StatIntrsCleared, 8);
@@ -370,12 +363,11 @@ int main()
 # ifdef VBOX_WITH_STATISTICS
     CHECK_MEMBER_ALIGNMENT(IOAPIC, StatMmioReadRZ, 8);
 # endif
-    CHECK_MEMBER_ALIGNMENT(LSILOGISCSI, GCPhysMMIOBase, 8);
-    CHECK_MEMBER_ALIGNMENT(LSILOGISCSI, aMessage, 8);
-    CHECK_MEMBER_ALIGNMENT(LSILOGISCSI, ReplyPostQueueCritSect, 8);
-    CHECK_MEMBER_ALIGNMENT(LSILOGISCSI, ReplyFreeQueueCritSect, 8);
-    CHECK_MEMBER_ALIGNMENT(LSILOGISCSI, uReplyFreeQueueNextEntryFreeWrite, 8);
-    CHECK_MEMBER_ALIGNMENT(LSILOGISCSI, VBoxSCSI, 8);
+    CHECK_MEMBER_ALIGNMENT(LSILOGICSCSI, aMessage, 8);
+    CHECK_MEMBER_ALIGNMENT(LSILOGICSCSI, ReplyPostQueueCritSect, 8);
+    CHECK_MEMBER_ALIGNMENT(LSILOGICSCSI, ReplyFreeQueueCritSect, 8);
+    CHECK_MEMBER_ALIGNMENT(LSILOGICSCSI, uReplyFreeQueueNextEntryFreeWrite, 8);
+    CHECK_MEMBER_ALIGNMENT(LSILOGICSCSICC, VBoxSCSI, 8);
 #ifdef VBOX_WITH_USB
     CHECK_MEMBER_ALIGNMENT(OHCI, RootHub, 8);
 # ifdef VBOX_WITH_STATISTICS
@@ -392,21 +384,20 @@ int main()
     CHECK_MEMBER_ALIGNMENT(PCNETSTATE, StatMMIOReadRZ, 8);
 #endif
     CHECK_MEMBER_ALIGNMENT(PITSTATE, StatPITIrq, 8);
-    CHECK_MEMBER_ALIGNMENT(SerialState, CritSect, 8);
+    CHECK_MEMBER_ALIGNMENT(DEVSERIAL, UartCore, 8);
+    CHECK_MEMBER_ALIGNMENT(UARTCORE, CritSect, 8);
 #ifdef VBOX_WITH_VMSVGA
     CHECK_SIZE(VMSVGAState, RT_ALIGN_Z(sizeof(VMSVGAState), 8));
     CHECK_MEMBER_ALIGNMENT(VGASTATE, svga, 8);
-    CHECK_MEMBER_ALIGNMENT(VGASTATE, svga.u64HostWindowId, 8);
     CHECK_MEMBER_ALIGNMENT(VGASTATE, svga.au32ScratchRegion, 8);
     CHECK_MEMBER_ALIGNMENT(VGASTATE, svga.StatRegBitsPerPixelWr, 8);
 #endif
     CHECK_MEMBER_ALIGNMENT(VGASTATE, cMonitors, 8);
     CHECK_MEMBER_ALIGNMENT(VGASTATE, GCPhysVRAM, 8);
-    CHECK_MEMBER_ALIGNMENT(VGASTATE, Dev, 8);
     CHECK_MEMBER_ALIGNMENT(VGASTATE, CritSect, 8);
     CHECK_MEMBER_ALIGNMENT(VGASTATE, StatRZMemoryRead, 8);
     CHECK_MEMBER_ALIGNMENT(VGASTATE, CritSectIRQ, 8);
-    CHECK_MEMBER_ALIGNMENT(VMMDevState, CritSect, 8);
+    CHECK_MEMBER_ALIGNMENT(VMMDEV, CritSect, 8);
 #ifdef VBOX_WITH_VIRTIO
     CHECK_MEMBER_ALIGNMENT(VPCISTATE, cs, 8);
     CHECK_MEMBER_ALIGNMENT(VPCISTATE, led, 4);

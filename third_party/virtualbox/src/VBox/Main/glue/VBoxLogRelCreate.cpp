@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2005-2017 Oracle Corporation
+ * Copyright (C) 2005-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -19,7 +19,7 @@
 /*********************************************************************************************************************************
 *   Header Files                                                                                                                 *
 *********************************************************************************************************************************/
-#include <VBox/com/com.h>
+#include <VBox/com/utils.h>
 
 #include <iprt/buildconfig.h>
 #include <iprt/param.h>
@@ -28,7 +28,7 @@
 #include <iprt/process.h>
 #include <iprt/time.h>
 
-#include <VBox/err.h>
+#include <iprt/errcore.h>
 #include <VBox/log.h>
 #include <VBox/version.h>
 #include "package-generated.h"
@@ -84,6 +84,24 @@ static DECLCALLBACK(void) vboxHeaderFooter(PRTLOGGER pReleaseLogger, RTLOGPHASE 
             if (RT_SUCCESS(vrc) || vrc == VERR_BUFFER_OVERFLOW)
                 pfnLog(pReleaseLogger, "DMI Product Version: %s\n", szTmp);
 
+            RTSYSFWTYPE enmType;
+            vrc = RTSystemQueryFirmwareType(&enmType);
+            if (RT_SUCCESS(vrc))
+            {
+                pfnLog(pReleaseLogger, "Firmware type: %s\n", RTSystemFirmwareTypeName(enmType));
+                if (enmType == RTSYSFWTYPE_UEFI)
+                {
+                     bool fValue;
+                     vrc = RTSystemQueryFirmwareBoolean(RTSYSFWBOOL_SECURE_BOOT, &fValue);
+                     if (RT_SUCCESS(vrc))
+                         pfnLog(pReleaseLogger, "Secure Boot: %s\n", fValue ? "Enabled" : "Disabled");
+                     else
+                         pfnLog(pReleaseLogger, "Secure Boot: %Rrc\n", vrc);
+                }
+            }
+            else
+                pfnLog(pReleaseLogger, "Firmware type: failed - %Rrc\n", vrc);
+
             uint64_t cbHostRam = 0, cbHostRamAvail = 0;
             vrc = RTSystemQueryTotalRam(&cbHostRam);
             if (RT_SUCCESS(vrc))
@@ -118,6 +136,7 @@ static DECLCALLBACK(void) vboxHeaderFooter(PRTLOGGER pReleaseLogger, RTLOGPHASE 
             RTLogSetBuffering(pReleaseLogger, fOldBuffered);
             break;
         }
+
         case RTLOGPHASE_PREROTATE:
             pfnLog(pReleaseLogger, "Log rotated - Log started %s\n", szTmp);
             break;
@@ -149,15 +168,12 @@ int VBoxLogRelCreate(const char *pcszEntity, const char *pcszLogFile,
     fFlags |= RTLOGFLAGS_USECRLF;
 #endif
     g_pszLogEntity = pcszEntity;
-    int vrc = RTLogCreateEx(&pReleaseLogger, fFlags, pcszGroupSettings,
-                            pcszEnvVarBase, RT_ELEMENTS(s_apszGroups), s_apszGroups, fDestFlags,
+    int vrc = RTLogCreateEx(&pReleaseLogger, fFlags, pcszGroupSettings, pcszEnvVarBase,
+                            RT_ELEMENTS(s_apszGroups), s_apszGroups, cMaxEntriesPerGroup, fDestFlags,
                             vboxHeaderFooter, cHistory, uHistoryFileSize, uHistoryFileTime,
                             pErrInfo, pcszLogFile ? "%s" : NULL, pcszLogFile);
     if (RT_SUCCESS(vrc))
     {
-        /* make sure that we don't flood logfiles */
-        RTLogSetGroupLimit(pReleaseLogger, cMaxEntriesPerGroup);
-
         /* explicitly flush the log, to have some info when buffering */
         RTLogFlush(pReleaseLogger);
 

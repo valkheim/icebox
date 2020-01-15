@@ -23,7 +23,7 @@ from __future__ import print_function
 
 __copyright__ = \
 """
-Copyright (C) 2009-2017 Oracle Corporation
+Copyright (C) 2009-2019 Oracle Corporation
 
 This file is part of VirtualBox Open Source Edition (OSE), as
 available from http://www.virtualbox.org. This file is free software;
@@ -33,7 +33,7 @@ Foundation, in version 2 as it comes in the "COPYING" file of the
 VirtualBox OSE distribution. VirtualBox OSE is distributed in the
 hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
 """
-__version__ = "$Revision: 129736 $"
+__version__ = "$Revision: 135597 $"
 
 
 import gc
@@ -267,7 +267,8 @@ def startVm(ctx, mach, vmtype):
     vbox = ctx['vb']
     perf = ctx['perf']
     session = ctx['global'].getSessionObject()
-    progress = mach.launchVMProcess(session, vmtype, "")
+    asEnv = []
+    progress = mach.launchVMProcess(session, vmtype, asEnv)
     if progressBar(ctx, progress, 100) and int(progress.resultCode) == 0:
         # we ignore exceptions to allow starting VM even if
         # perf collector cannot be started
@@ -961,18 +962,21 @@ def infoCmd(ctx, args):
     mach = argsToMach(ctx, args)
     if mach == None:
         return 0
-    vmos = ctx['vb'].getGuestOSType(mach.OSTypeId)
+    try:
+        vmos = ctx['vb'].getGuestOSType(mach.OSTypeId)
+    except:
+        vmos = None
     print(" One can use setvar <mach> <var> <value> to change variable, using name in [].")
     print("  Name [name]: %s" % (colVm(ctx, mach.name)))
     print("  Description [description]: %s" % (mach.description))
     print("  ID [n/a]: %s" % (mach.id))
-    print("  OS Type [via OSTypeId]: %s" % (vmos.description))
+    print("  OS Type [via OSTypeId]: %s" % (vmos.description if vmos is not None else mach.OSTypeId))
     print("  Firmware [firmwareType]: %s (%s)" % (asEnumElem(ctx, "FirmwareType", mach.firmwareType), mach.firmwareType))
     print()
     print("  CPUs [CPUCount]: %d" % (mach.CPUCount))
     print("  RAM [memorySize]: %dM" % (mach.memorySize))
-    print("  VRAM [VRAMSize]: %dM" % (mach.VRAMSize))
-    print("  Monitors [monitorCount]: %d" % (mach.monitorCount))
+    print("  VRAM [VRAMSize]: %dM" % (mach.graphicsAdapter.VRAMSize))
+    print("  Monitors [monitorCount]: %d" % (mach.graphicsAdapter.monitorCount))
     print("  Chipset [chipsetType]: %s (%s)" % (asEnumElem(ctx, "ChipsetType", mach.chipsetType), mach.chipsetType))
     print()
     print("  Clipboard mode [clipboardMode]: %s (%s)" % (asEnumElem(ctx, "ClipboardMode", mach.clipboardMode), mach.clipboardMode))
@@ -991,8 +995,8 @@ def infoCmd(ctx, args):
     hwVirtNestedPaging = mach.getHWVirtExProperty(ctx['const'].HWVirtExPropertyType_NestedPaging)
     print("  Nested paging [guest win machine.setHWVirtExProperty(ctx[\\'const\\'].HWVirtExPropertyType_NestedPaging, value)]: " + asState(hwVirtNestedPaging))
 
-    print("  Hardware 3d acceleration [accelerate3DEnabled]: " + asState(mach.accelerate3DEnabled))
-    print("  Hardware 2d video acceleration [accelerate2DVideoEnabled]: " + asState(mach.accelerate2DVideoEnabled))
+    print("  Hardware 3d acceleration [accelerate3DEnabled]: " + asState(mach.graphicsAdapter.accelerate3DEnabled))
+    print("  Hardware 2d video acceleration [accelerate2DVideoEnabled]: " + asState(mach.graphicsAdapter.accelerate2DVideoEnabled))
 
     print("  Use universal time [RTCUseUTC]: %s" % (asState(mach.RTCUseUTC)))
     print("  HPET [HPETEnabled]: %s" % (asState(mach.HPETEnabled)))
@@ -1643,7 +1647,8 @@ def monitorVBoxCmd(ctx, args):
 
 def getAdapterType(ctx, natype):
     if (natype == ctx['global'].constants.NetworkAdapterType_Am79C970A or
-        natype == ctx['global'].constants.NetworkAdapterType_Am79C973):
+        natype == ctx['global'].constants.NetworkAdapterType_Am79C973 or
+        natype == ctx['global'].constants.NetworkAdapterType_Am79C960):
         return "pcnet"
     elif (natype == ctx['global'].constants.NetworkAdapterType_I82540EM or
           natype == ctx['global'].constants.NetworkAdapterType_I82545EM or
@@ -1651,6 +1656,8 @@ def getAdapterType(ctx, natype):
         return "e1000"
     elif (natype == ctx['global'].constants.NetworkAdapterType_Virtio):
         return "virtio"
+    elif (natype == ctx['global'].constants.NetworkAdapterType_Virtio_1_0):
+        return "virtio_1.0"
     elif (natype == ctx['global'].constants.NetworkAdapterType_Null):
         return None
     else:
@@ -3278,7 +3285,7 @@ commands = {'help':['Prints help information', helpCmd, 0],
             'monitorGuestKbd':['Monitor guest keyboard for some time: monitorGuestKbd Win32 10', monitorGuestKbdCmd, 0],
             'monitorGuestMouse':['Monitor guest mouse for some time: monitorGuestMouse Win32 10', monitorGuestMouseCmd, 0],
             'monitorGuestMultiTouch':['Monitor guest touch screen for some time: monitorGuestMultiTouch Win32 10', monitorGuestMultiTouchCmd, 0],
-            'monitorVBox':['Monitor what happens with Virtual Box for some time: monitorVBox 10', monitorVBoxCmd, 0],
+            'monitorVBox':['Monitor what happens with VirtualBox for some time: monitorVBox 10', monitorVBoxCmd, 0],
             'portForward':['Setup permanent port forwarding for a VM, takes adapter number host port and guest port: portForward Win32 0 8080 80', portForwardCmd, 0],
             'showLog':['Show log file of the VM, : showLog Win32', showLogCmd, 0],
             'findLog':['Show entries matching pattern in log file of the VM, : findLog Win32 PDM|CPUM', findLogCmd, 0],

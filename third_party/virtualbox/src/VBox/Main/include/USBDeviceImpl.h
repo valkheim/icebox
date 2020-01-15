@@ -1,11 +1,10 @@
 /* $Id: USBDeviceImpl.h $ */
-
 /** @file
  * Header file for the OUSBDevice (IUSBDevice) class, VBoxC.
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -16,8 +15,11 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
-#ifndef ____H_USBDEVICEIMPL
-#define ____H_USBDEVICEIMPL
+#ifndef MAIN_INCLUDED_USBDeviceImpl_h
+#define MAIN_INCLUDED_USBDeviceImpl_h
+#ifndef RT_WITHOUT_PRAGMA_ONCE
+# pragma once
+#endif
 
 #include "USBDeviceWrap.h"
 
@@ -54,8 +56,8 @@ private:
     HRESULT getSerialNumber(com::Utf8Str &aSerialNumber);
     HRESULT getAddress(com::Utf8Str &aAddress);
     HRESULT getPort(USHORT *aPort);
+    HRESULT getPortPath(com::Utf8Str &aPortPath);
     HRESULT getVersion(USHORT *aVersion);
-    HRESULT getPortVersion(USHORT *aPortVersion);
     HRESULT getSpeed(USBConnectionSpeed_T *aSpeed);
     HRESULT getRemote(BOOL *aRemote);
     HRESULT getBackend(com::Utf8Str &aBackend);
@@ -64,7 +66,7 @@ private:
     struct Data
     {
         Data() : vendorId(0), productId(0), revision(0), port(0),
-                 version(1), portVersion(1), speed(USBConnectionSpeed_Null),
+                 version(1), speed(USBConnectionSpeed_Null),
                  remote(FALSE) {}
 
         /** The UUID of this device. */
@@ -89,10 +91,10 @@ private:
         const com::Utf8Str backend;
         /** The host port number. */
         const USHORT port;
+        /** The host port path. */
+        const com::Utf8Str portPath;
         /** The major USB version number of the device. */
         const USHORT version;
-        /** The major USB version number of the port the device is attached to. */
-        const USHORT portVersion;
         /** The speed at which the device is communicating. */
         const USBConnectionSpeed_T speed;
         /** Remote (VRDP) or local device. */
@@ -102,5 +104,5 @@ private:
     Data mData;
 };
 
-#endif // ____H_USBDEVICEIMPL
+#endif /* !MAIN_INCLUDED_USBDeviceImpl_h */
 /* vi: set tabstop=4 shiftwidth=4 expandtab: */

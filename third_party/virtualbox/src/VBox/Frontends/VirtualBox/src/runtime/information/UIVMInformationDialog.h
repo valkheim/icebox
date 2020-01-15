@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2016-2017 Oracle Corporation
+ * Copyright (C) 2016-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -15,11 +15,17 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
-#ifndef ___UIVMInformationDialog_h___
-#define ___UIVMInformationDialog_h___
+#ifndef FEQT_INCLUDED_SRC_runtime_information_UIVMInformationDialog_h
+#define FEQT_INCLUDED_SRC_runtime_information_UIVMInformationDialog_h
+#ifndef RT_WITHOUT_PRAGMA_ONCE
+# pragma once
+#endif
+
+/* Qt includes: */
+#include <QMainWindow>
 
 /* GUI includes: */
-#include "QIMainWindow.h"
+#include "QIWithRestorableGeometry.h"
 #include "QIWithRetranslateUI.h"
 
 /* COM includes: */
@@ -31,10 +37,14 @@ class QITabWidget;
 class QIDialogButtonBox;
 class UIMachineWindow;
 
+/* Type definitions: */
+typedef QIWithRestorableGeometry<QMainWindow> QMainWindowWithRestorableGeometry;
+typedef QIWithRetranslateUI<QMainWindowWithRestorableGeometry> QMainWindowWithRestorableGeometryAndRetranslateUi;
 
-/** QIMainWindow subclass providing user
+
+/** QMainWindow subclass providing user
   * with the dialog unifying VM details and statistics. */
-class UIVMInformationDialog : public QIWithRetranslateUI<QIMainWindow>
+class UIVMInformationDialog : public QMainWindowWithRestorableGeometryAndRetranslateUi
 {
     Q_OBJECT;
 
@@ -56,9 +66,6 @@ protected:
 
     /** Handles translation event. */
     void retranslateUi();
-
-    /** Handles any Qt @a pEvent. */
-    bool event(QEvent *pEvent);
 
 private slots:
 
@@ -108,5 +115,5 @@ private:
     /** @} */
 };
 
-#endif /* !___UIVMInformationDialog_h___ */
+#endif /* !FEQT_INCLUDED_SRC_runtime_information_UIVMInformationDialog_h */
 

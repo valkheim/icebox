@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -312,12 +312,22 @@ int main()
 
     CHECK42("%RI16", (int16_t)1, "1");
     CHECK42("%RI16", (int16_t)-16384, "-16384");
+    CHECK42("%RI16", INT16_MAX, "32767");
+    CHECK42("%RI16", INT16_MIN, "-32768");
 
     CHECK42("%RI32", (int32_t)1123, "1123");
     CHECK42("%RI32", (int32_t)-86596, "-86596");
+    CHECK42("%RI32", INT32_MAX, "2147483647");
+    CHECK42("%RI32", INT32_MIN, "-2147483648");
+    CHECK42("%RI32", INT32_MIN+1, "-2147483647");
+    CHECK42("%RI32", INT32_MIN+2, "-2147483646");
 
     CHECK42("%RI64", (int64_t)112345987345LL, "112345987345");
     CHECK42("%RI64", (int64_t)-8659643985723459LL, "-8659643985723459");
+    CHECK42("%RI64", INT64_MAX, "9223372036854775807");
+    CHECK42("%RI64", INT64_MIN, "-9223372036854775808");
+    CHECK42("%RI64", INT64_MIN+1, "-9223372036854775807");
+    CHECK42("%RI64", INT64_MIN+2, "-9223372036854775806");
 
     CHECK42("%RI8", (int8_t)1, "1");
     CHECK42("%RI8", (int8_t)-128, "-128");
@@ -600,12 +610,15 @@ int main()
 
     CHECK42("%RX16", (uint16_t)0x7, "7");
     CHECK42("%RX16", 0x46384, "6384");
+    CHECK42("%RX16", UINT16_MAX, "ffff");
 
     CHECK42("%RX32", (uint32_t)0x1123, "1123");
     CHECK42("%RX32", (uint32_t)0x49939493, "49939493");
+    CHECK42("%RX32", UINT32_MAX, "ffffffff");
 
     CHECK42("%RX64", UINT64_C(0x348734), "348734");
     CHECK42("%RX64", UINT64_C(0x12312312312343f), "12312312312343f");
+    CHECK42("%RX64", UINT64_MAX, "ffffffffffffffff");
     CHECK42("%5RX64",   UINT64_C(0x42), "   42");
     CHECK42("%05RX64",  UINT64_C(0x42), "00042");
     CHECK42("%.5RX64",  UINT64_C(0x42), "00042");
@@ -613,6 +626,7 @@ int main()
 
     CHECK42("%RX8", (uint8_t)1, "1");
     CHECK42("%RX8", (uint8_t)0xff, "ff");
+    CHECK42("%RX8", UINT8_MAX, "ff");
     CHECK42("%RX8", 0x100, "0");
 
     /*
@@ -717,28 +731,82 @@ int main()
     CHECKSTR("00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f 10 11 12 13 14");
     cch = RTStrPrintf(pszBuf, BUF_SIZE, "%256.*Rhxs", sizeof(s_abHex1), s_abHex1);
     CHECKSTR("00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f 10 11 12 13 14");
+    cch = RTStrPrintf(pszBuf, BUF_SIZE, "%256.*RhXs", sizeof(s_abHex1), s_abHex1, (uint64_t)0x1234);
+    CHECKSTR("00001234: 00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f 10 11 12 13 14");
+    cch = RTStrPrintf(pszBuf, BUF_SIZE, "%256.*RhXs", sizeof(s_abHex1), s_abHex1, (uint64_t)UINT64_C(0x987654321abcdef));
+    CHECKSTR("0987654321abcdef: 00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f 10 11 12 13 14");
 
     cch = RTStrPrintf(pszBuf, BUF_SIZE, "%4.8Rhxd", s_abHex1);
     RTStrPrintf(pszBuf2, BUF_SIZE,
-                "%p 0000: 00 01 02 03 ....\n"
-                "%p 0004: 04 05 06 07 ....",
+                "%p/0000: 00 01 02 03 ....\n"
+                "%p/0004: 04 05 06 07 ....",
                 &s_abHex1[0], &s_abHex1[4]);
     CHECKSTR(pszBuf2);
 
     cch = RTStrPrintf(pszBuf, BUF_SIZE, "%4.6Rhxd", s_abHex1);
     RTStrPrintf(pszBuf2, BUF_SIZE,
-                "%p 0000: 00 01 02 03 ....\n"
-                "%p 0004: 04 05       ..",
+                "%p/0000: 00 01 02 03 ....\n"
+                "%p/0004: 04 05       ..",
                 &s_abHex1[0], &s_abHex1[4]);
     CHECKSTR(pszBuf2);
 
     cch = RTStrPrintf(pszBuf, BUF_SIZE, "%.*Rhxd", sizeof(s_abHex1), s_abHex1);
     RTStrPrintf(pszBuf2, BUF_SIZE,
-                "%p 0000: 00 01 02 03 04 05 06 07-08 09 0a 0b 0c 0d 0e 0f ................\n"
-                "%p 0010: 10 11 12 13 14                                  ....."
+                "%p/0000: 00 01 02 03 04 05 06 07-08 09 0a 0b 0c 0d 0e 0f ................\n"
+                "%p/0010: 10 11 12 13 14                                  ....."
                 ,
                 &s_abHex1[0], &s_abHex1[0x10]);
     CHECKSTR(pszBuf2);
+
+    cch = RTStrPrintf(pszBuf, BUF_SIZE, "%.*RhXd", sizeof(s_abHex1), s_abHex1, (uint64_t)0xf304);
+    RTStrPrintf(pszBuf2, BUF_SIZE,
+                "0000f304/0000: 00 01 02 03 04 05 06 07-08 09 0a 0b 0c 0d 0e 0f ................\n"
+                "0000f314/0010: 10 11 12 13 14                                  .....");
+    CHECKSTR(pszBuf2);
+
+    cch = RTStrPrintf(pszBuf, BUF_SIZE, "%.*RhXd", sizeof(s_abHex1), s_abHex1, (uint64_t)UINT64_C(0x123456789abcdef));
+    RTStrPrintf(pszBuf2, BUF_SIZE,
+                "0123456789abcdef/0000: 00 01 02 03 04 05 06 07-08 09 0a 0b 0c 0d 0e 0f ................\n"
+                "0123456789abcdff/0010: 10 11 12 13 14                                  .....");
+    CHECKSTR(pszBuf2);
+
+    /*
+     * human readable sizes and numbers.
+     */
+    RTTestSub(hTest, "Human readable (%Rhc?, %Rhn?)");
+    cch = RTStrPrintf(pszBuf, BUF_SIZE, "%Rhcb%u", UINT64_C(1235467), 42);
+    CHECKSTR("1.1MiB42");
+    cch = RTStrPrintf(pszBuf, BUF_SIZE, "%Rhcb%u", UINT64_C(999), 42);
+    CHECKSTR("999B42");
+    cch = RTStrPrintf(pszBuf, BUF_SIZE, "%Rhcb%u", UINT64_C(8), 42);
+    CHECKSTR("8B42");
+    cch = RTStrPrintf(pszBuf, BUF_SIZE, "%Rhcb%u", UINT64_C(0), 42);
+    CHECKSTR("0B42");
+    cch = RTStrPrintf(pszBuf, BUF_SIZE, "%.2Rhcb%u", UINT64_C(129957349834756374), 42);
+    CHECKSTR("115.42PiB42");
+    cch = RTStrPrintf(pszBuf, BUF_SIZE, "%.3Rhcb%u", UINT64_C(1957349834756374), 42);
+    CHECKSTR("1.738PiB42");
+    cch = RTStrPrintf(pszBuf, BUF_SIZE, "%.0Rhcb%u", UINT64_C(1957349834756374), 42);
+    CHECKSTR("1780TiB42");
+    cch = RTStrPrintf(pszBuf, BUF_SIZE, "%10Rhcb%u", UINT64_C(6678345), 42);
+    CHECKSTR("    6.3MiB42");
+    cch = RTStrPrintf(pszBuf, BUF_SIZE, "%10Rhcb%u", UINT64_C(6710886), 42);
+    CHECKSTR("    6.3MiB42");
+    cch = RTStrPrintf(pszBuf, BUF_SIZE, "%10Rhcb%u", UINT64_C(6710887), 42);
+    CHECKSTR("    6.4MiB42");
+    cch = RTStrPrintf(pszBuf, BUF_SIZE, "% 10Rhcb%u", UINT64_C(6710887), 42);
+    CHECKSTR("   6.4 MiB42");
+    cch = RTStrPrintf(pszBuf, BUF_SIZE, "% 10RhcB%u", UINT64_C(6710887), 42);
+    CHECKSTR("    6.4 MB42");
+
+    cch = RTStrPrintf(pszBuf, BUF_SIZE, "%10Rhub%u", UINT64_C(6678345), 42);
+    CHECKSTR("     6.3Mi42");
+    cch = RTStrPrintf(pszBuf, BUF_SIZE, "%10RhuB%u", UINT64_C(6678345), 42);
+    CHECKSTR("      6.3M42");
+
+    cch = RTStrPrintf(pszBuf, BUF_SIZE, "%10Rhci%u", UINT64_C(6678345), 42);
+    CHECKSTR("     6.7MB42"); /* rounded, unlike the binary variant.*/
+
 
     /*
      * x86 register formatting.

@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2010-2017 Oracle Corporation
+ * Copyright (C) 2010-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -110,7 +110,7 @@ DECLINLINE(int) rtVfsStdFile_ReadFixRC(PRTVFSSTDFILE pThis, RTFOFF off, size_t c
         return VINF_SUCCESS;
 
     uint64_t cbFile;
-    int rc = RTFileGetSize(pThis->hFile, &cbFile);
+    int rc = RTFileQuerySize(pThis->hFile, &cbFile);
     if (RT_FAILURE(rc))
         return rc;
 
@@ -382,7 +382,41 @@ static DECLCALLBACK(int) rtVfsStdFile_Seek(void *pvThis, RTFOFF offSeek, unsigne
 static DECLCALLBACK(int) rtVfsStdFile_QuerySize(void *pvThis, uint64_t *pcbFile)
 {
     PRTVFSSTDFILE pThis = (PRTVFSSTDFILE)pvThis;
-    return RTFileGetSize(pThis->hFile, pcbFile);
+    return RTFileQuerySize(pThis->hFile, pcbFile);
+}
+
+
+/**
+ * @interface_method_impl{RTVFSFILEOPS,pfnSetSize}
+ */
+static DECLCALLBACK(int) rtVfsStdFile_SetSize(void *pvThis, uint64_t cbFile, uint32_t fFlags)
+{
+    PRTVFSSTDFILE pThis = (PRTVFSSTDFILE)pvThis;
+    switch (fFlags & RTVFSFILE_SIZE_F_ACTION_MASK)
+    {
+        case RTVFSFILE_SIZE_F_NORMAL:
+            return RTFileSetSize(pThis->hFile, cbFile);
+        case RTVFSFILE_SIZE_F_GROW:
+            return RTFileSetAllocationSize(pThis->hFile, cbFile, RTFILE_ALLOC_SIZE_F_DEFAULT);
+        case RTVFSFILE_SIZE_F_GROW_KEEP_SIZE:
+            return RTFileSetAllocationSize(pThis->hFile, cbFile, RTFILE_ALLOC_SIZE_F_KEEP_SIZE);
+        default:
+            return VERR_NOT_SUPPORTED;
+    }
+}
+
+
+/**
+ * @interface_method_impl{RTVFSFILEOPS,pfnQueryMaxSize}
+ */
+static DECLCALLBACK(int) rtVfsStdFile_QueryMaxSize(void *pvThis, uint64_t *pcbMax)
+{
+    PRTVFSSTDFILE pThis = (PRTVFSSTDFILE)pvThis;
+    RTFOFF cbMax = 0;
+    int rc = RTFileQueryMaxSizeEx(pThis->hFile, &cbMax);
+    if (RT_SUCCESS(rc))
+        *pcbMax = cbMax;
+    return rc;
 }
 
 
@@ -423,6 +457,8 @@ DECL_HIDDEN_CONST(const RTVFSFILEOPS) g_rtVfsStdFileOps =
     },
     rtVfsStdFile_Seek,
     rtVfsStdFile_QuerySize,
+    rtVfsStdFile_SetSize,
+    rtVfsStdFile_QueryMaxSize,
     RTVFSFILEOPS_VERSION
 };
 

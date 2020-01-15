@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -69,6 +69,7 @@
 #include <iprt/mem.h>
 #include <iprt/param.h>
 #include <iprt/string.h>
+#include <iprt/utf16.h>
 #include <iprt/uuid.h>
 
 
@@ -218,9 +219,9 @@ VMMR3DECL(int) CFGMR3Init(PVM pVM, PFNCFGMCONSTRUCTOR pfnCFGMConstructor, void *
     pRoot->cchName    = 0;
     pVM->cfgm.s.pRoot = pRoot;
 
-        /*
-         * Call the constructor if specified, if not use the default one.
-         */
+    /*
+     * Call the constructor if specified, if not use the default one.
+     */
     if (pfnCFGMConstructor)
         rc = pfnCFGMConstructor(pVM->pUVM, pVM, pvUser);
     else
@@ -231,7 +232,7 @@ VMMR3DECL(int) CFGMR3Init(PVM pVM, PFNCFGMCONSTRUCTOR pfnCFGMConstructor, void *
         CFGMR3Dump(CFGMR3GetRoot(pVM));
     }
     else
-        AssertMsgFailed(("Constructor failed with rc=%Rrc pfnCFGMConstructor=%p\n", rc, pfnCFGMConstructor));
+        LogRel(("Constructor failed with rc=%Rrc pfnCFGMConstructor=%p\n", rc, pfnCFGMConstructor));
 
     return rc;
 }
@@ -973,15 +974,6 @@ VMMR3DECL(int) CFGMR3ConstructDefaultTree(PVM pVM)
     rc = CFGMR3InsertInteger(pRoot, "RamHoleSize",          512U * _1M);
     UPDATERC();
     rc = CFGMR3InsertInteger(pRoot, "TimerMillies",         10);
-    UPDATERC();
-    rc = CFGMR3InsertInteger(pRoot, "RawR3Enabled",         1);
-    UPDATERC();
-    /** @todo CFGM Defaults: RawR0, PATMEnabled and CASMEnabled needs attention later. */
-    rc = CFGMR3InsertInteger(pRoot, "RawR0Enabled",         1);
-    UPDATERC();
-    rc = CFGMR3InsertInteger(pRoot, "PATMEnabled",          1);
-    UPDATERC();
-    rc = CFGMR3InsertInteger(pRoot, "CSAMEnabled",          1);
     UPDATERC();
 
     /*

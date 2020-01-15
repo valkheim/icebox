@@ -4,7 +4,7 @@
 ;
 
 ;
-; Copyright (C) 2006-2017 Oracle Corporation
+; Copyright (C) 2006-2019 Oracle Corporation
 ;
 ; This file is part of VirtualBox Open Source Edition (OSE), as
 ; available from http://www.virtualbox.org. This file is free software;
@@ -29,10 +29,15 @@
 BEGINCODE
 
 ;;
-; @param    pvDst   gcc: rdi  msc: rcx  x86:[esp+4]
-; @param    pvSrc   gcc: rsi  msc: rdx  x86:[esp+8]
-; @param    cb      gcc: rdx  msc: r8   x86:[esp+0ch]
+; @param    pvDst   gcc: rdi  msc: rcx  x86:[esp+4]   wcall: eax
+; @param    pvSrc   gcc: rsi  msc: rdx  x86:[esp+8]   wcall: edx
+; @param    cb      gcc: rdx  msc: r8   x86:[esp+0ch] wcall: ebx
+%ifdef IN_RING0_DRV_ON_DARWIN
+global NAME(memcpy):private_extern
+NAME(memcpy):
+%else
 RT_NOCRT_BEGINPROC memcpy
+%endif
         cld
 
         ; Do the bulk of the work.
@@ -54,11 +59,18 @@ RT_NOCRT_BEGINPROC memcpy
         push    edi
         push    esi
 
+ %ifdef ASM_CALL32_WATCOM
+        mov     edi, eax
+        mov     esi, edx
+        mov     ecx, ebx
+        mov     edx, ebx
+ %else
         mov     ecx, [esp + 0ch + 8]
         mov     edi, [esp + 04h + 8]
         mov     esi, [esp + 08h + 8]
         mov     edx, ecx
         mov     eax, edi                ; save the return value
+ %endif
         shr     ecx, 2
         rep movsd
 %endif

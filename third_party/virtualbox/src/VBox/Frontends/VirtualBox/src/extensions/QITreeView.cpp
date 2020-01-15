@@ -1,10 +1,10 @@
 /* $Id: QITreeView.cpp $ */
 /** @file
- * VBox Qt GUI - VirtualBox Qt extensions: QITreeView class implementation.
+ * VBox Qt GUI - Qt extensions: QITreeView class implementation.
  */
 
 /*
- * Copyright (C) 2009-2017 Oracle Corporation
+ * Copyright (C) 2009-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -15,23 +15,20 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
-#ifdef VBOX_WITH_PRECOMPILED_HEADERS
-# include <precomp.h>
-#else  /* !VBOX_WITH_PRECOMPILED_HEADERS */
-
 /* Qt includes: */
-# include <QAccessibleWidget>
-# include <QMouseEvent>
-# include <QPainter>
-# include <QSortFilterProxyModel>
+#include <QAccessibleWidget>
+#include <QDragLeaveEvent>
+#include <QDragMoveEvent>
+#include <QDropEvent>
+#include <QMouseEvent>
+#include <QPainter>
+#include <QSortFilterProxyModel>
 
 /* GUI includes: */
-# include "QITreeView.h"
+#include "QITreeView.h"
 
 /* Other VBox includes: */
-# include "iprt/assert.h"
-
-#endif /* !VBOX_WITH_PRECOMPILED_HEADERS */
+#include "iprt/assert.h"
 
 
 /** QAccessibleObject extension used as an accessibility interface for QITreeViewItem. */
@@ -440,6 +437,17 @@ void QITreeView::mousePressEvent(QMouseEvent *pEvent)
         QTreeView::mousePressEvent(pEvent);
 }
 
+void QITreeView::mouseReleaseEvent(QMouseEvent *pEvent)
+{
+    /* Reject event initially: */
+    pEvent->setAccepted(false);
+    /* Notify listeners about event allowing them to handle it: */
+    emit mouseReleased(pEvent);
+    /* Call to base-class only if event was not yet accepted: */
+    if (!pEvent->isAccepted())
+        QTreeView::mouseReleaseEvent(pEvent);
+}
+
 void QITreeView::mouseDoubleClickEvent(QMouseEvent *pEvent)
 {
     /* Reject event initially: */
@@ -449,6 +457,50 @@ void QITreeView::mouseDoubleClickEvent(QMouseEvent *pEvent)
     /* Call to base-class only if event was not yet accepted: */
     if (!pEvent->isAccepted())
         QTreeView::mouseDoubleClickEvent(pEvent);
+}
+
+void QITreeView::dragEnterEvent(QDragEnterEvent *pEvent)
+{
+    /* Reject event initially: */
+    pEvent->setAccepted(false);
+    /* Notify listeners about event allowing them to handle it: */
+    emit dragEntered(pEvent);
+    /* Call to base-class only if event was not yet accepted: */
+    if (!pEvent->isAccepted())
+        QTreeView::dragEnterEvent(pEvent);
+}
+
+void QITreeView::dragMoveEvent(QDragMoveEvent *pEvent)
+{
+    /* Reject event initially: */
+    pEvent->setAccepted(false);
+    /* Notify listeners about event allowing them to handle it: */
+    emit dragMoved(pEvent);
+    /* Call to base-class only if event was not yet accepted: */
+    if (!pEvent->isAccepted())
+        QTreeView::dragMoveEvent(pEvent);
+}
+
+void QITreeView::dragLeaveEvent(QDragLeaveEvent *pEvent)
+{
+    /* Reject event initially: */
+    pEvent->setAccepted(false);
+    /* Notify listeners about event allowing them to handle it: */
+    emit dragLeft(pEvent);
+    /* Call to base-class only if event was not yet accepted: */
+    if (!pEvent->isAccepted())
+        QTreeView::dragLeaveEvent(pEvent);
+}
+
+void QITreeView::dropEvent(QDropEvent *pEvent)
+{
+    /* Reject event initially: */
+    pEvent->setAccepted(false);
+    /* Notify listeners about event allowing them to handle it: */
+    emit dragDropped(pEvent);
+    /* Call to base-class only if event was not yet accepted: */
+    if (!pEvent->isAccepted())
+        QTreeView::dropEvent(pEvent);
 }
 
 void QITreeView::prepare()
@@ -463,4 +515,3 @@ void QITreeView::prepare()
     /* Mark root hidden: */
     setRootIsDecorated(false);
 }
-

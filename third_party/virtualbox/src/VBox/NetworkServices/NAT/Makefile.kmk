@@ -4,7 +4,7 @@
 #
 
 #
-# Copyright (C) 2006-2017 Oracle Corporation
+# Copyright (C) 2006-2019 Oracle Corporation
 #
 # This file is part of VirtualBox Open Source Edition (OSE), as
 # available from http://www.virtualbox.org. This file is free software;
@@ -109,7 +109,8 @@ VBOX_PATH_NAT_SRC := $(PATH_SUB_CURRENT)
  ifeq ($(KBUILD_TARGET),win)
   VBoxNetLwipNAT_SOURCES += pxping_win.c # unprivileged Icmp API
  else
-  VBoxNetLwipNAT_SOURCES += pxping.c     # raw sockets
+  VBoxNetLwipNAT_SOURCES        += pxping.c     # raw sockets
+  VBoxNetLwipNAT_CFLAGS.linux   += -Wno-address-of-packed-member # Needed for GCC 9.
  endif
 
  VBoxNetLwipNAT_SOURCES.darwin  += rtmon_bsd.c

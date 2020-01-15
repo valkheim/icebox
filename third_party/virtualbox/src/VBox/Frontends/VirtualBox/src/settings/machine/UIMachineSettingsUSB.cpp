@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -15,44 +15,35 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
-#ifdef VBOX_WITH_PRECOMPILED_HEADERS
-# include <precomp.h>
-#else  /* !VBOX_WITH_PRECOMPILED_HEADERS */
-
 /* Qt includes: */
-# include <QHeaderView>
-# include <QHelpEvent>
-# include <QToolTip>
+#include <QHeaderView>
+#include <QHelpEvent>
+#include <QMenu>
+#include <QToolTip>
 
 /* GUI includes: */
-# include "QIWidgetValidator.h"
-# include "UIConverter.h"
-# include "UIIconPool.h"
-# include "UIMachineSettingsUSB.h"
-# include "UIMachineSettingsUSBFilterDetails.h"
-# include "UIErrorString.h"
-# include "UIToolBar.h"
-# include "VBoxGlobal.h"
+#include "QIWidgetValidator.h"
+#include "UIConverter.h"
+#include "UIIconPool.h"
+#include "UIMachineSettingsUSB.h"
+#include "UIMachineSettingsUSBFilterDetails.h"
+#include "UIErrorString.h"
+#include "UIToolBar.h"
+#include "UICommon.h"
 
 /* COM includes: */
-# include "CConsole.h"
-# include "CExtPack.h"
-# include "CExtPackManager.h"
-# include "CHostUSBDevice.h"
-# include "CHostUSBDeviceFilter.h"
-# include "CUSBController.h"
-# include "CUSBDevice.h"
-# include "CUSBDeviceFilter.h"
-# include "CUSBDeviceFilters.h"
-
-#endif /* !VBOX_WITH_PRECOMPILED_HEADERS */
+#include "CConsole.h"
+#include "CExtPack.h"
+#include "CExtPackManager.h"
+#include "CHostUSBDevice.h"
+#include "CHostUSBDeviceFilter.h"
+#include "CUSBController.h"
+#include "CUSBDevice.h"
+#include "CUSBDeviceFilter.h"
+#include "CUSBDeviceFilters.h"
 
 /* VirtualBox interface declarations: */
-#ifndef VBOX_WITH_XPCOM
-# include "VirtualBox.h"
-#else /* !VBOX_WITH_XPCOM */
-# include "VirtualBox_XPCOM.h"
-#endif /* VBOX_WITH_XPCOM */
+#include <VBox/com/VirtualBox.h>
 
 
 /** Machine settings: USB filter data structure. */
@@ -169,7 +160,7 @@ public:
     /* Constructor: */
     VBoxUSBMenu(QWidget *)
     {
-        connect(this, SIGNAL(aboutToShow()), this, SLOT(processAboutToShow()));
+        connect(this, &VBoxUSBMenu::aboutToShow, this, &VBoxUSBMenu::processAboutToShow);
     }
 
     /* Returns USB device related to passed action: */
@@ -192,7 +183,7 @@ private slots:
         clear();
         m_usbDeviceMap.clear();
 
-        CHost host = vboxGlobal().host();
+        CHost host = uiCommon().host();
 
         bool fIsUSBEmpty = host.GetUSBDevices().size() == 0;
         if (fIsUSBEmpty)
@@ -208,7 +199,7 @@ private slots:
             {
                 CHostUSBDevice dev = devvec[i];
                 CUSBDevice usb(dev);
-                QAction *pAction = addAction(vboxGlobal().details(usb));
+                QAction *pAction = addAction(uiCommon().details(usb));
                 pAction->setCheckable(true);
                 m_usbDeviceMap[pAction] = usb;
                 /* Check if created item was already attached to this session: */
@@ -237,7 +228,7 @@ private:
                 CUSBDevice usb = m_usbDeviceMap[pAction];
                 if (!usb.isNull())
                 {
-                    QToolTip::showText(pHelpEvent->globalPos(), vboxGlobal().toolTip(usb));
+                    QToolTip::showText(pHelpEvent->globalPos(), uiCommon().toolTip(usb));
                     return true;
                 }
             }
@@ -254,6 +245,8 @@ private:
 /** Machine settings: USB Filter tree-widget item. */
 class UIUSBFilterItem : public QITreeWidgetItem, public UIDataSettingsMachineUSBFilter
 {
+    Q_OBJECT;
+
 public:
 
     /** Constructs USB filter (root) item.
@@ -290,37 +283,37 @@ private:
 
         const QString strVendorId = m_strVendorId;
         if (!strVendorId.isEmpty())
-            strToolTip += UIMachineSettingsUSB::tr("<nobr>Vendor ID: %1</nobr>", "USB filter tooltip").arg(strVendorId);
+            strToolTip += tr("<nobr>Vendor ID: %1</nobr>", "USB filter tooltip").arg(strVendorId);
 
         const QString strProductId = m_strProductId;
         if (!strProductId.isEmpty())
-            strToolTip += strToolTip.isEmpty() ? "":"<br/>" + UIMachineSettingsUSB::tr("<nobr>Product ID: %2</nobr>", "USB filter tooltip").arg(strProductId);
+            strToolTip += strToolTip.isEmpty() ? "":"<br/>" + tr("<nobr>Product ID: %2</nobr>", "USB filter tooltip").arg(strProductId);
 
         const QString strRevision = m_strRevision;
         if (!strRevision.isEmpty())
-            strToolTip += strToolTip.isEmpty() ? "":"<br/>" + UIMachineSettingsUSB::tr("<nobr>Revision: %3</nobr>", "USB filter tooltip").arg(strRevision);
+            strToolTip += strToolTip.isEmpty() ? "":"<br/>" + tr("<nobr>Revision: %3</nobr>", "USB filter tooltip").arg(strRevision);
 
         const QString strProduct = m_strProduct;
         if (!strProduct.isEmpty())
-            strToolTip += strToolTip.isEmpty() ? "":"<br/>" + UIMachineSettingsUSB::tr("<nobr>Product: %4</nobr>", "USB filter tooltip").arg(strProduct);
+            strToolTip += strToolTip.isEmpty() ? "":"<br/>" + tr("<nobr>Product: %4</nobr>", "USB filter tooltip").arg(strProduct);
 
         const QString strManufacturer = m_strManufacturer;
         if (!strManufacturer.isEmpty())
-            strToolTip += strToolTip.isEmpty() ? "":"<br/>" + UIMachineSettingsUSB::tr("<nobr>Manufacturer: %5</nobr>", "USB filter tooltip").arg(strManufacturer);
+            strToolTip += strToolTip.isEmpty() ? "":"<br/>" + tr("<nobr>Manufacturer: %5</nobr>", "USB filter tooltip").arg(strManufacturer);
 
         const QString strSerial = m_strSerialNumber;
         if (!strSerial.isEmpty())
-            strToolTip += strToolTip.isEmpty() ? "":"<br/>" + UIMachineSettingsUSB::tr("<nobr>Serial No.: %1</nobr>", "USB filter tooltip").arg(strSerial);
+            strToolTip += strToolTip.isEmpty() ? "":"<br/>" + tr("<nobr>Serial No.: %1</nobr>", "USB filter tooltip").arg(strSerial);
 
         const QString strPort = m_strPort;
         if (!strPort.isEmpty())
-            strToolTip += strToolTip.isEmpty() ? "":"<br/>" + UIMachineSettingsUSB::tr("<nobr>Port: %1</nobr>", "USB filter tooltip").arg(strPort);
+            strToolTip += strToolTip.isEmpty() ? "":"<br/>" + tr("<nobr>Port: %1</nobr>", "USB filter tooltip").arg(strPort);
 
         /* Add the state field if it's a host USB device: */
         if (m_fHostUSBDevice)
         {
-            strToolTip += strToolTip.isEmpty() ? "":"<br/>" + UIMachineSettingsUSB::tr("<nobr>State: %1</nobr>", "USB filter tooltip")
-                                                              .arg(gpConverter->toString(m_enmHostUSBDeviceState));
+            strToolTip += strToolTip.isEmpty() ? "":"<br/>" + tr("<nobr>State: %1</nobr>", "USB filter tooltip")
+                                                                 .arg(gpConverter->toString(m_enmHostUSBDeviceState));
         }
 
         /* Return tool-tip: */
@@ -500,7 +493,7 @@ bool UIMachineSettingsUSB::validate(QList<UIValidationMessage> &messages)
 
 #ifdef VBOX_WITH_EXTPACK
     /* USB 2.0/3.0 Extension Pack presence test: */
-    const CExtPack extPack = vboxGlobal().virtualBox().GetExtensionPackManager().Find(GUI_ExtPackName);
+    const CExtPack extPack = uiCommon().virtualBox().GetExtensionPackManager().Find(GUI_ExtPackName);
     if (   mGbUSB->isChecked()
         && (mRbUSB2->isChecked() || mRbUSB3->isChecked())
         && (extPack.isNull() || !extPack.GetUsable()))
@@ -685,7 +678,7 @@ void UIMachineSettingsUSB::sltAddFilterConfirmed(QAction *pAction)
     /* Prepare new USB filter data: */
     UIDataSettingsMachineUSBFilter filterData;
     filterData.m_fActive = true;
-    filterData.m_strName = vboxGlobal().details(usb);
+    filterData.m_strName = uiCommon().details(usb);
     filterData.m_fHostUSBDevice = false;
     filterData.m_strVendorId = QString().sprintf("%04hX", usb.GetVendorId());
     filterData.m_strProductId = QString().sprintf("%04hX", usb.GetProductId());
@@ -916,26 +909,26 @@ void UIMachineSettingsUSB::prepareFiltersToolbar()
 void UIMachineSettingsUSB::prepareConnections()
 {
     /* Configure validation connections: */
-    connect(mGbUSB, SIGNAL(stateChanged(int)), this, SLOT(revalidate()));
-    connect(mRbUSB1, SIGNAL(toggled(bool)), this, SLOT(revalidate()));
-    connect(mRbUSB2, SIGNAL(toggled(bool)), this, SLOT(revalidate()));
-    connect(mRbUSB3, SIGNAL(toggled(bool)), this, SLOT(revalidate()));
+    connect(mGbUSB, &QCheckBox::stateChanged, this, &UIMachineSettingsUSB::revalidate);
+    connect(mRbUSB1, &QRadioButton::toggled, this, &UIMachineSettingsUSB::revalidate);
+    connect(mRbUSB2, &QRadioButton::toggled, this, &UIMachineSettingsUSB::revalidate);
+    connect(mRbUSB3, &QRadioButton::toggled, this, &UIMachineSettingsUSB::revalidate);
 
     /* Configure widget connections: */
-    connect(mGbUSB, SIGNAL(toggled(bool)),
-            this, SLOT(sltHandleUsbAdapterToggle(bool)));
-    connect(mTwFilters, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
-            this, SLOT(sltHandleCurrentItemChange(QTreeWidgetItem*)));
-    connect(mTwFilters, SIGNAL(customContextMenuRequested(const QPoint &)),
-            this, SLOT(sltHandleContextMenuRequest(const QPoint &)));
-    connect(mTwFilters, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)),
-            this, SLOT(sltEditFilter()));
-    connect(mTwFilters, SIGNAL(itemChanged(QTreeWidgetItem *, int)),
-            this, SLOT(sltHandleActivityStateChange(QTreeWidgetItem *)));
+    connect(mGbUSB, &QCheckBox::toggled,
+            this, &UIMachineSettingsUSB::sltHandleUsbAdapterToggle);
+    connect(mTwFilters, &QITreeWidget::currentItemChanged,
+            this, &UIMachineSettingsUSB::sltHandleCurrentItemChange);
+    connect(mTwFilters, &QITreeWidget::customContextMenuRequested,
+            this, &UIMachineSettingsUSB::sltHandleContextMenuRequest);
+    connect(mTwFilters, &QITreeWidget::itemDoubleClicked,
+            this, &UIMachineSettingsUSB::sltEditFilter);
+    connect(mTwFilters, &QITreeWidget::itemChanged,
+            this, &UIMachineSettingsUSB::sltHandleActivityStateChange);
 
     /* Configure USB device menu connections: */
-    connect(m_pMenuUSBDevices, SIGNAL(triggered(QAction*)),
-            this, SLOT(sltAddFilterConfirmed(QAction *)));
+    connect(m_pMenuUSBDevices, &VBoxUSBMenu::triggered,
+            this, &UIMachineSettingsUSB::sltAddFilterConfirmed);
 }
 
 void UIMachineSettingsUSB::cleanup()
@@ -1331,5 +1324,5 @@ bool UIMachineSettingsUSB::createUSBFilter(CUSBDeviceFilters &comFiltersObject, 
     return fSuccess;
 }
 
-#include "UIMachineSettingsUSB.moc"
 
+#include "UIMachineSettingsUSB.moc"

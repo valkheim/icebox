@@ -1,11 +1,11 @@
 #! /bin/sh
 # $Id: vboxadd-x11.sh $
 ## @file
-# Linux Additions X11 setup init script ($Revision: 128493 $)
+# Linux Additions X11 setup init script ($Revision: 128492 $)
 #
 
 #
-# Copyright (C) 2006-2017 Oracle Corporation
+# Copyright (C) 2006-2019 Oracle Corporation
 #
 # This file is part of VirtualBox Open Source Edition (OSE), as
 # available from http://www.virtualbox.org. This file is free software;
@@ -482,7 +482,7 @@ EOF
     ln -s "${lib_dir}/98vboxadd-xclient" /usr/bin/VBoxClient-all 2>/dev/null
     case "${x_version}" in 4.* | 6.* | 7.* | 1.?.* | 1.1* )
         setup_opengl
-    esac 
+    esac
     # Try enabling VMSVGA drm device resizing.
     VBoxClient --vmsvga
 }

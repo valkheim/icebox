@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2009-2017 Oracle Corporation
+ * Copyright (C) 2009-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -15,121 +15,93 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
-#ifndef __UIWizardExportAppPageBasic3_h__
-#define __UIWizardExportAppPageBasic3_h__
+#ifndef FEQT_INCLUDED_SRC_wizards_exportappliance_UIWizardExportAppPageBasic3_h
+#define FEQT_INCLUDED_SRC_wizards_exportappliance_UIWizardExportAppPageBasic3_h
+#ifndef RT_WITHOUT_PRAGMA_ONCE
+# pragma once
+#endif
 
-/* Global includes: */
+/* Qt includes: */
+#include <QList>
 #include <QVariant>
 
-/* Local includes: */
+/* GUI includes: */
+#include "UIExtraDataDefs.h"
+#include "UIFormEditorWidget.h"
+#include "UIWizardExportAppDefs.h"
 #include "UIWizardPage.h"
 
 /* Forward declarations: */
-class QLabel;
-class QLineEdit;
-class UIEmptyFilePathSelector;
-class QComboBox;
-class QCheckBox;
+class QStackedLayout;
 class QIRichTextLabel;
+class UIWizardExportApp;
 
-/* 3rd page of the Export Appliance wizard (base part): */
+
+/** UIWizardPageBase extension for 3rd page of the Export Appliance wizard. */
 class UIWizardExportAppPage3 : public UIWizardPageBase
 {
 protected:
 
-    /* Constructor: */
+    /** Constructs 3rd page base. */
     UIWizardExportAppPage3();
 
-    /* Helpers: */
-    void chooseDefaultSettings();
-    virtual void refreshCurrentSettings();
-    virtual void updateFormatComboToolTip();
+    /** Updates page appearance. */
+    virtual void updatePageAppearance();
 
-    /* Stuff for 'format' field: */
-    QString format() const;
-    void setFormat(const QString &strFormat);
-    /* Stuff for 'manifestSelected' field: */
-    bool isManifestSelected() const;
-    void setManifestSelected(bool fChecked);
-    /* Stuff for 'username' field: */
-    QString username() const;
-    void setUserName(const QString &strUserName);
-    /* Stuff for 'password' field: */
-    QString password() const;
-    void setPassword(const QString &strPassword);
-    /* Stuff for 'hostname' field: */
-    QString hostname() const;
-    void setHostname(const QString &strHostname);
-    /* Stuff for 'bucket' field: */
-    QString bucket() const;
-    void setBucket(const QString &strBucket);
-    /* Stuff for 'path' field: */
-    QString path() const;
-    void setPath(const QString &strPath);
+    /** Refreshes appliance settings widget. */
+    void refreshApplianceSettingsWidget();
+    /** Refreshes form properties table. */
+    void refreshFormPropertiesTable();
 
-    /* Variables: */
-    QString m_strDefaultApplianceName;
+    /** Returns the appliance widget reference. */
+    ExportAppliancePointer applianceWidget() const { return m_pApplianceWidget; }
 
-    /* Widgets: */
-    QLabel *m_pUsernameLabel;
-    QLineEdit *m_pUsernameEditor;
-    QLabel *m_pPasswordLabel;
-    QLineEdit *m_pPasswordEditor;
-    QLabel *m_pHostnameLabel;
-    QLineEdit *m_pHostnameEditor;
-    QLabel *m_pBucketLabel;
-    QLineEdit *m_pBucketEditor;
-    QLabel *m_pFileSelectorLabel;
-    UIEmptyFilePathSelector *m_pFileSelector;
-    QLabel *m_pFormatComboBoxLabel;
-    QComboBox *m_pFormatComboBox;
-    QCheckBox *m_pManifestCheckbox;
+    /** Holds the settings container layout instance. */
+    QStackedLayout *m_pSettingsCntLayout;
+
+    /** Holds the appliance widget reference. */
+    ExportAppliancePointer     m_pApplianceWidget;
+    /** Holds the Form Editor widget instance. */
+    UIFormEditorWidgetPointer  m_pFormEditor;
 };
 
-/* 3rd page of the Export Appliance wizard (basic extension): */
+
+/** UIWizardPage extension for 3rd page of the Export Appliance wizard, extends UIWizardExportAppPage3 as well. */
 class UIWizardExportAppPageBasic3 : public UIWizardPage, public UIWizardExportAppPage3
 {
     Q_OBJECT;
-    Q_PROPERTY(QString format READ format WRITE setFormat);
-    Q_PROPERTY(bool manifestSelected READ isManifestSelected WRITE setManifestSelected);
-    Q_PROPERTY(QString username READ username WRITE setUserName);
-    Q_PROPERTY(QString password READ password WRITE setPassword);
-    Q_PROPERTY(QString hostname READ hostname WRITE setHostname);
-    Q_PROPERTY(QString bucket READ bucket WRITE setBucket);
-    Q_PROPERTY(QString path READ path WRITE setPath);
+    Q_PROPERTY(ExportAppliancePointer applianceWidget READ applianceWidget);
 
 public:
 
-    /* Constructor: */
+    /** Constructs 3rd basic page. */
     UIWizardExportAppPageBasic3();
 
 protected:
 
-    /* Wrapper to access 'wizard-field' from base part: */
+    /** Allows access wizard from base part. */
+    UIWizard *wizardImp() const { return UIWizardPage::wizard(); }
+    /** Allows access page from base part. */
+    UIWizardPage* thisImp() { return this; }
+    /** Allows access wizard-field from base part. */
     QVariant fieldImp(const QString &strFieldName) const { return UIWizardPage::field(strFieldName); }
 
-private slots:
+    /** Handles translation event. */
+    virtual void retranslateUi() /* override */;
 
-    /* Format combo change handler: */
-    void sltHandleFormatComboChange();
+    /** Performs page initialization. */
+    virtual void initializePage() /* override */;
+
+    /** Performs page validation. */
+    virtual bool validatePage() /* override */;
+
+    /** Updates page appearance. */
+    virtual void updatePageAppearance() /* override */;
 
 private:
 
-    /* Translate stuff: */
-    void retranslateUi();
-
-    /* Prepare stuff: */
-    void initializePage();
-
-    /* Validation stuff: */
-    bool isComplete() const;
-
-    /* Helpers: */
-    void refreshCurrentSettings();
-
-    /* Widgets: */
+    /** Holds the label instance. */
     QIRichTextLabel *m_pLabel;
 };
 
-#endif /* __UIWizardExportAppPageBasic3_h__ */
-
+#endif /* !FEQT_INCLUDED_SRC_wizards_exportappliance_UIWizardExportAppPageBasic3_h */

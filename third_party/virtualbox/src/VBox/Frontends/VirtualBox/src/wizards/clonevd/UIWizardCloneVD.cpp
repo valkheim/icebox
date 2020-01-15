@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -15,24 +15,18 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
-#ifdef VBOX_WITH_PRECOMPILED_HEADERS
-# include <precomp.h>
-#else  /* !VBOX_WITH_PRECOMPILED_HEADERS */
-
 /* GUI includes: */
-# include "UIWizardCloneVD.h"
-# include "UIWizardCloneVDPageBasic1.h"
-# include "UIWizardCloneVDPageBasic2.h"
-# include "UIWizardCloneVDPageBasic3.h"
-# include "UIWizardCloneVDPageBasic4.h"
-# include "UIWizardCloneVDPageExpert.h"
-# include "VBoxGlobal.h"
-# include "UIMessageCenter.h"
+#include "UIMedium.h"
+#include "UIWizardCloneVD.h"
+#include "UIWizardCloneVDPageBasic1.h"
+#include "UIWizardCloneVDPageBasic2.h"
+#include "UIWizardCloneVDPageBasic3.h"
+#include "UIWizardCloneVDPageExpert.h"
+#include "UICommon.h"
+#include "UIMessageCenter.h"
 
 /* COM includes: */
-# include "CMediumFormat.h"
-
-#endif /* !VBOX_WITH_PRECOMPILED_HEADERS */
+#include "CMediumFormat.h"
 
 
 UIWizardCloneVD::UIWizardCloneVD(QWidget *pParent, const CMedium &comSourceVirtualDisk)
@@ -42,17 +36,17 @@ UIWizardCloneVD::UIWizardCloneVD(QWidget *pParent, const CMedium &comSourceVirtu
 {
 #ifndef VBOX_WS_MAC
     /* Assign watermark: */
-    assignWatermark(":/vmw_new_harddisk.png");
+    assignWatermark(":/wizard_new_harddisk.png");
 #else /* VBOX_WS_MAC */
     /* Assign background image: */
-    assignBackground(":/vmw_new_harddisk_bg.png");
+    assignBackground(":/wizard_new_harddisk_bg.png");
 #endif /* VBOX_WS_MAC */
 }
 
 bool UIWizardCloneVD::copyVirtualDisk()
 {
     /* Gather attributes: */
-    CMedium comSourceVirtualDisk = field("sourceVirtualDisk").value<CMedium>();
+
     const CMediumFormat comMediumFormat = field("mediumFormat").value<CMediumFormat>();
     const qulonglong uVariant = field("mediumVariant").toULongLong();
     const QString strMediumPath = field("mediumPath").toString();
@@ -62,7 +56,7 @@ bool UIWizardCloneVD::copyVirtualDisk()
     AssertReturn(uSize > 0, false);
 
     /* Get VBox object: */
-    CVirtualBox comVBox = vboxGlobal().virtualBox();
+    CVirtualBox comVBox = uiCommon().virtualBox();
 
     /* Create new virtual disk image: */
     CMedium comVirtualDisk = comVBox.CreateMedium(comMediumFormat.GetName(), strMediumPath, KAccessMode_ReadWrite, m_enmSourceVirtualDiskDeviceType);
@@ -82,10 +76,10 @@ bool UIWizardCloneVD::copyVirtualDisk()
     }
 
     /* Copy source image to new one: */
-    CProgress comProgress = comSourceVirtualDisk.CloneTo(comVirtualDisk, variants, CMedium());
-    if (!comSourceVirtualDisk.isOk())
+    CProgress comProgress = m_comSourceVirtualDisk.CloneTo(comVirtualDisk, variants, CMedium());
+    if (!m_comSourceVirtualDisk.isOk())
     {
-        msgCenter().cannotCreateMediumStorage(comSourceVirtualDisk, strMediumPath, this);
+        msgCenter().cannotCreateMediumStorage(m_comSourceVirtualDisk, strMediumPath, this);
         return false;
     }
 
@@ -102,8 +96,8 @@ bool UIWizardCloneVD::copyVirtualDisk()
     /* Save created image as target one: */
     m_comTargetVirtualDisk = comVirtualDisk;
 
-    /* Just close the created image, it is not required anymore: */
-    m_comTargetVirtualDisk.Close();
+    /* Make sure we register the medium to VBox: */
+    uiCommon().createMedium(UIMedium(m_comTargetVirtualDisk, UIMediumDeviceType_HardDisk, KMediumState_Created));
 
     return true;
 }
@@ -125,17 +119,14 @@ void UIWizardCloneVD::prepare()
     {
         case WizardMode_Basic:
         {
-            setPage(Page1, new UIWizardCloneVDPageBasic1(m_comSourceVirtualDisk,
-                                                         m_enmSourceVirtualDiskDeviceType));
+            setPage(Page1, new UIWizardCloneVDPageBasic1(m_enmSourceVirtualDiskDeviceType));
             setPage(Page2, new UIWizardCloneVDPageBasic2(m_enmSourceVirtualDiskDeviceType));
-            setPage(Page3, new UIWizardCloneVDPageBasic3(m_enmSourceVirtualDiskDeviceType));
-            setPage(Page4, new UIWizardCloneVDPageBasic4);
+            setPage(Page3, new UIWizardCloneVDPageBasic3);
             break;
         }
         case WizardMode_Expert:
         {
-            setPage(PageExpert, new UIWizardCloneVDPageExpert(m_comSourceVirtualDisk,
-                                                              m_enmSourceVirtualDiskDeviceType));
+            setPage(PageExpert, new UIWizardCloneVDPageExpert(m_enmSourceVirtualDiskDeviceType));
             break;
         }
         default:
@@ -147,4 +138,3 @@ void UIWizardCloneVD::prepare()
     /* Call to base-class: */
     UIWizard::prepare();
 }
-

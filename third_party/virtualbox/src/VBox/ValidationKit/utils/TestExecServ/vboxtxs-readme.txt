@@ -26,21 +26,25 @@ for both cases.
 Linux Installation
 ------------------
 
-1. cd /root
-2. scp/download VBoxValidationKit*.zip there.
-3. unzip VBoxValidationKit*.zip
-4. chmod -R u+w,a+x /opt/validationkit/
-5. cd /etc/init.d/
-6a. init.rc: Link up the right init script (see connection type above):
-      nat)   ln -s ../../opt/validationkit/linux/vboxtxs-nat ./vboxtxs
-      other) ln -s ../../opt/validationkit/linux/vboxtxs     ./vboxtxs
-6b. systemd: Link/copy up the vboxtxs.system to [/usr]/lib/systemd/.
-7a. init.rc: Add vboxtxs to runlevels 2, 3, 5 and any other that makes sense
-   on the distro. There is usually some command for doing this...
-7b: systemd: Enable the vboxtxs service.
-8. Check the cdrom location in vboxtxs and fix it so it's correct, make sure
-   to update in svn as well.
-9. reboot / done.
+1.   cd /root
+2.   scp/download VBoxValidationKit*.zip there.
+3.   unzip VBoxValidationKit*.zip
+4.   chmod -R u+w,a+x /opt/validationkit/
+5.   cd /etc/init.d/
+6a.  init.rc: Link up the right init script (see connection type above):
+       nat)   ln -s ../../opt/validationkit/linux/vboxtxs-nat ./vboxtxs
+       other) ln -s ../../opt/validationkit/linux/vboxtxs     ./vboxtxs
+6b.  systemd: Link/copy up the vboxtxs.system to [/usr]/lib/systemd/.
+7a.  init.rc: Add vboxtxs to runlevels 2, 3, 5 and any other that makes sense
+     on the distro. There is usually some command for doing this...
+7b.  systemd: Enable the vboxtxs service.
+8a.  check the CD-ROM location (--cdrom <path>) in vboxtxs and fix it so it's correct, make sure
+     to update in svn as well.
+8a.  optional: If no suitable CD-ROM location is available on the guest yet, do a:
+    mkdir -p /media/cdrom; vi /etc/fstab
+     and enter this in /etc/fstab:
+    /dev/sr0<tab>/media/cdrom<tab>udf,iso9660<tab>user,noauto,exec,utf8<tab>0<tab>0
+9.   reboot / done.
 
 
 OS/2 Installation
@@ -101,6 +105,15 @@ Windows Installation
 11. reboot / done
 12. Do test.
 
+NT 3.1 and 3.x tricks:
+- Make sure the file system is NTFS.  Observed issues converting 2GB partitions,
+  more success with smaller.
+- For NT3.1 PCNET drivers can be found on the net.  No DHCP, so NAT only with
+  IP 10.0.2.15, 10.0.2.2 as gateway, and 10.0.2.3 as DNS with --natdnsproxy1 on.
+- On NT3.1 you need to add SystemDrive=C: to the environment.
+- Need to perform registry edits manually.
+- Use startup folder instead of non-exising Windows/Run key.
+
 
 Testing the setup
 -----------------
@@ -108,8 +121,5 @@ Testing the setup
 1. Make sure the validationkit.iso is inserted.
 2. Boot / reboot the guest.
 3. Depending on the TXS transport options:
-      nat)   python testdrivers/tst-txsclient --reversed-setup
-      other) python testdrivers/tst-txsclient --hostname <guest-ip>
-
-
-
+      nat)   python testdriver/tst-txsclient.py --reversed-setup
+      other) python testdriver/tst-txsclient.py --hostname <guest-ip>

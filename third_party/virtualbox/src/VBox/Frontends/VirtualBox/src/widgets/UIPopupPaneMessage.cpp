@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2013-2017 Oracle Corporation
+ * Copyright (C) 2013-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -15,19 +15,17 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
-#ifdef VBOX_WITH_PRECOMPILED_HEADERS
-# include <precomp.h>
-#else  /* !VBOX_WITH_PRECOMPILED_HEADERS */
 /* Qt includes: */
-# include <QLabel>
-# include <QCheckBox>
+#include <QLabel>
+#include <QCheckBox>
 
 /* GUI includes: */
-# include "UIPopupPaneMessage.h"
-# include "UIAnimationFramework.h"
+#include "UIAnimationFramework.h"
+#include "UIPopupPane.h"
+#include "UIPopupPaneMessage.h"
 
-#endif /* !VBOX_WITH_PRECOMPILED_HEADERS */
-
+/* Other VBox includes: */
+#include <iprt/assert.h>
 
 UIPopupPaneMessage::UIPopupPaneMessage(QWidget *pParent, const QString &strText, bool fFocused)
     : QWidget(pParent)
@@ -147,6 +145,7 @@ void UIPopupPaneMessage::prepareContent()
 {
     /* Create label: */
     m_pLabel = new QLabel(this);
+    if (m_pLabel)
     {
         /* Configure label: */
         m_pLabel->setFont(tuneFont(m_pLabel->font()));
@@ -158,9 +157,13 @@ void UIPopupPaneMessage::prepareContent()
 
 void UIPopupPaneMessage::prepareAnimation()
 {
-    /* Propagate parent signals: */
-    connect(parent(), SIGNAL(sigFocusEnter()), this, SLOT(sltFocusEnter()));
-    connect(parent(), SIGNAL(sigFocusLeave()), this, SLOT(sltFocusLeave()));
+    UIPopupPane *pPopupPane = qobject_cast<UIPopupPane*>(parent());
+    AssertReturnVoid(pPopupPane);
+    {
+        /* Propagate parent signals: */
+        connect(pPopupPane, &UIPopupPane::sigFocusEnter, this, &UIPopupPaneMessage::sltFocusEnter);
+        connect(pPopupPane, &UIPopupPane::sigFocusLeave, this, &UIPopupPaneMessage::sltFocusLeave);
+    }
     /* Install geometry animation for 'minimumSizeHint' property: */
     m_pAnimation = UIAnimation::installPropertyAnimation(this, "minimumSizeHint", "collapsedSizeHint", "expandedSizeHint",
                                                          SIGNAL(sigFocusEnter()), SIGNAL(sigFocusLeave()), m_fFocused);
@@ -204,4 +207,3 @@ QFont UIPopupPaneMessage::tuneFont(QFont font)
 #endif
     return font;
 }
-

@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -23,7 +23,7 @@
 #include "DisplayImpl.h"
 #include "KeyboardImpl.h"
 #include "MouseImpl.h"
-#ifdef VBOX_WITH_VRDE_AUDIO
+#ifdef VBOX_WITH_AUDIO_VRDE
 #include "DrvAudioVRDE.h"
 #endif
 #ifdef VBOX_WITH_EXTPACK
@@ -48,7 +48,6 @@
 #include <VBox/err.h>
 #include <VBox/RemoteDesktop/VRDEOrders.h>
 #include <VBox/com/listeners.h>
-#include <VBox/HostServices/VBoxCrOpenGLSvc.h>
 
 
 class VRDPConsoleListener
@@ -618,9 +617,7 @@ DECLCALLBACK(int) ConsoleVRDPServer::VRDPCallbackQueryProperty(void *pvCallback,
 
         case VRDE_QP_NUMBER_MONITORS:
         {
-            ULONG cMonitors = 1;
-
-            server->mConsole->i_machine()->COMGETTER(MonitorCount)(&cMonitors);
+            uint32_t cMonitors = server->mConsole->i_getDisplay()->i_getMonitorCount();
 
             if (cbBuffer >= sizeof(uint32_t))
             {
@@ -932,19 +929,25 @@ DECLCALLBACK(int) ConsoleVRDPServer::VRDPCallbackClientLogon(void *pvCallback, u
 
 DECLCALLBACK(void) ConsoleVRDPServer::VRDPCallbackClientConnect(void *pvCallback, uint32_t u32ClientId)
 {
-    ConsoleVRDPServer *server = static_cast<ConsoleVRDPServer*>(pvCallback);
+    ConsoleVRDPServer *pServer = static_cast<ConsoleVRDPServer*>(pvCallback);
 
-    server->mConsole->i_VRDPClientConnect(u32ClientId);
+    pServer->mConsole->i_VRDPClientConnect(u32ClientId);
 
     /* Should the server report usage of an interface for each client?
      * Similar to Intercept.
      */
-    int c = ASMAtomicIncS32(&server->mcClients);
+    int c = ASMAtomicIncS32(&pServer->mcClients);
     if (c == 1)
     {
         /* Features which should be enabled only if there is a client. */
-        server->remote3DRedirect(true);
+        pServer->remote3DRedirect(true);
     }
+
+#ifdef VBOX_WITH_AUDIO_VRDE
+    AudioVRDE *pVRDE = pServer->mConsole->i_getAudioVRDE();
+    if (pVRDE)
+        pVRDE->onVRDEClientConnect(u32ClientId);
+#endif
 }
 
 DECLCALLBACK(void) ConsoleVRDPServer::VRDPCallbackClientDisconnect(void *pvCallback, uint32_t u32ClientId,
@@ -960,10 +963,13 @@ DECLCALLBACK(void) ConsoleVRDPServer::VRDPCallbackClientDisconnect(void *pvCallb
         LogFunc(("Disconnected client %u\n", u32ClientId));
         ASMAtomicWriteU32(&pServer->mu32AudioInputClientId, 0);
 
-#ifdef VBOX_WITH_VRDE_AUDIO
+#ifdef VBOX_WITH_AUDIO_VRDE
         AudioVRDE *pVRDE = pServer->mConsole->i_getAudioVRDE();
         if (pVRDE)
+        {
             pVRDE->onVRDEInputIntercept(false /* fIntercept */);
+            pVRDE->onVRDEClientDisconnect(u32ClientId);
+        }
 #endif
     }
 
@@ -1023,7 +1029,7 @@ DECLCALLBACK(int) ConsoleVRDPServer::VRDPCallbackIntercept(void *pvCallback, uin
             {
                 LogFunc(("Intercepting audio input by client %RU32\n", u32ClientId));
 
-#ifdef VBOX_WITH_VRDE_AUDIO
+#ifdef VBOX_WITH_AUDIO_VRDE
                 AudioVRDE *pVRDE = pServer->mConsole->i_getAudioVRDE();
                 if (pVRDE)
                     pVRDE->onVRDEInputIntercept(true /* fIntercept */);
@@ -1050,6 +1056,7 @@ DECLCALLBACK(int) ConsoleVRDPServer::VRDPCallbackUSB(void *pvCallback, void *pvI
 #ifdef VBOX_WITH_USB
     return USBClientResponseCallback(pvIntercept, u32ClientId, u8Code, pvRet, cbRet);
 #else
+    RT_NOREF(pvCallback, pvIntercept, u32ClientId, u8Code, pvRet, cbRet);
     return VERR_NOT_SUPPORTED;
 #endif
 }
@@ -1284,7 +1291,7 @@ DECLCALLBACK(void) ConsoleVRDPServer::VRDPCallbackVideoModeHint(void *pvCallback
 
     server->mConsole->i_getDisplay()->SetVideoModeHint(uScreenId, TRUE /*=enabled*/,
                                                        FALSE /*=changeOrigin*/, 0/*=OriginX*/, 0/*=OriginY*/,
-                                                       cWidth, cHeight, cBitsPerPixel);
+                                                       cWidth, cHeight, cBitsPerPixel, TRUE /*=notify*/);
 }
 
 DECLCALLBACK(void) ConsoleVRDPServer::VRDECallbackAudioIn(void *pvCallback,
@@ -1298,7 +1305,7 @@ DECLCALLBACK(void) ConsoleVRDPServer::VRDECallbackAudioIn(void *pvCallback,
     ConsoleVRDPServer *pServer = static_cast<ConsoleVRDPServer*>(pvCallback);
     AssertPtrReturnVoid(pServer);
 
-#ifdef VBOX_WITH_VRDE_AUDIO
+#ifdef VBOX_WITH_AUDIO_VRDE
     AudioVRDE *pVRDE = pServer->mConsole->i_getAudioVRDE();
     if (!pVRDE) /* Nothing to do, bail out early. */
         return;
@@ -1324,10 +1331,11 @@ DECLCALLBACK(void) ConsoleVRDPServer::VRDECallbackAudioIn(void *pvCallback,
     }
 #else
     RT_NOREF(pvCtx, u32Event, pvData, cbData);
-#endif /* VBOX_WITH_VRDE_AUDIO */
+#endif /* VBOX_WITH_AUDIO_VRDE */
 }
 
 ConsoleVRDPServer::ConsoleVRDPServer(Console *console)
+    : mhClipboard(NULL)
 {
     mConsole = console;
 
@@ -1786,6 +1794,7 @@ void ConsoleVRDPServer::fetchCurrentState(void)
     }
 }
 
+#if 0 /** @todo Chromium got removed (see @bugref{9529}) and this is not available for VMSVGA yet. */
 typedef struct H3DORInstance
 {
     ConsoleVRDPServer *pThis;
@@ -2086,6 +2095,7 @@ typedef struct H3DORInstance
     H3DORLOG(("H3DORContextProperty: %Rrc\n", rc));
     return rc;
 }
+#endif
 
 void ConsoleVRDPServer::remote3DRedirect(bool fEnable)
 {
@@ -2110,6 +2120,7 @@ void ConsoleVRDPServer::remote3DRedirect(bool fEnable)
         return;
     }
 
+#if 0 /** @todo Implement again for VMSVGA. */
     /* Tell the host 3D service to redirect output using the ConsoleVRDPServer callbacks. */
     H3DOUTPUTREDIRECT outputRedirect =
     {
@@ -2127,27 +2138,6 @@ void ConsoleVRDPServer::remote3DRedirect(bool fEnable)
         /* This will tell the service to disable rediection. */
         RT_ZERO(outputRedirect);
     }
-
-#if defined(VBOX_WITH_HGCM) && defined(VBOX_WITH_CROGL)
-    VBOXCRCMDCTL_HGCM data;
-    data.Hdr.enmType = VBOXCRCMDCTL_TYPE_HGCM;
-    data.Hdr.u32Function = SHCRGL_HOST_FN_SET_OUTPUT_REDIRECT;
-
-    data.aParms[0].type = VBOX_HGCM_SVC_PARM_PTR;
-    data.aParms[0].u.pointer.addr = &outputRedirect;
-    data.aParms[0].u.pointer.size = sizeof(outputRedirect);
-
-    int rc = mConsole->i_getDisplay()->i_crCtlSubmitSync(&data.Hdr, sizeof (data));
-    if (!RT_SUCCESS(rc))
-    {
-        Log(("SHCRGL_HOST_FN_SET_CONSOLE failed with %Rrc\n", rc));
-        return;
-    }
-
-    LogRel(("VRDE: %s 3D redirect.\n", fEnable? "Enabled": "Disabled"));
-# ifdef DEBUG_misha
-    AssertFailed();
-# endif
 #endif
 
     return;
@@ -2161,10 +2151,12 @@ void ConsoleVRDPServer::remote3DRedirect(bool fEnable)
                                                                      uint32_t cbData)
 {
     RT_NOREF(hVideo);
-    H3DORLOG(("H3DOR: VRDEImageCbNotify: pvContext %p, pvUser %p, hVideo %p, u32Id %u, pvData %p, cbData %d\n",
+    Log(("H3DOR: VRDEImageCbNotify: pvContext %p, pvUser %p, hVideo %p, u32Id %u, pvData %p, cbData %d\n",
               pvContext, pvUser, hVideo, u32Id, pvData, cbData));
 
     ConsoleVRDPServer *pServer = static_cast<ConsoleVRDPServer*>(pvContext); NOREF(pServer);
+
+#if 0 /** @todo Implement again for VMSVGA. */
     H3DORInstance *p = (H3DORInstance *)pvUser;
     Assert(p);
     Assert(p->pThis);
@@ -2179,7 +2171,7 @@ void ConsoleVRDPServer::remote3DRedirect(bool fEnable)
         }
 
         uint32_t u32StreamId = *(uint32_t *)pvData;
-        H3DORLOG(("H3DOR: VRDE_IMAGE_NOTIFY_HANDLE_CREATE u32StreamId %d\n",
+        Log(("H3DOR: VRDE_IMAGE_NOTIFY_HANDLE_CREATE u32StreamId %d\n",
                   u32StreamId));
 
         if (u32StreamId != 0)
@@ -2191,6 +2183,9 @@ void ConsoleVRDPServer::remote3DRedirect(bool fEnable)
            /* The stream has not been created. */
         }
     }
+#else
+    RT_NOREF(pvUser, u32Id, pvData, cbData);
+#endif
 
     return VINF_SUCCESS;
 }
@@ -3201,15 +3196,11 @@ AuthResult ConsoleVRDPServer::Authenticate(const Guid &uuid, AuthGuestJudgement 
 
         Utf8Str filename = authLibrary;
 
-        int rc = AuthLibLoad(&mAuthLibCtx, filename.c_str());
-
-        if (RT_FAILURE(rc))
+        int vrc = AuthLibLoad(&mAuthLibCtx, filename.c_str());
+        if (RT_FAILURE(vrc))
         {
-            mConsole->setError(E_FAIL,
-                               mConsole->tr("Could not load the external authentication library '%s' (%Rrc)"),
-                               filename.c_str(),
-                               rc);
-
+            mConsole->setErrorBoth(E_FAIL, vrc, mConsole->tr("Could not load the external authentication library '%s' (%Rrc)"),
+                                   filename.c_str(), vrc);
             return AuthResultAccessDenied;
         }
     }
@@ -3294,7 +3285,7 @@ DECLCALLBACK(int) ConsoleVRDPServer::ClipboardCallback(void *pvCallback,
 
     ConsoleVRDPServer *pServer = static_cast <ConsoleVRDPServer *>(pvCallback);
 
-    NOREF(u32ClientId);
+    RT_NOREF(u32ClientId);
 
     switch (u32Function)
     {
@@ -3321,16 +3312,16 @@ DECLCALLBACK(int) ConsoleVRDPServer::ClipboardCallback(void *pvCallback,
         } break;
 
         default:
+        {
             rc = VERR_NOT_SUPPORTED;
+        } break;
     }
 
     return rc;
 }
 
-DECLCALLBACK(int) ConsoleVRDPServer::ClipboardServiceExtension(void *pvExtension,
-                                                               uint32_t u32Function,
-                                                               void *pvParms,
-                                                               uint32_t cbParms)
+/*static*/ DECLCALLBACK(int)
+ConsoleVRDPServer::ClipboardServiceExtension(void *pvExtension, uint32_t u32Function, void *pvParms, uint32_t cbParms)
 {
     RT_NOREF(cbParms);
     LogFlowFunc(("pvExtension = %p, u32Function = %d, pvParms = %p, cbParms = %d\n",
@@ -3340,7 +3331,7 @@ DECLCALLBACK(int) ConsoleVRDPServer::ClipboardServiceExtension(void *pvExtension
 
     ConsoleVRDPServer *pServer = static_cast <ConsoleVRDPServer *>(pvExtension);
 
-    VBOXCLIPBOARDEXTPARMS *pParms = (VBOXCLIPBOARDEXTPARMS *)pvParms;
+    SHCLEXTPARMS *pParms = (SHCLEXTPARMS *)pvParms;
 
     switch (u32Function)
     {
@@ -3356,7 +3347,7 @@ DECLCALLBACK(int) ConsoleVRDPServer::ClipboardServiceExtension(void *pvExtension
             {
                 mpEntryPoints->VRDEClipboard(pServer->mhServer,
                                              VRDE_CLIPBOARD_FUNCTION_FORMAT_ANNOUNCE,
-                                             pParms->u32Format,
+                                             pParms->uFormat,
                                              NULL,
                                              0,
                                              NULL);
@@ -3373,7 +3364,7 @@ DECLCALLBACK(int) ConsoleVRDPServer::ClipboardServiceExtension(void *pvExtension
             {
                 mpEntryPoints->VRDEClipboard(pServer->mhServer,
                                              VRDE_CLIPBOARD_FUNCTION_DATA_READ,
-                                             pParms->u32Format,
+                                             pParms->uFormat,
                                              pParms->u.pvData,
                                              pParms->cbData,
                                              &pParms->cbData);
@@ -3386,7 +3377,7 @@ DECLCALLBACK(int) ConsoleVRDPServer::ClipboardServiceExtension(void *pvExtension
             {
                 mpEntryPoints->VRDEClipboard(pServer->mhServer,
                                              VRDE_CLIPBOARD_FUNCTION_DATA_WRITE,
-                                             pParms->u32Format,
+                                             pParms->uFormat,
                                              pParms->u.pvData,
                                              pParms->cbData,
                                              NULL);
@@ -3403,18 +3394,16 @@ DECLCALLBACK(int) ConsoleVRDPServer::ClipboardServiceExtension(void *pvExtension
 void ConsoleVRDPServer::ClipboardCreate(uint32_t u32ClientId)
 {
     RT_NOREF(u32ClientId);
-    int rc = lockConsoleVRDPServer();
 
+    int rc = lockConsoleVRDPServer();
     if (RT_SUCCESS(rc))
     {
         if (mcClipboardRefs == 0)
         {
             rc = HGCMHostRegisterServiceExtension(&mhClipboard, "VBoxSharedClipboard", ClipboardServiceExtension, this);
+            AssertRC(rc);
 
-            if (RT_SUCCESS(rc))
-            {
-                mcClipboardRefs++;
-            }
+            mcClipboardRefs++;
         }
 
         unlockConsoleVRDPServer();
@@ -3424,15 +3413,20 @@ void ConsoleVRDPServer::ClipboardCreate(uint32_t u32ClientId)
 void ConsoleVRDPServer::ClipboardDelete(uint32_t u32ClientId)
 {
     RT_NOREF(u32ClientId);
-    int rc = lockConsoleVRDPServer();
 
+    int rc = lockConsoleVRDPServer();
     if (RT_SUCCESS(rc))
     {
-        mcClipboardRefs--;
-
-        if (mcClipboardRefs == 0)
+        Assert(mcClipboardRefs);
+        if (mcClipboardRefs > 0)
         {
-            HGCMHostUnregisterServiceExtension(mhClipboard);
+            mcClipboardRefs--;
+
+            if (mcClipboardRefs == 0 && mhClipboard)
+            {
+                HGCMHostUnregisterServiceExtension(mhClipboard);
+                mhClipboard = NULL;
+            }
         }
 
         unlockConsoleVRDPServer();
@@ -3484,6 +3478,8 @@ void ConsoleVRDPServer::USBBackendCreate(uint32_t u32ClientId, void **ppvInterce
             pRemoteUSBBackend->Release();
         }
     }
+#else
+    RT_NOREF(u32ClientId, ppvIntercept);
 #endif /* VBOX_WITH_USB */
 }
 
@@ -3515,6 +3511,8 @@ void ConsoleVRDPServer::USBBackendDelete(uint32_t u32ClientId)
         /* Here the instance has been excluded from the list and can be dereferenced. */
         pRemoteUSBBackend->Release();
     }
+#else
+    RT_NOREF(u32ClientId);
 #endif
 }
 
@@ -3553,7 +3551,8 @@ void *ConsoleVRDPServer::USBBackendRequestPointer(uint32_t u32ClientId, const Gu
     {
         return pRemoteUSBBackend->GetBackendCallbackPointer();
     }
-
+#else
+    RT_NOREF(u32ClientId, pGuid);
 #endif
     return NULL;
 }
@@ -3582,6 +3581,8 @@ void ConsoleVRDPServer::USBBackendReleasePointer(const Guid *pGuid)
             pRemoteUSBBackend->Release();
         }
     }
+#else
+    RT_NOREF(pGuid);
 #endif
 }
 
@@ -3691,6 +3692,8 @@ void ConsoleVRDPServer::usbBackendRemoveFromList(RemoteUSBBackend *pRemoteUSBBac
     pRemoteUSBBackend->pNext = pRemoteUSBBackend->pPrev = NULL;
 
     unlockConsoleVRDPServer();
+#else
+    RT_NOREF(pRemoteUSBBackend);
 #endif
 }
 

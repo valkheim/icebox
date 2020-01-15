@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2017 Oracle Corporation
+ * Copyright (C) 2017-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -1772,7 +1772,6 @@ static int rtFsIsoMakerWalkPathBySpec(PRTFSISOMAKERNAMESPACE pNamespace, const c
      */
     while (RTPATH_IS_SLASH(*pszPath))
         pszPath++;
-    AssertReturn(*pszPath, VERR_ISOMK_IPE_EMPTY_PATH);
 
     PRTFSISOMAKERNAME pCur = pNamespace->pRoot;
     if (!pCur)
@@ -2732,7 +2731,8 @@ static int rtFsIsoMakerObjRemoveWorker(PRTFSISOMAKERINT pThis, PRTFSISOMAKEROBJ 
     if (pObj->enmType == RTFSISOMAKEROBJTYPE_FILE)
     {
         PRTFSISOMAKERFILE pFile = (PRTFSISOMAKERFILE)pObj;
-        AssertReturn(pFile->enmSrcType != RTFSISOMAKERSRCTYPE_TRANS_TBL, VERR_ACCESS_DENIED);
+        if (pFile->enmSrcType == RTFSISOMAKERSRCTYPE_TRANS_TBL)
+            return VWRN_DANGLING_OBJECTS; /* HACK ALERT! AssertReturn(pFile->enmSrcType != RTFSISOMAKERSRCTYPE_TRANS_TBL, VERR_ACCESS_DENIED); */
         AssertReturn(pFile != pThis->pBootCatFile, VERR_ACCESS_DENIED);
     }
 
@@ -3108,7 +3108,6 @@ static int rtFsIsoMakerInitCommonObj(PRTFSISOMAKERINT pThis, PRTFSISOMAKEROBJ pO
         pObj->ChangeTime        = pObjInfo->ChangeTime;
         pObj->ModificationTime  = pObjInfo->ModificationTime;
         pObj->AccessedTime      = pObjInfo->AccessTime;
-        pObj->fMode             = pObjInfo->Attr.fMode;
         if (!pThis->fStrictAttributeStyle)
         {
             if (enmType == RTFSISOMAKEROBJTYPE_DIR)
@@ -3262,7 +3261,7 @@ static int rtFsIsoMakerAddUnnamedFileWorker(PRTFSISOMAKERINT pThis, PCRTFSOBJINF
     if (RT_SUCCESS(rc))
     {
         pFile->cbData       = pObjInfo ? pObjInfo->cbObject : 0;
-        pThis->cbData += RT_ALIGN_64(pFile->cbData, RTFSISOMAKER_SECTOR_SIZE);
+        pThis->cbData      += RT_ALIGN_64(pFile->cbData, RTFSISOMAKER_SECTOR_SIZE);
         pFile->offData      = UINT64_MAX;
         pFile->enmSrcType   = RTFSISOMAKERSRCTYPE_INVALID;
         pFile->u.pszSrcPath = NULL;
@@ -4387,7 +4386,10 @@ static int rtFsIsoMakerFinalizeRemoveOrphans(PRTFSISOMAKERINT pThis)
                       pCur->enmType == RTFSISOMAKEROBJTYPE_FILE ? ((PRTFSISOMAKERFILE)(pCur))->cbData : 0));
                 int rc = rtFsIsoMakerObjRemoveWorker(pThis, pCur);
                 if (RT_SUCCESS(rc))
-                    cRemoved++;
+                {
+                    if (rc != VWRN_DANGLING_OBJECTS) /** */
+                        cRemoved++;
+                }
                 else
                     return rc;
             }
@@ -6245,7 +6247,7 @@ static int rtFsIsoMakerOutFile_ProduceTransTbl(PRTFSISOMAKEROUTPUTFILE pThis, PR
      * Check that the size matches our estimate.
      */
     uint64_t cbResult = 0;
-    rc = RTVfsFileGetSize(hVfsFile, &cbResult);
+    rc = RTVfsFileQuerySize(hVfsFile, &cbResult);
     if (RT_SUCCESS(rc) && cbResult == pFile->cbData)
     {
         pThis->hVfsSrcFile = hVfsFile;
@@ -7280,33 +7282,12 @@ static DECLCALLBACK(int) rtFsIsoMakerOutFile_Read(void *pvThis, RTFOFF off, PCRT
 
 
 /**
- * @interface_method_impl{RTVFSIOSTREAMOPS,pfnWrite}
- */
-static DECLCALLBACK(int) rtFsIsoMakerOutFile_Write(void *pvThis, RTFOFF off, PCRTSGBUF pSgBuf, bool fBlocking, size_t *pcbWritten)
-{
-    RT_NOREF(pvThis, off, pSgBuf, fBlocking, pcbWritten);
-    return VERR_WRITE_PROTECT;
-}
-
-
-/**
  * @interface_method_impl{RTVFSIOSTREAMOPS,pfnFlush}
  */
 static DECLCALLBACK(int) rtFsIsoMakerOutFile_Flush(void *pvThis)
 {
     RT_NOREF(pvThis);
     return VINF_SUCCESS;
-}
-
-
-/**
- * @interface_method_impl{RTVFSIOSTREAMOPS,pfnPollOne}
- */
-static DECLCALLBACK(int) rtFsIsoMakerOutFile_PollOne(void *pvThis, uint32_t fEvents, RTMSINTERVAL cMillies, bool fIntr,
-                                                     uint32_t *pfRetEvents)
-{
-    NOREF(pvThis);
-    return RTVfsUtilDummyPollOne(fEvents, cMillies, fIntr, pfRetEvents);
 }
 
 
@@ -7328,37 +7309,6 @@ static DECLCALLBACK(int) rtFsIsoMakerOutFile_Skip(void *pvThis, RTFOFF cb)
 {
     RTFOFF offIgnored;
     return rtFsIsoMakerOutFile_Seek(pvThis, cb, RTFILE_SEEK_CURRENT, &offIgnored);
-}
-
-
-/**
- * @interface_method_impl{RTVFSOBJSETOPS,pfnMode}
- */
-static DECLCALLBACK(int) rtFsIsoMakerOutFile_SetMode(void *pvThis, RTFMODE fMode, RTFMODE fMask)
-{
-    RT_NOREF(pvThis, fMode, fMask);
-    return VERR_WRITE_PROTECT;
-}
-
-
-/**
- * @interface_method_impl{RTVFSOBJSETOPS,pfnSetTimes}
- */
-static DECLCALLBACK(int) rtFsIsoMakerOutFile_SetTimes(void *pvThis, PCRTTIMESPEC pAccessTime, PCRTTIMESPEC pModificationTime,
-                                                      PCRTTIMESPEC pChangeTime, PCRTTIMESPEC pBirthTime)
-{
-    RT_NOREF(pvThis, pAccessTime, pModificationTime, pChangeTime, pBirthTime);
-    return VERR_WRITE_PROTECT;
-}
-
-
-/**
- * @interface_method_impl{RTVFSOBJSETOPS,pfnSetOwner}
- */
-static DECLCALLBACK(int) rtFsIsoMakerOutFile_SetOwner(void *pvThis, RTUID uid, RTGID gid)
-{
-    RT_NOREF(pvThis, uid, gid);
-    return VERR_WRITE_PROTECT;
 }
 
 
@@ -7443,9 +7393,9 @@ DECL_HIDDEN_CONST(const RTVFSFILEOPS) g_rtFsIsoMakerOutputFileOps =
         RTVFSIOSTREAMOPS_VERSION,
         RTVFSIOSTREAMOPS_FEAT_NO_SG,
         rtFsIsoMakerOutFile_Read,
-        rtFsIsoMakerOutFile_Write,
+        NULL /*Write*/,
         rtFsIsoMakerOutFile_Flush,
-        rtFsIsoMakerOutFile_PollOne,
+        NULL /*PollOne*/,
         rtFsIsoMakerOutFile_Tell,
         rtFsIsoMakerOutFile_Skip,
         NULL /*ZeroFill*/,
@@ -7456,13 +7406,15 @@ DECL_HIDDEN_CONST(const RTVFSFILEOPS) g_rtFsIsoMakerOutputFileOps =
     { /* ObjSet */
         RTVFSOBJSETOPS_VERSION,
         RT_UOFFSETOF(RTVFSFILEOPS, ObjSet) - RT_UOFFSETOF(RTVFSFILEOPS, Stream.Obj),
-        rtFsIsoMakerOutFile_SetMode,
-        rtFsIsoMakerOutFile_SetTimes,
-        rtFsIsoMakerOutFile_SetOwner,
+        NULL /*SetMode*/,
+        NULL /*SetTimes*/,
+        NULL /*SetOwner*/,
         RTVFSOBJSETOPS_VERSION
     },
     rtFsIsoMakerOutFile_Seek,
     rtFsIsoMakerOutFile_QuerySize,
+    NULL /*SetSize*/,
+    NULL /*QueryMaxSize*/,
     RTVFSFILEOPS_VERSION
 };
 

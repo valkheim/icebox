@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2009-2017 Oracle Corporation
+ * Copyright (C) 2009-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -1045,9 +1045,11 @@ RTDECL(int) RTLockValidatorClassCreateExV(PRTLOCKVALCLASS phClass, PCRTLOCKVALSR
      */
     size_t const       cbFile   = pSrcPos->pszFile ? strlen(pSrcPos->pszFile) + 1 : 0;
     size_t const     cbFunction = pSrcPos->pszFile ? strlen(pSrcPos->pszFunction) + 1 : 0;
-    RTLOCKVALCLASSINT *pThis    = (RTLOCKVALCLASSINT *)RTMemAllocVar(sizeof(*pThis) + cbFile + cbFunction + cbName);
+    RTLOCKVALCLASSINT *pThis    = (RTLOCKVALCLASSINT *)RTMemAllocVarTag(sizeof(*pThis) + cbFile + cbFunction + cbName,
+                                                                        "may-leak:RTLockValidatorClassCreateExV");
     if (!pThis)
         return VERR_NO_MEMORY;
+    RTMEM_MAY_LEAK(pThis);
 
     /*
      * Initialize the class data.
@@ -1431,6 +1433,7 @@ static int rtLockValidatorClassAddPriorClass(RTLOCKVALCLASSINT *pClass, RTLOCKVA
                         rc = VERR_NO_MEMORY;
                         break;
                     }
+                    RTMEM_MAY_LEAK(pNew);
                     pNew->pNext = NULL;
                     for (uint32_t i = 0; i < RT_ELEMENTS(pNew->aRefs); i++)
                     {
@@ -2901,7 +2904,9 @@ static void rcLockValidatorDoDeadlockComplaining(PRTLOCKVALDDSTACK pStack, PRTLO
 static int rtLockValidatorDeadlockDetection(PRTLOCKVALRECUNION pRec, PRTTHREADINT pThreadSelf, PCRTLOCKVALSRCPOS pSrcPos)
 {
     RTLOCKVALDDSTACK Stack;
+    rtLockValidatorSerializeDetectionEnter();
     int rc = rtLockValidatorDdDoDetection(&Stack, pRec, pThreadSelf);
+    rtLockValidatorSerializeDetectionLeave();
     if (RT_SUCCESS(rc))
         return VINF_SUCCESS;
 
@@ -2909,7 +2914,9 @@ static int rtLockValidatorDeadlockDetection(PRTLOCKVALRECUNION pRec, PRTTHREADIN
     {
         for (uint32_t iLoop = 0; ; iLoop++)
         {
+            rtLockValidatorSerializeDetectionEnter();
             rc = rtLockValidatorDdDoDetection(&Stack, pRec, pThreadSelf);
+            rtLockValidatorSerializeDetectionLeave();
             if (RT_SUCCESS_NP(rc))
                 return VINF_SUCCESS;
             if (rc != VERR_TRY_AGAIN)
@@ -3830,11 +3837,7 @@ static bool rtLockValidatorRecSharedMakeRoom(PRTLOCKVALRECSHRD pShared)
                 /*
                  * Ok, still not enough space.  Reallocate the table.
                  */
-#if 0  /** @todo enable this after making sure growing works flawlessly. */
                 uint32_t                cInc = RT_ALIGN_32(pShared->cEntries - cAllocated, 16);
-#else
-                uint32_t                cInc = RT_ALIGN_32(pShared->cEntries - cAllocated, 1);
-#endif
                 PRTLOCKVALRECSHRDOWN   *papOwners;
                 papOwners = (PRTLOCKVALRECSHRDOWN *)RTMemRealloc((void *)pShared->papOwners,
                                                                  (cAllocated + cInc) * sizeof(void *));

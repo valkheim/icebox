@@ -3,7 +3,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -23,8 +23,11 @@
  * terms and conditions of either the GPL or the CDDL or both.
  */
 
-#ifndef ___VBox_vmm_pdmqueue_h
-#define ___VBox_vmm_pdmqueue_h
+#ifndef VBOX_INCLUDED_vmm_pdmqueue_h
+#define VBOX_INCLUDED_vmm_pdmqueue_h
+#ifndef RT_WITHOUT_PRAGMA_ONCE
+# pragma once
+#endif
 
 #include <VBox/types.h>
 
@@ -35,7 +38,12 @@ RT_C_DECLS_BEGIN
  * @{
  */
 
-/** Pointer to a PDM queue. Also called PDM queue handle. */
+/** PDM queue handle. */
+typedef uint64_t PDMQUEUEHANDLE;
+/** NIL PDM queue handle. */
+#define NIL_PDMQUEUEHANDLE      UINT64_MAX
+
+/** Pointer to a PDM queue. */
 typedef struct PDMQUEUE *PPDMQUEUE;
 
 /** Pointer to a PDM queue item core. */
@@ -155,5 +163,5 @@ VMMDECL(bool)                 PDMQueueFlushIfNecessary(PPDMQUEUE pQueue);
 
 RT_C_DECLS_END
 
-#endif
+#endif /* !VBOX_INCLUDED_vmm_pdmqueue_h */
 

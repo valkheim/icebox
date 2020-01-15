@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2012-2017 Oracle Corporation
+ * Copyright (C) 2012-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -15,28 +15,21 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
-#ifdef VBOX_WITH_PRECOMPILED_HEADERS
-# include <precomp.h>
-#else  /* !VBOX_WITH_PRECOMPILED_HEADERS */
-
 /* Qt includes: */
-# include <QAccessibleObject>
-# include <QPainter>
-# include <QTextLayout>
-# include <QApplication>
-# include <QFontMetrics>
-# include <QGraphicsSceneHoverEvent>
+#include <QAccessibleObject>
+#include <QPainter>
+#include <QTextLayout>
+#include <QApplication>
+#include <QFontMetrics>
+#include <QGraphicsSceneHoverEvent>
 
 /* GUI includes: */
-# include "UIGraphicsTextPane.h"
-# include "UIRichTextString.h"
-# include "VBoxGlobal.h"
+#include "UIGraphicsTextPane.h"
+#include "UIRichTextString.h"
+#include "UICommon.h"
 
 /* Other VBox includes: */
-# include <iprt/assert.h>
-
-#endif /* !VBOX_WITH_PRECOMPILED_HEADERS */
-
+#include <iprt/assert.h>
 
 /** QAccessibleObject extension used as an accessibility interface for UITextTableLine. */
 class UIAccessibilityInterfaceForUITextTableLine : public QAccessibleObject
@@ -111,7 +104,6 @@ private:
     /** Returns corresponding text-table line. */
     UITextTableLine *line() const { return qobject_cast<UITextTableLine*>(object()); }
 };
-
 
 UIGraphicsTextPane::UIGraphicsTextPane(QIGraphicsWidget *pParent, QPaintDevice *pPaintDevice)
     : QIGraphicsWidget(pParent)
@@ -390,9 +382,9 @@ void UIGraphicsTextPane::updateHoverStuff()
 {
     /* Update mouse-cursor: */
     if (m_strHoveredAnchor.isNull())
-        VBoxGlobal::unsetCursor(this);
+        UICommon::unsetCursor(this);
     else
-        VBoxGlobal::setCursor(this, Qt::PointingHandCursor);
+        UICommon::setCursor(this, Qt::PointingHandCursor);
 
     /* Update text-layout: */
     updateTextLayout();

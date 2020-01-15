@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -30,7 +30,6 @@
 #include "VBoxDisplay.h"
 #include "VBoxVRDP.h"
 #include "VBoxHostVersion.h"
-#include "VBoxSharedFolders.h"
 #ifdef VBOX_WITH_DRAG_AND_DROP
 # include "VBoxDnD.h"
 #endif
@@ -142,7 +141,6 @@ HANDLE                g_hSeamlessKmNotifyEvent = 0;
 HINSTANCE             g_hInstance;
 HWND                  g_hwndToolWindow;
 NOTIFYICONDATA        g_NotifyIconData;
-DWORD                 g_dwMajorVersion;
 
 uint32_t              g_fGuestDisplaysChanged = 0;
 
@@ -151,13 +149,21 @@ static uint32_t       g_cHistory = 10;                   /* Enable log rotation,
 static uint32_t       g_uHistoryFileTime = RT_SEC_1DAY;  /* Max 1 day per file. */
 static uint64_t       g_uHistoryFileSize = 100 * _1M;    /* Max 100MB per file. */
 
+#ifdef DEBUG_andy
+static VBOXSERVICEINFO g_aServices[] =
+{
+    { &g_SvcDescClipboard,      NIL_RTTHREAD, NULL, false, false, false, false, true }
+};
+#else
 /**
  * The details of the services that has been compiled in.
  */
 static VBOXSERVICEINFO g_aServices[] =
 {
     { &g_SvcDescDisplay,        NIL_RTTHREAD, NULL, false, false, false, false, true },
+#ifdef VBOX_WITH_SHARED_CLIPBOARD
     { &g_SvcDescClipboard,      NIL_RTTHREAD, NULL, false, false, false, false, true },
+#endif
     { &g_SvcDescSeamless,       NIL_RTTHREAD, NULL, false, false, false, false, true },
     { &g_SvcDescVRDP,           NIL_RTTHREAD, NULL, false, false, false, false, true },
     { &g_SvcDescIPC,            NIL_RTTHREAD, NULL, false, false, false, false, true },
@@ -166,6 +172,7 @@ static VBOXSERVICEINFO g_aServices[] =
     { &g_SvcDescDnD,            NIL_RTTHREAD, NULL, false, false, false, false, true }
 #endif
 };
+#endif
 
 /* The global message table. */
 static VBOXGLOBALMESSAGE g_vboxGlobalMessageTable[] =
@@ -413,7 +420,8 @@ static int vboxTrayServicesStop(VBOXSERVICEENV *pEnv)
             }
         }
 
-        if (pSvc->pDesc->pfnDestroy)
+        if (   pSvc->pDesc->pfnDestroy
+            && pSvc->pInstance) /* pInstance might be NULL if initialization of a service failed. */
         {
             LogRel2(("Terminating service '%s' ...\n", pSvc->pDesc->pszName));
             pSvc->pDesc->pfnDestroy(pSvc->pInstance);
@@ -567,7 +575,7 @@ static int vboxTrayLogCreate(const char *pszLogFile)
                            "all",
                            "VBOXTRAY_RELEASE_LOG",
 #endif
-                           RT_ELEMENTS(s_apszGroups), s_apszGroups, RTLOGDEST_STDOUT,
+                           RT_ELEMENTS(s_apszGroups), s_apszGroups, UINT32_MAX, RTLOGDEST_STDOUT,
                            vboxTrayLogHeaderFooter, g_cHistory, g_uHistoryFileSize, g_uHistoryFileTime,
                            RTErrInfoInitStatic(&ErrInfo), pszLogFile);
     if (RT_SUCCESS(rc))
@@ -582,7 +590,7 @@ static int vboxTrayLogCreate(const char *pszLogFile)
         RTLogFlush(g_pLoggerRelease);
     }
     else
-        MessageBoxA(GetDesktopWindow(), ErrInfo.szMsg, "VBoxTray - Logging Error", MB_OK | MB_ICONERROR);
+        VBoxTrayShowError(ErrInfo.szMsg);
 
     return rc;
 }
@@ -590,6 +598,31 @@ static int vboxTrayLogCreate(const char *pszLogFile)
 static void vboxTrayLogDestroy(void)
 {
     RTLogDestroy(RTLogRelSetDefaultInstance(NULL));
+}
+
+/**
+ * Displays an error message.
+ *
+ * @returns RTEXITCODE_FAILURE.
+ * @param   pszFormat   The message text.
+ * @param   ...         Format arguments.
+ */
+RTEXITCODE VBoxTrayShowError(const char *pszFormat, ...)
+{
+    va_list args;
+    va_start(args, pszFormat);
+    char *psz = NULL;
+    RTStrAPrintfV(&psz, pszFormat, args);
+    va_end(args);
+
+    AssertPtr(psz);
+    LogRel(("Error: %s", psz));
+
+    MessageBox(GetDesktopWindow(), psz, "VBoxTray - Error", MB_OK | MB_ICONERROR);
+
+    RTStrFree(psz);
+
+    return RTEXITCODE_FAILURE;
 }
 
 static void vboxTrayDestroyToolWindow(void)
@@ -658,15 +691,6 @@ static int vboxTrayCreateToolWindow(void)
 
 static int vboxTraySetupSeamless(void)
 {
-    OSVERSIONINFO info;
-    g_dwMajorVersion = 5; /* Default to Windows XP. */
-    info.dwOSVersionInfoSize = sizeof(info);
-    if (GetVersionEx(&info))
-    {
-        Log(("Windows version %ld.%ld\n", info.dwMajorVersion, info.dwMinorVersion));
-        g_dwMajorVersion = info.dwMajorVersion;
-    }
-
     /* We need to setup a security descriptor to allow other processes modify access to the seamless notification event semaphore. */
     SECURITY_ATTRIBUTES     SecAttr;
     DWORD                   dwErr = ERROR_SUCCESS;
@@ -686,7 +710,8 @@ static int vboxTraySetupSeamless(void)
     else
     {
         /* For Vista and up we need to change the integrity of the security descriptor, too. */
-        if (g_dwMajorVersion >= 6)
+        uint64_t const uNtVersion = RTSystemGetNtVersion();
+        if (uNtVersion >= RTSYSTEM_MAKE_NT_VERSION(6, 0, 0))
         {
             BOOL (WINAPI * pfnConvertStringSecurityDescriptorToSecurityDescriptorA)(LPCSTR StringSecurityDescriptor, DWORD StringSDRevision, PSECURITY_DESCRIPTOR  *SecurityDescriptor, PULONG  SecurityDescriptorSize);
             *(void **)&pfnConvertStringSecurityDescriptorToSecurityDescriptorA =
@@ -728,7 +753,7 @@ static int vboxTraySetupSeamless(void)
         }
 
         if (   dwErr == ERROR_SUCCESS
-            && g_dwMajorVersion >= 5) /* Only for W2K and up ... */
+            && uNtVersion >= RTSYSTEM_MAKE_NT_VERSION(5, 0, 0)) /* Only for W2K and up ... */
         {
             g_hSeamlessWtNotifyEvent = CreateEvent(&SecAttr, FALSE, FALSE, VBOXHOOK_GLOBAL_WT_EVENT_NAME);
             if (g_hSeamlessWtNotifyEvent == NULL)
@@ -810,9 +835,10 @@ static int vboxTrayServiceMain(void)
         }
         else
         {
+            uint64_t const uNtVersion = RTSystemGetNtVersion();
             rc = vboxTrayCreateTrayIcon();
             if (   RT_SUCCESS(rc)
-                && g_dwMajorVersion >= 5) /* Only for W2K and up ... */
+                && uNtVersion >= RTSYSTEM_MAKE_NT_VERSION(5, 0, 0)) /* Only for W2K and up ... */
             {
                 /* We're ready to create the tooltip balloon.
                    Check in 10 seconds (@todo make seconds configurable) ... */
@@ -824,13 +850,8 @@ static int vboxTrayServiceMain(void)
 
             if (RT_SUCCESS(rc))
             {
-                /* Do the Shared Folders auto-mounting stuff. */
-                rc = VBoxSharedFoldersAutoMount();
-                if (RT_SUCCESS(rc))
-                {
-                    /* Report the host that we're up and running! */
-                    hlpReportStatus(VBoxGuestFacilityStatus_Active);
-                }
+                /* Report the host that we're up and running! */
+                hlpReportStatus(VBoxGuestFacilityStatus_Active);
             }
 
             if (RT_SUCCESS(rc))
@@ -976,6 +997,11 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
         rc = VbglR3Init();
         if (RT_SUCCESS(rc))
         {
+            /* Log the major windows NT version: */
+            uint64_t const uNtVersion = RTSystemGetNtVersion();
+            LogRel(("Windows version %u.%u build %u (uNtVersion=%#RX64)\n", RTSYSTEM_NT_VERSION_GET_MAJOR(uNtVersion),
+                    RTSYSTEM_NT_VERSION_GET_MINOR(uNtVersion), RTSYSTEM_NT_VERSION_GET_BUILD(uNtVersion), uNtVersion ));
+
             /* Save instance handle. */
             g_hInstance = hInstance;
 
@@ -1112,13 +1138,49 @@ static LRESULT CALLBACK vboxToolWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
 
         case WM_VBOXTRAY_TRAY_ICON:
         {
-            switch (lParam)
+            switch (LOWORD(lParam))
             {
                 case WM_LBUTTONDBLCLK:
                     break;
-
+#ifdef DEBUG
                 case WM_RBUTTONDOWN:
+                {
+                    POINT lpCursor;
+                    if (GetCursorPos(&lpCursor))
+                    {
+                        HMENU hContextMenu = CreatePopupMenu();
+                        if (hContextMenu)
+                        {
+                            UINT_PTR uMenuItem = 9999;
+                            UINT     fMenuItem = MF_BYPOSITION | MF_STRING;
+                            if (InsertMenuW(hContextMenu, UINT_MAX, fMenuItem, uMenuItem, L"Exit"))
+                            {
+                                SetForegroundWindow(hWnd);
+
+                                const bool fBlockWhileTracking = true;
+
+                                UINT fTrack = TPM_LEFTALIGN | TPM_LEFTBUTTON | TPM_BOTTOMALIGN;
+
+                                if (fBlockWhileTracking)
+                                    fTrack |= TPM_RETURNCMD | TPM_NONOTIFY;
+
+                                UINT uMsg = TrackPopupMenu(hContextMenu, fTrack, lpCursor.x, lpCursor.y, 0, hWnd, NULL);
+                                if (   uMsg
+                                    && fBlockWhileTracking)
+                                {
+                                    if (uMsg == uMenuItem)
+                                        PostMessage(g_hwndToolWindow, WM_QUIT, 0, 0);
+                                }
+                                else if (!uMsg)
+                                    LogFlowFunc(("Tracking popup menu failed with %ld\n", GetLastError()));
+                            }
+
+                            DestroyMenu(hContextMenu);
+                        }
+                    }
                     break;
+                }
+#endif
             }
             return 0;
         }
@@ -1443,18 +1505,9 @@ static BOOL vboxDtCheckTimer(WPARAM wParam)
 
 static int vboxDtInit()
 {
-    int rc = VINF_SUCCESS;
-    OSVERSIONINFO info;
-    g_dwMajorVersion = 5; /* Default to Windows XP. */
-    info.dwOSVersionInfoSize = sizeof(info);
-    if (GetVersionEx(&info))
-    {
-        LogRel(("Windows version %ld.%ld\n", info.dwMajorVersion, info.dwMinorVersion));
-        g_dwMajorVersion = info.dwMajorVersion;
-    }
-
     RT_ZERO(gVBoxDt);
 
+    int rc;
     gVBoxDt.hNotifyEvent = CreateEvent(NULL, FALSE, FALSE, VBOXHOOK_GLOBAL_DT_EVENT_NAME);
     if (gVBoxDt.hNotifyEvent != NULL)
     {
@@ -1501,7 +1554,8 @@ static int vboxDtInit()
                 {
                     BOOL fRc = FALSE;
                     /* For Vista and up we need to change the integrity of the security descriptor, too. */
-                    if (g_dwMajorVersion >= 6)
+                    uint64_t const uNtVersion = RTSystemGetNtVersion();
+                    if (uNtVersion >= RTSYSTEM_MAKE_NT_VERSION(6, 0, 0))
                     {
                         HMODULE hModHook = (HMODULE)RTLdrGetNativeHandle(gVBoxDt.hLdrModHook);
                         Assert((uintptr_t)hModHook != ~(uintptr_t)0);

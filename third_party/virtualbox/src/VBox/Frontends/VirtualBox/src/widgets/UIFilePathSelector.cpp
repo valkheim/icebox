@@ -1,10 +1,10 @@
 /* $Id: UIFilePathSelector.cpp $ */
 /** @file
- * VBox Qt GUI - VirtualBox Qt extensions: UIFilePathSelector class implementation.
+ * VBox Qt GUI - UIFilePathSelector class implementation.
  */
 
 /*
- * Copyright (C) 2008-2017 Oracle Corporation
+ * Copyright (C) 2008-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -15,35 +15,29 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
-#ifdef VBOX_WITH_PRECOMPILED_HEADERS
-# include <precomp.h>
-#else  /* !VBOX_WITH_PRECOMPILED_HEADERS */
-
 /* Qt includes: */
-# include <QAction>
-# include <QApplication>
-# include <QClipboard>
-# include <QDir>
-# include <QFocusEvent>
-# include <QHBoxLayout>
-# include <QLineEdit>
-# ifdef VBOX_WS_WIN
-#  include <QListView>
-# endif /* VBOX_WS_WIN */
+#include <QAction>
+#include <QApplication>
+#include <QClipboard>
+#include <QDir>
+#include <QFocusEvent>
+#include <QHBoxLayout>
+#include <QLineEdit>
+#ifdef VBOX_WS_WIN
+# include <QListView>
+#endif
 
 /* GUI includes: */
-# include "QIFileDialog.h"
-# include "QILabel.h"
-# include "QILineEdit.h"
-# include "QIToolButton.h"
-# include "UIIconPool.h"
-# include "UIFilePathSelector.h"
-# include "VBoxGlobal.h"
+#include "QIFileDialog.h"
+#include "QILabel.h"
+#include "QILineEdit.h"
+#include "QIToolButton.h"
+#include "UICommon.h"
+#include "UIIconPool.h"
+#include "UIFilePathSelector.h"
 
 /* Other VBox includes: */
-# include <iprt/assert.h>
-
-#endif /* !VBOX_WITH_PRECOMPILED_HEADERS */
+#include <iprt/assert.h>
 
 
 /** Returns first position of difference between passed strings. */
@@ -101,8 +95,8 @@ UIFilePathSelector::UIFilePathSelector(QWidget *pParent /* = 0 */)
     setMinimumWidth(200);
 
     /* Setup connections: */
-    connect(this, SIGNAL(activated(int)), this, SLOT(onActivated(int)));
-    connect(m_pCopyAction, SIGNAL(triggered(bool)), this, SLOT(copyToClipboard()));
+    connect(this, static_cast<void(UIFilePathSelector::*)(int)>(&UIFilePathSelector::activated), this, &UIFilePathSelector::onActivated);
+    connect(m_pCopyAction, &QAction::triggered, this, &UIFilePathSelector::copyToClipboard);
 
     /* Editable by default: */
     setEditable(true);
@@ -132,8 +126,8 @@ void UIFilePathSelector::setEditable(bool fEditable)
 
         /* Install line-edit connection/event-filter: */
         Assert(lineEdit());
-        connect(lineEdit(), SIGNAL(textEdited(const QString &)),
-                this, SLOT(onTextEdited(const QString &)));
+        connect(lineEdit(), &QLineEdit::textEdited,
+                this, &UIFilePathSelector::onTextEdited);
         lineEdit()->installEventFilter(this);
     }
     else
@@ -142,8 +136,8 @@ void UIFilePathSelector::setEditable(bool fEditable)
         {
             /* Remove line-edit event-filter/connection: */
             lineEdit()->removeEventFilter(this);
-            disconnect(lineEdit(), SIGNAL(textEdited(const QString &)),
-                       this, SLOT(onTextEdited(const QString &)));
+            disconnect(lineEdit(), &QLineEdit::textEdited,
+                       this, &UIFilePathSelector::onTextEdited);
         }
         if (comboBox())
         {
@@ -173,6 +167,20 @@ void UIFilePathSelector::setToolTip(const QString &strToolTip)
 
     /* Remember if the tool-tip overriden: */
     m_fToolTipOverriden = !toolTip().isEmpty();
+}
+
+void UIFilePathSelector::setDefaultPath(const QString &strDefaultPath)
+{
+    if (m_strDefaultPath == strDefaultPath)
+        return;
+    m_strDefaultPath = strDefaultPath;
+    if (currentIndex() == ResetId)
+        setPath(m_strDefaultPath);
+}
+
+const QString& UIFilePathSelector::defaultPath() const
+{
+    return m_strDefaultPath;
 }
 
 void UIFilePathSelector::setPath(const QString &strPath, bool fRefreshText /* = true */)
@@ -320,7 +328,10 @@ void UIFilePathSelector::onActivated(int iIndex)
         }
         case ResetId:
         {
-            changePath(QString::null);
+            if (m_strDefaultPath.isEmpty())
+                changePath(QString::null);
+            else
+                changePath(m_strDefaultPath);
             break;
         }
         default:
@@ -417,9 +428,9 @@ void UIFilePathSelector::selectPath()
 QIcon UIFilePathSelector::defaultIcon() const
 {
     if (m_enmMode == Mode_Folder)
-        return vboxGlobal().icon(QFileIconProvider::Folder);
+        return uiCommon().icon(QFileIconProvider::Folder);
     else
-        return vboxGlobal().icon(QFileIconProvider::File);
+        return uiCommon().icon(QFileIconProvider::File);
 }
 
 QString UIFilePathSelector::fullPath(bool fAbsolute /* = true */) const
@@ -557,7 +568,7 @@ void UIFilePathSelector::refreshText()
 
         /* Attach corresponding icon: */
         setItemIcon(PathId, QFileInfo(m_strPath).exists() ?
-                            vboxGlobal().icon(QFileInfo(m_strPath)) :
+                            uiCommon().icon(QFileInfo(m_strPath)) :
                             defaultIcon());
 
         /* Set the tool-tip: */
@@ -566,4 +577,3 @@ void UIFilePathSelector::refreshText()
         setItemData(PathId, toolTip(), Qt::ToolTipRole);
     }
 }
-

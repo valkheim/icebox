@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -15,25 +15,19 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
-#ifdef VBOX_WITH_PRECOMPILED_HEADERS
-# include <precomp.h>
-#else  /* !VBOX_WITH_PRECOMPILED_HEADERS */
-
 /* Qt includes: */
-# include <QDir>
+#include <QDir>
 
 /* GUI includes: */
-# include "QITabWidget.h"
-# include "QIWidgetValidator.h"
-# include "UIConverter.h"
-# include "UIMachineSettingsSerial.h"
-# include "UIErrorString.h"
-# include "VBoxGlobal.h"
+#include "QITabWidget.h"
+#include "QIWidgetValidator.h"
+#include "UIConverter.h"
+#include "UIMachineSettingsSerial.h"
+#include "UIErrorString.h"
+#include "UICommon.h"
 
 /* COM includes: */
-# include "CSerialPort.h"
-
-#endif /* !VBOX_WITH_PRECOMPILED_HEADERS */
+#include "CSerialPort.h"
 
 
 /** Machine settings: Serial Port tab data structure. */
@@ -162,8 +156,8 @@ UIMachineSettingsSerial::UIMachineSettingsSerial(UIMachineSettingsSerialPage *pP
 
     /* Set initial values: */
     /* Note: If you change one of the following don't forget retranslateUi. */
-    mCbNumber->insertItem(0, vboxGlobal().toCOMPortName(0, 0));
-    mCbNumber->insertItems(0, vboxGlobal().COMPortNames());
+    mCbNumber->insertItem(0, uiCommon().toCOMPortName(0, 0));
+    mCbNumber->insertItems(0, uiCommon().COMPortNames());
 
     mCbMode->addItem(""); /* KPortMode_Disconnected */
     mCbMode->addItem(""); /* KPortMode_HostPipe */
@@ -172,12 +166,12 @@ UIMachineSettingsSerial::UIMachineSettingsSerial(UIMachineSettingsSerialPage *pP
     mCbMode->addItem(""); /* KPortMode_TCP */
 
     /* Setup connections: */
-    connect(mGbSerial, SIGNAL(toggled(bool)),
-            this, SLOT(sltGbSerialToggled(bool)));
-    connect(mCbNumber, SIGNAL(activated(const QString &)),
-            this, SLOT(sltCbNumberActivated(const QString &)));
-    connect(mCbMode, SIGNAL(activated(const QString &)),
-            this, SLOT(sltCbModeActivated(const QString &)));
+    connect(mGbSerial, &QCheckBox::toggled,
+            this, &UIMachineSettingsSerial::sltGbSerialToggled);
+    connect(mCbNumber, static_cast<void(QComboBox::*)(const QString&)>(&QComboBox::activated),
+            this, &UIMachineSettingsSerial::sltCbNumberActivated);
+    connect(mCbMode, static_cast<void(QComboBox::*)(const QString&)>(&QComboBox::activated),
+            this, &UIMachineSettingsSerial::sltCbModeActivated);
 
     /* Prepare validation: */
     prepareValidation();
@@ -190,7 +184,7 @@ void UIMachineSettingsSerial::polishTab()
 {
     /* Polish port page: */
     ulong uIRQ, uIOBase;
-    const bool fStd = vboxGlobal().toCOMPortNumbers(mCbNumber->currentText(), uIRQ, uIOBase);
+    const bool fStd = uiCommon().toCOMPortNumbers(mCbNumber->currentText(), uIRQ, uIOBase);
     const KPortMode enmMode = gpConverter->fromString<KPortMode>(mCbMode->currentText());
     mGbSerial->setEnabled(m_pParent->isMachineOffline());
     mLbNumber->setEnabled(m_pParent->isMachineOffline());
@@ -214,7 +208,7 @@ void UIMachineSettingsSerial::loadPortData(const UIDataSettingsMachineSerialPort
 
     /* Load port data: */
     mGbSerial->setChecked(portData.m_fPortEnabled);
-    mCbNumber->setCurrentIndex(mCbNumber->findText(vboxGlobal().toCOMPortName(portData.m_uIRQ, portData.m_uIOBase)));
+    mCbNumber->setCurrentIndex(mCbNumber->findText(uiCommon().toCOMPortName(portData.m_uIRQ, portData.m_uIOBase)));
     mLeIRQ->setText(QString::number(portData.m_uIRQ));
     mLeIOPort->setText("0x" + QString::number(portData.m_uIOBase, 16).toUpper());
     mCbMode->setCurrentIndex(mCbMode->findText(gpConverter->toString(portData.m_hostMode)));
@@ -256,7 +250,7 @@ QString UIMachineSettingsSerial::pageTitle() const
 bool UIMachineSettingsSerial::isUserDefined()
 {
     ulong a, b;
-    return !vboxGlobal().toCOMPortNumbers(mCbNumber->currentText(), a, b);
+    return !uiCommon().toCOMPortNumbers(mCbNumber->currentText(), a, b);
 }
 
 void UIMachineSettingsSerial::retranslateUi()
@@ -264,7 +258,7 @@ void UIMachineSettingsSerial::retranslateUi()
     /* Translate uic generated strings: */
     Ui::UIMachineSettingsSerial::retranslateUi(this);
 
-    mCbNumber->setItemText(mCbNumber->count() - 1, vboxGlobal().toCOMPortName(0, 0));
+    mCbNumber->setItemText(mCbNumber->count() - 1, uiCommon().toCOMPortName(0, 0));
 
     mCbMode->setItemText(4, gpConverter->toString(KPortMode_TCP));
     mCbMode->setItemText(3, gpConverter->toString(KPortMode_RawFile));
@@ -288,7 +282,7 @@ void UIMachineSettingsSerial::sltGbSerialToggled(bool fOn)
 void UIMachineSettingsSerial::sltCbNumberActivated(const QString &strText)
 {
     ulong uIRQ, uIOBase;
-    bool fStd = vboxGlobal().toCOMPortNumbers(strText, uIRQ, uIOBase);
+    bool fStd = uiCommon().toCOMPortNumbers(strText, uIRQ, uIOBase);
 
     mLeIRQ->setEnabled(!fStd);
     mLeIOPort->setEnabled(!fStd);
@@ -315,9 +309,9 @@ void UIMachineSettingsSerial::sltCbModeActivated(const QString &strText)
 void UIMachineSettingsSerial::prepareValidation()
 {
     /* Prepare validation: */
-    connect(mLeIRQ, SIGNAL(textChanged(const QString&)), m_pParent, SLOT(revalidate()));
-    connect(mLeIOPort, SIGNAL(textChanged(const QString&)), m_pParent, SLOT(revalidate()));
-    connect(mLePath, SIGNAL(textChanged(const QString&)), m_pParent, SLOT(revalidate()));
+    connect(mLeIRQ, &QLineEdit::textChanged, m_pParent, &UIMachineSettingsSerialPage::revalidate);
+    connect(mLeIOPort, &QLineEdit::textChanged, m_pParent, &UIMachineSettingsSerialPage::revalidate);
+    connect(mLePath, &QLineEdit::textChanged, m_pParent, &UIMachineSettingsSerialPage::revalidate);
 }
 
 
@@ -473,7 +467,7 @@ bool UIMachineSettingsSerialPage::validate(QList<UIValidationMessage> &messages)
 
         /* Prepare message: */
         UIValidationMessage message;
-        message.first = vboxGlobal().removeAccelMark(m_pTabWidget->tabText(m_pTabWidget->indexOf(pTab)));
+        message.first = uiCommon().removeAccelMark(m_pTabWidget->tabText(m_pTabWidget->indexOf(pTab)));
 
         /* Check the port attribute emptiness & uniqueness: */
         const QString strIRQ(pPage->mLeIRQ->text());
@@ -566,7 +560,7 @@ void UIMachineSettingsSerialPage::prepare()
         AssertPtrReturnVoid(m_pTabWidget);
         {
             /* How many ports to display: */
-            const ulong uCount = vboxGlobal().virtualBox().GetSystemProperties().GetSerialPortCount();
+            const ulong uCount = uiCommon().virtualBox().GetSystemProperties().GetSerialPortCount();
 
             /* Create corresponding port tabs: */
             for (ulong uPort = 0; uPort < uCount; ++uPort)
@@ -692,4 +686,3 @@ bool UIMachineSettingsSerialPage::savePortData(int iSlot)
 }
 
 # include "UIMachineSettingsSerial.moc"
-

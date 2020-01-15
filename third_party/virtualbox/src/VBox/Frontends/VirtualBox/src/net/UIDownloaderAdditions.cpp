@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -15,61 +15,50 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
-#ifdef VBOX_WITH_PRECOMPILED_HEADERS
-# include <precomp.h>
-#else  /* !VBOX_WITH_PRECOMPILED_HEADERS */
+/* Qt includes: */
+#include <QDir>
+#include <QFile>
+#include <QVariant>
 
-/* Global includes: */
-# include <QDir>
-# include <QFile>
-
-/* Local includes: */
-# include "UIDownloaderAdditions.h"
-# include "UINetworkReply.h"
-# include "QIFileDialog.h"
-# include "VBoxGlobal.h"
-# include "UIMessageCenter.h"
-# include "UIModalWindowManager.h"
-# include "UIVersion.h"
-
-#endif /* !VBOX_WITH_PRECOMPILED_HEADERS */
+/* GUI includes: */
+#include "QIFileDialog.h"
+#include "UICommon.h"
+#include "UIDownloaderAdditions.h"
+#include "UIMessageCenter.h"
+#include "UIModalWindowManager.h"
+#include "UINetworkReply.h"
+#include "UIVersion.h"
 
 /* Other VBox includes: */
 #include <iprt/sha.h>
 
 
 /* static */
-UIDownloaderAdditions* UIDownloaderAdditions::m_spInstance = 0;
+UIDownloaderAdditions *UIDownloaderAdditions::s_pInstance = 0;
 
 /* static */
-UIDownloaderAdditions* UIDownloaderAdditions::create()
+UIDownloaderAdditions *UIDownloaderAdditions::create()
 {
-    if (!m_spInstance)
-        m_spInstance = new UIDownloaderAdditions;
-    return m_spInstance;
-}
-
-/* static */
-UIDownloaderAdditions* UIDownloaderAdditions::current()
-{
-    return m_spInstance;
+    if (!s_pInstance)
+        s_pInstance = new UIDownloaderAdditions;
+    return s_pInstance;
 }
 
 UIDownloaderAdditions::UIDownloaderAdditions()
 {
     /* Prepare instance: */
-    if (!m_spInstance)
-        m_spInstance = this;
+    if (!s_pInstance)
+        s_pInstance = this;
 
     /* Get version number and adjust it for test and trunk builds. The server only has official releases. */
-    const QString strVersion = UIVersion(vboxGlobal().vboxVersionStringNormalized()).effectiveRelasedVersion().toString();
+    const QString strVersion = UIVersion(uiCommon().vboxVersionStringNormalized()).effectiveReleasedVersion().toString();
 
     /* Prepare source/target: */
     const QString strSourceName = QString("%1_%2.iso").arg(GUI_GuestAdditionsName, strVersion);
     const QString strSourcePath = QString("https://download.virtualbox.org/virtualbox/%1/").arg(strVersion);
     const QString strSource = strSourcePath + strSourceName;
     const QString strPathSHA256SumsFile = QString("https://www.virtualbox.org/download/hashes/%1/SHA256SUMS").arg(strVersion);
-    const QString strTarget = QDir(vboxGlobal().homeFolder()).absoluteFilePath(strSourceName);
+    const QString strTarget = QDir(uiCommon().homeFolder()).absoluteFilePath(QString("%1.tmp").arg(strSourceName));
 
     /* Set source/target: */
     setSource(strSource);
@@ -80,11 +69,10 @@ UIDownloaderAdditions::UIDownloaderAdditions()
 UIDownloaderAdditions::~UIDownloaderAdditions()
 {
     /* Cleanup instance: */
-    if (m_spInstance == this)
-        m_spInstance = 0;
+    if (s_pInstance == this)
+        s_pInstance = 0;
 }
 
-/* virtual override */
 const QString UIDownloaderAdditions::description() const
 {
     return UIDownloader::description().arg(tr("VirtualBox Guest Additions"));
@@ -97,7 +85,6 @@ bool UIDownloaderAdditions::askForDownloadingConfirmation(UINetworkReply *pReply
 
 void UIDownloaderAdditions::handleDownloadedObject(UINetworkReply *pReply)
 {
-    /* Read received data into the buffer: */
     m_receivedData = pReply->readAll();
 }
 
@@ -156,36 +143,63 @@ void UIDownloaderAdditions::handleVerifiedObject(UINetworkReply *pReply)
         return;
     }
 
-    /* Serialize that buffer into the file: */
+    /* Make sure temporary file exists.  If we have
+     * reached this place, it's already written and verified. */
+    const QString strTempFilename = target();
+    if (!QFile::exists(strTempFilename))
+    {
+        /* But still we are providing a failsafe.
+         * Since we can try to write it again. */
+        QFile file(strTempFilename);
+        if (!file.open(QIODevice::WriteOnly))
+            AssertFailedReturnVoid();
+        file.write(m_receivedData);
+    }
+
+    /* Rename temporary file to target one.  This can require a number
+     * of tries to let user choose the place to save file to. */
+    QString strNetTarget = target();
+    strNetTarget.remove(QRegExp("\\.tmp$"));
+    setTarget(strNetTarget);
     while (true)
     {
-        /* Try to open file for writing: */
-        QFile file(target());
-        if (file.open(QIODevice::WriteOnly))
+        /* Make sure target file doesn't exist: */
+        bool fTargetFileExists = QFile::exists(target());
+        if (fTargetFileExists)
         {
-            /* Write buffer into the file: */
-            file.write(m_receivedData);
-            file.close();
+            /* We should ask user about file rewriting (or exit otherwise): */
+            if (!msgCenter().confirmOverridingFile(QDir::toNativeSeparators(target())))
+                break;
+            /* And remove file if rewriting confirmed: */
+            if (QFile::remove(target()))
+                fTargetFileExists = false;
+        }
 
-            /* Warn the user about additions-image loaded and saved, propose to mount it: */
+        /* Try to rename temporary file to target one (would fail if target file still exists): */
+        const bool fFileRenamed = !fTargetFileExists && QFile::rename(strTempFilename, target());
+
+        /* If file renamed: */
+        if (fFileRenamed)
+        {
+            /* Warn the user about additions-image downloaded and saved, propose to mount it (and/or exit in any case): */
             if (msgCenter().proposeMountGuestAdditions(source().toString(), QDir::toNativeSeparators(target())))
                 emit sigDownloadFinished(target());
             break;
         }
-
-        /* Warn the user about additions-image was downloaded but was NOT saved: */
-        msgCenter().cannotSaveGuestAdditions(source().toString(), QDir::toNativeSeparators(target()));
-
-        /* Ask the user for another location for the additions-image file: */
-        QString strTarget = QIFileDialog::getExistingDirectory(QFileInfo(target()).absolutePath(),
-                                                               windowManager().networkManagerOrMainWindowShown(),
-                                                               tr("Select folder to save Guest Additions image to"), true);
-
-        /* Check if user had really set a new target: */
-        if (!strTarget.isNull())
-            setTarget(QDir(strTarget).absoluteFilePath(QFileInfo(target()).fileName()));
         else
-            break;
+        {
+            /* Warn the user about additions-image was downloaded but was NOT saved: */
+            msgCenter().cannotSaveGuestAdditions(source().toString(), QDir::toNativeSeparators(target()));
+            /* Ask the user for another location for the additions-image file: */
+            const QString strTarget = QIFileDialog::getExistingDirectory(QFileInfo(target()).absolutePath(),
+                                                                         windowManager().networkManagerOrMainWindowShown(),
+                                                                         tr("Select folder to save Guest Additions image to"), true);
+
+            /* Check if user had really set a new target (and exit in opposite case): */
+            if (!strTarget.isNull())
+                setTarget(QDir(strTarget).absoluteFilePath(QFileInfo(target()).fileName()));
+            else
+                break;
+        }
     }
 }
-

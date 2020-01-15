@@ -4,7 +4,7 @@
 #
 
 #
-# Copyright (C) 2006-2017 Oracle Corporation
+# Copyright (C) 2006-2019 Oracle Corporation
 #
 # This file is part of VirtualBox Open Source Edition (OSE), as
 # available from http://www.virtualbox.org. This file is free software;
@@ -36,12 +36,33 @@ VBoxTray_SOURCES  = \
 	VBoxTray.cpp \
 	VBoxDispIf.cpp \
 	VBoxSeamless.cpp \
-	VBoxClipboard.cpp \
 	VBoxDisplay.cpp \
 	VBoxVRDP.cpp \
 	VBoxIPC.cpp \
 	VBoxHelpers.cpp \
 	VBoxTray.rc
+VBoxTray_USES.win = vboximportchecker
+VBoxTray_VBOX_IMPORT_CHECKER.win.x86 = nt4 #nt350
+VBoxTray_VBOX_IMPORT_CHECKER.win.amd64 = xp64
+ifdef VBOX_WITH_SHARED_CLIPBOARD
+ VBoxTray_DEFS     += \
+	$(if $(VBOX_WITH_SHARED_CLIPBOARD),VBOX_WITH_SHARED_CLIPBOARD,) \
+	$(if $(VBOX_WITH_SHARED_CLIPBOARD_TRANSFERS),VBOX_WITH_SHARED_CLIPBOARD_TRANSFERS,)
+ VBoxTray_SOURCES  += \
+	VBoxClipboard.cpp \
+	$(PATH_ROOT)/src/VBox/GuestHost/SharedClipboard/clipboard-win.cpp \
+	$(PATH_ROOT)/src/VBox/GuestHost/SharedClipboard/clipboard-common.cpp
+ ifdef VBOX_WITH_SHARED_CLIPBOARD_TRANSFERS
+  VBoxTray_DEFS     += VBOX_WITH_SHARED_CLIPBOARD_GUEST
+  VBoxTray_SOURCES  += \
+ 	$(PATH_ROOT)/src/VBox/GuestHost/SharedClipboard/ClipboardArea.cpp \
+	$(PATH_ROOT)/src/VBox/GuestHost/SharedClipboard/ClipboardDataObjectImpl-win.cpp \
+	$(PATH_ROOT)/src/VBox/GuestHost/SharedClipboard/ClipboardEnumFormatEtcImpl-win.cpp \
+	$(PATH_ROOT)/src/VBox/GuestHost/SharedClipboard/ClipboardPath.cpp \
+	$(PATH_ROOT)/src/VBox/GuestHost/SharedClipboard/ClipboardStreamImpl-win.cpp \
+	$(PATH_ROOT)/src/VBox/GuestHost/SharedClipboard/clipboard-transfers.cpp
+ endif
+endif
 ifdef VBOX_WITH_DRAG_AND_DROP
  VBoxTray_DEFS     += \
 	VBOX_WITH_DRAG_AND_DROP \
@@ -60,13 +81,6 @@ ifdef VBOX_WITH_GUEST_PROPS
  VBoxTray_SOURCES  += \
 	VBoxHostVersion.cpp \
 	VBoxLA.cpp
-endif
-ifdef VBOX_WITH_SHARED_FOLDERS
- VBoxTray_DEFS     += VBOX_WITH_SHARED_FOLDERS
- VBoxTray_SOURCES  += \
-	VBoxSharedFolders.cpp
- VBoxTray_LIBS.win += \
-	mpr.lib
 endif
 ifdef VBOX_WITH_WDDM
  VBoxTray_DEFS   += VBOX_WITH_WDDM

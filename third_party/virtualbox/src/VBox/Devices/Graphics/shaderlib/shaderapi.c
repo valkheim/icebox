@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2014-2017 Oracle Corporation
+ * Copyright (C) 2014-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -15,7 +15,7 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
-#include <iprt/err.h>
+#include <iprt/errcore.h>
 #include <iprt/mem.h>
 #include <iprt/assert.h>
 #include <iprt/log.h>
@@ -225,7 +225,12 @@ SHADERDECL(int) ShaderContextCreate(void **ppShaderContext)
     pContext->pDeviceContext->shader_backend = &glsl_shader_backend;
     pContext->pDeviceContext->ps_selected_mode = SHADER_GLSL;
     pContext->pDeviceContext->vs_selected_mode = SHADER_GLSL;
+#ifndef VBOX_WITH_VMSVGA
     pContext->render_offscreen = false;
+#else
+    /* VMSVGA always renders offscreen. */
+    pContext->render_offscreen = true;
+#endif
 
     list_init(&pContext->pDeviceContext->shaders);
 
@@ -308,7 +313,7 @@ SHADERDECL(int) ShaderContextDestroy(void *pShaderContext)
     return VINF_SUCCESS;
 }
 
-SHADERDECL(int) ShaderCreateVertexShader(void *pShaderContext, const uint32_t *pShaderData, void **pShaderObj)
+SHADERDECL(int) ShaderCreateVertexShader(void *pShaderContext, const uint32_t *pShaderData, uint32_t cbShaderData, void **pShaderObj)
 {
     IWineD3DDeviceImpl *This;
     IWineD3DVertexShaderImpl *object;
@@ -324,6 +329,8 @@ SHADERDECL(int) ShaderCreateVertexShader(void *pShaderContext, const uint32_t *p
         return VERR_NO_MEMORY;
     }
 
+    object->baseShader.functionLength = cbShaderData;
+
     hr = vertexshader_init(object, This, (DWORD const *)pShaderData, NULL, NULL, NULL);
     if (FAILED(hr))
     {
@@ -331,6 +338,14 @@ SHADERDECL(int) ShaderCreateVertexShader(void *pShaderContext, const uint32_t *p
         HeapFree(GetProcessHeap(), 0, object);
         return VERR_INTERNAL_ERROR;
     }
+
+    /* Tweak the float constants limit to use a greater number of constants.
+     * Keep some space for the internal usage.
+     * The shader creation code artificially sets the limit according to D3D shader version.
+     * But the guest may use more constants and we are not required to strictly follow D3D specs.
+     */
+    object->baseShader.limits.constant_float = RT_MAX(g_adapter.gl_info.limits.glsl_vs_float_constants / 2,
+                                                      object->baseShader.limits.constant_float);
 
 #ifdef VBOX_WINE_WITH_SHADER_CACHE
     object = vertexshader_check_cached(This, object);
@@ -342,7 +357,7 @@ SHADERDECL(int) ShaderCreateVertexShader(void *pShaderContext, const uint32_t *p
     return VINF_SUCCESS;
 }
 
-SHADERDECL(int) ShaderCreatePixelShader(void *pShaderContext, const uint32_t *pShaderData, void **pShaderObj)
+SHADERDECL(int) ShaderCreatePixelShader(void *pShaderContext, const uint32_t *pShaderData, uint32_t cbShaderData, void **pShaderObj)
 {
     IWineD3DDeviceImpl *This;
     IWineD3DPixelShaderImpl *object;
@@ -358,6 +373,8 @@ SHADERDECL(int) ShaderCreatePixelShader(void *pShaderContext, const uint32_t *pS
         return VERR_NO_MEMORY;
     }
 
+    object->baseShader.functionLength = cbShaderData;
+
     hr = pixelshader_init(object, This, (DWORD const *)pShaderData, NULL, NULL, NULL);
     if (FAILED(hr))
     {
@@ -365,6 +382,14 @@ SHADERDECL(int) ShaderCreatePixelShader(void *pShaderContext, const uint32_t *pS
         HeapFree(GetProcessHeap(), 0, object);
         return VERR_INTERNAL_ERROR;
     }
+
+    /* Tweak the float constants limit to use a greater number of constants.
+     * Keep some space for the internal usage.
+     * The shader creation code artificially sets the limit according to D3D shader version.
+     * But the guest may use more constants and we are not required to strictly follow D3D specs.
+     */
+    object->baseShader.limits.constant_float = RT_MAX(g_adapter.gl_info.limits.glsl_ps_float_constants / 2,
+                                                      object->baseShader.limits.constant_float);
 
 #ifdef VBOX_WINE_WITH_SHADER_CACHE
     object = pixelshader_check_cached(This, object);

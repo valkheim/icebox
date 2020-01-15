@@ -3,7 +3,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -23,8 +23,11 @@
  * terms and conditions of either the GPL or the CDDL or both.
  */
 
-#ifndef ___VBox_vusb_h
-#define ___VBox_vusb_h
+#ifndef VBOX_INCLUDED_vusb_h
+#define VBOX_INCLUDED_vusb_h
+#ifndef RT_WITHOUT_PRAGMA_ONCE
+# pragma once
+#endif
 
 #include <VBox/cdefs.h>
 #include <VBox/types.h>
@@ -673,7 +676,7 @@ typedef struct VUSBIROOTHUBPORT
 
 } VUSBIROOTHUBPORT;
 /** VUSBIROOTHUBPORT interface ID. */
-#define VUSBIROOTHUBPORT_IID                    "6571aece-6c33-4714-a8ac-9508a3b8b429"
+# define VUSBIROOTHUBPORT_IID                   "6571aece-6c33-4714-a8ac-9508a3b8b429"
 
 /** Pointer to a VUSB RootHub connector interface. */
 typedef struct VUSBIROOTHUBCONNECTOR *PVUSBIROOTHUBCONNECTOR;
@@ -854,10 +857,10 @@ typedef struct VUSBIROOTHUBCONNECTOR
 } VUSBIROOTHUBCONNECTOR;
 AssertCompileSizeAlignment(VUSBIROOTHUBCONNECTOR, 8);
 /** VUSBIROOTHUBCONNECTOR interface ID. */
-#define VUSBIROOTHUBCONNECTOR_IID               "662d7822-b9c6-43b5-88b6-5d59f0106e46"
+# define VUSBIROOTHUBCONNECTOR_IID              "662d7822-b9c6-43b5-88b6-5d59f0106e46"
 
 
-#ifdef IN_RING3
+# ifdef IN_RING3
 /** @copydoc VUSBIROOTHUBCONNECTOR::pfnSetUrbParams */
 DECLINLINE(int) VUSBIRhSetUrbParams(PVUSBIROOTHUBCONNECTOR pInterface, size_t cbHci, size_t cbHciTd)
 {
@@ -918,7 +921,7 @@ DECLINLINE(uint32_t) VUSBIRhGetPeriodicFrameRate(PVUSBIROOTHUBCONNECTOR pInterfa
 {
     return pInterface->pfnGetPeriodicFrameRate(pInterface);
 }
-#endif /* IN_RING3 */
+# endif /* IN_RING3 */
 
 #endif /* ! RDESKTOP */
 
@@ -991,7 +994,7 @@ typedef struct VUSBIDEVICE
      * @param   fResetOnLinux   Set if we can permit a real reset and a potential logical
      *                          device reconnect on linux hosts.
      * @param   pfnDone         Pointer to the completion routine. If NULL a synchronous
-     *                          reset  is preformed not respecting the 10ms.
+     *                          reset  is performed not respecting the 10ms.
      * @param   pvUser          User argument to the completion routine.
      * @param   pVM             The cross context VM structure.  Required if pfnDone
      *                          is not NULL.
@@ -1042,10 +1045,10 @@ typedef struct VUSBIDEVICE
 
 } VUSBIDEVICE;
 /** VUSBIDEVICE interface ID. */
-#define VUSBIDEVICE_IID                         "af576b38-e8ca-4db7-810a-2596d8d57ca0"
+# define VUSBIDEVICE_IID                        "af576b38-e8ca-4db7-810a-2596d8d57ca0"
 
 
-#ifdef IN_RING3
+# ifdef IN_RING3
 /**
  * Resets the device.
  *
@@ -1067,7 +1070,7 @@ typedef struct VUSBIDEVICE
  * @param   fResetOnLinux   Set if we can permit a real reset and a potential logical
  *                          device reconnect on linux hosts.
  * @param   pfnDone         Pointer to the completion routine.  If NULL a
- *                          synchronous reset is preformed not respecting the
+ *                          synchronous reset is performed not respecting the
  *                          10ms.
  * @param   pvUser          User argument to the completion routine.
  * @param   pVM             The cross context VM structure.  Required if pfnDone
@@ -1121,7 +1124,7 @@ DECLINLINE(bool) VUSBIDevIsSavedStateSupported(PVUSBIDEVICE pInterface)
 {
     return pInterface->pfnIsSavedStateSupported(pInterface);
 }
-#endif /* IN_RING3 */
+# endif /* IN_RING3 */
 
 #endif /* ! RDESKTOP */
 
@@ -1242,19 +1245,19 @@ typedef struct VUSBURB
 #endif
 
     /** The VUSB stack private data. */
-    PVUSBURBVUSB        pVUsb;
+    PVUSBURBVUSB    pVUsb;
     /** Private host controller data associated with this URB. */
-    PVUSBURBHCI         pHci;
+    PVUSBURBHCI     pHci;
     /** Pointer to the host controller transfer descriptor array. */
-    PVUSBURBHCITD       paTds;
+    PVUSBURBHCITD   paTds;
 
     /** The device data. */
     struct VUSBURBDEV
     {
         /** Pointer to private device specific data.  */
-        void             *pvPrivate;
+        void       *pvPrivate;
         /** Used by the device when linking the URB in some list of its own.   */
-        PVUSBURB          pNext;
+        PVUSBURB    pNext;
     } Dev;
 
     /** The device address.
@@ -1314,4 +1317,4 @@ typedef struct VUSBURB
 
 RT_C_DECLS_END
 
-#endif
+#endif /* !VBOX_INCLUDED_vusb_h */

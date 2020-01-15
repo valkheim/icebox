@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2011-2017 Oracle Corporation
+ * Copyright (C) 2011-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -15,8 +15,11 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
-#ifndef VBOXMPUTILS_H
-#define VBOXMPUTILS_H
+#ifndef GA_INCLUDED_SRC_WINNT_Graphics_Video_mp_common_VBoxMPUtils_h
+#define GA_INCLUDED_SRC_WINNT_Graphics_Video_mp_common_VBoxMPUtils_h
+#ifndef RT_WITHOUT_PRAGMA_ONCE
+# pragma once
+#endif
 
 /*Sanity check*/
 #if defined(VBOX_XPDM_MINIPORT) == defined(VBOX_WDDM_MINIPORT)
@@ -111,5 +114,5 @@ extern int g_bVBoxVDbgBreakFv;
 # define vboxVDbgBreakFv() do { } while (0)
 #endif
 
-#endif
+#endif /* !GA_INCLUDED_SRC_WINNT_Graphics_Video_mp_common_VBoxMPUtils_h */
 

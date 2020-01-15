@@ -1,11 +1,10 @@
 /* $Id: VRDEServerImpl.cpp $ */
 /** @file
- *
  * VirtualBox COM class implementation
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -16,6 +15,7 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
+#define LOG_GROUP LOG_GROUP_MAIN_VRDESERVER
 #include "VRDEServerImpl.h"
 #include "MachineImpl.h"
 #include "VirtualBoxImpl.h"
@@ -37,7 +37,7 @@
 #include "AutoStateDep.h"
 #include "AutoCaller.h"
 #include "Global.h"
-#include "Logging.h"
+#include "LoggingNew.h"
 
 // defines
 /////////////////////////////////////////////////////////////////////////////
@@ -812,10 +812,10 @@ HRESULT VRDEServer::getVRDEExtPack(com::Utf8Str &aExtPack)
         hrc = mParent->i_getVirtualBox()->COMGETTER(SystemProperties)(systemProperties.asOutParam());
         if (SUCCEEDED(hrc))
         {
-            BSTR bstr;
-            hrc = systemProperties->COMGETTER(DefaultVRDEExtPack)(&bstr);
+            Bstr bstr;
+            hrc = systemProperties->COMGETTER(DefaultVRDEExtPack)(bstr.asOutParam());
             if (SUCCEEDED(hrc))
-                aExtPack = Utf8Str(bstr);
+                aExtPack = bstr;
         }
     }
     return hrc;

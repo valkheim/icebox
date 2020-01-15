@@ -146,6 +146,13 @@
     </message>
 </context>
 <context>
+    <name>QIInputDialog</name>
+    <message>
+        <source>Name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QILabel</name>
     <message>
         <source>&amp;Copy</source>
@@ -245,19 +252,24 @@
     <message>
         <source>%1, %2: %3, %4: %5, %6: %7</source>
         <comment>col.1 text, col.2 name: col.2 text, col.3 name: col.3 text, col.4 name: col.4 text</comment>
-        <translation>%1, %2: %3, %4: %5, %6: %7</translation>
+        <translation type="vanished">%1, %2: %3, %4: %5, %6: %7</translation>
+    </message>
+    <message>
+        <source>%1, %2: %3, %4: %5, %6: %7, %8: %9</source>
+        <comment>col.1 text, col.2 name: col.2 text, col.3 name: col.3 text, col.4 name: col.4 text, col.5 name: col.5 text</comment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Full</source>
-        <translation type="obsolete">کامل</translation>
+        <translation type="unfinished">کامل</translation>
     </message>
     <message>
         <source>Read-only</source>
-        <translation type="obsolete">فقط-خواندنی</translation>
+        <translation type="unfinished">فقط-خواندنی</translation>
     </message>
     <message>
         <source>Yes</source>
-        <translation type="obsolete">بله</translation>
+        <translation type="unfinished">بله</translation>
     </message>
 </context>
 <context>
@@ -594,7 +606,7 @@
     </message>
     <message>
         <source>Re&amp;fresh...</source>
-        <translation type="vanished">تازه&amp; کردن...</translation>
+        <translation>تازه&amp; کردن...</translation>
     </message>
     <message>
         <source>Refresh the accessibility state of the selected virtual machine</source>
@@ -810,7 +822,7 @@
     </message>
     <message>
         <source>&amp;Video Capture</source>
-        <translation>&amp;ضبط ویدئو</translation>
+        <translation type="vanished">&amp;ضبط ویدئو</translation>
     </message>
     <message>
         <source>Toggle video capture</source>
@@ -818,7 +830,7 @@
     </message>
     <message>
         <source>&amp;Video Capture Settings...</source>
-        <translation>&amp;تنظیمات ضبط ویدئو...</translation>
+        <translation type="vanished">&amp;تنظیمات ضبط ویدئو...</translation>
     </message>
     <message>
         <source>Configure video capture settings</source>
@@ -938,11 +950,11 @@
     </message>
     <message>
         <source>Display virtual machine settings window to configure video capture</source>
-        <translation>پنجره تنظیمات ماشین مجازی را برای پیکربندی ضبط ویدیو نشان میدهد</translation>
+        <translation type="vanished">پنجره تنظیمات ماشین مجازی را برای پیکربندی ضبط ویدیو نشان میدهد</translation>
     </message>
     <message>
         <source>Enable guest display video capture</source>
-        <translation>فعالسازی ضبط ویدیو نمایشگر مهمان</translation>
+        <translation type="vanished">فعالسازی ضبط ویدیو نمایشگر مهمان</translation>
     </message>
     <message>
         <source>Allow remote desktop (RDP) connections to this machine</source>
@@ -990,7 +1002,7 @@
     </message>
     <message>
         <source>S&amp;cale Factor</source>
-        <translation>ضریب مقیاس&amp;</translation>
+        <translation type="vanished">ضریب مقیاس&amp;</translation>
     </message>
     <message>
         <source>&amp;Input</source>
@@ -1098,7 +1110,7 @@
     <message>
         <source>%1%</source>
         <comment>scale-factor</comment>
-        <translation>%1%</translation>
+        <translation type="vanished">%1%</translation>
     </message>
     <message>
         <source>Enable</source>
@@ -1344,19 +1356,19 @@
     </message>
     <message>
         <source>&amp;Machine Tools</source>
-        <translation>ابزارهای ماشین&amp;</translation>
+        <translation type="vanished">ابزارهای ماشین&amp;</translation>
     </message>
     <message>
         <source>Switch to machine tools</source>
-        <translation>رفتن به ابزارهای ماشین</translation>
+        <translation type="vanished">رفتن به ابزارهای ماشین</translation>
     </message>
     <message>
         <source>&amp;Machine Tools Menu</source>
-        <translation>منوی ابزارهای ماشین&amp;</translation>
+        <translation type="vanished">منوی ابزارهای ماشین&amp;</translation>
     </message>
     <message>
         <source>Open the machine tools menu</source>
-        <translation>بازکردن منوی ابزارهای ماشین</translation>
+        <translation type="vanished">بازکردن منوی ابزارهای ماشین</translation>
     </message>
     <message>
         <source>&amp;Details</source>
@@ -1376,11 +1388,11 @@
     </message>
     <message>
         <source>&amp;Global Tools</source>
-        <translation>&amp;ابزارهای سراسری</translation>
+        <translation type="vanished">&amp;ابزارهای سراسری</translation>
     </message>
     <message>
         <source>Switch to global tools</source>
-        <translation>رفتن به ابزارهای سراسری</translation>
+        <translation type="vanished">رفتن به ابزارهای سراسری</translation>
     </message>
     <message>
         <source>&amp;Global Tools Menu</source>
@@ -1388,7 +1400,7 @@
     </message>
     <message>
         <source>Open the global tools menu</source>
-        <translation>بازکردن منوی ابزارهای سراسری</translation>
+        <translation type="vanished">بازکردن منوی ابزارهای سراسری</translation>
     </message>
     <message>
         <source>&amp;Virtual Media Manager</source>
@@ -1427,76 +1439,276 @@
         <translation>فعالسازی صدای ورودی</translation>
     </message>
     <message>
+        <source>&amp;Log</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>&amp;Find</source>
-        <translation type="obsolete">یاف&amp;تن</translation>
+        <translation type="unfinished">یاف&amp;تن</translation>
+    </message>
+    <message>
+        <source>Log Viewer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open pane with searching options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open pane with filtering options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Bookmark</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open pane with bookmarking options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open pane with log viewer options</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&amp;Refresh</source>
-        <translation type="obsolete">تازه کرد&amp;ن</translation>
+        <translation type="unfinished">تازه کرد&amp;ن</translation>
+    </message>
+    <message>
+        <source>Refresh selected virtual machine log</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&amp;Save...</source>
-        <translation type="obsolete">ذخ&amp;یره...</translation>
+        <translation type="unfinished">ذخ&amp;یره...</translation>
+    </message>
+    <message>
+        <source>Save selected virtual machine log</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File Manager</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Host</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Guest</source>
-        <translation type="obsolete">مهمان</translation>
+        <translation type="unfinished">مهمان</translation>
+    </message>
+    <message>
+        <source>Copy to guest</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy the selected object(s) from host to guest</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy to host</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy the selected object(s) from guest to host</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Settings</source>
         <translation type="obsolete">تنظیمات</translation>
     </message>
     <message>
+        <source>Log</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Session</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Go one level up to parent folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Go Home</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Go to home folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Go to Home Folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Delete</source>
-        <translation type="obsolete">حذف</translation>
+        <translation type="unfinished">حذف</translation>
+    </message>
+    <message>
+        <source>Delete selected file object(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Refresh</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Rename</source>
-        <translation type="obsolete">تغییرنام</translation>
+        <translation type="unfinished">تغییرنام</translation>
+    </message>
+    <message>
+        <source>Create New Directory</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Copy</source>
-        <translation type="obsolete">کپی</translation>
+        <translation type="unfinished">کپی</translation>
+    </message>
+    <message>
+        <source>Copy selected file object(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cut</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cut selected file object(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Paste</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Paste copied/cut file object(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select all files objects</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invert Selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invert the current selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show Properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show the properties of currently selected file object(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Cloud Profile Manager...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display the Cloud Profile Manager window</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Import</source>
-        <translation type="obsolete">واردکردن</translation>
+        <translation type="unfinished">واردکردن</translation>
     </message>
     <message>
         <source>Export</source>
-        <translation type="obsolete">خروجیگیری</translation>
+        <translation type="unfinished">خروجیگیری</translation>
+    </message>
+    <message>
+        <source>&amp;Move...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected virtual machine</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Logs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open the machine logs pane</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Cloud Profile Manager</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open the Cloud Profile Manager</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Snapshot</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&amp;Take...</source>
-        <translation type="obsolete">&amp;ایجاد...</translation>
+        <translation type="unfinished">&amp;ایجاد...</translation>
+    </message>
+    <message>
+        <source>Snapshot Pane</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Take a snapshot of the current virtual machine state</source>
-        <translation type="obsolete">ایجاد یک ضبط وضعیت از وضعیت فعلی ماشین مجازی</translation>
+        <translation type="unfinished">ایجاد یک ضبط وضعیت از وضعیت فعلی ماشین مجازی</translation>
     </message>
     <message>
         <source>Take Snapshot (%1)</source>
         <translation type="obsolete">ایجاد ضبط وضعیت (%1)</translation>
     </message>
     <message>
+        <source>&amp;Delete...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Delete selected snapshot of the virtual machine</source>
-        <translation type="obsolete">ضبط وضعیت ماشین مجازی انتخاب شده را حذف میکند</translation>
+        <translation type="unfinished">ضبط وضعیت ماشین مجازی انتخاب شده را حذف میکند</translation>
     </message>
     <message>
         <source>Delete Snapshot (%1)</source>
         <translation type="obsolete">حذف ضبط وضعیت (%1)</translation>
     </message>
     <message>
+        <source>&amp;Restore...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Restore selected snapshot of the virtual machine</source>
-        <translation type="obsolete">بازگردانی ضبط وضعیت انتخاب شده ماشین مجازی</translation>
+        <translation type="unfinished">بازگردانی ضبط وضعیت انتخاب شده ماشین مجازی</translation>
     </message>
     <message>
         <source>Restore Snapshot (%1)</source>
         <translation type="obsolete">بازگردانی ضبط وضعیت (%1)</translation>
     </message>
     <message>
+        <source>&amp;Properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Open pane with the selected snapshot properties</source>
-        <translation type="obsolete">بازکردن نوار با مشخصات ضبط وضعیت منتخب</translation>
+        <translation type="unfinished">بازکردن نوار با مشخصات ضبط وضعیت منتخب</translation>
     </message>
     <message>
         <source>Open Snapshot Properties (%1)</source>
@@ -1504,7 +1716,7 @@
     </message>
     <message>
         <source>&amp;Clone...</source>
-        <translation type="obsolete">شبیه &amp;سازی...</translation>
+        <translation type="unfinished">شبیه &amp;سازی...</translation>
     </message>
     <message>
         <source>Clone Virtual Machine (%1)</source>
@@ -1512,11 +1724,15 @@
     </message>
     <message>
         <source>&amp;Medium</source>
-        <translation type="obsolete">&amp;رسانه</translation>
+        <translation type="unfinished">&amp;رسانه</translation>
+    </message>
+    <message>
+        <source>Media Manager</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&amp;Copy...</source>
-        <translation type="obsolete">کپ&amp;ی...</translation>
+        <translation type="unfinished">کپ&amp;ی...</translation>
     </message>
     <message>
         <source>Copy selected disk image file</source>
@@ -1536,7 +1752,7 @@
     </message>
     <message>
         <source>Re&amp;lease...</source>
-        <translation type="obsolete">&amp;ترخیص...</translation>
+        <translation type="unfinished">&amp;ترخیص...</translation>
     </message>
     <message>
         <source>Release Disk Image File (%1)</source>
@@ -1559,8 +1775,16 @@
         <translation type="obsolete">تازه سازی فایل های ایمیج دیسک (%1)</translation>
     </message>
     <message>
+        <source>&amp;Create...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Network Manager</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Create new host-only network</source>
-        <translation type="obsolete">ایجاد شبکه فقط-میزبان جدید</translation>
+        <translation type="unfinished">ایجاد شبکه فقط-میزبان جدید</translation>
     </message>
     <message>
         <source>Create Host-only Network (%1)</source>
@@ -1568,7 +1792,7 @@
     </message>
     <message>
         <source>Remove selected host-only network</source>
-        <translation type="obsolete">حذف شبکه فقط-میزبان منتخب</translation>
+        <translation type="unfinished">حذف شبکه فقط-میزبان منتخب</translation>
     </message>
     <message>
         <source>Remove Host-only Network (%1)</source>
@@ -1576,7 +1800,7 @@
     </message>
     <message>
         <source>Open pane with selected host-only network properties</source>
-        <translation type="obsolete">بازکردن نوار با مشخصات شبکه فقط-میزبان منتخب</translation>
+        <translation type="unfinished">بازکردن نوار با مشخصات شبکه فقط-میزبان منتخب</translation>
     </message>
     <message>
         <source>Open Host-only Network Properties (%1)</source>
@@ -1584,15 +1808,431 @@
     </message>
     <message>
         <source>Refresh the list of host-only networks</source>
-        <translation type="obsolete">تازه سازی لیست شبکه های فقط-میزبان</translation>
+        <translation type="unfinished">تازه سازی لیست شبکه های فقط-میزبان</translation>
     </message>
     <message>
         <source>Refresh Host-only Networks (%1)</source>
         <translation type="obsolete">تازه سازی شبکه های فقط-میزبان (%1)</translation>
     </message>
     <message>
+        <source>&amp;Cloud</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Add Profile...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cloud Profile Manager</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add new cloud profile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Import Profiles...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import the list of cloud profiles from external files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Remove</source>
-        <translation type="obsolete">حذف</translation>
+        <translation type="unfinished">حذف</translation>
+    </message>
+    <message>
+        <source>&amp;Remove Profile...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove selected cloud profile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Profile &amp;Properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open pane with selected cloud profile properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Help</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Show Help...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show cloud profile help</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File Manager...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Recording</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Recording Settings...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display virtual machine settings window to configure video/audio recording</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enable guest video/audio recording</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scale to %1%</source>
+        <comment>scale-factor</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scale to %1% (unscaled output)</source>
+        <comment>scale-factor</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scale to %1% (autoscaled output)</source>
+        <comment>scale-factor</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open panel with file manager options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open panel with file manager log</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Operations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open panel with file manager operations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open panel with file manager session</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Go Up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display the virtual machine file manager window</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tools</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>E&amp;xport to OCI...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export selected virtual machine to OCI</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Try</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Try Oracle Cloud for Free...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Try Oracle cloud for free</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Try Oracle Cloud for Free</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display Global Preferences</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open Find Pane</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open Filter Pane</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open Bookmark Pane</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open Options Pane</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Refresh Virtual Machine Log</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save Virtual Machine Log</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy from Host to Guest</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy from Guest to Host</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open Log Pane</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open Operations Pane</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open Session Pane</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Go One Level Up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete Selected Object(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Refresh Contents</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rename selected file object</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rename Selected Object</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy Selected Object(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cut Selected Object(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Paste Copied/Cut Object(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select All Objects</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invert Current Selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show Properties of Current Object(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;New Cloud VM...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create new cloud virtual machine</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>E&amp;xport Locally...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export selected virtual machine locally</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>S&amp;earch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Search virtual machines with respect to a search term</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Take Snapshot</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete Snapshot</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Restore Snapshot</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open Snapshot Properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clone Virtual Machine</source>
+        <translation type="unfinished">شبیه سازی ماشین مجازی</translation>
+    </message>
+    <message>
+        <source>Add a disk image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add Disk Image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create a new disk image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create Disk Image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy selected disk image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy Disk Image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected disk image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move Disk Image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove selected disk image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove Disk Image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Release selected disk image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Release Disk Image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open pane with selected disk image properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open Disk Image Properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open the disk image search pane</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open Disk Image Search Pane</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Refresh the list of disk images</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Refresh Disk Images</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create Host-only Network</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove Host-only Network</source>
+        <translation type="unfinished">حذف شبکه فقط-میزبان</translation>
+    </message>
+    <message>
+        <source>Open Host-only Network Properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Refresh Host-only Networks</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add Cloud Profile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import Cloud Profiles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove Cloud Profile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open Cloud Profile Properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show Cloud Profile Help</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Soft Keyboard...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display soft keyboard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Guest Control Terminal...</source>
+        <comment>debug action</comment>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1734,11 +2374,11 @@
     </message>
     <message>
         <source>When checked a new unique MAC address will assigned to all configured network cards.</source>
-        <translation>وقتیکه انتخاب شده یک آدرس مَک جدید منحصر بفرد به همه کارت های شبکه پیکربندی شده اختصاص داده خواهد شد.</translation>
+        <translation type="vanished">وقتیکه انتخاب شده یک آدرس مَک جدید منحصر بفرد به همه کارت های شبکه پیکربندی شده اختصاص داده خواهد شد.</translation>
     </message>
     <message>
         <source>&amp;Reinitialize the MAC address of all network cards</source>
-        <translation>مقداردهی مجدد &amp;آدرس مک همه کارت های شبکه</translation>
+        <translation type="vanished">مقداردهی مجدد &amp;آدرس مک همه کارت های شبکه</translation>
     </message>
     <message>
         <source>Storage Controller (IDE)</source>
@@ -1760,6 +2400,18 @@
         <source>Detailed list of all components of all virtual machines of the current appliance</source>
         <translation>لیست همراه با جزئیات همه کامپاننت های ماشین مجازی وسیله فعلی</translation>
     </message>
+    <message>
+        <source>Settings File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Base Folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Primary Group</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>UIApplianceImportEditorWidget</name>
@@ -1770,6 +2422,50 @@
     <message>
         <source>Reading Appliance ...</source>
         <translation>خواندن وسیله...</translation>
+    </message>
+    <message>
+        <source>&amp;Import hard drives as VDI</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>MAC Address &amp;Policy:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Include all network adapter MAC addresses</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Include only NAT network adapter MAC addresses</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Generate new MAC addresses for all network adapters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Additional Options:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>When checked, all the hard drives that belong to this appliance will be imported in VDI format.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Machine Base Folder:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Include all network adapter MAC addresses during importing.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Include only NAT network adapter MAC addresses during importing.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Generate new MAC addresses for all network adapters during importing.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1859,6 +2555,57 @@
     </message>
 </context>
 <context>
+    <name>UIAudioControllerEditor</name>
+    <message>
+        <source>Audio &amp;Controller:</source>
+        <translation type="unfinished">کنترلر صدا&amp;:</translation>
+    </message>
+</context>
+<context>
+    <name>UIAudioHostDriverEditor</name>
+    <message>
+        <source>Host Audio &amp;Driver:</source>
+        <translation type="unfinished">درایور صدای میزبان&amp;:</translation>
+    </message>
+</context>
+<context>
+    <name>UIBaseMemoryEditor</name>
+    <message>
+        <source>Base &amp;Memory:</source>
+        <translation type="unfinished">حافظه پا&amp;یه:</translation>
+    </message>
+    <message>
+        <source>%1 MB</source>
+        <translation type="unfinished">%1 مگابایت</translation>
+    </message>
+    <message>
+        <source>MB</source>
+        <translation type="unfinished">مگابایت</translation>
+    </message>
+</context>
+<context>
+    <name>UIBootOrderEditor</name>
+    <message>
+        <source>&amp;Boot Order:</source>
+        <translation type="unfinished">ترتیب &amp;بوت:</translation>
+    </message>
+    <message>
+        <source>Move Up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move Down</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>UIChooserAbstractModel</name>
+    <message>
+        <source>New group</source>
+        <translation type="unfinished">گروه جدید</translation>
+    </message>
+</context>
+<context>
     <name>UIChooserItemGroup</name>
     <message>
         <source>Virtual Machine group</source>
@@ -1875,51 +2622,51 @@
     <message>
         <source>&lt;b&gt;%1&lt;/b&gt;</source>
         <comment>Group item tool-tip / Group name</comment>
-        <translation type="obsolete">&lt;b&gt;%1&lt;/b&gt;</translation>
+        <translation type="unfinished">&lt;b&gt;%1&lt;/b&gt;</translation>
     </message>
     <message numerus="yes">
         <source>%n group(s)</source>
         <comment>Group item tool-tip / Group info</comment>
-        <translation type="obsolete">
+        <translation type="unfinished">
             <numerusform>%n گروه</numerusform>
         </translation>
     </message>
     <message>
         <source>&lt;nobr&gt;%1&lt;/nobr&gt;</source>
         <comment>Group item tool-tip / Group info wrapper</comment>
-        <translation type="obsolete">&lt;nobr&gt;%1&lt;/nobr&gt;</translation>
+        <translation type="unfinished">&lt;nobr&gt;%1&lt;/nobr&gt;</translation>
     </message>
     <message numerus="yes">
         <source>%n machine(s)</source>
         <comment>Group item tool-tip / Machine info</comment>
-        <translation type="obsolete">
+        <translation type="unfinished">
             <numerusform>%n ماشین</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>(%n running)</source>
         <comment>Group item tool-tip / Running machine info</comment>
-        <translation type="obsolete">
+        <translation type="unfinished">
             <numerusform>(%n در حال اِجرای)</numerusform>
         </translation>
     </message>
     <message>
         <source>&lt;nobr&gt;%1&lt;/nobr&gt;</source>
         <comment>Group item tool-tip / Machine info wrapper</comment>
-        <translation type="obsolete">&lt;nobr&gt;%1&lt;/nobr&gt;</translation>
+        <translation type="unfinished">&lt;nobr&gt;%1&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;%1 %2&lt;/nobr&gt;</source>
         <comment>Group item tool-tip / Machine info wrapper, including running</comment>
-        <translation type="obsolete">&lt;nobr&gt;%1&lt;/nobr&gt; {1 %2&lt;?}</translation>
+        <translation type="unfinished">&lt;nobr&gt;%1&lt;/nobr&gt; {1 %2&lt;?}</translation>
     </message>
     <message>
         <source>Collapse group</source>
-        <translation type="obsolete">بستن گروه</translation>
+        <translation type="unfinished">بستن گروه</translation>
     </message>
     <message>
         <source>Expand group</source>
-        <translation type="obsolete">بازکردن گروه</translation>
+        <translation type="unfinished">بازکردن گروه</translation>
     </message>
 </context>
 <context>
@@ -1937,75 +2684,1705 @@
     </message>
 </context>
 <context>
+    <name>UIChooserNodeGlobal</name>
+    <message>
+        <source>Tools</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>UIChooserNodeGroup</name>
+    <message>
+        <source>Virtual Machine group</source>
+        <translation type="unfinished">گروه ماشین مجازی</translation>
+    </message>
+</context>
+<context>
+    <name>UIChooserNodeMachine</name>
+    <message>
+        <source>Virtual Machine</source>
+        <translation type="unfinished">ماشین مجازی</translation>
+    </message>
+</context>
+<context>
+    <name>UIChooserSearchWidget</name>
+    <message>
+        <source>Navigate to the next item among the search results</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Navigate to the previous item among the search results</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter a search term to be used during virtual machine search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close the search widget</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>UIChooserView</name>
     <message>
         <source>Contains a tree of Virtual Machines and their groups</source>
-        <translation type="obsolete">حاوی لیست ماشین های مجازی و گروه های آنهاست</translation>
+        <translation type="unfinished">حاوی لیست ماشین های مجازی و گروه های آنهاست</translation>
     </message>
 </context>
 <context>
     <name>UICloudProfileDetailsWidget</name>
     <message>
+        <source>Name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Properties:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Contains cloud profile settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter a name for the new profile...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter a name for this profile...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Reset</source>
-        <translation type="obsolete">ریست</translation>
+        <translation type="unfinished">ریست</translation>
+    </message>
+    <message>
+        <source>Reset changes in current profile details</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Reset Changes (%1)</source>
-        <translation type="obsolete">ریست تغییرات (%1)</translation>
+        <translation type="unfinished">ریست تغییرات (%1)</translation>
+    </message>
+    <message>
+        <source>Add</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add a new profile with following name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add Profile (%1)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Apply</source>
-        <translation type="obsolete">اِعمال</translation>
+        <translation type="unfinished">اِعمال</translation>
+    </message>
+    <message>
+        <source>Apply changes in current profile details</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Apply Changes (%1)</source>
-        <translation type="obsolete">اِعمال تغییرات (%1)</translation>
+        <translation type="unfinished">اِعمال تغییرات (%1)</translation>
     </message>
 </context>
 <context>
     <name>UICloudProfileManager</name>
     <message>
+        <source>Cloud Profile Manager</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Reset</source>
-        <translation type="obsolete">ریست</translation>
+        <translation type="unfinished">ریست</translation>
     </message>
     <message>
         <source>Apply</source>
-        <translation type="obsolete">اِعمال</translation>
+        <translation type="unfinished">اِعمال</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="obsolete">بستن</translation>
+        <translation type="unfinished">بستن</translation>
+    </message>
+    <message>
+        <source>Reset changes in current cloud profile details</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Apply changes in current cloud profile details</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Close dialog without saving</source>
-        <translation type="obsolete">بستن پنجره بدون ذخیره سازی</translation>
+        <translation type="unfinished">بستن پنجره بدون ذخیره سازی</translation>
     </message>
     <message>
         <source>Reset Changes (%1)</source>
-        <translation type="obsolete">ریست تغییرات (%1)</translation>
+        <translation type="unfinished">ریست تغییرات (%1)</translation>
     </message>
     <message>
         <source>Apply Changes (%1)</source>
-        <translation type="obsolete">اِعمال تغییرات (%1)</translation>
+        <translation type="unfinished">اِعمال تغییرات (%1)</translation>
     </message>
     <message>
         <source>Close Window (%1)</source>
-        <translation type="obsolete">بستن پنجره (%1)</translation>
+        <translation type="unfinished">بستن پنجره (%1)</translation>
+    </message>
+    <message>
+        <source>Add Profile</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>UICommon</name>
+    <message>
+        <source>MB</source>
+        <comment>size suffix MBytes=1024 KBytes</comment>
+        <translation type="unfinished">مگابایت</translation>
+    </message>
+    <message>
+        <source>&lt;nobr&gt;%1 MB&lt;/nobr&gt;</source>
+        <comment>details report</comment>
+        <translation type="unfinished">&lt;nobr&gt;%1 مگابایت&lt;/nobr&gt;</translation>
+    </message>
+    <message>
+        <source>Enabled</source>
+        <comment>details report (3D Acceleration)</comment>
+        <translation type="unfinished">فعال شده</translation>
+    </message>
+    <message>
+        <source>Disabled</source>
+        <comment>details report (3D Acceleration)</comment>
+        <translation type="unfinished">غیرفعال شده</translation>
+    </message>
+    <message>
+        <source>not set</source>
+        <comment>details report (execution engine)</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Active</source>
+        <comment>details report (Nested Paging)</comment>
+        <translation type="unfinished">فعال</translation>
+    </message>
+    <message>
+        <source>Inactive</source>
+        <comment>details report (Nested Paging)</comment>
+        <translation type="unfinished">غیر فعال</translation>
+    </message>
+    <message>
+        <source>Active</source>
+        <comment>details report (Unrestricted Execution)</comment>
+        <translation type="unfinished">فعال</translation>
+    </message>
+    <message>
+        <source>Inactive</source>
+        <comment>details report (Unrestricted Execution)</comment>
+        <translation type="unfinished">غیر فعال</translation>
+    </message>
+    <message>
+        <source>Execution engine</source>
+        <comment>details report</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Nested Paging</source>
+        <translation type="unfinished">صفحه بندی تودرتو</translation>
+    </message>
+    <message>
+        <source>Unrestricted Execution</source>
+        <translation type="unfinished">اِجرای بدون محدودیت</translation>
+    </message>
+    <message>
+        <source>Execution Cap</source>
+        <comment>details report</comment>
+        <translation type="unfinished">درپوش اِجرا</translation>
+    </message>
+    <message>
+        <source>Paravirtualization Interface</source>
+        <comment>details report</comment>
+        <translation type="unfinished">رابط پارا مجازی سازی</translation>
+    </message>
+    <message>
+        <source>Processors</source>
+        <comment>details report</comment>
+        <translation type="unfinished">پردازنده ها</translation>
+    </message>
+    <message>
+        <source>Powered Off</source>
+        <comment>MachineState</comment>
+        <translation type="unfinished">قطع برق شده است</translation>
+    </message>
+    <message>
+        <source>Saved</source>
+        <comment>MachineState</comment>
+        <translation type="unfinished">ذخیره شده</translation>
+    </message>
+    <message>
+        <source>Aborted</source>
+        <comment>MachineState</comment>
+        <translation type="unfinished">لغو شده است</translation>
+    </message>
+    <message>
+        <source>Teleported</source>
+        <comment>MachineState</comment>
+        <translation type="unfinished">تِلِپورت شده</translation>
+    </message>
+    <message>
+        <source>Running</source>
+        <comment>MachineState</comment>
+        <translation type="unfinished">در حال اِجرا</translation>
+    </message>
+    <message>
+        <source>Paused</source>
+        <comment>MachineState</comment>
+        <translation type="unfinished">وقفه شده است</translation>
+    </message>
+    <message>
+        <source>Guru Meditation</source>
+        <comment>MachineState</comment>
+        <translation type="unfinished">Guru Meditation</translation>
+    </message>
+    <message>
+        <source>Teleporting</source>
+        <comment>MachineState</comment>
+        <translation type="unfinished">درحال تِلِپورت</translation>
+    </message>
+    <message>
+        <source>Taking Snapshot</source>
+        <comment>MachineState</comment>
+        <translation type="unfinished">گرفتن ضبط وضعیت</translation>
+    </message>
+    <message>
+        <source>Taking Online Snapshot</source>
+        <comment>MachineState</comment>
+        <translation type="unfinished">گرفتن ضبط وضعیت آنلاین</translation>
+    </message>
+    <message>
+        <source>Taking Live Snapshot</source>
+        <comment>MachineState</comment>
+        <translation type="unfinished">ایجاد ضبط وضعیت زنده</translation>
+    </message>
+    <message>
+        <source>Starting</source>
+        <comment>MachineState</comment>
+        <translation type="unfinished">درحال شروع</translation>
+    </message>
+    <message>
+        <source>Stopping</source>
+        <comment>MachineState</comment>
+        <translation type="unfinished">درحال توقف</translation>
+    </message>
+    <message>
+        <source>Saving</source>
+        <comment>MachineState</comment>
+        <translation type="unfinished">ذخیره کردن</translation>
+    </message>
+    <message>
+        <source>Restoring</source>
+        <comment>MachineState</comment>
+        <translation type="unfinished">بازگردانی</translation>
+    </message>
+    <message>
+        <source>Teleporting Paused VM</source>
+        <comment>MachineState</comment>
+        <translation type="unfinished">تِلِپورت ماشین مجازی را متوقف کرده</translation>
+    </message>
+    <message>
+        <source>Deleting Snapshot</source>
+        <comment>MachineState</comment>
+        <translation type="unfinished">حذف ضبط وضعیت</translation>
+    </message>
+    <message>
+        <source>Restoring Snapshot</source>
+        <comment>MachineState</comment>
+        <translation type="unfinished">بازگردانی ضبط وضعیت</translation>
+    </message>
+    <message>
+        <source>Setting Up</source>
+        <comment>MachineState</comment>
+        <translation type="unfinished">تنظیم کردن</translation>
+    </message>
+    <message>
+        <source>Unlocked</source>
+        <comment>SessionState</comment>
+        <translation type="unfinished">گشوده شده</translation>
+    </message>
+    <message>
+        <source>Locked</source>
+        <comment>SessionState</comment>
+        <translation type="unfinished">قفل شده</translation>
+    </message>
+    <message>
+        <source>Spawning</source>
+        <comment>SessionState</comment>
+        <translation type="unfinished">Spawning</translation>
+    </message>
+    <message>
+        <source>Unlocking</source>
+        <comment>SessionState</comment>
+        <translation type="unfinished">گشودن</translation>
+    </message>
+    <message>
+        <source>None</source>
+        <comment>ParavirtProvider</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Default</source>
+        <comment>ParavirtProvider</comment>
+        <translation type="unfinished">پیش فرض</translation>
+    </message>
+    <message>
+        <source>Legacy</source>
+        <comment>ParavirtProvider</comment>
+        <translation type="unfinished">میراث</translation>
+    </message>
+    <message>
+        <source>Minimal</source>
+        <comment>ParavirtProvider</comment>
+        <translation type="unfinished">حداقل</translation>
+    </message>
+    <message>
+        <source>Hyper-V</source>
+        <comment>ParavirtProvider</comment>
+        <translation type="unfinished">Hyper-V</translation>
+    </message>
+    <message>
+        <source>KVM</source>
+        <comment>ParavirtProvider</comment>
+        <translation type="unfinished">KVM</translation>
+    </message>
+    <message>
+        <source>None</source>
+        <comment>DeviceType</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Floppy</source>
+        <comment>DeviceType</comment>
+        <translation type="unfinished">فلاپی</translation>
+    </message>
+    <message>
+        <source>Optical</source>
+        <comment>DeviceType</comment>
+        <translation type="unfinished">نوری</translation>
+    </message>
+    <message>
+        <source>Hard Disk</source>
+        <comment>DeviceType</comment>
+        <translation type="unfinished">دیسک سخت</translation>
+    </message>
+    <message>
+        <source>Network</source>
+        <comment>DeviceType</comment>
+        <translation type="unfinished">شبکه</translation>
+    </message>
+    <message>
+        <source>USB</source>
+        <comment>DeviceType</comment>
+        <translation type="unfinished">یو اِس بی</translation>
+    </message>
+    <message>
+        <source>Shared Folder</source>
+        <comment>DeviceType</comment>
+        <translation type="unfinished">پوشه اشتراکی</translation>
+    </message>
+    <message>
+        <source>Disabled</source>
+        <comment>ClipboardType</comment>
+        <translation type="unfinished">غیرفعال شده</translation>
+    </message>
+    <message>
+        <source>Host To Guest</source>
+        <comment>ClipboardType</comment>
+        <translation type="unfinished">میزبان به مهمان</translation>
+    </message>
+    <message>
+        <source>Guest To Host</source>
+        <comment>ClipboardType</comment>
+        <translation type="unfinished">مهمان به میزبان</translation>
+    </message>
+    <message>
+        <source>Bidirectional</source>
+        <comment>ClipboardType</comment>
+        <translation type="unfinished">دوطرفه</translation>
+    </message>
+    <message>
+        <source>Disabled</source>
+        <comment>DragAndDropType</comment>
+        <translation type="unfinished">غیرفعال شده</translation>
+    </message>
+    <message>
+        <source>Host To Guest</source>
+        <comment>DragAndDropType</comment>
+        <translation type="unfinished">میزبان به مهمان</translation>
+    </message>
+    <message>
+        <source>Guest To Host</source>
+        <comment>DragAndDropType</comment>
+        <translation type="unfinished">مهمان به میزبان</translation>
+    </message>
+    <message>
+        <source>Bidirectional</source>
+        <comment>DragAndDropType</comment>
+        <translation type="unfinished">دوطرفه</translation>
+    </message>
+    <message>
+        <source>PS/2 Mouse</source>
+        <comment>PointingHIDType</comment>
+        <translation type="unfinished">PS/2 Mouse</translation>
+    </message>
+    <message>
+        <source>USB Mouse</source>
+        <comment>PointingHIDType</comment>
+        <translation type="unfinished">موس یو اِس بی</translation>
+    </message>
+    <message>
+        <source>USB Tablet</source>
+        <comment>PointingHIDType</comment>
+        <translation type="unfinished">تبلت یو اِس بی</translation>
+    </message>
+    <message>
+        <source>PS/2 and USB Mouse</source>
+        <comment>PointingHIDType</comment>
+        <translation type="unfinished">ماوس پی اِس/2 و یو اِس بی</translation>
+    </message>
+    <message>
+        <source>USB Multi-Touch Tablet</source>
+        <comment>PointingHIDType</comment>
+        <translation type="unfinished">تبلت چند لمسی یو اِس بی</translation>
+    </message>
+    <message>
+        <source>None</source>
+        <comment>GraphicsControllerType</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>VBoxVGA</source>
+        <comment>GraphicsControllerType</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>VMSVGA</source>
+        <comment>GraphicsControllerType</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>VBoxSVGA</source>
+        <comment>GraphicsControllerType</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Normal</source>
+        <comment>MediumType</comment>
+        <translation type="unfinished">معمولی</translation>
+    </message>
+    <message>
+        <source>Immutable</source>
+        <comment>MediumType</comment>
+        <translation type="unfinished">تغییر ناپذیر است</translation>
+    </message>
+    <message>
+        <source>Writethrough</source>
+        <comment>MediumType</comment>
+        <translation type="unfinished">نوشتن سرتاسری</translation>
+    </message>
+    <message>
+        <source>Shareable</source>
+        <comment>MediumType</comment>
+        <translation type="unfinished">قابل اشتراک گذاری</translation>
+    </message>
+    <message>
+        <source>Readonly</source>
+        <comment>MediumType</comment>
+        <translation type="unfinished">فقط خواندنی</translation>
+    </message>
+    <message>
+        <source>Multi-attach</source>
+        <comment>MediumType</comment>
+        <translation type="unfinished">چند-ضمیمه</translation>
+    </message>
+    <message>
+        <source>Dynamically allocated storage</source>
+        <comment>MediumVariant</comment>
+        <translation type="unfinished">ذخیر ساز پویا اختصاص داده شده</translation>
+    </message>
+    <message>
+        <source>New dynamically allocated storage</source>
+        <comment>MediumVariant</comment>
+        <translation type="unfinished">ذخیر ساز پویا اختصاص داده شده جدید</translation>
+    </message>
+    <message>
+        <source>Dynamically allocated differencing storage</source>
+        <comment>MediumVariant</comment>
+        <translation type="unfinished">ذخیره ساز متفاوت پویا اختصاص داده شده</translation>
+    </message>
+    <message>
+        <source>Fixed size storage</source>
+        <comment>MediumVariant</comment>
+        <translation type="unfinished">ذخیره ساز حجم ثابت شده</translation>
+    </message>
+    <message>
+        <source>Dynamically allocated storage split into files of less than 2GB</source>
+        <comment>MediumVariant</comment>
+        <translation type="unfinished">ذخیر ساز پویا اختصاص داده شده به فایل هایی کوچکتر از 2 گیگابایت تقسیم میشود</translation>
+    </message>
+    <message>
+        <source>Dynamically allocated differencing storage split into files of less than 2GB</source>
+        <comment>MediumVariant</comment>
+        <translation type="unfinished">ذخیره ساز متفاوت پویا اختصاص داده شده به فایل هایی کوچکتر از 2 گیگابایت تقسیم میشود</translation>
+    </message>
+    <message>
+        <source>Fixed size storage split into files of less than 2GB</source>
+        <comment>MediumVariant</comment>
+        <translation type="unfinished">ذخیره ساز حجم ثابت شده به فایل هایی کوچکتر از 2 گیگابایت تقسیم میشود</translation>
+    </message>
+    <message>
+        <source>Dynamically allocated compressed storage</source>
+        <comment>MediumVariant</comment>
+        <translation type="unfinished">ذخیره ساز فشرده شده پویا اختصاص داده شده</translation>
+    </message>
+    <message>
+        <source>Dynamically allocated differencing compressed storage</source>
+        <comment>MediumVariant</comment>
+        <translation type="unfinished">ذخیره ساز فشرده شده متفاوت پویا اختصاص داده شده</translation>
+    </message>
+    <message>
+        <source>Fixed size ESX storage</source>
+        <comment>MediumVariant</comment>
+        <translation type="unfinished">حجم ثابت شده ذخیره ساز ای اِس ایکس</translation>
+    </message>
+    <message>
+        <source>Fixed size storage on raw disk</source>
+        <comment>MediumVariant</comment>
+        <translation type="unfinished">حجم ثابت شده ذخیره ساز در دیسک خام</translation>
+    </message>
+    <message>
+        <source>Not attached</source>
+        <comment>NetworkAttachmentType</comment>
+        <translation type="unfinished">ضمیمه نشده است</translation>
+    </message>
+    <message>
+        <source>NAT</source>
+        <comment>NetworkAttachmentType</comment>
+        <translation type="unfinished">NAT</translation>
+    </message>
+    <message>
+        <source>Bridged Adapter</source>
+        <comment>NetworkAttachmentType</comment>
+        <translation type="unfinished">آداپتور پل شده</translation>
+    </message>
+    <message>
+        <source>Internal Network</source>
+        <comment>NetworkAttachmentType</comment>
+        <translation type="unfinished">شبکه داخلی</translation>
+    </message>
+    <message>
+        <source>Host-only Adapter</source>
+        <comment>NetworkAttachmentType</comment>
+        <translation type="unfinished">آداپتور فقط-میزبان</translation>
+    </message>
+    <message>
+        <source>Generic Driver</source>
+        <comment>NetworkAttachmentType</comment>
+        <translation type="unfinished">درایور کلی</translation>
+    </message>
+    <message>
+        <source>NAT Network</source>
+        <comment>NetworkAttachmentType</comment>
+        <translation type="unfinished">شبکه NAT</translation>
+    </message>
+    <message>
+        <source>Cloud Network</source>
+        <comment>NetworkAttachmentType</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PCnet-PCI II (Am79C970A)</source>
+        <comment>NetworkAdapterType</comment>
+        <translation type="unfinished">PCnet-PCI II (Am79C970A)</translation>
+    </message>
+    <message>
+        <source>PCnet-FAST III (Am79C973)</source>
+        <comment>NetworkAdapterType</comment>
+        <translation type="unfinished">PCnet-FAST III (Am79C973)</translation>
+    </message>
+    <message>
+        <source>Intel PRO/1000 MT Desktop (82540EM)</source>
+        <comment>NetworkAdapterType</comment>
+        <translation type="unfinished">Intel PRO/1000 MT Desktop (82540EM)</translation>
+    </message>
+    <message>
+        <source>Intel PRO/1000 T Server (82543GC)</source>
+        <comment>NetworkAdapterType</comment>
+        <translation type="unfinished">Intel PRO/1000 T Server (82543GC)</translation>
+    </message>
+    <message>
+        <source>Intel PRO/1000 MT Server (82545EM)</source>
+        <comment>NetworkAdapterType</comment>
+        <translation type="unfinished">Intel PRO/1000 MT Server (82545EM)</translation>
+    </message>
+    <message>
+        <source>Paravirtualized Network (virtio-net)</source>
+        <comment>NetworkAdapterType</comment>
+        <translation type="unfinished">شبکه پارا مجازی سازی شده (virtio-net)</translation>
+    </message>
+    <message>
+        <source>Deny</source>
+        <comment>NetworkAdapterPromiscModePolicy</comment>
+        <translation type="unfinished">انکار کرده</translation>
+    </message>
+    <message>
+        <source>Allow VMs</source>
+        <comment>NetworkAdapterPromiscModePolicy</comment>
+        <translation type="unfinished">اِجازه ماشین مجازی</translation>
+    </message>
+    <message>
+        <source>Allow All</source>
+        <comment>NetworkAdapterPromiscModePolicy</comment>
+        <translation type="unfinished">اجازه همه</translation>
+    </message>
+    <message>
+        <source>Disconnected</source>
+        <comment>PortMode</comment>
+        <translation type="unfinished">قطع شده است</translation>
+    </message>
+    <message>
+        <source>Host Pipe</source>
+        <comment>PortMode</comment>
+        <translation type="unfinished">میله میزبان</translation>
+    </message>
+    <message>
+        <source>Host Device</source>
+        <comment>PortMode</comment>
+        <translation type="unfinished">دستگاه میزبان</translation>
+    </message>
+    <message>
+        <source>Raw File</source>
+        <comment>PortMode</comment>
+        <translation type="unfinished">فایل خام</translation>
+    </message>
+    <message>
+        <source>TCP</source>
+        <comment>PortMode</comment>
+        <translation type="unfinished">TCP</translation>
+    </message>
+    <message>
+        <source>OHCI</source>
+        <comment>USBControllerType</comment>
+        <translation type="unfinished">OHCI</translation>
+    </message>
+    <message>
+        <source>EHCI</source>
+        <comment>USBControllerType</comment>
+        <translation type="unfinished">EHCI</translation>
+    </message>
+    <message>
+        <source>xHCI</source>
+        <comment>USBControllerType</comment>
+        <translation type="unfinished">xHCI</translation>
+    </message>
+    <message>
+        <source>Not supported</source>
+        <comment>USBDeviceState</comment>
+        <translation type="unfinished">پشتیبانی نمیشود</translation>
+    </message>
+    <message>
+        <source>Unavailable</source>
+        <comment>USBDeviceState</comment>
+        <translation type="unfinished">دردسترس نیست</translation>
+    </message>
+    <message>
+        <source>Busy</source>
+        <comment>USBDeviceState</comment>
+        <translation type="unfinished">مشغول است</translation>
+    </message>
+    <message>
+        <source>Available</source>
+        <comment>USBDeviceState</comment>
+        <translation type="unfinished">در دسترس است</translation>
+    </message>
+    <message>
+        <source>Held</source>
+        <comment>USBDeviceState</comment>
+        <translation type="unfinished">نگه داشده شده است</translation>
+    </message>
+    <message>
+        <source>Captured</source>
+        <comment>USBDeviceState</comment>
+        <translation type="unfinished">ضبط شده</translation>
+    </message>
+    <message>
+        <source>Ignore</source>
+        <comment>USBDeviceFilterAction</comment>
+        <translation type="unfinished">چشمپوشی</translation>
+    </message>
+    <message>
+        <source>Hold</source>
+        <comment>USBDeviceFilterAction</comment>
+        <translation type="unfinished">نگه داشته شده است</translation>
+    </message>
+    <message>
+        <source>Null Audio Driver</source>
+        <comment>AudioDriverType</comment>
+        <translation type="unfinished">درایور صوتی تهی</translation>
+    </message>
+    <message>
+        <source>Windows Multimedia</source>
+        <comment>AudioDriverType</comment>
+        <translation type="unfinished">Windows Multimedia</translation>
+    </message>
+    <message>
+        <source>OSS Audio Driver</source>
+        <comment>AudioDriverType</comment>
+        <translation type="unfinished">درایور صوتی OSS</translation>
+    </message>
+    <message>
+        <source>ALSA Audio Driver</source>
+        <comment>AudioDriverType</comment>
+        <translation type="unfinished">درایور صوتی ALSA</translation>
+    </message>
+    <message>
+        <source>Windows DirectSound</source>
+        <comment>AudioDriverType</comment>
+        <translation type="unfinished">Windows DirectSound</translation>
+    </message>
+    <message>
+        <source>CoreAudio</source>
+        <comment>AudioDriverType</comment>
+        <translation type="unfinished">CoreAudio</translation>
+    </message>
+    <message>
+        <source>PulseAudio</source>
+        <comment>AudioDriverType</comment>
+        <translation type="unfinished">PulseAudio</translation>
+    </message>
+    <message>
+        <source>Solaris Audio</source>
+        <comment>AudioDriverType</comment>
+        <translation type="unfinished">صوت سولاریس</translation>
+    </message>
+    <message>
+        <source>ICH AC97</source>
+        <comment>AudioControllerType</comment>
+        <translation type="unfinished">ICH AC97</translation>
+    </message>
+    <message>
+        <source>SoundBlaster 16</source>
+        <comment>AudioControllerType</comment>
+        <translation type="unfinished">SoundBlaster 16</translation>
+    </message>
+    <message>
+        <source>Intel HD Audio</source>
+        <comment>AudioControllerType</comment>
+        <translation type="unfinished">Intel HD Audio</translation>
+    </message>
+    <message>
+        <source>Null</source>
+        <comment>AuthType</comment>
+        <translation type="unfinished">تهی</translation>
+    </message>
+    <message>
+        <source>External</source>
+        <comment>AuthType</comment>
+        <translation type="unfinished">خارجی</translation>
+    </message>
+    <message>
+        <source>Guest</source>
+        <comment>AuthType</comment>
+        <translation type="unfinished">مهمان</translation>
+    </message>
+    <message>
+        <source>IDE</source>
+        <comment>StorageBus</comment>
+        <translation type="unfinished">IDE</translation>
+    </message>
+    <message>
+        <source>SATA</source>
+        <comment>StorageBus</comment>
+        <translation type="unfinished">SATA</translation>
+    </message>
+    <message>
+        <source>SCSI</source>
+        <comment>StorageBus</comment>
+        <translation type="unfinished">SCSI</translation>
+    </message>
+    <message>
+        <source>Floppy</source>
+        <comment>StorageBus</comment>
+        <translation type="unfinished">فلاپی</translation>
+    </message>
+    <message>
+        <source>SAS</source>
+        <comment>StorageBus</comment>
+        <translation type="unfinished">SAS</translation>
+    </message>
+    <message>
+        <source>USB</source>
+        <comment>StorageBus</comment>
+        <translation type="unfinished">یو اِس بی</translation>
+    </message>
+    <message>
+        <source>PCIe</source>
+        <comment>StorageBus</comment>
+        <translation type="unfinished">PCIe</translation>
+    </message>
+    <message>
+        <source>virtio-scsi</source>
+        <comment>StorageBus</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>LsiLogic</source>
+        <comment>StorageControllerType</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>BusLogic</source>
+        <comment>StorageControllerType</comment>
+        <translation type="unfinished">BusLogic</translation>
+    </message>
+    <message>
+        <source>AHCI</source>
+        <comment>StorageControllerType</comment>
+        <translation type="unfinished">AHCI</translation>
+    </message>
+    <message>
+        <source>PIIX3</source>
+        <comment>StorageControllerType</comment>
+        <translation type="unfinished">PIIX3</translation>
+    </message>
+    <message>
+        <source>PIIX4</source>
+        <comment>StorageControllerType</comment>
+        <translation type="unfinished">PIIX4</translation>
+    </message>
+    <message>
+        <source>ICH6</source>
+        <comment>StorageControllerType</comment>
+        <translation type="unfinished">ICH6</translation>
+    </message>
+    <message>
+        <source>I82078</source>
+        <comment>StorageControllerType</comment>
+        <translation type="unfinished">I82078</translation>
+    </message>
+    <message>
+        <source>LsiLogic SAS</source>
+        <comment>StorageControllerType</comment>
+        <translation type="unfinished">LsiLogic SAS</translation>
+    </message>
+    <message>
+        <source>USB</source>
+        <comment>StorageControllerType</comment>
+        <translation type="unfinished">یو اِس بی</translation>
+    </message>
+    <message>
+        <source>NVMe</source>
+        <comment>StorageControllerType</comment>
+        <translation type="unfinished">NVMe</translation>
+    </message>
+    <message>
+        <source>virtio-scsi</source>
+        <comment>StorageControllerType</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PIIX3</source>
+        <comment>ChipsetType</comment>
+        <translation type="unfinished">PIIX3</translation>
+    </message>
+    <message>
+        <source>ICH9</source>
+        <comment>ChipsetType</comment>
+        <translation type="unfinished">ICH9</translation>
+    </message>
+    <message>
+        <source>UDP</source>
+        <comment>NATProtocol</comment>
+        <translation type="unfinished">UDP</translation>
+    </message>
+    <message>
+        <source>TCP</source>
+        <comment>NATProtocol</comment>
+        <translation type="unfinished">TCP</translation>
+    </message>
+    <message>
+        <source>Starting</source>
+        <comment>GuestSessionStatus</comment>
+        <translation type="obsolete">درحال شروع</translation>
+    </message>
+    <message>
+        <source>Starting</source>
+        <comment>ProcessStatus</comment>
+        <translation type="obsolete">درحال شروع</translation>
+    </message>
+    <message>
+        <source>Paused</source>
+        <comment>ProcessStatus</comment>
+        <translation type="obsolete">وقفه شده است</translation>
+    </message>
+    <message>
+        <source>B</source>
+        <comment>size suffix Bytes</comment>
+        <translation type="unfinished">بایت</translation>
+    </message>
+    <message>
+        <source>KB</source>
+        <comment>size suffix KBytes=1024 Bytes</comment>
+        <translation type="unfinished">کیلوبایت</translation>
+    </message>
+    <message>
+        <source>GB</source>
+        <comment>size suffix GBytes=1024 MBytes</comment>
+        <translation type="unfinished">گیگابایت</translation>
+    </message>
+    <message>
+        <source>TB</source>
+        <comment>size suffix TBytes=1024 GBytes</comment>
+        <translation type="unfinished">ترابایت</translation>
+    </message>
+    <message>
+        <source>PB</source>
+        <comment>size suffix PBytes=1024 TBytes</comment>
+        <translation type="unfinished">PB</translation>
+    </message>
+    <message>
+        <source>IDE Primary Master</source>
+        <comment>StorageSlot</comment>
+        <translation type="unfinished">IDE اولیه مَستر</translation>
+    </message>
+    <message>
+        <source>IDE Primary Slave</source>
+        <comment>StorageSlot</comment>
+        <translation type="unfinished">IDE اولیه اِسلیو</translation>
+    </message>
+    <message>
+        <source>IDE Secondary Master</source>
+        <comment>StorageSlot</comment>
+        <translation type="unfinished">IDE ثانویه مَستر</translation>
+    </message>
+    <message>
+        <source>IDE Secondary Slave</source>
+        <comment>StorageSlot</comment>
+        <translation type="unfinished">IDE ثانویه اِسلیو</translation>
+    </message>
+    <message>
+        <source>SATA Port %1</source>
+        <comment>StorageSlot</comment>
+        <translation type="unfinished">پورت SATA %1</translation>
+    </message>
+    <message>
+        <source>SCSI Port %1</source>
+        <comment>StorageSlot</comment>
+        <translation type="unfinished">پورت SCSI %1</translation>
+    </message>
+    <message>
+        <source>SAS Port %1</source>
+        <comment>StorageSlot</comment>
+        <translation type="unfinished">پورت SAS %1</translation>
+    </message>
+    <message>
+        <source>Floppy Device %1</source>
+        <comment>StorageSlot</comment>
+        <translation type="unfinished">دستگاه فلاپی %1</translation>
+    </message>
+    <message>
+        <source>USB Port %1</source>
+        <comment>StorageSlot</comment>
+        <translation type="unfinished">پورت یو اِس بی %1</translation>
+    </message>
+    <message>
+        <source>NVMe Port %1</source>
+        <comment>StorageSlot</comment>
+        <translation type="unfinished">NVMe پورت %1</translation>
+    </message>
+    <message>
+        <source>virtio-scsi Port %1</source>
+        <comment>StorageSlot</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished">نام</translation>
+    </message>
+    <message>
+        <source>OS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Groups</source>
+        <translation type="unfinished">گروه ها</translation>
+    </message>
+    <message>
+        <source>RAM</source>
+        <translation type="unfinished">حافظه</translation>
+    </message>
+    <message>
+        <source>CPU Count</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CPU Execution Cap</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Boot Order</source>
+        <translation type="unfinished">ترتیب بوت</translation>
+    </message>
+    <message>
+        <source>Chipset Type</source>
+        <translation type="unfinished">نوع تراشه</translation>
+    </message>
+    <message>
+        <source>Firmware</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Acceleration</source>
+        <translation type="unfinished">شتاب دهنده</translation>
+    </message>
+    <message>
+        <source>VRAM</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Screen Count</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scale Factor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Graphics Controller</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>VRDE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Recording</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hard Disks</source>
+        <translation type="unfinished">دیسک سخت</translation>
+    </message>
+    <message>
+        <source>Optical Devices</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Floppy Devices</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Driver</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Controller</source>
+        <translation type="unfinished">کنترلر</translation>
+    </message>
+    <message>
+        <source>Input/Output</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not Attached</source>
+        <comment>network adapter</comment>
+        <translation type="unfinished">ضمیمه نشده است</translation>
+    </message>
+    <message>
+        <source>NAT</source>
+        <translation type="unfinished">NAT</translation>
+    </message>
+    <message>
+        <source>Bridget Adapter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Internal Network</source>
+        <translation type="unfinished">شبکه داخلی</translation>
+    </message>
+    <message>
+        <source>Host Only Adapter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Generic Driver</source>
+        <translation type="unfinished">درایور کلی</translation>
+    </message>
+    <message>
+        <source>NAT Network</source>
+        <translation type="unfinished">شبکه NAT</translation>
+    </message>
+    <message>
+        <source>Disconnected</source>
+        <comment>serial port</comment>
+        <translation type="unfinished">قطع شده است</translation>
+    </message>
+    <message>
+        <source>Host Pipe</source>
+        <translation type="unfinished">میله میزبان</translation>
+    </message>
+    <message>
+        <source>Host Device</source>
+        <translation type="unfinished">دستگاه میزبان</translation>
+    </message>
+    <message>
+        <source>Raw File</source>
+        <translation type="unfinished">فایل خام</translation>
+    </message>
+    <message>
+        <source>TCP</source>
+        <translation type="unfinished">TCP</translation>
+    </message>
+    <message>
+        <source>Device Filters</source>
+        <translation type="unfinished">فیلترهای دستگاه</translation>
+    </message>
+    <message>
+        <source>Menu Bar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Status Bar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mini Toolbar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>General</source>
+        <comment>DetailsElementType</comment>
+        <translation type="unfinished">عمومی</translation>
+    </message>
+    <message>
+        <source>Preview</source>
+        <comment>DetailsElementType</comment>
+        <translation type="unfinished">پیشنمایش</translation>
+    </message>
+    <message>
+        <source>System</source>
+        <comment>DetailsElementType</comment>
+        <translation type="unfinished">سیستم</translation>
+    </message>
+    <message>
+        <source>Display</source>
+        <comment>DetailsElementType</comment>
+        <translation type="unfinished">نمایش</translation>
+    </message>
+    <message>
+        <source>Storage</source>
+        <comment>DetailsElementType</comment>
+        <translation type="unfinished">ذخیره ساز</translation>
+    </message>
+    <message>
+        <source>Audio</source>
+        <comment>DetailsElementType</comment>
+        <translation type="unfinished">صدا</translation>
+    </message>
+    <message>
+        <source>Network</source>
+        <comment>DetailsElementType</comment>
+        <translation type="unfinished">شبکه</translation>
+    </message>
+    <message>
+        <source>Serial ports</source>
+        <comment>DetailsElementType</comment>
+        <translation type="unfinished">پورت سریال</translation>
+    </message>
+    <message>
+        <source>USB</source>
+        <comment>DetailsElementType</comment>
+        <translation type="unfinished">یو اِس بی</translation>
+    </message>
+    <message>
+        <source>Shared folders</source>
+        <comment>DetailsElementType</comment>
+        <translation type="unfinished">پوشه های اشتراکی</translation>
+    </message>
+    <message>
+        <source>User interface</source>
+        <comment>DetailsElementType</comment>
+        <translation type="unfinished">رابط کاربری</translation>
+    </message>
+    <message>
+        <source>Description</source>
+        <comment>DetailsElementType</comment>
+        <translation type="unfinished">توضیحات</translation>
+    </message>
+    <message>
+        <source>Hard Disks</source>
+        <comment>IndicatorType</comment>
+        <translation type="unfinished">دیسک سخت</translation>
+    </message>
+    <message>
+        <source>Optical Disks</source>
+        <comment>IndicatorType</comment>
+        <translation type="unfinished">ذیسک نوری</translation>
+    </message>
+    <message>
+        <source>Floppy Disks</source>
+        <comment>IndicatorType</comment>
+        <translation type="unfinished">دیسک فلاپی</translation>
+    </message>
+    <message>
+        <source>Audio</source>
+        <comment>IndicatorType</comment>
+        <translation type="unfinished">صدا</translation>
+    </message>
+    <message>
+        <source>Network</source>
+        <comment>IndicatorType</comment>
+        <translation type="unfinished">شبکه</translation>
+    </message>
+    <message>
+        <source>USB</source>
+        <comment>IndicatorType</comment>
+        <translation type="unfinished">یو اِس بی</translation>
+    </message>
+    <message>
+        <source>Shared Folders</source>
+        <comment>IndicatorType</comment>
+        <translation type="unfinished">پوشه های اشتراکی</translation>
+    </message>
+    <message>
+        <source>Display</source>
+        <comment>IndicatorType</comment>
+        <translation type="unfinished">نمایش</translation>
+    </message>
+    <message>
+        <source>Recording</source>
+        <comment>IndicatorType</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Features</source>
+        <comment>IndicatorType</comment>
+        <translation type="unfinished">ویژگی ها</translation>
+    </message>
+    <message>
+        <source>Mouse</source>
+        <comment>IndicatorType</comment>
+        <translation type="unfinished">ماوس</translation>
+    </message>
+    <message>
+        <source>Keyboard</source>
+        <comment>IndicatorType</comment>
+        <translation type="unfinished">صفحه کلید</translation>
+    </message>
+    <message>
+        <source>General</source>
+        <comment>InformationElementType</comment>
+        <translation type="unfinished">عمومی</translation>
+    </message>
+    <message>
+        <source>Preview</source>
+        <comment>InformationElementType</comment>
+        <translation type="unfinished">پیشنمایش</translation>
+    </message>
+    <message>
+        <source>System</source>
+        <comment>InformationElementType</comment>
+        <translation type="unfinished">سیستم</translation>
+    </message>
+    <message>
+        <source>Display</source>
+        <comment>InformationElementType</comment>
+        <translation type="unfinished">نمایش</translation>
+    </message>
+    <message>
+        <source>Storage</source>
+        <comment>InformationElementType</comment>
+        <translation type="unfinished">ذخیره ساز</translation>
+    </message>
+    <message>
+        <source>Audio</source>
+        <comment>InformationElementType</comment>
+        <translation type="unfinished">صدا</translation>
+    </message>
+    <message>
+        <source>Network</source>
+        <comment>InformationElementType</comment>
+        <translation type="unfinished">شبکه</translation>
+    </message>
+    <message>
+        <source>Serial ports</source>
+        <comment>InformationElementType</comment>
+        <translation type="unfinished">پورت سریال</translation>
+    </message>
+    <message>
+        <source>USB</source>
+        <comment>InformationElementType</comment>
+        <translation type="unfinished">یو اِس بی</translation>
+    </message>
+    <message>
+        <source>Shared folders</source>
+        <comment>InformationElementType</comment>
+        <translation type="unfinished">پوشه های اشتراکی</translation>
+    </message>
+    <message>
+        <source>User interface</source>
+        <comment>InformationElementType</comment>
+        <translation type="unfinished">رابط کاربری</translation>
+    </message>
+    <message>
+        <source>Description</source>
+        <comment>InformationElementType</comment>
+        <translation type="unfinished">توضیحات</translation>
+    </message>
+    <message>
+        <source>Runtime attributes</source>
+        <comment>InformationElementType</comment>
+        <translation type="unfinished">صفات زمان اِجرا</translation>
+    </message>
+    <message>
+        <source>Storage statistics</source>
+        <comment>InformationElementType</comment>
+        <translation type="unfinished">آمار ذخیره ساز</translation>
+    </message>
+    <message>
+        <source>Network statistics</source>
+        <comment>InformationElementType</comment>
+        <translation type="unfinished">آمار شبکه</translation>
+    </message>
+    <message>
+        <source>VDI (VirtualBox Disk Image)</source>
+        <comment>UIMediumFormat</comment>
+        <translation type="unfinished">VDI (دیسک ایمیج ویرچوال باکس)</translation>
+    </message>
+    <message>
+        <source>VMDK (Virtual Machine Disk)</source>
+        <comment>UIMediumFormat</comment>
+        <translation type="unfinished">VMDK (دیسک ماشین مجازی)</translation>
+    </message>
+    <message>
+        <source>VHD (Virtual Hard Disk)</source>
+        <comment>UIMediumFormat</comment>
+        <translation type="unfinished">VHD (دیسک سخت مجازی)</translation>
+    </message>
+    <message>
+        <source>HDD (Parallels Hard Disk)</source>
+        <comment>UIMediumFormat</comment>
+        <translation type="unfinished">HDD (دیسک سخت پارالل)</translation>
+    </message>
+    <message>
+        <source>QED (QEMU enhanced disk)</source>
+        <comment>UIMediumFormat</comment>
+        <translation type="unfinished">QED (دیسک بهسازی شده کیو ای اِم یو)</translation>
+    </message>
+    <message>
+        <source>QCOW (QEMU Copy-On-Write)</source>
+        <comment>UIMediumFormat</comment>
+        <translation type="unfinished">QCOW (کیو ای اِم یو کپی-در-نوشتن)</translation>
+    </message>
+    <message>
+        <source>Video/Audio</source>
+        <comment>UISettingsDefs::RecordingMode</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Video Only</source>
+        <comment>UISettingsDefs::RecordingMode</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Audio Only</source>
+        <comment>UISettingsDefs::RecordingMode</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <source>%n year(s)</source>
+        <translation type="unfinished">
+            <numerusform>%n سال</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n month(s)</source>
+        <translation type="unfinished">
+            <numerusform>%n ماه</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n day(s)</source>
+        <translation type="unfinished">
+            <numerusform>%n روز</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n hour(s)</source>
+        <translation type="unfinished">
+            <numerusform>%n ساعت</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n minute(s)</source>
+        <translation type="unfinished">
+            <numerusform>%n دقیقه</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n second(s)</source>
+        <translation type="unfinished">
+            <numerusform>%n ثانیه</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Please choose a virtual hard disk file</source>
+        <translation type="unfinished">لطفا یک فایل دیسک سخت مجازی انتخاب کنید</translation>
+    </message>
+    <message>
+        <source>All virtual hard disk files (%1)</source>
+        <translation type="unfinished">همه فایل های دیسک سخت مجازی (%1)</translation>
+    </message>
+    <message>
+        <source>Please choose a virtual optical disk file</source>
+        <translation type="unfinished">لطفا یک فایل دیسک نوری مجازی انتخاب کنید</translation>
+    </message>
+    <message>
+        <source>All virtual optical disk files (%1)</source>
+        <translation type="unfinished">همه فایل های دیسک نوری مجازی (%1)</translation>
+    </message>
+    <message>
+        <source>Please choose a virtual floppy disk file</source>
+        <translation type="unfinished">لطفا یک فایل دیسک فلاپی مجازی انتخاب کنید</translation>
+    </message>
+    <message>
+        <source>All virtual floppy disk files (%1)</source>
+        <translation type="unfinished">همه فایل های دیسک فلاپی مجازی (%1)</translation>
+    </message>
+    <message>
+        <source>All files (*)</source>
+        <translation type="unfinished">همه فایل ها (*)</translation>
+    </message>
+    <message>
+        <source>Unknown device</source>
+        <comment>USB device details</comment>
+        <translation type="unfinished">دستگاه ناشناخته</translation>
+    </message>
+    <message>
+        <source>Unknown device %1:%2</source>
+        <comment>USB device details</comment>
+        <translation type="unfinished">دستگاه ناشناخته %1:%2</translation>
+    </message>
+    <message>
+        <source>&lt;nobr&gt;Vendor ID: %1&lt;/nobr&gt;&lt;br&gt;&lt;nobr&gt;Product ID: %2&lt;/nobr&gt;&lt;br&gt;&lt;nobr&gt;Revision: %3&lt;/nobr&gt;</source>
+        <comment>USB device tooltip</comment>
+        <translation type="unfinished">&lt;nobr&gt;شناسه فروشنده: %1&lt;/nobr&gt;&lt;br&gt;&lt;nobr&gt;شناسه محصول: %2&lt;/nobr&gt;&lt;br&gt;&lt;nobr&gt;بازبینی: %3&lt;/nobr&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;&lt;nobr&gt;Serial No. %1&lt;/nobr&gt;</source>
+        <comment>USB device tooltip</comment>
+        <translation type="unfinished">&lt;br&gt;&lt;nobr&gt;شماره سریال. %1&lt;/nobr&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;&lt;nobr&gt;State: %1&lt;/nobr&gt;</source>
+        <comment>USB device tooltip</comment>
+        <translation type="unfinished">&lt;br&gt;&lt;nobr&gt;وضعیت: %1&lt;/nobr&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;nobr&gt;Vendor ID: %1&lt;/nobr&gt;</source>
+        <comment>USB filter tooltip</comment>
+        <translation type="unfinished">&lt;nobr&gt;شناسه فروشنده: %1&lt;/nobr&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;nobr&gt;Product ID: %2&lt;/nobr&gt;</source>
+        <comment>USB filter tooltip</comment>
+        <translation type="unfinished">&lt;nobr&gt;شناسه محصول: %2&lt;/nobr&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;nobr&gt;Revision: %3&lt;/nobr&gt;</source>
+        <comment>USB filter tooltip</comment>
+        <translation type="unfinished">&lt;nobr&gt;بازبینی: %3&lt;/nobr&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;nobr&gt;Product: %4&lt;/nobr&gt;</source>
+        <comment>USB filter tooltip</comment>
+        <translation type="unfinished">&lt;nobr&gt;محصول: %4&lt;/nobr&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;nobr&gt;Manufacturer: %5&lt;/nobr&gt;</source>
+        <comment>USB filter tooltip</comment>
+        <translation type="unfinished">&lt;nobr&gt;سازنده: %5&lt;/nobr&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;nobr&gt;Serial No.: %1&lt;/nobr&gt;</source>
+        <comment>USB filter tooltip</comment>
+        <translation type="unfinished">&lt;nobr&gt;شماره سریال.: %1&lt;/nobr&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;nobr&gt;Port: %1&lt;/nobr&gt;</source>
+        <comment>USB filter tooltip</comment>
+        <translation type="unfinished">&lt;nobr&gt;پورت: %1&lt;/nobr&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;nobr&gt;State: %1&lt;/nobr&gt;</source>
+        <comment>USB filter tooltip</comment>
+        <translation type="unfinished">&lt;nobr&gt;وضعیت: %1&lt;/nobr&gt;</translation>
+    </message>
+    <message>
+        <source>User-defined</source>
+        <comment>serial port</comment>
+        <translation type="unfinished">تعریف شده توسط کاربر</translation>
+    </message>
+    <message>
+        <source>Inaccessible</source>
+        <comment>medium</comment>
+        <translation type="unfinished">قابل دسترسی نیست</translation>
+    </message>
+    <message>
+        <source>Empty</source>
+        <comment>medium</comment>
+        <translation type="unfinished">ندارد</translation>
+    </message>
+    <message>
+        <source>Host Drive &apos;%1&apos;</source>
+        <comment>medium</comment>
+        <translation type="unfinished">درایو میزبان &apos;%1&apos;</translation>
+    </message>
+    <message>
+        <source>Host Drive %1 (%2)</source>
+        <comment>medium</comment>
+        <translation type="unfinished">درایو میزبان %1 (%2)</translation>
+    </message>
+    <message>
+        <source>&lt;p style=white-space:pre&gt;Type (Format):  %1 (%2)&lt;/p&gt;</source>
+        <comment>medium</comment>
+        <translation type="unfinished">&lt;p style=white-space:pre&gt;نوع (فرمت):  %1 (%2)&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;Attached to:  %1&lt;/p&gt;</source>
+        <comment>image</comment>
+        <translation type="unfinished">&lt;p&gt;ضمیمه شده به:  %1&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;i&gt;Not Attached&lt;/i&gt;</source>
+        <comment>image</comment>
+        <translation type="unfinished">&lt;i&gt;ضمیمه نشده است&lt;/i&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;i&gt;Checking accessibility...&lt;/i&gt;</source>
+        <comment>medium</comment>
+        <translation type="unfinished">&lt;i&gt;بررسی دسترسی پذیری...&lt;/i&gt;</translation>
+    </message>
+    <message>
+        <source>Failed to check accessibility of disk image files.</source>
+        <comment>medium</comment>
+        <translation type="unfinished">موفق به بررسی دسترسی پذیری رسانه نشد.</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;No disk image file selected&lt;/b&gt;</source>
+        <comment>medium</comment>
+        <translation type="unfinished">&lt;b&gt;رسانه ای انتخاب نشده است&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>You can also change this while the machine is running.</source>
+        <translation type="unfinished">همچنین میتوانید زمانی که ماشین در حال اِجراست این را تغییر دهید.</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;No disk image files available&lt;/b&gt;</source>
+        <comment>medium</comment>
+        <translation type="unfinished">&lt;b&gt;رسانه ای موجود نیست&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>You can create or add disk image files in the virtual machine settings.</source>
+        <translation type="unfinished">شما میتوانید فایل های ایمیج دیسک را در تنظیمات ماشین مجازی اضافه یا ایجاد نمائیید.</translation>
+    </message>
+    <message>
+        <source>Attaching this hard disk will be performed indirectly using a newly created differencing hard disk.</source>
+        <comment>medium</comment>
+        <translation type="unfinished">ضمیمه کردن این دیسک سخت بطور غیرمستقیم توسط یک دیسک سخت متفاوت ایجاد شده جدید اِجرا شده است.</translation>
+    </message>
+    <message>
+        <source>Encrypted</source>
+        <comment>medium</comment>
+        <translation type="unfinished">رمزگذاری شده</translation>
+    </message>
+    <message>
+        <source>Checking...</source>
+        <comment>medium</comment>
+        <translation type="unfinished">درحال برسی...</translation>
+    </message>
+    <message>
+        <source>Some of the files in this hard disk chain are inaccessible. Please use the Virtual Medium Manager to inspect these files.</source>
+        <comment>medium</comment>
+        <translation type="unfinished">بعضی از فایل ها در این زنجیره دیسک سخت قابل دسترسی نیست.لطفا از مدیر رسانه مجازی برای بازرسی این فایل ها استفاده کنید</translation>
+    </message>
+    <message>
+        <source>This base hard disk is indirectly attached using the following differencing hard disk:</source>
+        <comment>medium</comment>
+        <translation type="unfinished">این دیسک سخت پایه غیرمستقیم ضمیمه شده توسط دیسک سخت متفاوت زیر:</translation>
+    </message>
+    <message>
+        <source>Differencing</source>
+        <comment>MediumType</comment>
+        <translation type="unfinished">متفاوت</translation>
+    </message>
+    <message>
+        <source>Adapter %1</source>
+        <translation type="unfinished">آداپتور %1</translation>
+    </message>
+    <message>
+        <source>Please choose a location for new virtual hard disk file</source>
+        <translation type="unfinished">لطفا مکان فایل دیسک سخت مجازی جدید را انتخاب کنید</translation>
+    </message>
+    <message>
+        <source>Paravirtualized Network (virtio-net 1.0)</source>
+        <comment>NetworkAdapterType</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PCnet-ISA (Am79C960)</source>
+        <comment>NetworkAdapterType</comment>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>UICustomFileSystemModel</name>
     <message>
         <source>Name</source>
-        <translation type="obsolete">نام</translation>
+        <translation type="unfinished">نام</translation>
     </message>
     <message>
         <source>Size</source>
-        <translation type="obsolete">حجم</translation>
+        <translation type="unfinished">حجم</translation>
+    </message>
+    <message>
+        <source>Change Time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Owner</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Permissions</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Path</source>
-        <translation type="obsolete">مسیر</translation>
+        <translation type="unfinished">مسیر</translation>
+    </message>
+    <message>
+        <source>New Directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Local Path</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2028,152 +4405,157 @@
     <message>
         <source>Name</source>
         <comment>details (general)</comment>
-        <translation type="obsolete">نام</translation>
+        <translation type="unfinished">نام</translation>
     </message>
     <message>
         <source>Operating System</source>
         <comment>details (general)</comment>
-        <translation type="obsolete">سیستم عامل</translation>
+        <translation type="unfinished">سیستم عامل</translation>
+    </message>
+    <message>
+        <source>Settings File Location</source>
+        <comment>details (general)</comment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Groups</source>
         <comment>details (general)</comment>
-        <translation type="obsolete">گروه ها</translation>
+        <translation type="unfinished">گروه ها</translation>
     </message>
     <message>
         <source>Information Inaccessible</source>
         <comment>details</comment>
-        <translation type="obsolete">اطلاعات قابل دسترسی نیست</translation>
+        <translation type="unfinished">اطلاعات قابل دسترسی نیست</translation>
     </message>
     <message>
         <source>Base Memory</source>
         <comment>details (system)</comment>
-        <translation type="obsolete">حافظه پایه</translation>
+        <translation type="unfinished">حافظه پایه</translation>
     </message>
     <message>
         <source>%1 MB</source>
         <comment>details</comment>
-        <translation type="obsolete">%1 مگابایت</translation>
+        <translation type="unfinished">%1 مگابایت</translation>
     </message>
     <message>
         <source>Processors</source>
         <comment>details (system)</comment>
-        <translation type="obsolete">پردازنده ها</translation>
+        <translation type="unfinished">پردازنده ها</translation>
     </message>
     <message>
         <source>Execution Cap</source>
         <comment>details (system)</comment>
-        <translation type="obsolete">درپوش اِجرا</translation>
+        <translation type="unfinished">درپوش اِجرا</translation>
     </message>
     <message>
         <source>%1%</source>
         <comment>details</comment>
-        <translation type="obsolete">%1%</translation>
+        <translation type="unfinished">%1%</translation>
     </message>
     <message>
         <source>Boot Order</source>
         <comment>details (system)</comment>
-        <translation type="obsolete">ترتیب بوت</translation>
+        <translation type="unfinished">ترتیب بوت</translation>
     </message>
     <message>
         <source>Chipset Type</source>
         <comment>details (system)</comment>
-        <translation type="obsolete">نوع تراشه</translation>
+        <translation type="unfinished">نوع تراشه</translation>
     </message>
     <message>
         <source>EFI</source>
         <comment>details (system)</comment>
-        <translation type="obsolete">EFI</translation>
+        <translation type="unfinished">EFI</translation>
     </message>
     <message>
         <source>Enabled</source>
         <comment>details (system/EFI)</comment>
-        <translation type="obsolete">فعال شده</translation>
+        <translation type="unfinished">فعال شده</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details (system/EFI)</comment>
-        <translation type="obsolete">غیرفعال شده</translation>
+        <translation type="unfinished">غیرفعال شده</translation>
     </message>
     <message>
         <source>VT-x/AMD-V</source>
         <comment>details (system)</comment>
-        <translation type="obsolete">VT-x/AMD-V</translation>
+        <translation type="unfinished">VT-x/AMD-V</translation>
     </message>
     <message>
         <source>Nested Paging</source>
         <comment>details (system)</comment>
-        <translation type="obsolete">صفحه بندی تودرتو</translation>
+        <translation type="unfinished">صفحه بندی تودرتو</translation>
     </message>
     <message>
         <source>PAE/NX</source>
         <comment>details (system)</comment>
-        <translation type="obsolete">PAE/NX</translation>
+        <translation type="unfinished">PAE/NX</translation>
     </message>
     <message>
         <source>Minimal Paravirtualization</source>
         <comment>details (system)</comment>
-        <translation type="obsolete">حداقل پارا مجازی سازی</translation>
+        <translation type="unfinished">حداقل پارا مجازی سازی</translation>
     </message>
     <message>
         <source>Hyper-V Paravirtualization</source>
         <comment>details (system)</comment>
-        <translation type="obsolete">Hyper-V پارا مجازی سازی</translation>
+        <translation type="unfinished">Hyper-V پارا مجازی سازی</translation>
     </message>
     <message>
         <source>KVM Paravirtualization</source>
         <comment>details (system)</comment>
-        <translation type="obsolete">KVM پارا مجازی سازی</translation>
+        <translation type="unfinished">KVM پارا مجازی سازی</translation>
     </message>
     <message>
         <source>Acceleration</source>
         <comment>details (system)</comment>
-        <translation type="obsolete">شتاب دهنده</translation>
+        <translation type="unfinished">شتاب دهنده</translation>
     </message>
     <message>
         <source>Video Memory</source>
         <comment>details (display)</comment>
-        <translation type="obsolete">حافظه ویدیو</translation>
+        <translation type="unfinished">حافظه ویدیو</translation>
     </message>
     <message>
         <source>Screens</source>
         <comment>details (display)</comment>
-        <translation type="obsolete">نمایشگر</translation>
+        <translation type="unfinished">نمایشگر</translation>
     </message>
     <message>
         <source>Scale-factor</source>
         <comment>details (display)</comment>
-        <translation type="obsolete">ضریب-مقیاس</translation>
+        <translation type="unfinished">ضریب-مقیاس</translation>
     </message>
     <message>
         <source>2D Video</source>
         <comment>details (display)</comment>
-        <translation type="obsolete">ویدیو دو بعدی</translation>
+        <translation type="unfinished">ویدیو دو بعدی</translation>
     </message>
     <message>
         <source>3D</source>
         <comment>details (display)</comment>
-        <translation type="obsolete">سه بعدی</translation>
+        <translation type="unfinished">سه بعدی</translation>
     </message>
     <message>
         <source>Acceleration</source>
         <comment>details (display)</comment>
-        <translation type="obsolete">شتاب دهنده</translation>
+        <translation type="unfinished">شتاب دهنده</translation>
     </message>
     <message>
         <source>Remote Desktop Server Port</source>
         <comment>details (display/vrde)</comment>
-        <translation type="obsolete">پورت سرور ریموت دسکتاپ</translation>
+        <translation type="unfinished">پورت سرور ریموت دسکتاپ</translation>
     </message>
     <message>
         <source>Remote Desktop Server</source>
         <comment>details (display/vrde)</comment>
-        <translation type="obsolete">سرور ریموت دسکتاپ</translation>
+        <translation type="unfinished">سرور ریموت دسکتاپ</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details (display/vrde/VRDE server)</comment>
-        <translation type="obsolete">غیرفعال شده</translation>
+        <translation type="unfinished">غیرفعال شده</translation>
     </message>
     <message>
         <source>Video Capture File</source>
@@ -2187,7 +4569,7 @@
     </message>
     <message>
         <source>Frame Size: %1x%2, Frame Rate: %3fps, Bit Rate: %4kbps</source>
-        <translation type="obsolete">اندازه فریم: %1x%2, نرخ فریم: %3فریم بر ثانیه, نرخ بیت: %4کیلوبایت بر ثانیه</translation>
+        <translation type="unfinished">اندازه فریم: %1x%2, نرخ فریم: %3فریم بر ثانیه, نرخ بیت: %4کیلوبایت بر ثانیه</translation>
     </message>
     <message>
         <source>Video Capture</source>
@@ -2202,197 +4584,246 @@
     <message>
         <source>[Optical Drive]</source>
         <comment>details (storage)</comment>
-        <translation type="obsolete">[درایو نوری]</translation>
+        <translation type="unfinished">[درایو نوری]</translation>
     </message>
     <message>
         <source>Not Attached</source>
         <comment>details (storage)</comment>
-        <translation type="obsolete">ضمیمه نشده است</translation>
+        <translation type="unfinished">ضمیمه نشده است</translation>
     </message>
     <message>
         <source>Host Driver</source>
         <comment>details (audio)</comment>
-        <translation type="obsolete">درایور میزبان</translation>
+        <translation type="unfinished">درایور میزبان</translation>
     </message>
     <message>
         <source>Controller</source>
         <comment>details (audio)</comment>
-        <translation type="obsolete">کنترلر</translation>
+        <translation type="unfinished">کنترلر</translation>
     </message>
     <message>
         <source>Audio Output</source>
         <comment>details (audio)</comment>
-        <translation type="obsolete">صدای خروجی</translation>
+        <translation type="unfinished">صدای خروجی</translation>
     </message>
     <message>
         <source>Enabled</source>
         <comment>details (audio/output)</comment>
-        <translation type="obsolete">فعال شده</translation>
+        <translation type="unfinished">فعال شده</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details (audio/output)</comment>
-        <translation type="obsolete">غیرفعال شده</translation>
+        <translation type="unfinished">غیرفعال شده</translation>
     </message>
     <message>
         <source>Audio Input</source>
         <comment>details (audio)</comment>
-        <translation type="obsolete">صدای ورودی</translation>
+        <translation type="unfinished">صدای ورودی</translation>
     </message>
     <message>
         <source>Enabled</source>
         <comment>details (audio/input)</comment>
-        <translation type="obsolete">فعال شده</translation>
+        <translation type="unfinished">فعال شده</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details (audio/input)</comment>
-        <translation type="obsolete">غیرفعال شده</translation>
+        <translation type="unfinished">غیرفعال شده</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details (audio)</comment>
-        <translation type="obsolete">غیرفعال شده</translation>
+        <translation type="unfinished">غیرفعال شده</translation>
     </message>
     <message>
         <source>Bridged Adapter, %1</source>
         <comment>details (network)</comment>
-        <translation type="obsolete">آداپتور پل شده، %1</translation>
+        <translation type="unfinished">آداپتور پل شده، %1</translation>
     </message>
     <message>
         <source>Internal Network, &apos;%1&apos;</source>
         <comment>details (network)</comment>
-        <translation type="obsolete">شبه داخلی, &apos;%1&apos;</translation>
+        <translation type="unfinished">شبه داخلی, &apos;%1&apos;</translation>
     </message>
     <message>
         <source>Host-only Adapter, &apos;%1&apos;</source>
         <comment>details (network)</comment>
-        <translation type="obsolete">آداپتور فقط-میزبان &apos;%1&apos;</translation>
+        <translation type="unfinished">آداپتور فقط-میزبان &apos;%1&apos;</translation>
     </message>
     <message>
         <source>Generic Driver, &apos;%1&apos;</source>
         <comment>details (network)</comment>
-        <translation type="obsolete">درایور کلی، &apos;%1&apos;</translation>
+        <translation type="unfinished">درایور کلی، &apos;%1&apos;</translation>
     </message>
     <message>
         <source>Generic Driver, &apos;%1&apos; { %2 }</source>
         <comment>details (network)</comment>
-        <translation type="obsolete">درایور کلی، &apos;%1&apos; { %2 }</translation>
+        <translation type="unfinished">درایور کلی، &apos;%1&apos; { %2 }</translation>
     </message>
     <message>
         <source>NAT Network, &apos;%1&apos;</source>
         <comment>details (network)</comment>
-        <translation type="obsolete">شبکه NAT، &apos;%1&apos;</translation>
+        <translation type="unfinished">شبکه NAT، &apos;%1&apos;</translation>
     </message>
     <message>
         <source>Adapter %1</source>
         <comment>details (network)</comment>
-        <translation type="obsolete">آداپتور %1</translation>
+        <translation type="unfinished">آداپتور %1</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details (network/adapter)</comment>
-        <translation type="obsolete">غیرفعال شده</translation>
+        <translation type="unfinished">غیرفعال شده</translation>
     </message>
     <message>
         <source>Port %1</source>
         <comment>details (serial)</comment>
-        <translation type="obsolete">پورت %1</translation>
+        <translation type="unfinished">پورت %1</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details (serial)</comment>
-        <translation type="obsolete">غیرفعال شده</translation>
+        <translation type="unfinished">غیرفعال شده</translation>
     </message>
     <message>
         <source>USB Controller</source>
         <comment>details (usb)</comment>
-        <translation type="obsolete">کنترلر یو اِس بی</translation>
+        <translation type="unfinished">کنترلر یو اِس بی</translation>
     </message>
     <message>
         <source>Device Filters</source>
         <comment>details (usb)</comment>
-        <translation type="obsolete">فیلترهای دستگاه</translation>
+        <translation type="unfinished">فیلترهای دستگاه</translation>
     </message>
     <message>
         <source>%1 (%2 active)</source>
         <comment>details (usb)</comment>
-        <translation type="obsolete">%1 (%2 فعال)</translation>
+        <translation type="unfinished">%1 (%2 فعال)</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details (usb)</comment>
-        <translation type="obsolete">غیرفعال شده</translation>
+        <translation type="unfinished">غیرفعال شده</translation>
     </message>
     <message>
         <source>USB Controller Inaccessible</source>
         <comment>details (usb)</comment>
-        <translation type="obsolete">کنترلر یو اِس بی قابل دسترسی نیست</translation>
+        <translation type="unfinished">کنترلر یو اِس بی قابل دسترسی نیست</translation>
     </message>
     <message>
         <source>Shared Folders</source>
         <comment>details (shared folders)</comment>
-        <translation type="obsolete">پوشه های اشتراکی</translation>
+        <translation type="unfinished">پوشه های اشتراکی</translation>
+    </message>
+    <message>
+        <source>None</source>
+        <comment>details (shared folders)</comment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Menu-bar</source>
         <comment>details (user interface)</comment>
-        <translation type="obsolete">نوار-منو</translation>
+        <translation type="unfinished">نوار-منو</translation>
     </message>
     <message>
         <source>Enabled</source>
         <comment>details (user interface/menu-bar)</comment>
-        <translation type="obsolete">فعال شده</translation>
+        <translation type="unfinished">فعال شده</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details (user interface/menu-bar)</comment>
-        <translation type="obsolete">غیرفعال شده</translation>
+        <translation type="unfinished">غیرفعال شده</translation>
     </message>
     <message>
         <source>Status-bar</source>
         <comment>details (user interface)</comment>
-        <translation type="obsolete">نوار-وضعیت</translation>
+        <translation type="unfinished">نوار-وضعیت</translation>
     </message>
     <message>
         <source>Enabled</source>
         <comment>details (user interface/status-bar)</comment>
-        <translation type="obsolete">فعال شده</translation>
+        <translation type="unfinished">فعال شده</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details (user interface/status-bar)</comment>
-        <translation type="obsolete">غیرفعال شده</translation>
+        <translation type="unfinished">غیرفعال شده</translation>
     </message>
     <message>
         <source>Mini-toolbar Position</source>
         <comment>details (user interface)</comment>
-        <translation type="obsolete">موقعیت نوار ابزار کوچک</translation>
+        <translation type="unfinished">موقعیت نوار ابزار کوچک</translation>
     </message>
     <message>
         <source>Top</source>
         <comment>details (user interface/mini-toolbar position)</comment>
-        <translation type="obsolete">بالا</translation>
+        <translation type="unfinished">بالا</translation>
     </message>
     <message>
         <source>Bottom</source>
         <comment>details (user interface/mini-toolbar position)</comment>
-        <translation type="obsolete">پایین</translation>
+        <translation type="unfinished">پایین</translation>
     </message>
     <message>
         <source>Mini-toolbar</source>
         <comment>details (user interface)</comment>
-        <translation type="obsolete">نوار ابزار کوچک</translation>
+        <translation type="unfinished">نوار ابزار کوچک</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details (user interface/mini-toolbar)</comment>
-        <translation type="obsolete">غیرفعال شده</translation>
+        <translation type="unfinished">غیرفعال شده</translation>
+    </message>
+    <message>
+        <source>None</source>
+        <comment>details (description)</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Recording File</source>
+        <comment>details (display/recording)</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Recording Attributes</source>
+        <comment>details (display/recording)</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Recording</source>
+        <comment>details (display/recording)</comment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details (display/recording)</comment>
-        <translation type="obsolete">غیرفعال شده</translation>
+        <translation type="unfinished">غیرفعال شده</translation>
+    </message>
+    <message>
+        <source>Graphics Controller</source>
+        <comment>details (display)</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>USB 1.1 (OHCI) Controller</source>
+        <comment>details (usb)</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>USB 2.0 (OHCI + EHCI) Controller</source>
+        <comment>details (usb)</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>USB 3.0 (xHCI) Controller</source>
+        <comment>details (usb)</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 MB</source>
+        <translation type="unfinished">%1 مگابایت</translation>
     </message>
 </context>
 <context>
@@ -2632,14 +5063,14 @@
     <message>
         <source>%1 details</source>
         <comment>like &apos;General details&apos; or &apos;Storage details&apos;</comment>
-        <translation type="obsolete">%1 جزئیات</translation>
+        <translation type="unfinished">%1 جزئیات</translation>
     </message>
 </context>
 <context>
     <name>UIDetailsPagePrivate</name>
     <message>
         <source>The selected virtual machine is &lt;i&gt;inaccessible&lt;/i&gt;. Please inspect the error message shown below and press the &lt;b&gt;Refresh&lt;/b&gt; button if you want to repeat the accessibility check:</source>
-        <translation>ماشین مجازی انتخاب شده &lt;i&gt;غیرقابل دسترسی&lt;/i&gt; است. لطفا به پیام خطای زیر رسیدگی کنید و دکمه &lt;b&gt;تازه کردن&lt;/b&gt; را اگر میخواهید دسترسی پذیری دوباره بررسی شود فشار دهید:</translation>
+        <translation type="vanished">ماشین مجازی انتخاب شده &lt;i&gt;غیرقابل دسترسی&lt;/i&gt; است. لطفا به پیام خطای زیر رسیدگی کنید و دکمه &lt;b&gt;تازه کردن&lt;/b&gt; را اگر میخواهید دسترسی پذیری دوباره بررسی شود فشار دهید:</translation>
     </message>
     <message>
         <source>General</source>
@@ -2706,14 +5137,14 @@
     <name>UIDetailsSet</name>
     <message>
         <source>Contains the details of virtual machine &apos;%1&apos;</source>
-        <translation type="obsolete">حاوی جزئیات ماشین مجازی &apos;%1&apos;</translation>
+        <translation type="unfinished">حاوی جزئیات ماشین مجازی &apos;%1&apos;</translation>
     </message>
 </context>
 <context>
     <name>UIDetailsView</name>
     <message>
         <source>Contains a list of Virtual Machine details</source>
-        <translation type="obsolete">حاوی یک لیست جزئیات ماشین مجازی</translation>
+        <translation type="unfinished">حاوی یک لیست جزئیات ماشین مجازی</translation>
     </message>
 </context>
 <context>
@@ -2793,7 +5224,7 @@
     <name>UIErrorPane</name>
     <message>
         <source>The selected virtual machine is &lt;i&gt;inaccessible&lt;/i&gt;. Please inspect the error message shown below and press the &lt;b&gt;Refresh&lt;/b&gt; button if you want to repeat the accessibility check:</source>
-        <translation type="obsolete">ماشین مجازی انتخاب شده &lt;i&gt;غیرقابل دسترسی&lt;/i&gt; است. لطفا به پیام خطای زیر رسیدگی کنید و دکمه &lt;b&gt;تازه کردن&lt;/b&gt; را اگر میخواهید دسترسی پذیری دوباره بررسی شود فشار دهید:</translation>
+        <translation type="unfinished">ماشین مجازی انتخاب شده &lt;i&gt;غیرقابل دسترسی&lt;/i&gt; است. لطفا به پیام خطای زیر رسیدگی کنید و دکمه &lt;b&gt;تازه کردن&lt;/b&gt; را اگر میخواهید دسترسی پذیری دوباره بررسی شود فشار دهید:</translation>
     </message>
 </context>
 <context>
@@ -2840,43 +5271,171 @@
 <context>
     <name>UIFDCreationDialog</name>
     <message>
+        <source>File Path:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Size:</source>
-        <translation type="obsolete">حجم:</translation>
+        <translation type="unfinished">حجم:</translation>
+    </message>
+    <message>
+        <source>Format disk as FAT12</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>1.44M</source>
-        <translation type="obsolete">سه بعدی {1.44M?}</translation>
+        <translation type="unfinished">سه بعدی {1.44M?}</translation>
     </message>
     <message>
         <source>1.2M</source>
-        <translation type="obsolete">سه بعدی {1.2M?}</translation>
+        <translation type="unfinished">سه بعدی {1.2M?}</translation>
     </message>
     <message>
         <source>720K</source>
-        <translation type="obsolete">سه بعدی {720K?}</translation>
+        <translation type="unfinished">سه بعدی {720K?}</translation>
     </message>
     <message>
         <source>360K</source>
-        <translation type="obsolete">سه بعدی {360K?}</translation>
+        <translation type="unfinished">سه بعدی {360K?}</translation>
+    </message>
+    <message>
+        <source>Floppy Disk Creator</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>UIFileManager</name>
     <message>
+        <source>%1 - File Manager</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Close</source>
-        <translation type="obsolete">بستن</translation>
+        <translation type="unfinished">بستن</translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="obsolete">لغو</translation>
+        <translation type="unfinished">لغو</translation>
+    </message>
+    <message>
+        <source>Not yet started</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Working</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Paused</source>
-        <translation type="obsolete">وقفه شده است</translation>
+        <translation type="unfinished">وقفه شده است</translation>
+    </message>
+    <message>
+        <source>Canceled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Succeded</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove Selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove Finished</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>List directories on top</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>List directories before files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ask before delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show a confirmation dialog before deleting files and directories</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Human readable sizes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show file/directory sizes in human readable format rather than in bytes</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Password</source>
-        <translation type="obsolete">رمزعبور</translation>
+        <translation type="unfinished">رمزعبور</translation>
+    </message>
+    <message>
+        <source>Show Password</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>User name to authenticate session creation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>User Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Password to authenticate session creation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create Session</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close Session</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Total Size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> bytes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File Count</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete the selected file(s) and/or folder(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ask for this confirmation next time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete confirmation can be disabled/enabled also from the Options panel.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Name</source>
@@ -2885,6 +5444,166 @@
     <message>
         <source>Size</source>
         <translation type="obsolete">حجم</translation>
+    </message>
+    <message>
+        <source>Unknown</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Symbolic Link</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Size:&lt;/b&gt; %1 bytes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Allocated:&lt;/b&gt; %1 bytes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>symbolic link</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>character device</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>block device</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>fifo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>socket</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>whiteout</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>unknown</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>illegal-value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Type:&lt;/b&gt; %1&lt;br/&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;INode:&lt;/b&gt; %1&lt;br/&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Device:&lt;/b&gt; %1&lt;br/&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Hardlinks:&lt;/b&gt; %1&lt;br/&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Mode:&lt;/b&gt; %1&lt;br/&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Attributes:&lt;/b&gt; %1&lt;br/&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Device ID:&lt;/b&gt; %1&lt;br/&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Owner:&lt;/b&gt; %1 (%2)&lt;br/&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Group:&lt;/b&gt; %1 (%2)&lt;br/&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Birth:&lt;/b&gt; %1&lt;br/&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Change:&lt;/b&gt; %1&lt;br/&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Modified:&lt;/b&gt; %1&lt;br/&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Access:&lt;/b&gt; %1&lt;br/&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Selected:&lt;/b&gt; %1 files and %2 directories&lt;br/&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Size (non-recursive):&lt;/b&gt; %1 bytes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Name:&lt;/b&gt; %1&lt;br/&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Created:&lt;/b&gt; %1&lt;br/&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Owner:&lt;/b&gt; %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show hidden objects</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show hidden files/directories</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Guest File System</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Host File System</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No Guest Session found!&lt;br&gt;Please use the Session Panel to start a new guest session</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2943,88 +5662,107 @@
     </message>
 </context>
 <context>
+    <name>UIFormEditorWidget</name>
+    <message>
+        <source>Edit...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished">نام</translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Assign value ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>UIGChooserItemGroup</name>
     <message>
         <source>&lt;b&gt;%1&lt;/b&gt;</source>
         <comment>Group item tool-tip / Group name</comment>
-        <translation>&lt;b&gt;%1&lt;/b&gt;</translation>
+        <translation type="vanished">&lt;b&gt;%1&lt;/b&gt;</translation>
     </message>
     <message numerus="yes">
         <source>%n group(s)</source>
         <comment>Group item tool-tip / Group info</comment>
-        <translation>
+        <translation type="vanished">
             <numerusform>%n گروه</numerusform>
         </translation>
     </message>
     <message>
         <source>&lt;nobr&gt;%1&lt;/nobr&gt;</source>
         <comment>Group item tool-tip / Group info wrapper</comment>
-        <translation>&lt;nobr&gt;%1&lt;/nobr&gt;</translation>
+        <translation type="vanished">&lt;nobr&gt;%1&lt;/nobr&gt;</translation>
     </message>
     <message numerus="yes">
         <source>%n machine(s)</source>
         <comment>Group item tool-tip / Machine info</comment>
-        <translation>
+        <translation type="vanished">
             <numerusform>%n ماشین</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>(%n running)</source>
         <comment>Group item tool-tip / Running machine info</comment>
-        <translation>
+        <translation type="vanished">
             <numerusform>(%n در حال اِجرای)</numerusform>
         </translation>
     </message>
     <message>
         <source>&lt;nobr&gt;%1&lt;/nobr&gt;</source>
         <comment>Group item tool-tip / Machine info wrapper</comment>
-        <translation>&lt;nobr&gt;%1&lt;/nobr&gt;</translation>
+        <translation type="vanished">&lt;nobr&gt;%1&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;%1 %2&lt;/nobr&gt;</source>
         <comment>Group item tool-tip / Machine info wrapper, including running</comment>
-        <translation>&lt;nobr&gt;%1&lt;/nobr&gt; {1 %2&lt;?}</translation>
+        <translation type="vanished">&lt;nobr&gt;%1&lt;/nobr&gt; {1 %2&lt;?}</translation>
     </message>
     <message>
         <source>Collapse group</source>
-        <translation>بستن گروه</translation>
+        <translation type="vanished">بستن گروه</translation>
     </message>
     <message>
         <source>Expand group</source>
-        <translation>بازکردن گروه</translation>
+        <translation type="vanished">بازکردن گروه</translation>
     </message>
     <message>
         <source>Enter group</source>
-        <translation>ورود به گروه</translation>
+        <translation type="vanished">ورود به گروه</translation>
     </message>
     <message>
         <source>Exit group</source>
-        <translation>خروج از گروه</translation>
+        <translation type="vanished">خروج از گروه</translation>
     </message>
     <message>
         <source>Virtual Machine group</source>
-        <translation>گروه ماشین مجازی</translation>
+        <translation type="vanished">گروه ماشین مجازی</translation>
     </message>
 </context>
 <context>
     <name>UIGChooserItemMachine</name>
     <message>
         <source>Virtual Machine</source>
-        <translation>ماشین مجازی</translation>
+        <translation type="vanished">ماشین مجازی</translation>
     </message>
 </context>
 <context>
     <name>UIGChooserModel</name>
     <message>
         <source>New group</source>
-        <translation>گروه جدید</translation>
+        <translation type="vanished">گروه جدید</translation>
     </message>
 </context>
 <context>
     <name>UIGChooserView</name>
     <message>
         <source>Contains a tree of Virtual Machines and their groups</source>
-        <translation>حاوی لیست ماشین های مجازی و گروه های آنهاست</translation>
+        <translation type="vanished">حاوی لیست ماشین های مجازی و گروه های آنهاست</translation>
     </message>
 </context>
 <context>
@@ -3032,62 +5770,62 @@
     <message>
         <source>Name</source>
         <comment>details (general)</comment>
-        <translation>نام</translation>
+        <translation type="vanished">نام</translation>
     </message>
     <message>
         <source>Groups</source>
         <comment>details (general)</comment>
-        <translation>گروه ها</translation>
+        <translation type="vanished">گروه ها</translation>
     </message>
     <message>
         <source>%1 MB</source>
         <comment>details</comment>
-        <translation>%1 مگابایت</translation>
+        <translation type="vanished">%1 مگابایت</translation>
     </message>
     <message>
         <source>Processors</source>
         <comment>details (system)</comment>
-        <translation>پردازنده ها</translation>
+        <translation type="vanished">پردازنده ها</translation>
     </message>
     <message>
         <source>%1%</source>
         <comment>details</comment>
-        <translation>%1%</translation>
+        <translation type="vanished">%1%</translation>
     </message>
     <message>
         <source>VT-x/AMD-V</source>
         <comment>details (system)</comment>
-        <translation>VT-x/AMD-V</translation>
+        <translation type="vanished">VT-x/AMD-V</translation>
     </message>
     <message>
         <source>PAE/NX</source>
         <comment>details (system)</comment>
-        <translation>PAE/NX</translation>
+        <translation type="vanished">PAE/NX</translation>
     </message>
     <message>
         <source>Acceleration</source>
         <comment>details (system)</comment>
-        <translation>شتاب دهنده</translation>
+        <translation type="vanished">شتاب دهنده</translation>
     </message>
     <message>
         <source>Screens</source>
         <comment>details (display)</comment>
-        <translation>نمایشگر</translation>
+        <translation type="vanished">نمایشگر</translation>
     </message>
     <message>
         <source>3D</source>
         <comment>details (display)</comment>
-        <translation>سه بعدی</translation>
+        <translation type="vanished">سه بعدی</translation>
     </message>
     <message>
         <source>Acceleration</source>
         <comment>details (display)</comment>
-        <translation>شتاب دهنده</translation>
+        <translation type="vanished">شتاب دهنده</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details (display/vrde/VRDE server)</comment>
-        <translation>غیرفعال شده</translation>
+        <translation type="vanished">غیرفعال شده</translation>
     </message>
     <message>
         <source>[CD/DVD]</source>
@@ -3097,32 +5835,32 @@
     <message>
         <source>Controller</source>
         <comment>details (audio)</comment>
-        <translation>کنترلر</translation>
+        <translation type="vanished">کنترلر</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details (audio)</comment>
-        <translation>غیرفعال شده</translation>
+        <translation type="vanished">غیرفعال شده</translation>
     </message>
     <message>
         <source>Adapter %1</source>
         <comment>details (network)</comment>
-        <translation>آداپتور %1</translation>
+        <translation type="vanished">آداپتور %1</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details (network/adapter)</comment>
-        <translation>غیرفعال شده</translation>
+        <translation type="vanished">غیرفعال شده</translation>
     </message>
     <message>
         <source>Port %1</source>
         <comment>details (serial)</comment>
-        <translation>پورت %1</translation>
+        <translation type="vanished">پورت %1</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details (serial)</comment>
-        <translation>غیرفعال شده</translation>
+        <translation type="vanished">غیرفعال شده</translation>
     </message>
     <message>
         <source>Port %1</source>
@@ -3137,102 +5875,102 @@
     <message>
         <source>%1 (%2 active)</source>
         <comment>details (usb)</comment>
-        <translation>%1 (%2 فعال)</translation>
+        <translation type="vanished">%1 (%2 فعال)</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details (usb)</comment>
-        <translation>غیرفعال شده</translation>
+        <translation type="vanished">غیرفعال شده</translation>
     </message>
     <message>
         <source>None</source>
         <comment>details (shared folders)</comment>
-        <translation>ندارد</translation>
+        <translation type="vanished">ندارد</translation>
     </message>
     <message>
         <source>None</source>
         <comment>details (description)</comment>
-        <translation>ندارد</translation>
+        <translation type="vanished">ندارد</translation>
     </message>
     <message>
         <source>Operating System</source>
         <comment>details (general)</comment>
-        <translation>سیستم عامل</translation>
+        <translation type="vanished">سیستم عامل</translation>
     </message>
     <message>
         <source>Information Inaccessible</source>
         <comment>details</comment>
-        <translation>اطلاعات قابل دسترسی نیست</translation>
+        <translation type="vanished">اطلاعات قابل دسترسی نیست</translation>
     </message>
     <message>
         <source>Base Memory</source>
         <comment>details (system)</comment>
-        <translation>حافظه پایه</translation>
+        <translation type="vanished">حافظه پایه</translation>
     </message>
     <message>
         <source>Execution Cap</source>
         <comment>details (system)</comment>
-        <translation>درپوش اِجرا</translation>
+        <translation type="vanished">درپوش اِجرا</translation>
     </message>
     <message>
         <source>Boot Order</source>
         <comment>details (system)</comment>
-        <translation>ترتیب بوت</translation>
+        <translation type="vanished">ترتیب بوت</translation>
     </message>
     <message>
         <source>Nested Paging</source>
         <comment>details (system)</comment>
-        <translation>صفحه بندی تودرتو</translation>
+        <translation type="vanished">صفحه بندی تودرتو</translation>
     </message>
     <message>
         <source>Video Memory</source>
         <comment>details (display)</comment>
-        <translation>حافظه ویدیو</translation>
+        <translation type="vanished">حافظه ویدیو</translation>
     </message>
     <message>
         <source>2D Video</source>
         <comment>details (display)</comment>
-        <translation>ویدیو دو بعدی</translation>
+        <translation type="vanished">ویدیو دو بعدی</translation>
     </message>
     <message>
         <source>Remote Desktop Server Port</source>
         <comment>details (display/vrde)</comment>
-        <translation>پورت سرور ریموت دسکتاپ</translation>
+        <translation type="vanished">پورت سرور ریموت دسکتاپ</translation>
     </message>
     <message>
         <source>Remote Desktop Server</source>
         <comment>details (display/vrde)</comment>
-        <translation>سرور ریموت دسکتاپ</translation>
+        <translation type="vanished">سرور ریموت دسکتاپ</translation>
     </message>
     <message>
         <source>Not Attached</source>
         <comment>details (storage)</comment>
-        <translation>ضمیمه نشده است</translation>
+        <translation type="vanished">ضمیمه نشده است</translation>
     </message>
     <message>
         <source>Host Driver</source>
         <comment>details (audio)</comment>
-        <translation>درایور میزبان</translation>
+        <translation type="vanished">درایور میزبان</translation>
     </message>
     <message>
         <source>Bridged Adapter, %1</source>
         <comment>details (network)</comment>
-        <translation>آداپتور پل شده، %1</translation>
+        <translation type="vanished">آداپتور پل شده، %1</translation>
     </message>
     <message>
         <source>Internal Network, &apos;%1&apos;</source>
         <comment>details (network)</comment>
-        <translation>شبه داخلی, &apos;%1&apos;</translation>
+        <translation type="vanished">شبه داخلی, &apos;%1&apos;</translation>
     </message>
     <message>
         <source>Host-only Adapter, &apos;%1&apos;</source>
         <comment>details (network)</comment>
-        <translation>آداپتور فقط-میزبان &apos;%1&apos;</translation>
+        <translation type="vanished">آداپتور فقط-میزبان &apos;%1&apos;</translation>
     </message>
     <message>
         <source>Generic Driver, &apos;%1&apos;</source>
         <comment>details (network)</comment>
-        <translation>درایور کلی، &apos;%1&apos;</translation>
+        <translation type="vanished">درایور کلی، &apos;%1&apos;</translation>
     </message>
     <message>
         <source>Generic Driver, &apos;%1&apos; {&amp;nbsp;%2&amp;nbsp;}</source>
@@ -3242,201 +5980,201 @@
     <message>
         <source>Device Filters</source>
         <comment>details (usb)</comment>
-        <translation>فیلترهای دستگاه</translation>
+        <translation type="vanished">فیلترهای دستگاه</translation>
     </message>
     <message>
         <source>USB Controller Inaccessible</source>
         <comment>details (usb)</comment>
-        <translation>کنترلر یو اِس بی قابل دسترسی نیست</translation>
+        <translation type="vanished">کنترلر یو اِس بی قابل دسترسی نیست</translation>
     </message>
     <message>
         <source>Shared Folders</source>
         <comment>details (shared folders)</comment>
-        <translation>پوشه های اشتراکی</translation>
+        <translation type="vanished">پوشه های اشتراکی</translation>
     </message>
     <message>
         <source>Video Capture File</source>
         <comment>details (display/video capture)</comment>
-        <translation>فیل ضبط ویدیو</translation>
+        <translation type="vanished">فیل ضبط ویدیو</translation>
     </message>
     <message>
         <source>Video Capture Attributes</source>
         <comment>details (display/video capture)</comment>
-        <translation>صفات ضبط ویدیو</translation>
+        <translation type="vanished">صفات ضبط ویدیو</translation>
     </message>
     <message>
         <source>Video Capture</source>
         <comment>details (display/video capture)</comment>
-        <translation>ضبط ویدیو</translation>
+        <translation type="vanished">ضبط ویدیو</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details (display/video capture)</comment>
-        <translation>غیرفعال شده</translation>
+        <translation type="vanished">غیرفعال شده</translation>
     </message>
     <message>
         <source>NAT Network, &apos;%1&apos;</source>
         <comment>details (network)</comment>
-        <translation>شبکه NAT، &apos;%1&apos;</translation>
+        <translation type="vanished">شبکه NAT، &apos;%1&apos;</translation>
     </message>
     <message>
         <source>Frame Size: %1x%2, Frame Rate: %3fps, Bit Rate: %4kbps</source>
-        <translation>اندازه فریم: %1x%2, نرخ فریم: %3فریم بر ثانیه, نرخ بیت: %4کیلوبایت بر ثانیه</translation>
+        <translation type="vanished">اندازه فریم: %1x%2, نرخ فریم: %3فریم بر ثانیه, نرخ بیت: %4کیلوبایت بر ثانیه</translation>
     </message>
     <message>
         <source>Minimal Paravirtualization</source>
         <comment>details (system)</comment>
-        <translation>حداقل پارا مجازی سازی</translation>
+        <translation type="vanished">حداقل پارا مجازی سازی</translation>
     </message>
     <message>
         <source>Hyper-V Paravirtualization</source>
         <comment>details (system)</comment>
-        <translation>Hyper-V پارا مجازی سازی</translation>
+        <translation type="vanished">Hyper-V پارا مجازی سازی</translation>
     </message>
     <message>
         <source>KVM Paravirtualization</source>
         <comment>details (system)</comment>
-        <translation>KVM پارا مجازی سازی</translation>
+        <translation type="vanished">KVM پارا مجازی سازی</translation>
     </message>
     <message>
         <source>Scale-factor</source>
         <comment>details (display)</comment>
-        <translation>ضریب-مقیاس</translation>
+        <translation type="vanished">ضریب-مقیاس</translation>
     </message>
     <message>
         <source>Unscaled HiDPI Video Output</source>
         <comment>details (display)</comment>
-        <translation>خروجی ویدیو HiDPI مقیاس بندی نشده</translation>
+        <translation type="vanished">خروجی ویدیو HiDPI مقیاس بندی نشده</translation>
     </message>
     <message>
         <source>Enabled</source>
         <comment>details (display/Unscaled HiDPI Video Output)</comment>
-        <translation>فعال شده</translation>
+        <translation type="vanished">فعال شده</translation>
     </message>
     <message>
         <source>[Optical Drive]</source>
         <comment>details (storage)</comment>
-        <translation>[درایو نوری]</translation>
+        <translation type="vanished">[درایو نوری]</translation>
     </message>
     <message>
         <source>Generic Driver, &apos;%1&apos; { %2 }</source>
         <comment>details (network)</comment>
-        <translation>درایور کلی، &apos;%1&apos; { %2 }</translation>
+        <translation type="vanished">درایور کلی، &apos;%1&apos; { %2 }</translation>
     </message>
     <message>
         <source>USB Controller</source>
         <comment>details (usb)</comment>
-        <translation>کنترلر یو اِس بی</translation>
+        <translation type="vanished">کنترلر یو اِس بی</translation>
     </message>
     <message>
         <source>Menu-bar</source>
         <comment>details (user interface)</comment>
-        <translation>نوار-منو</translation>
+        <translation type="vanished">نوار-منو</translation>
     </message>
     <message>
         <source>Enabled</source>
         <comment>details (user interface/menu-bar)</comment>
-        <translation>فعال شده</translation>
+        <translation type="vanished">فعال شده</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details (user interface/menu-bar)</comment>
-        <translation>غیرفعال شده</translation>
+        <translation type="vanished">غیرفعال شده</translation>
     </message>
     <message>
         <source>Status-bar</source>
         <comment>details (user interface)</comment>
-        <translation>نوار-وضعیت</translation>
+        <translation type="vanished">نوار-وضعیت</translation>
     </message>
     <message>
         <source>Enabled</source>
         <comment>details (user interface/status-bar)</comment>
-        <translation>فعال شده</translation>
+        <translation type="vanished">فعال شده</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details (user interface/status-bar)</comment>
-        <translation>غیرفعال شده</translation>
+        <translation type="vanished">غیرفعال شده</translation>
     </message>
     <message>
         <source>Mini-toolbar Position</source>
         <comment>details (user interface)</comment>
-        <translation>موقعیت نوار ابزار کوچک</translation>
+        <translation type="vanished">موقعیت نوار ابزار کوچک</translation>
     </message>
     <message>
         <source>Top</source>
         <comment>details (user interface/mini-toolbar position)</comment>
-        <translation>بالا</translation>
+        <translation type="vanished">بالا</translation>
     </message>
     <message>
         <source>Bottom</source>
         <comment>details (user interface/mini-toolbar position)</comment>
-        <translation>پایین</translation>
+        <translation type="vanished">پایین</translation>
     </message>
     <message>
         <source>Mini-toolbar</source>
         <comment>details (user interface)</comment>
-        <translation>نوار ابزار کوچک</translation>
+        <translation type="vanished">نوار ابزار کوچک</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details (user interface/mini-toolbar)</comment>
-        <translation>غیرفعال شده</translation>
+        <translation type="vanished">غیرفعال شده</translation>
     </message>
     <message>
         <source>Chipset Type</source>
         <comment>details (system)</comment>
-        <translation>نوع تراشه</translation>
+        <translation type="vanished">نوع تراشه</translation>
     </message>
     <message>
         <source>Enabled</source>
         <comment>details (system/EFI)</comment>
-        <translation>فعال شده</translation>
+        <translation type="vanished">فعال شده</translation>
     </message>
     <message>
         <source>EFI</source>
         <comment>details (system)</comment>
-        <translation>EFI</translation>
+        <translation type="vanished">EFI</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details (system/EFI)</comment>
-        <translation>غیرفعال شده</translation>
+        <translation type="vanished">غیرفعال شده</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details (display/Unscaled HiDPI Video Output)</comment>
-        <translation>غیرفعال شده</translation>
+        <translation type="vanished">غیرفعال شده</translation>
     </message>
     <message>
         <source>Audio Output</source>
         <comment>details (audio)</comment>
-        <translation>صدای خروجی</translation>
+        <translation type="vanished">صدای خروجی</translation>
     </message>
     <message>
         <source>Enabled</source>
         <comment>details (audio/output)</comment>
-        <translation>فعال شده</translation>
+        <translation type="vanished">فعال شده</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details (audio/output)</comment>
-        <translation>غیرفعال شده</translation>
+        <translation type="vanished">غیرفعال شده</translation>
     </message>
     <message>
         <source>Audio Input</source>
         <comment>details (audio)</comment>
-        <translation>صدای ورودی</translation>
+        <translation type="vanished">صدای ورودی</translation>
     </message>
     <message>
         <source>Enabled</source>
         <comment>details (audio/input)</comment>
-        <translation>فعال شده</translation>
+        <translation type="vanished">فعال شده</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details (audio/input)</comment>
-        <translation>غیرفعال شده</translation>
+        <translation type="vanished">غیرفعال شده</translation>
     </message>
     <message>
         <source>Disabled</source>
@@ -3449,52 +6187,52 @@
     <message>
         <source>%1 details</source>
         <comment>like &apos;General details&apos; or &apos;Storage details&apos;</comment>
-        <translation>%1 جزئیات</translation>
+        <translation type="vanished">%1 جزئیات</translation>
     </message>
 </context>
 <context>
     <name>UIGDetailsSet</name>
     <message>
         <source>Contains the details of virtual machine &apos;%1&apos;</source>
-        <translation>حاوی جزئیات ماشین مجازی &apos;%1&apos;</translation>
+        <translation type="vanished">حاوی جزئیات ماشین مجازی &apos;%1&apos;</translation>
     </message>
 </context>
 <context>
     <name>UIGDetailsView</name>
     <message>
         <source>Contains a list of Virtual Machine details</source>
-        <translation>حاوی یک لیست جزئیات ماشین مجازی</translation>
+        <translation type="vanished">حاوی یک لیست جزئیات ماشین مجازی</translation>
     </message>
 </context>
 <context>
     <name>UIGMachinePreview</name>
     <message>
         <source>Every 0.5 s</source>
-        <translation>هر 0.5 ثانیه</translation>
+        <translation type="vanished">هر 0.5 ثانیه</translation>
     </message>
     <message>
         <source>Every 1 s</source>
-        <translation>هر 1 ثانیه</translation>
+        <translation type="vanished">هر 1 ثانیه</translation>
     </message>
     <message>
         <source>Every 2 s</source>
-        <translation>هر 2 ثانیه</translation>
+        <translation type="vanished">هر 2 ثانیه</translation>
     </message>
     <message>
         <source>Every 5 s</source>
-        <translation>هر 5 ثانیه</translation>
+        <translation type="vanished">هر 5 ثانیه</translation>
     </message>
     <message>
         <source>Every 10 s</source>
-        <translation>هر 10 ثانیه</translation>
+        <translation type="vanished">هر 10 ثانیه</translation>
     </message>
     <message>
         <source>Update disabled</source>
-        <translation>بروزرسانی غیرفعال شده</translation>
+        <translation type="vanished">بروزرسانی غیرفعال شده</translation>
     </message>
     <message>
         <source>No preview</source>
-        <translation>پیشنمایش ندارد</translation>
+        <translation type="vanished">پیشنمایش ندارد</translation>
     </message>
 </context>
 <context>
@@ -3568,11 +6306,11 @@
     </message>
     <message>
         <source>Scale Factor:</source>
-        <translation type="obsolete">ضریب مقیاس:</translation>
+        <translation type="unfinished">ضریب مقیاس:</translation>
     </message>
     <message>
         <source>Controls the guest screen scale factor.</source>
-        <translation type="obsolete">کنترل ضریب مقیاس نمایشگر مهمان</translation>
+        <translation type="unfinished">کنترل ضریب مقیاس نمایشگر مهمان</translation>
     </message>
 </context>
 <context>
@@ -3773,22 +6511,22 @@
     <message>
         <source> (built-in)</source>
         <comment>Language</comment>
-        <translation> (توکار)</translation>
+        <translation type="vanished"> (توکار)</translation>
     </message>
     <message>
         <source>&lt;unavailable&gt;</source>
         <comment>Language</comment>
-        <translation>&lt;دردسترس نیست&gt;</translation>
+        <translation type="vanished">&lt;دردسترس نیست&gt;</translation>
     </message>
     <message>
         <source>&lt;unknown&gt;</source>
         <comment>Author(s)</comment>
-        <translation>&lt;ناشناخته&gt;</translation>
+        <translation type="vanished">&lt;ناشناخته&gt;</translation>
     </message>
     <message>
         <source>Default</source>
         <comment>Language</comment>
-        <translation>پیش فرض</translation>
+        <translation type="vanished">پیش فرض</translation>
     </message>
     <message>
         <source>Language:</source>
@@ -3979,67 +6717,67 @@
     </message>
     <message>
         <source>No new name specified for the NAT network previously called &lt;b&gt;%1&lt;/b&gt;.</source>
-        <translation>هیچ نام جدیدی برای شبکه NAT که قبلا &lt;b&gt;%1&lt;/b&gt; نامیده می شد تعیین نشده است.</translation>
+        <translation type="vanished">هیچ نام جدیدی برای شبکه NAT که قبلا &lt;b&gt;%1&lt;/b&gt; نامیده می شد تعیین نشده است.</translation>
     </message>
     <message>
         <source>No CIDR specified for the NAT network &lt;b&gt;%1&lt;/b&gt;.</source>
-        <translation>هیچ CIDR برای شبکه NAT  &lt;b&gt;%1&lt;/b&gt; تعیین نشده است.</translation>
+        <translation type="vanished">هیچ CIDR برای شبکه NAT  &lt;b&gt;%1&lt;/b&gt; تعیین نشده است.</translation>
     </message>
     <message>
         <source>No CIDR specified for the NAT network previously called &lt;b&gt;%1&lt;/b&gt;.</source>
-        <translation>هیچ CIDR برای شبکه NAT که قبلا &lt;b&gt;%1&lt;/b&gt; نامیده میشد تعیین نشده است.</translation>
+        <translation type="vanished">هیچ CIDR برای شبکه NAT که قبلا &lt;b&gt;%1&lt;/b&gt; نامیده میشد تعیین نشده است.</translation>
     </message>
     <message>
         <source>Invalid CIDR specified (&lt;i&gt;%1&lt;/i&gt;) for the NAT network &lt;b&gt;%2&lt;/b&gt;.</source>
-        <translation>مقدار CIDR نامعتبر (&lt;i&gt;%1&lt;/i&gt;) برای شبکه the &lt;b&gt;%2&lt;/b&gt; تعیین شده است.</translation>
+        <translation type="vanished">مقدار CIDR نامعتبر (&lt;i&gt;%1&lt;/i&gt;) برای شبکه the &lt;b&gt;%2&lt;/b&gt; تعیین شده است.</translation>
     </message>
     <message>
         <source>Invalid CIDR specified (&lt;i&gt;%1&lt;/i&gt;) for the NAT network previously called &lt;b&gt;%2&lt;/b&gt;.</source>
-        <translation>مقدار CIDR نامعتبر (&lt;i&gt;%1&lt;/i&gt;) برای شبکه NAT که قبلا &lt;b&gt;%2&lt;/b&gt; نامیده می شد تعیین شده است.</translation>
+        <translation type="vanished">مقدار CIDR نامعتبر (&lt;i&gt;%1&lt;/i&gt;) برای شبکه NAT که قبلا &lt;b&gt;%2&lt;/b&gt; نامیده می شد تعیین شده است.</translation>
     </message>
     <message>
         <source>Network Name</source>
-        <translation>نام شبکه</translation>
+        <translation type="vanished">نام شبکه</translation>
     </message>
     <message>
         <source>[empty]</source>
-        <translation>[خالی]</translation>
+        <translation type="vanished">[خالی]</translation>
     </message>
     <message>
         <source>%1 (renamed from %2)</source>
-        <translation>%1 (تغییرنام داد به %2)</translation>
+        <translation type="vanished">%1 (تغییرنام داد به %2)</translation>
     </message>
     <message>
         <source>Old Network Name</source>
-        <translation>نام قدیمی شبکه</translation>
+        <translation type="vanished">نام قدیمی شبکه</translation>
     </message>
     <message>
         <source>New Network Name</source>
-        <translation>نام جدید شبکه</translation>
+        <translation type="vanished">نام جدید شبکه</translation>
     </message>
     <message>
         <source>Network CIDR</source>
-        <translation>شبکه CIDR</translation>
+        <translation type="vanished">شبکه CIDR</translation>
     </message>
     <message>
         <source>Supports DHCP</source>
-        <translation>پشتیبانی از DHCP</translation>
+        <translation type="vanished">پشتیبانی از DHCP</translation>
     </message>
     <message>
         <source>yes</source>
-        <translation>بله</translation>
+        <translation type="vanished">بله</translation>
     </message>
     <message>
         <source>no</source>
-        <translation>خیر</translation>
+        <translation type="vanished">خیر</translation>
     </message>
     <message>
         <source>Supports IPv6</source>
-        <translation>پشتیبانی از IPv6</translation>
+        <translation type="vanished">پشتیبانی از IPv6</translation>
     </message>
     <message>
         <source>Default IPv6 route</source>
-        <translation>مسیر پیش فرض IPv6</translation>
+        <translation type="vanished">مسیر پیش فرض IPv6</translation>
     </message>
     <message>
         <source>Host interface &lt;b&gt;%1&lt;/b&gt; does not currently have a valid IPv4 address.</source>
@@ -4451,7 +7189,7 @@
     </message>
     <message>
         <source>Ho&amp;st:</source>
-        <translation>میز&amp;بان:</translation>
+        <translation type="vanished">میز&amp;بان:</translation>
     </message>
     <message>
         <source>Changes the proxy host.</source>
@@ -4459,7 +7197,7 @@
     </message>
     <message>
         <source>&amp;Port:</source>
-        <translation>پور&amp;ت:</translation>
+        <translation type="vanished">پور&amp;ت:</translation>
     </message>
     <message>
         <source>Changes the proxy port.</source>
@@ -4491,19 +7229,19 @@
     </message>
     <message>
         <source>No proxy host is currently specified.</source>
-        <translation>میزبان پراکسی اکنون تایین نشده است.</translation>
+        <translation type="vanished">میزبان پراکسی اکنون تایین نشده است.</translation>
     </message>
     <message>
         <source>No proxy port is currently specified.</source>
-        <translation>پورت پراکسی اکنون تعیین نشده است.</translation>
+        <translation type="vanished">پورت پراکسی اکنون تعیین نشده است.</translation>
     </message>
     <message>
         <source>Holds the proxy host.</source>
-        <translation>نگه داشتن میزبان پراکسی</translation>
+        <translation type="vanished">نگه داشتن میزبان پراکسی</translation>
     </message>
     <message>
         <source>Holds the proxy port.</source>
-        <translation>نگه داشتن پورت پراکسی</translation>
+        <translation type="vanished">نگه داشتن پورت پراکسی</translation>
     </message>
     <message>
         <source>When chosen, VirtualBox will try to auto-detect host proxy settings for tasks like downloading Guest Additions from the network or checking for updates.</source>
@@ -4528,6 +7266,26 @@
     <message>
         <source>&amp;Manual Proxy Configuration</source>
         <translation>پیکربندی دستی پراکسی&amp;</translation>
+    </message>
+    <message>
+        <source>&amp;URL:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No proxy URL is currently specified.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid proxy URL is currently specified.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You have provided a proxy password. Please be aware that the password will be saved in plain text. You may wish to configure a system-wide proxy instead and not store application-specific settings.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Holds the proxy URL. The format is: &lt;table cellspacing=0 style=&apos;white-space:pre&apos;&gt;&lt;tr&gt;&lt;td&gt;[{type}://][{userid}[:{password}]@]{server}[:{port}]&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;http://username:password@proxy.host.com:port&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4586,6 +7344,13 @@
     </message>
 </context>
 <context>
+    <name>UIGraphicsControllerEditor</name>
+    <message>
+        <source>&amp;Graphics Controller:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>UIGraphicsTextPane</name>
     <message>
         <source>%1: %2</source>
@@ -4621,10 +7386,98 @@
     </message>
 </context>
 <context>
+    <name>UIGuestControlTreeWidget</name>
+    <message>
+        <source>Terminate Process</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Expand All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Collapse All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Terminate Session</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove All Terminated Sessions/Processes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>UIGuestProcessControlDialog</name>
+    <message>
+        <source>%1 - Guest Control</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation type="unfinished">بستن</translation>
+    </message>
+</context>
+<context>
     <name>UIGuestProcessControlWidget</name>
     <message>
         <source>Close</source>
         <translation type="obsolete">بستن</translation>
+    </message>
+    <message>
+        <source>Session/Process ID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Session Name/Process Command</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Session/Process Status</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>UIGuestProcessTreeItem</name>
+    <message>
+        <source>Process Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Process Id</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Process Status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Executable Path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arguments</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>UIGuestSessionTreeItem</name>
+    <message>
+        <source>Session Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Session Id</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Session Status</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4877,52 +7730,52 @@
     <message>
         <source>Enable</source>
         <comment>DHCP Server</comment>
-        <translation>فعالسازی</translation>
+        <translation type="vanished">فعالسازی</translation>
     </message>
     <message>
         <source>Adapter</source>
-        <translation>آداپتور</translation>
+        <translation type="vanished">آداپتور</translation>
     </message>
     <message>
         <source>Automatically configured</source>
         <comment>interface</comment>
-        <translation>خودکار پیکربندی شده</translation>
+        <translation type="vanished">خودکار پیکربندی شده</translation>
     </message>
     <message>
         <source>Manually configured</source>
         <comment>interface</comment>
-        <translation>دستی پیکربندی شده</translation>
+        <translation type="vanished">دستی پیکربندی شده</translation>
     </message>
     <message>
         <source>IPv4 Address</source>
-        <translation>آدرس IPv4</translation>
+        <translation type="vanished">آدرس IPv4</translation>
     </message>
     <message>
         <source>Not set</source>
         <comment>address</comment>
-        <translation>تنظیم نشده</translation>
+        <translation type="vanished">تنظیم نشده</translation>
     </message>
     <message>
         <source>IPv4 Network Mask</source>
-        <translation>ماسک شبکه IPv4</translation>
+        <translation type="vanished">ماسک شبکه IPv4</translation>
     </message>
     <message>
         <source>Not set</source>
         <comment>mask</comment>
-        <translation>تنظیم نشده</translation>
+        <translation type="vanished">تنظیم نشده</translation>
     </message>
     <message>
         <source>IPv6 Address</source>
-        <translation>آدرس IPv6</translation>
+        <translation type="vanished">آدرس IPv6</translation>
     </message>
     <message>
         <source>IPv6 Prefix Length</source>
-        <translation>طول ماسک شبکه IPv6</translation>
+        <translation type="vanished">طول ماسک شبکه IPv6</translation>
     </message>
     <message>
         <source>Not set</source>
         <comment>length</comment>
-        <translation>تنظیم نشده</translation>
+        <translation type="vanished">تنظیم نشده</translation>
     </message>
     <message>
         <source>DHCP Server</source>
@@ -4931,85 +7784,85 @@
     <message>
         <source>Enabled</source>
         <comment>server</comment>
-        <translation>فعال شده</translation>
+        <translation type="vanished">فعال شده</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>server</comment>
-        <translation>غیرفعال شده</translation>
+        <translation type="vanished">غیرفعال شده</translation>
     </message>
     <message>
         <source>Address</source>
-        <translation>آدرس</translation>
+        <translation type="vanished">آدرس</translation>
     </message>
     <message>
         <source>Network Mask</source>
-        <translation>ماسک شبکه</translation>
+        <translation type="vanished">ماسک شبکه</translation>
     </message>
     <message>
         <source>Lower Bound</source>
-        <translation>محدوده پایین تر</translation>
+        <translation type="vanished">محدوده پایین تر</translation>
     </message>
     <message>
         <source>Not set</source>
         <comment>bound</comment>
-        <translation>تنظیم نشده</translation>
+        <translation type="vanished">تنظیم نشده</translation>
     </message>
     <message>
         <source>Upper Bound</source>
-        <translation>محدوده بالاتر</translation>
+        <translation type="vanished">محدوده بالاتر</translation>
     </message>
     <message>
         <source>&amp;Network</source>
-        <translation>شبکه&amp;</translation>
+        <translation type="vanished">شبکه&amp;</translation>
     </message>
     <message>
         <source>&amp;Create</source>
-        <translation>&amp;ایجاد</translation>
+        <translation type="vanished">&amp;ایجاد</translation>
     </message>
     <message>
         <source>Create Host-only Network (%1)</source>
-        <translation>ایجاد شبکه فقط-میزبان (%1)</translation>
+        <translation type="vanished">ایجاد شبکه فقط-میزبان (%1)</translation>
     </message>
     <message>
         <source>Create new host-only network</source>
-        <translation>ایجاد شبکه فقط-میزبان جدید</translation>
+        <translation type="vanished">ایجاد شبکه فقط-میزبان جدید</translation>
     </message>
     <message>
         <source>&amp;Remove...</source>
-        <translation>ح&amp;ذف...</translation>
+        <translation type="vanished">ح&amp;ذف...</translation>
     </message>
     <message>
         <source>Remove Host-only Network (%1)</source>
-        <translation>حذف شبکه فقط-میزبان (%1)</translation>
+        <translation type="vanished">حذف شبکه فقط-میزبان (%1)</translation>
     </message>
     <message>
         <source>Remove selected host-only network</source>
-        <translation>حذف شبکه فقط-میزبان منتخب</translation>
+        <translation type="vanished">حذف شبکه فقط-میزبان منتخب</translation>
     </message>
     <message>
         <source>&amp;Properties...</source>
-        <translation>&amp;مشخصات...</translation>
+        <translation type="vanished">&amp;مشخصات...</translation>
     </message>
     <message>
         <source>Open Host-only Network Properties (%1)</source>
-        <translation>بازکردن مشخصات شبکه فقط-میزبان (%1)</translation>
+        <translation type="vanished">بازکردن مشخصات شبکه فقط-میزبان (%1)</translation>
     </message>
     <message>
         <source>Open pane with selected host-only network properties</source>
-        <translation>بازکردن نوار با مشخصات شبکه فقط-میزبان منتخب</translation>
+        <translation type="vanished">بازکردن نوار با مشخصات شبکه فقط-میزبان منتخب</translation>
     </message>
     <message>
         <source>&amp;Refresh...</source>
-        <translation>&amp;تازه سازی...</translation>
+        <translation type="vanished">&amp;تازه سازی...</translation>
     </message>
     <message>
         <source>Refresh Host-only Networks (%1)</source>
-        <translation>تازه سازی شبکه های فقط-میزبان (%1)</translation>
+        <translation type="vanished">تازه سازی شبکه های فقط-میزبان (%1)</translation>
     </message>
     <message>
         <source>Refresh the list of host-only networks</source>
-        <translation>تازه سازی لیست شبکه های فقط-میزبان</translation>
+        <translation type="vanished">تازه سازی لیست شبکه های فقط-میزبان</translation>
     </message>
     <message>
         <source>Name</source>
@@ -5063,20 +7916,20 @@
         <source>Close Window (%1)</source>
         <translation>بستن پنجره (%1)</translation>
     </message>
+    <message>
+        <source>Adding network ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Removing network ...</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>UIHostNetworkManagerWidget</name>
     <message>
         <source>Networking</source>
         <translation type="vanished">شبکه سازی</translation>
-    </message>
-    <message>
-        <source>Adding network...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Removing network...</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -5167,7 +8020,7 @@
     <message>
         <source>%1: %2</source>
         <comment>scope: description</comment>
-        <translation type="obsolete">%1: %2</translation>
+        <translation type="unfinished">%1: %2</translation>
     </message>
 </context>
 <context>
@@ -5431,12 +8284,12 @@
     <message>
         <source>Video capture disabled</source>
         <comment>Video capture tooltip</comment>
-        <translation>ضبط ویدیو غیرفعال شده است</translation>
+        <translation type="vanished">ضبط ویدیو غیرفعال شده است</translation>
     </message>
     <message>
         <source>Video capture file</source>
         <comment>Video capture tooltip</comment>
-        <translation>فایل ضبط ویدیو</translation>
+        <translation type="vanished">فایل ضبط ویدیو</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;Indicates the activity of the additional features:&lt;/nobr&gt;%1</source>
@@ -5498,6 +8351,26 @@
         <comment>Audio tooltip</comment>
         <translation type="vanished">&lt;nobr&gt;فعالیت دستگاه صوتی را نشان می دهد:&lt;/nobr&gt;%1</translation>
     </message>
+    <message>
+        <source>Recording disabled</source>
+        <comment>Recording tooltip</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Video/audio recording file</source>
+        <comment>Recording tooltip</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Audio recording file</source>
+        <comment>Recording tooltip</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Video recording file</source>
+        <comment>Recording tooltip</comment>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>UIInformationDataAudio</name>
@@ -5508,12 +8381,12 @@
     <message>
         <source>Host Driver</source>
         <comment>details report (audio)</comment>
-        <translation>درایور میزبان</translation>
+        <translation type="vanished">درایور میزبان</translation>
     </message>
     <message>
         <source>Controller</source>
         <comment>details report (audio)</comment>
-        <translation>کنترلر</translation>
+        <translation type="vanished">کنترلر</translation>
     </message>
 </context>
 <context>
@@ -5526,57 +8399,57 @@
     <message>
         <source>Video Memory</source>
         <comment>details report</comment>
-        <translation>حافظه ویدیو</translation>
+        <translation type="vanished">حافظه ویدیو</translation>
     </message>
     <message>
         <source>Screens</source>
         <comment>details report</comment>
-        <translation>نمایشگر</translation>
+        <translation type="vanished">نمایشگر</translation>
     </message>
     <message>
         <source>Enabled</source>
         <comment>details report (3D Acceleration)</comment>
-        <translation>فعال شده</translation>
+        <translation type="vanished">فعال شده</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details report (3D Acceleration)</comment>
-        <translation>غیرفعال شده</translation>
+        <translation type="vanished">غیرفعال شده</translation>
     </message>
     <message>
         <source>3D Acceleration</source>
         <comment>details report</comment>
-        <translation>شتاب دهنده سه بعدی</translation>
+        <translation type="vanished">شتاب دهنده سه بعدی</translation>
     </message>
     <message>
         <source>Enabled</source>
         <comment>details report (2D Video Acceleration)</comment>
-        <translation>فعال شده</translation>
+        <translation type="vanished">فعال شده</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details report (2D Video Acceleration)</comment>
-        <translation>غیرفعال شده</translation>
+        <translation type="vanished">غیرفعال شده</translation>
     </message>
     <message>
         <source>2D Video Acceleration</source>
         <comment>details report</comment>
-        <translation>شتاب دهنده ویدیو دو بعدی</translation>
+        <translation type="vanished">شتاب دهنده ویدیو دو بعدی</translation>
     </message>
     <message>
         <source>Remote Desktop Server Port</source>
         <comment>details report (VRDE Server)</comment>
-        <translation>پورت سرور ریموت دسکتاپ</translation>
+        <translation type="vanished">پورت سرور ریموت دسکتاپ</translation>
     </message>
     <message>
         <source>Remote Desktop Server</source>
         <comment>details report (VRDE Server)</comment>
-        <translation>سرور ریموت دسکتاپ</translation>
+        <translation type="vanished">سرور ریموت دسکتاپ</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details report (VRDE Server)</comment>
-        <translation>غیرفعال شده</translation>
+        <translation type="vanished">غیرفعال شده</translation>
     </message>
 </context>
 <context>
@@ -5589,12 +8462,12 @@
     <message>
         <source>Name</source>
         <comment>details report</comment>
-        <translation>نام</translation>
+        <translation type="vanished">نام</translation>
     </message>
     <message>
         <source>OS Type</source>
         <comment>details report</comment>
-        <translation>نوع سیستم عامل</translation>
+        <translation type="vanished">نوع سیستم عامل</translation>
     </message>
 </context>
 <context>
@@ -5606,43 +8479,43 @@
     <message>
         <source>Bridged adapter, %1</source>
         <comment>details report (network)</comment>
-        <translation>آداپتور پل شده، %1</translation>
+        <translation type="vanished">آداپتور پل شده، %1</translation>
     </message>
     <message>
         <source>Internal network, &apos;%1&apos;</source>
         <comment>details report (network)</comment>
-        <translation>شبه داخلی, &apos;%1&apos;</translation>
+        <translation type="vanished">شبه داخلی, &apos;%1&apos;</translation>
     </message>
     <message>
         <source>Host-only adapter, &apos;%1&apos;</source>
         <comment>details report (network)</comment>
-        <translation>آداپتور فقط-میزبان &apos;%1&apos;</translation>
+        <translation type="vanished">آداپتور فقط-میزبان &apos;%1&apos;</translation>
     </message>
     <message>
         <source>Generic, &apos;%1&apos;</source>
         <comment>details report (network)</comment>
-        <translation>کلی، &apos;%1&apos;</translation>
+        <translation type="vanished">کلی، &apos;%1&apos;</translation>
     </message>
     <message>
         <source>NAT network, &apos;%1&apos;</source>
         <comment>details report (network)</comment>
-        <translation>شبکه NAT، &apos;%1&apos;</translation>
+        <translation type="vanished">شبکه NAT، &apos;%1&apos;</translation>
     </message>
     <message>
         <source>Adapter %1</source>
         <comment>details report (network)</comment>
-        <translation>آداپتور %1</translation>
+        <translation type="vanished">آداپتور %1</translation>
     </message>
 </context>
 <context>
     <name>UIInformationDataNetworkStatistics</name>
     <message>
         <source>Data Transmitted</source>
-        <translation>داده اِرسال شده</translation>
+        <translation type="vanished">داده اِرسال شده</translation>
     </message>
     <message>
         <source>Data Received</source>
-        <translation>داده دریافتی</translation>
+        <translation type="vanished">داده دریافتی</translation>
     </message>
     <message>
         <source>Network Statistics</source>
@@ -5678,67 +8551,67 @@
     <message>
         <source>Not Detected</source>
         <comment>guest additions</comment>
-        <translation>تشخیص داده نشده است</translation>
+        <translation type="vanished">تشخیص داده نشده است</translation>
     </message>
     <message>
         <source>Not Detected</source>
         <comment>guest os type</comment>
-        <translation>تشخیص داده نشده است</translation>
+        <translation type="vanished">تشخیص داده نشده است</translation>
     </message>
     <message>
         <source>Not Available</source>
         <comment>details report (VRDE server port)</comment>
-        <translation>موجود نیست</translation>
+        <translation type="vanished">موجود نیست</translation>
     </message>
     <message>
         <source>Screen Resolution</source>
-        <translation>وضوح صفحه</translation>
+        <translation type="vanished">وضوح صفحه</translation>
     </message>
     <message>
         <source>VM Uptime</source>
-        <translation>مدت فعالیت ماشین مجازی</translation>
+        <translation type="vanished">مدت فعالیت ماشین مجازی</translation>
     </message>
     <message>
         <source>Clipboard Mode</source>
-        <translation>حالت کلیپ برد</translation>
+        <translation type="vanished">حالت کلیپ برد</translation>
     </message>
     <message>
         <source>Drag and Drop Mode</source>
-        <translation>حالت کشیدن و رها کردن</translation>
+        <translation type="vanished">حالت کشیدن و رها کردن</translation>
     </message>
     <message>
         <source>VT-x/AMD-V</source>
         <comment>details report</comment>
-        <translation>VT-x/AMD-V</translation>
+        <translation type="vanished">VT-x/AMD-V</translation>
     </message>
     <message>
         <source>Nested Paging</source>
         <comment>details report</comment>
-        <translation>صفحه بندی تودرتو</translation>
+        <translation type="vanished">صفحه بندی تودرتو</translation>
     </message>
     <message>
         <source>Unrestricted Execution</source>
         <comment>details report</comment>
-        <translation>اِجرای بدون محدودیت</translation>
+        <translation type="vanished">اِجرای بدون محدودیت</translation>
     </message>
     <message>
         <source>Paravirtualization Interface</source>
         <comment>details report</comment>
-        <translation>رابط پارا مجازی سازی</translation>
+        <translation type="vanished">رابط پارا مجازی سازی</translation>
     </message>
     <message>
         <source>Guest Additions</source>
-        <translation>افزونه مهمان</translation>
+        <translation type="vanished">افزونه مهمان</translation>
     </message>
     <message>
         <source>Guest OS Type</source>
         <comment>details report</comment>
-        <translation>نوع سیستم عامل مهمان</translation>
+        <translation type="vanished">نوع سیستم عامل مهمان</translation>
     </message>
     <message>
         <source>Remote Desktop Server Port</source>
         <comment>details report (VRDE Server)</comment>
-        <translation>پورت سرور ریموت دسکتاپ</translation>
+        <translation type="vanished">پورت سرور ریموت دسکتاپ</translation>
     </message>
 </context>
 <context>
@@ -5750,7 +8623,7 @@
     <message>
         <source>Port %1</source>
         <comment>details report (serial ports)</comment>
-        <translation>پورت %1</translation>
+        <translation type="vanished">پورت %1</translation>
     </message>
 </context>
 <context>
@@ -5763,7 +8636,7 @@
     <message>
         <source>Shared Folders</source>
         <comment>details report (shared folders)</comment>
-        <translation>پوشه های اشتراکی</translation>
+        <translation type="vanished">پوشه های اشتراکی</translation>
     </message>
 </context>
 <context>
@@ -5774,26 +8647,26 @@
     </message>
     <message>
         <source>(Optical Drive)</source>
-        <translation>(درایو نوری)</translation>
+        <translation type="vanished">(درایو نوری)</translation>
     </message>
 </context>
 <context>
     <name>UIInformationDataStorageStatistics</name>
     <message>
         <source>DMA Transfers</source>
-        <translation>انتقالات DMA</translation>
+        <translation type="vanished">انتقالات DMA</translation>
     </message>
     <message>
         <source>PIO Transfers</source>
-        <translation>انتقالات PIO</translation>
+        <translation type="vanished">انتقالات PIO</translation>
     </message>
     <message>
         <source>Data Read</source>
-        <translation>خواندن داده</translation>
+        <translation type="vanished">خواندن داده</translation>
     </message>
     <message>
         <source>Data Written</source>
-        <translation>نوشتن داده</translation>
+        <translation type="vanished">نوشتن داده</translation>
     </message>
     <message>
         <source>Storage Statistics</source>
@@ -5802,7 +8675,7 @@
     </message>
     <message>
         <source>Requests</source>
-        <translation>درخواست</translation>
+        <translation type="vanished">درخواست</translation>
     </message>
 </context>
 <context>
@@ -5815,102 +8688,102 @@
     <message>
         <source>Enabled</source>
         <comment>details report (ACPI)</comment>
-        <translation>فعال شده</translation>
+        <translation type="vanished">فعال شده</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details report (ACPI)</comment>
-        <translation>غیرفعال شده</translation>
+        <translation type="vanished">غیرفعال شده</translation>
     </message>
     <message>
         <source>Enabled</source>
         <comment>details report (I/O APIC)</comment>
-        <translation>فعال شده</translation>
+        <translation type="vanished">فعال شده</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details report (I/O APIC)</comment>
-        <translation>غیرفعال شده</translation>
+        <translation type="vanished">غیرفعال شده</translation>
     </message>
     <message>
         <source>Enabled</source>
         <comment>details report (PAE/NX)</comment>
-        <translation>فعال شده</translation>
+        <translation type="vanished">فعال شده</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details report (PAE/NX)</comment>
-        <translation>غیرفعال شده</translation>
+        <translation type="vanished">غیرفعال شده</translation>
     </message>
     <message>
         <source>Base Memory</source>
         <comment>details report</comment>
-        <translation>حافظه پایه</translation>
+        <translation type="vanished">حافظه پایه</translation>
     </message>
     <message>
         <source>Processor(s)</source>
         <comment>details report</comment>
-        <translation>پردازشگر(ها)</translation>
+        <translation type="vanished">پردازشگر(ها)</translation>
     </message>
     <message>
         <source>Execution Cap</source>
         <comment>details report</comment>
-        <translation>درپوش اِجرا</translation>
+        <translation type="vanished">درپوش اِجرا</translation>
     </message>
     <message>
         <source>Boot Order</source>
         <comment>details report</comment>
-        <translation>ترتیب بوت</translation>
+        <translation type="vanished">ترتیب بوت</translation>
     </message>
     <message>
         <source>ACPI</source>
         <comment>details report</comment>
-        <translation>ACPI</translation>
+        <translation type="vanished">ACPI</translation>
     </message>
     <message>
         <source>I/O APIC</source>
         <comment>details report</comment>
-        <translation>I/O APIC</translation>
+        <translation type="vanished">I/O APIC</translation>
     </message>
     <message>
         <source>PAE/NX</source>
         <comment>details report</comment>
-        <translation>PAE/NX</translation>
+        <translation type="vanished">PAE/NX</translation>
     </message>
     <message>
         <source>Enabled</source>
         <comment>details report (VT-x/AMD-V)</comment>
-        <translation>فعال شده</translation>
+        <translation type="vanished">فعال شده</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details report (VT-x/AMD-V)</comment>
-        <translation>غیرفعال شده</translation>
+        <translation type="vanished">غیرفعال شده</translation>
     </message>
     <message>
         <source>VT-x/AMD-V</source>
         <comment>details report</comment>
-        <translation>VT-x/AMD-V</translation>
+        <translation type="vanished">VT-x/AMD-V</translation>
     </message>
     <message>
         <source>Enabled</source>
         <comment>details report (Nested Paging)</comment>
-        <translation>فعال شده</translation>
+        <translation type="vanished">فعال شده</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details report (Nested Paging)</comment>
-        <translation>غیرفعال شده</translation>
+        <translation type="vanished">غیرفعال شده</translation>
     </message>
     <message>
         <source>Nested Paging</source>
         <comment>details report</comment>
-        <translation>صفحه بندی تودرتو</translation>
+        <translation type="vanished">صفحه بندی تودرتو</translation>
     </message>
     <message>
         <source>Paravirtualization Interface</source>
         <comment>details report</comment>
-        <translation>رابط پارا مجازی سازی</translation>
+        <translation type="vanished">رابط پارا مجازی سازی</translation>
     </message>
 </context>
 <context>
@@ -5923,17 +8796,17 @@
     <message>
         <source>Disabled</source>
         <comment>details report (USB)</comment>
-        <translation>غیرفعال شده</translation>
+        <translation type="vanished">غیرفعال شده</translation>
     </message>
     <message>
         <source>Device Filters</source>
         <comment>details report (USB)</comment>
-        <translation>فیلترهای دستگاه</translation>
+        <translation type="vanished">فیلترهای دستگاه</translation>
     </message>
     <message>
         <source>%1 (%2 active)</source>
         <comment>details report (USB)</comment>
-        <translation>%1 (%2 فعال)</translation>
+        <translation type="vanished">%1 (%2 فعال)</translation>
     </message>
 </context>
 <context>
@@ -5941,87 +8814,87 @@
     <message>
         <source>Enable</source>
         <comment>DHCP Server</comment>
-        <translation type="obsolete">فعالسازی</translation>
+        <translation type="unfinished">فعالسازی</translation>
     </message>
     <message>
         <source>Adapter</source>
-        <translation type="obsolete">آداپتور</translation>
+        <translation type="unfinished">آداپتور</translation>
     </message>
     <message>
         <source>Automatically configured</source>
         <comment>interface</comment>
-        <translation type="obsolete">خودکار پیکربندی شده</translation>
+        <translation type="unfinished">خودکار پیکربندی شده</translation>
     </message>
     <message>
         <source>Manually configured</source>
         <comment>interface</comment>
-        <translation type="obsolete">دستی پیکربندی شده</translation>
+        <translation type="unfinished">دستی پیکربندی شده</translation>
     </message>
     <message>
         <source>IPv4 Address</source>
-        <translation type="obsolete">آدرس IPv4</translation>
+        <translation type="unfinished">آدرس IPv4</translation>
     </message>
     <message>
         <source>Not set</source>
         <comment>address</comment>
-        <translation type="obsolete">تنظیم نشده</translation>
+        <translation type="unfinished">تنظیم نشده</translation>
     </message>
     <message>
         <source>IPv4 Network Mask</source>
-        <translation type="obsolete">ماسک شبکه IPv4</translation>
+        <translation type="unfinished">ماسک شبکه IPv4</translation>
     </message>
     <message>
         <source>Not set</source>
         <comment>mask</comment>
-        <translation type="obsolete">تنظیم نشده</translation>
+        <translation type="unfinished">تنظیم نشده</translation>
     </message>
     <message>
         <source>IPv6 Address</source>
-        <translation type="obsolete">آدرس IPv6</translation>
+        <translation type="unfinished">آدرس IPv6</translation>
     </message>
     <message>
         <source>IPv6 Prefix Length</source>
-        <translation type="obsolete">طول ماسک شبکه IPv6</translation>
+        <translation type="unfinished">طول ماسک شبکه IPv6</translation>
     </message>
     <message>
         <source>Not set</source>
         <comment>length</comment>
-        <translation type="obsolete">تنظیم نشده</translation>
+        <translation type="unfinished">تنظیم نشده</translation>
     </message>
     <message>
         <source>DHCP Server</source>
-        <translation type="obsolete">سرور DHCP</translation>
+        <translation type="unfinished">سرور DHCP</translation>
     </message>
     <message>
         <source>Enabled</source>
         <comment>server</comment>
-        <translation type="obsolete">فعال شده</translation>
+        <translation type="unfinished">فعال شده</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>server</comment>
-        <translation type="obsolete">غیرفعال شده</translation>
+        <translation type="unfinished">غیرفعال شده</translation>
     </message>
     <message>
         <source>Address</source>
-        <translation type="obsolete">آدرس</translation>
+        <translation type="unfinished">آدرس</translation>
     </message>
     <message>
         <source>Network Mask</source>
-        <translation type="obsolete">ماسک شبکه</translation>
+        <translation type="unfinished">ماسک شبکه</translation>
     </message>
     <message>
         <source>Lower Bound</source>
-        <translation type="obsolete">محدوده پایین تر</translation>
+        <translation type="unfinished">محدوده پایین تر</translation>
     </message>
     <message>
         <source>Not set</source>
         <comment>bound</comment>
-        <translation type="obsolete">تنظیم نشده</translation>
+        <translation type="unfinished">تنظیم نشده</translation>
     </message>
     <message>
         <source>Upper Bound</source>
-        <translation type="obsolete">محدوده بالاتر</translation>
+        <translation type="unfinished">محدوده بالاتر</translation>
     </message>
 </context>
 <context>
@@ -6038,67 +8911,67 @@
     </message>
     <message>
         <source>Network Name</source>
-        <translation type="obsolete">نام شبکه</translation>
+        <translation type="unfinished">نام شبکه</translation>
     </message>
     <message>
         <source>[empty]</source>
-        <translation type="obsolete">[خالی]</translation>
+        <translation type="unfinished">[خالی]</translation>
     </message>
     <message>
         <source>%1 (renamed from %2)</source>
-        <translation type="obsolete">%1 (تغییرنام داد به %2)</translation>
+        <translation type="unfinished">%1 (تغییرنام داد به %2)</translation>
     </message>
     <message>
         <source>Old Network Name</source>
-        <translation type="obsolete">نام قدیمی شبکه</translation>
+        <translation type="unfinished">نام قدیمی شبکه</translation>
     </message>
     <message>
         <source>New Network Name</source>
-        <translation type="obsolete">نام جدید شبکه</translation>
+        <translation type="unfinished">نام جدید شبکه</translation>
     </message>
     <message>
         <source>Network CIDR</source>
-        <translation type="obsolete">شبکه CIDR</translation>
+        <translation type="unfinished">شبکه CIDR</translation>
     </message>
     <message>
         <source>Supports DHCP</source>
-        <translation type="obsolete">پشتیبانی از DHCP</translation>
+        <translation type="unfinished">پشتیبانی از DHCP</translation>
     </message>
     <message>
         <source>yes</source>
-        <translation type="obsolete">بله</translation>
+        <translation type="unfinished">بله</translation>
     </message>
     <message>
         <source>no</source>
-        <translation type="obsolete">خیر</translation>
+        <translation type="unfinished">خیر</translation>
     </message>
     <message>
         <source>Supports IPv6</source>
-        <translation type="obsolete">پشتیبانی از IPv6</translation>
+        <translation type="unfinished">پشتیبانی از IPv6</translation>
     </message>
     <message>
         <source>Default IPv6 route</source>
-        <translation type="obsolete">مسیر پیش فرض IPv6</translation>
+        <translation type="unfinished">مسیر پیش فرض IPv6</translation>
     </message>
     <message>
         <source>No new name specified for the NAT network previously called &lt;b&gt;%1&lt;/b&gt;.</source>
-        <translation type="obsolete">هیچ نام جدیدی برای شبکه NAT که قبلا &lt;b&gt;%1&lt;/b&gt; نامیده می شد تعیین نشده است.</translation>
+        <translation type="unfinished">هیچ نام جدیدی برای شبکه NAT که قبلا &lt;b&gt;%1&lt;/b&gt; نامیده می شد تعیین نشده است.</translation>
     </message>
     <message>
         <source>No CIDR specified for the NAT network &lt;b&gt;%1&lt;/b&gt;.</source>
-        <translation type="obsolete">هیچ CIDR برای شبکه NAT  &lt;b&gt;%1&lt;/b&gt; تعیین نشده است.</translation>
+        <translation type="unfinished">هیچ CIDR برای شبکه NAT  &lt;b&gt;%1&lt;/b&gt; تعیین نشده است.</translation>
     </message>
     <message>
         <source>No CIDR specified for the NAT network previously called &lt;b&gt;%1&lt;/b&gt;.</source>
-        <translation type="obsolete">هیچ CIDR برای شبکه NAT که قبلا &lt;b&gt;%1&lt;/b&gt; نامیده میشد تعیین نشده است.</translation>
+        <translation type="unfinished">هیچ CIDR برای شبکه NAT که قبلا &lt;b&gt;%1&lt;/b&gt; نامیده میشد تعیین نشده است.</translation>
     </message>
     <message>
         <source>Invalid CIDR specified (&lt;i&gt;%1&lt;/i&gt;) for the NAT network &lt;b&gt;%2&lt;/b&gt;.</source>
-        <translation type="obsolete">مقدار CIDR نامعتبر (&lt;i&gt;%1&lt;/i&gt;) برای شبکه the &lt;b&gt;%2&lt;/b&gt; تعیین شده است.</translation>
+        <translation type="unfinished">مقدار CIDR نامعتبر (&lt;i&gt;%1&lt;/i&gt;) برای شبکه the &lt;b&gt;%2&lt;/b&gt; تعیین شده است.</translation>
     </message>
     <message>
         <source>Invalid CIDR specified (&lt;i&gt;%1&lt;/i&gt;) for the NAT network previously called &lt;b&gt;%2&lt;/b&gt;.</source>
-        <translation type="obsolete">مقدار CIDR نامعتبر (&lt;i&gt;%1&lt;/i&gt;) برای شبکه NAT که قبلا &lt;b&gt;%2&lt;/b&gt; نامیده می شد تعیین شده است.</translation>
+        <translation type="unfinished">مقدار CIDR نامعتبر (&lt;i&gt;%1&lt;/i&gt;) برای شبکه NAT که قبلا &lt;b&gt;%2&lt;/b&gt; نامیده می شد تعیین شده است.</translation>
     </message>
 </context>
 <context>
@@ -6106,22 +8979,22 @@
     <message>
         <source> (built-in)</source>
         <comment>Language</comment>
-        <translation type="obsolete"> (توکار)</translation>
+        <translation type="unfinished"> (توکار)</translation>
     </message>
     <message>
         <source>&lt;unavailable&gt;</source>
         <comment>Language</comment>
-        <translation type="obsolete">&lt;دردسترس نیست&gt;</translation>
+        <translation type="unfinished">&lt;دردسترس نیست&gt;</translation>
     </message>
     <message>
         <source>&lt;unknown&gt;</source>
         <comment>Author(s)</comment>
-        <translation type="obsolete">&lt;ناشناخته&gt;</translation>
+        <translation type="unfinished">&lt;ناشناخته&gt;</translation>
     </message>
     <message>
         <source>Default</source>
         <comment>Language</comment>
-        <translation type="obsolete">پیش فرض</translation>
+        <translation type="unfinished">پیش فرض</translation>
     </message>
 </context>
 <context>
@@ -6190,31 +9063,31 @@
     <name>UIMachinePreview</name>
     <message>
         <source>No preview</source>
-        <translation type="obsolete">پیشنمایش ندارد</translation>
+        <translation type="unfinished">پیشنمایش ندارد</translation>
     </message>
     <message>
         <source>Update disabled</source>
-        <translation type="obsolete">بروزرسانی غیرفعال شده</translation>
+        <translation type="unfinished">بروزرسانی غیرفعال شده</translation>
     </message>
     <message>
         <source>Every 0.5 s</source>
-        <translation type="obsolete">هر 0.5 ثانیه</translation>
+        <translation type="unfinished">هر 0.5 ثانیه</translation>
     </message>
     <message>
         <source>Every 1 s</source>
-        <translation type="obsolete">هر 1 ثانیه</translation>
+        <translation type="unfinished">هر 1 ثانیه</translation>
     </message>
     <message>
         <source>Every 2 s</source>
-        <translation type="obsolete">هر 2 ثانیه</translation>
+        <translation type="unfinished">هر 2 ثانیه</translation>
     </message>
     <message>
         <source>Every 5 s</source>
-        <translation type="obsolete">هر 5 ثانیه</translation>
+        <translation type="unfinished">هر 5 ثانیه</translation>
     </message>
     <message>
         <source>Every 10 s</source>
-        <translation type="obsolete">هر 10 ثانیه</translation>
+        <translation type="unfinished">هر 10 ثانیه</translation>
     </message>
 </context>
 <context>
@@ -6292,7 +9165,7 @@
     </message>
     <message>
         <source>MB</source>
-        <translation>مگابایت</translation>
+        <translation type="vanished">مگابایت</translation>
     </message>
     <message>
         <source>Extended Features:</source>
@@ -6388,7 +9261,7 @@
     </message>
     <message>
         <source>Video &amp;Capture</source>
-        <translation>&amp;ضبط ویدئو</translation>
+        <translation type="vanished">&amp;ضبط ویدئو</translation>
     </message>
     <message>
         <source>When checked, VirtualBox will record the virtual machine session as a video file.</source>
@@ -6396,7 +9269,7 @@
     </message>
     <message>
         <source>&amp;Enable Video Capture</source>
-        <translation>فعالسازی &amp;ضبط ویدیو</translation>
+        <translation type="vanished">فعالسازی &amp;ضبط ویدیو</translation>
     </message>
     <message>
         <source>File &amp;Path:</source>
@@ -6432,7 +9305,7 @@
     </message>
     <message>
         <source>&amp;Quality:</source>
-        <translation>&amp;کیفیت:</translation>
+        <translation type="vanished">&amp;کیفیت:</translation>
     </message>
     <message>
         <source>This setting determines the &lt;b&gt;quality&lt;/b&gt;. Increasing this value will make the video look better at the cost of an increased file size.</source>
@@ -6531,19 +9404,19 @@
     </message>
     <message>
         <source>%</source>
-        <translation>%</translation>
+        <translation type="vanished">%</translation>
     </message>
     <message>
         <source>HiDPI Support:</source>
-        <translation>پشتیبانی HiDPI :</translation>
+        <translation type="vanished">پشتیبانی HiDPI :</translation>
     </message>
     <message>
         <source>When checked, guest screen contents will not be scaled up to compensate for high host screen resolutions.</source>
-        <translation>وقتیکه انتخاب شده،محتویات نمایشگر مهمان به مقیاس بزرگتری برای جبران نسبت دید نمایشگر بزرگتر میزبان در نخواهد آمد.</translation>
+        <translation type="vanished">وقتیکه انتخاب شده،محتویات نمایشگر مهمان به مقیاس بزرگتری برای جبران نسبت دید نمایشگر بزرگتر میزبان در نخواهد آمد.</translation>
     </message>
     <message>
         <source>Use &amp;Unscaled HiDPI Output</source>
-        <translation>استفاده از خروجی HiDPI مقیاس بندی نشده&amp;</translation>
+        <translation type="vanished">استفاده از خروجی HiDPI مقیاس بندی نشده&amp;</translation>
     </message>
     <message>
         <source>Acceleration:</source>
@@ -6607,11 +9480,11 @@
     </message>
     <message>
         <source>%1 MB</source>
-        <translation>%1 مگابایت</translation>
+        <translation type="vanished">%1 مگابایت</translation>
     </message>
     <message>
         <source>%1%</source>
-        <translation>%1%</translation>
+        <translation type="vanished">%1%</translation>
     </message>
     <message>
         <source>&lt;i&gt;About %1MB per 5 minute video&lt;/i&gt;</source>
@@ -6622,11 +9495,47 @@
         <translation>وقتیکه انتخاب شده، ضبط ویدیو را برای نمایشگر %1 فعال میکند.</translation>
     </message>
     <message>
-        <source>When checked, VirtualBox will record the audio stream to video file as well.</source>
+        <source>&amp;Audio Quality:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&amp;Record Audio</source>
+        <source>&amp;Graphics Controller:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Selects the graphics adapter type the virtual machine will use.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Re&amp;cording</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Enable Recording</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Recording &amp;Mode:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Selects the recording mode.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Video Quality:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Controls the &lt;b&gt;quality&lt;/b&gt;. Increasing this value will make the audio sound better at the cost of an increased file size.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The virtual machine is configured to use 3D acceleration. This will work only if you pick a different graphics controller (%1). Either disable 3D acceleration or switch to required graphics controller type. The latter will be done automatically if you confirm your changes.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The virtual machine is configured to use a graphics controller other than the recommended one (%1). Please consider switching unless you have a reason to keep the currently selected graphics controller.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -6906,7 +9815,7 @@
     <message>
         <source>Not selected</source>
         <comment>network adapter name</comment>
-        <translation>انتخاب نشده است</translation>
+        <translation type="vanished">انتخاب نشده است</translation>
     </message>
     <message>
         <source>&amp;Name:</source>
@@ -6966,19 +9875,19 @@
     </message>
     <message>
         <source>Selects the network adapter on the host system that traffic to and from this network card will go through.</source>
-        <translation>آداپتور شبکه ای را که در سیستم میزبان در آن ترافیک به و از این کارت شبکه انجام میشود را انتخاب کنید.</translation>
+        <translation type="vanished">آداپتور شبکه ای را که در سیستم میزبان در آن ترافیک به و از این کارت شبکه انجام میشود را انتخاب کنید.</translation>
     </message>
     <message>
         <source>Holds the name of the internal network that this network card will be connected to. You can create a new internal network by choosing a name which is not used by any other network cards in this virtual machine or others.</source>
-        <translation>نام شبکه داخلی که این کارت شبکه به آن متصل شده است را وارد کنید.میتوانید یک شبکه داخلی جدید با انتخاب نامی که توسط کارت شبکه دیگری در این ماشین مجازی یا سایر آنها بکارنرفته است ایجاد کنید.</translation>
+        <translation type="vanished">نام شبکه داخلی که این کارت شبکه به آن متصل شده است را وارد کنید.میتوانید یک شبکه داخلی جدید با انتخاب نامی که توسط کارت شبکه دیگری در این ماشین مجازی یا سایر آنها بکارنرفته است ایجاد کنید.</translation>
     </message>
     <message>
         <source>Selects the virtual network adapter on the host system that traffic to and from this network card will go through. You can create and remove adapters using the global network settings in the virtual machine manager window.</source>
-        <translation>آداپتور شبکه مجازی را که در سیستم میزبان در آن ترافیک به و از این کارت شبکه انجام میشود را انتخاب کنید.توسط تنظیمات سراسری شبکه در پنجره مدیریت ماشین مجازی میتوانید آداپتور شبکه ایجاد یا حذف کنید.</translation>
+        <translation type="vanished">آداپتور شبکه مجازی را که در سیستم میزبان در آن ترافیک به و از این کارت شبکه انجام میشود را انتخاب کنید.توسط تنظیمات سراسری شبکه در پنجره مدیریت ماشین مجازی میتوانید آداپتور شبکه ایجاد یا حذف کنید.</translation>
     </message>
     <message>
         <source>Selects the driver to be used with this network card.</source>
-        <translation>درایوری که با این کارت شبکه بکار میرود را انتخاب کنید.</translation>
+        <translation type="vanished">درایوری که با این کارت شبکه بکار میرود را انتخاب کنید.</translation>
     </message>
     <message>
         <source>&amp;MAC Address:</source>
@@ -7022,7 +9931,7 @@
     </message>
     <message>
         <source>Holds the name of the NAT network that this network card will be connected to. You can create and remove networks using the global network settings in the virtual machine manager window.</source>
-        <translation>نام شبکه NAT که این کارت شبکه به آن متصل شده است را نگه دارید. شما میتوانید توسط تنظیمات سراسری شبکه در پنجره مدیریت ماشین مجازی شبکه راحذف و ایجاد کنید.</translation>
+        <translation type="vanished">نام شبکه NAT که این کارت شبکه به آن متصل شده است را نگه دارید. شما میتوانید توسط تنظیمات سراسری شبکه در پنجره مدیریت ماشین مجازی شبکه راحذف و ایجاد کنید.</translation>
     </message>
     <message>
         <source>Selects how this virtual adapter is attached to the real network of the Host OS.</source>
@@ -7043,6 +9952,10 @@
     <message>
         <source>Displays a window to configure port forwarding rules.</source>
         <translation>پنجره ای برای پیکربندی دستورات ارسال پورت را نشان میدهد</translation>
+    </message>
+    <message>
+        <source>No cloud network name is currently specified.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7203,11 +10116,11 @@
     </message>
     <message>
         <source>Full</source>
-        <translation>کامل</translation>
+        <translation type="vanished">کامل</translation>
     </message>
     <message>
         <source>Read-only</source>
-        <translation>فقط-خواندنی</translation>
+        <translation type="vanished">فقط-خواندنی</translation>
     </message>
     <message>
         <source>Lists all shared folders accessible to this machine. Use &apos;net use x: \\vboxsvr\share&apos; to access a shared folder named &lt;i&gt;share&lt;/i&gt; from a DOS-like OS, or &apos;mount -t vboxsf share mount_point&apos; to access it from a Linux OS. This feature requires Guest Additions.</source>
@@ -7243,11 +10156,11 @@
     </message>
     <message>
         <source>Auto-mount</source>
-        <translation>بارگیری-خودکار</translation>
+        <translation type="vanished">بارگیری-خودکار</translation>
     </message>
     <message>
         <source>Yes</source>
-        <translation>بله</translation>
+        <translation type="vanished">بله</translation>
     </message>
     <message>
         <source>Add Shared Folder</source>
@@ -7276,6 +10189,14 @@
     <message>
         <source>Shared &amp;Folders</source>
         <translation>پوشه های اشتراکی&amp;</translation>
+    </message>
+    <message>
+        <source>Auto Mount</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>At</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7335,6 +10256,14 @@
     <message>
         <source>When checked, this shared folder will be permanent.</source>
         <translation>وقتیکه انتخاب شده،این پوشه اشتراکی دائمی خواهد شد</translation>
+    </message>
+    <message>
+        <source>Mount point:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Where to automatically mount the folder in the guest.  A drive letter (e.g. &apos;G:&apos;) for Windows and OS/2 guests, path for the others.  If left empty the guest will pick something fitting.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7508,19 +10437,19 @@
     </message>
     <message>
         <source>Add IDE Controller</source>
-        <translation>افزودن کنترلر IDE</translation>
+        <translation type="vanished">افزودن کنترلر IDE</translation>
     </message>
     <message>
         <source>Add SATA Controller</source>
-        <translation>افزودن کنترلر SATA</translation>
+        <translation type="vanished">افزودن کنترلر SATA</translation>
     </message>
     <message>
         <source>Add SCSI Controller</source>
-        <translation>افزودن کنترلر SCSI</translation>
+        <translation type="vanished">افزودن کنترلر SCSI</translation>
     </message>
     <message>
         <source>Add Floppy Controller</source>
-        <translation>افزودن کنترلر فلاپی</translation>
+        <translation type="vanished">افزودن کنترلر فلاپی</translation>
     </message>
     <message>
         <source>Remove Controller</source>
@@ -7532,7 +10461,7 @@
     </message>
     <message>
         <source>Add Hard Disk</source>
-        <translation>افزودن ديسک سخت</translation>
+        <translation type="vanished">افزودن ديسک سخت</translation>
     </message>
     <message>
         <source>Add CD/DVD Device</source>
@@ -7664,7 +10593,7 @@
     </message>
     <message>
         <source>Add SAS Controller</source>
-        <translation>افزودن کنترلر SAS</translation>
+        <translation type="vanished">افزودن کنترلر SAS</translation>
     </message>
     <message>
         <source>SAS Controller</source>
@@ -7847,7 +10776,7 @@
     <message>
         <source>Choose disk image...</source>
         <comment>This is used for hard disks, optical media and floppies</comment>
-        <translation>ایمیج دیسک را انتخاب کنید...</translation>
+        <translation type="vanished">ایمیج دیسک را انتخاب کنید...</translation>
     </message>
     <message>
         <source>Image</source>
@@ -7872,15 +10801,15 @@
     </message>
     <message>
         <source>Add USB Controller</source>
-        <translation>افزودن کنترلر یو اِس بی</translation>
+        <translation type="vanished">افزودن کنترلر یو اِس بی</translation>
     </message>
     <message>
         <source>Add Optical Drive</source>
-        <translation>افزودن درایو نوری</translation>
+        <translation type="vanished">افزودن درایو نوری</translation>
     </message>
     <message>
         <source>Add Floppy Drive</source>
-        <translation>افزودن فلاپی درایو</translation>
+        <translation type="vanished">افزودن فلاپی درایو</translation>
     </message>
     <message>
         <source>Adds new storage controller.</source>
@@ -7908,15 +10837,15 @@
     </message>
     <message>
         <source>Create New Hard Disk...</source>
-        <translation>ایجاد دیسک سخت جدید...</translation>
+        <translation type="vanished">ایجاد دیسک سخت جدید...</translation>
     </message>
     <message>
         <source>Choose Virtual Hard Disk File...</source>
-        <translation>فایل دیسک سخت مجازی انتخاب کنید...</translation>
+        <translation type="vanished">فایل دیسک سخت مجازی انتخاب کنید...</translation>
     </message>
     <message>
         <source>Choose Virtual Optical Disk File...</source>
-        <translation>فایل دیسک نوری مجازی انتخاب کنید...</translation>
+        <translation type="vanished">فایل دیسک نوری مجازی انتخاب کنید...</translation>
     </message>
     <message>
         <source>Remove Disk from Virtual Drive</source>
@@ -7924,15 +10853,91 @@
     </message>
     <message>
         <source>Choose Virtual Floppy Disk File...</source>
-        <translation>فایل دیسک فلاپی مجازی را انتخاب کنید...</translation>
+        <translation type="vanished">فایل دیسک فلاپی مجازی را انتخاب کنید...</translation>
     </message>
     <message>
         <source>Add NVMe Controller</source>
-        <translation>افزودن کنترلر NVMe</translation>
+        <translation type="vanished">افزودن کنترلر NVMe</translation>
     </message>
     <message>
         <source>&amp;Storage Devices</source>
         <translation>&amp;دستگاه ذخیره ساز</translation>
+    </message>
+    <message>
+        <source>PIIX3 (IDE)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PIIX4 (Default IDE)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ICH6 (IDE)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>AHCI (SATA)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>LsiLogic (Default SCSI)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>BusLogic (SCSI)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>LsiLogic SAS (SAS)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>I82078 (Floppy)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>USB</source>
+        <translation type="unfinished">یو اِس بی</translation>
+    </message>
+    <message>
+        <source>NVMe (PCIe)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>virtio-scsi</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hard Disk</source>
+        <translation type="unfinished">دیسک سخت</translation>
+    </message>
+    <message>
+        <source>Optical Drive</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Floppy Drive</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose/Create a Virtual Hard Disk...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose a disk file...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose/Create a Virtual Optical Disk...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose/Create a Virtual Floppy Disk...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose/Create a disk image...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7984,7 +10989,7 @@
     </message>
     <message>
         <source>MB</source>
-        <translation>مگابایت</translation>
+        <translation type="vanished">مگابایت</translation>
     </message>
     <message>
         <source>&amp;Boot Order:</source>
@@ -8000,7 +11005,7 @@
     </message>
     <message>
         <source>Moves the selected boot device down.</source>
-        <translation>دستگاه بوت انتخاب شده را به پایین انتقال میدهد.</translation>
+        <translation type="vanished">دستگاه بوت انتخاب شده را به پایین انتقال میدهد.</translation>
     </message>
     <message>
         <source>Move Up (Ctrl-Up)</source>
@@ -8008,7 +11013,7 @@
     </message>
     <message>
         <source>Moves the selected boot device up.</source>
-        <translation>دستگاه بوت انتخاب شده را به بالا انتقال میدهد.</translation>
+        <translation type="vanished">دستگاه بوت انتخاب شده را به بالا انتقال میدهد.</translation>
     </message>
     <message>
         <source>Extended Features:</source>
@@ -8211,7 +11216,7 @@
     </message>
     <message>
         <source>%1 MB</source>
-        <translation>%1 مگابایت</translation>
+        <translation type="vanished">%1 مگابایت</translation>
     </message>
     <message>
         <source>%1 CPU</source>
@@ -8242,6 +11247,38 @@
     <message>
         <source>The hardware virtualization is not currently enabled in the Acceleration section of the System page. This is needed to support more than one virtual processor. It will be enabled automatically if you confirm your changes.</source>
         <translation>مجازی سازی سخت افزار اکنون در بخش شتاب دهنده صفحه سیستم فعال نشده است. برای پشتیبانی از بیشتر از یک پردازنده مجازی ضروری است. اگر تغییرات را اعمال کنید آن خودکار فعال خواهد شد.</translation>
+    </message>
+    <message>
+        <source>Please consider lowering the number of CPUs assigned to the virtual machine rather than setting the processor execution cap.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lowering the processor execution cap may result in a decline in performance.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The hardware virtualization is enabled in the Acceleration section of the System page although it is not supported by the host system. It should be disabled in order to start the virtual system.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>When checked, the nested hardware virtualization CPU feature will be exposed to the virtual machine.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enable Nested &amp;VT-x/AMD-V</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The hardware virtualization is not currently enabled in the Acceleration section of the System page. This is needed to support nested hardware virtualization. It will be enabled automatically if you confirm your changes.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The nested paging is not currently enabled in the Acceleration section of the System page. This is needed to support nested hardware virtualization. It will be enabled automatically if you confirm your changes.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The hardware virtualization is not currently enabled in the Acceleration section of the System page. This is needed for nested paging support. It will be enabled automatically if you confirm your changes.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -8330,42 +11367,42 @@
     <message>
         <source>&lt;nobr&gt;Vendor ID: %1&lt;/nobr&gt;</source>
         <comment>USB filter tooltip</comment>
-        <translation>&lt;nobr&gt;شناسه فروشنده: %1&lt;/nobr&gt;</translation>
+        <translation type="vanished">&lt;nobr&gt;شناسه فروشنده: %1&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;Product ID: %2&lt;/nobr&gt;</source>
         <comment>USB filter tooltip</comment>
-        <translation>&lt;nobr&gt;شناسه محصول: %2&lt;/nobr&gt;</translation>
+        <translation type="vanished">&lt;nobr&gt;شناسه محصول: %2&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;Revision: %3&lt;/nobr&gt;</source>
         <comment>USB filter tooltip</comment>
-        <translation>&lt;nobr&gt;بازبینی: %3&lt;/nobr&gt;</translation>
+        <translation type="vanished">&lt;nobr&gt;بازبینی: %3&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;Product: %4&lt;/nobr&gt;</source>
         <comment>USB filter tooltip</comment>
-        <translation>&lt;nobr&gt;محصول: %4&lt;/nobr&gt;</translation>
+        <translation type="vanished">&lt;nobr&gt;محصول: %4&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;Manufacturer: %5&lt;/nobr&gt;</source>
         <comment>USB filter tooltip</comment>
-        <translation>&lt;nobr&gt;سازنده: %5&lt;/nobr&gt;</translation>
+        <translation type="vanished">&lt;nobr&gt;سازنده: %5&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;Serial No.: %1&lt;/nobr&gt;</source>
         <comment>USB filter tooltip</comment>
-        <translation>&lt;nobr&gt;شماره سریال.: %1&lt;/nobr&gt;</translation>
+        <translation type="vanished">&lt;nobr&gt;شماره سریال.: %1&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;Port: %1&lt;/nobr&gt;</source>
         <comment>USB filter tooltip</comment>
-        <translation>&lt;nobr&gt;پورت: %1&lt;/nobr&gt;</translation>
+        <translation type="vanished">&lt;nobr&gt;پورت: %1&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;State: %1&lt;/nobr&gt;</source>
         <comment>USB filter tooltip</comment>
-        <translation>&lt;nobr&gt;وضعیت: %1&lt;/nobr&gt;</translation>
+        <translation type="vanished">&lt;nobr&gt;وضعیت: %1&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>USB 2.0 is currently enabled for this virtual machine. However, this requires the &lt;b&gt;%1&lt;/b&gt; to be installed. Please install the Extension Pack from the VirtualBox download site. After this you will be able to re-enable USB 2.0. It will be disabled in the meantime unless you cancel the current settings changes.</source>
@@ -8385,11 +11422,11 @@
     </message>
     <message>
         <source>When chosen, enables the virtual USB EHCI controller of this machine. The USB EHCI controller provides USB 2.0 support.</source>
-        <translation>وقتیکه انتخاب شده، کنترلر یو اِس بی EHCI این ماشین را فعال میکند. کنترلر یو اِس بی EHCI پشتیبانی از یو اِس بی 2.0 را فراهم میکند.</translation>
+        <translation type="vanished">وقتیکه انتخاب شده، کنترلر یو اِس بی EHCI این ماشین را فعال میکند. کنترلر یو اِس بی EHCI پشتیبانی از یو اِس بی 2.0 را فراهم میکند.</translation>
     </message>
     <message>
         <source>USB &amp;2.0 (EHCI) Controller</source>
-        <translation>USB &amp;2.0 (EHCI) کنترلر</translation>
+        <translation type="vanished">USB &amp;2.0 (EHCI) کنترلر</translation>
     </message>
     <message>
         <source>When chosen, enables the virtual USB xHCI controller of this machine. The USB xHCI controller provides USB 3.0 support.</source>
@@ -8450,6 +11487,14 @@
     <message>
         <source>Moves selected USB filter down.</source>
         <translation>انتقال فیلتر یو اِس بی انتخاب شده به پایین</translation>
+    </message>
+    <message>
+        <source>When chosen, enables the virtual USB OHCI and EHCI controllers of this machine. Together they provide USB 2.0 support.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>USB &amp;2.0 (OHCI + EHCI) Controller</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -8706,45 +11751,66 @@
 <context>
     <name>UIMediumItem</name>
     <message>
+        <source>Current extension (*.%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose the location of this medium</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Moving medium...</source>
         <translation type="obsolete">انتقال رسانه...</translation>
     </message>
     <message>
         <source>%1, %2: %3, %4: %5</source>
         <comment>col.1 text, col.2 name: col.2 text, col.3 name: col.3 text</comment>
-        <translation type="obsolete">%1, %2: %3, %4: %5</translation>
+        <translation type="unfinished">%1, %2: %3, %4: %5</translation>
     </message>
     <message>
         <source>Format:</source>
-        <translation type="obsolete">فرمت:</translation>
+        <translation type="unfinished">فرمت:</translation>
     </message>
     <message>
         <source>Storage details:</source>
-        <translation type="obsolete">جزئیات ذخیره ساز:</translation>
+        <translation type="unfinished">جزئیات ذخیره ساز:</translation>
     </message>
     <message>
         <source>Attached to:</source>
-        <translation type="obsolete">ضمیمه شده به:</translation>
+        <translation type="unfinished">ضمیمه شده به:</translation>
     </message>
     <message>
         <source>Encrypted with key:</source>
-        <translation type="obsolete">رمزگذاری شده با کلید:</translation>
+        <translation type="unfinished">رمزگذاری شده با کلید:</translation>
     </message>
     <message>
         <source>UUID:</source>
-        <translation type="obsolete">UUID:</translation>
+        <translation type="unfinished">UUID:</translation>
     </message>
     <message>
         <source>&lt;i&gt;Not&amp;nbsp;Attached&lt;/i&gt;</source>
-        <translation type="obsolete">&lt;i&gt;ضمیمه&amp;nbsp;نشده است&lt;/i&gt;</translation>
+        <translation type="unfinished">&lt;i&gt;ضمیمه&amp;nbsp;نشده است&lt;/i&gt;</translation>
     </message>
     <message>
         <source>&lt;i&gt;Not&amp;nbsp;Encrypted&lt;/i&gt;</source>
-        <translation type="obsolete">&lt;i&gt;رمزگذاری نشده&amp;&lt;/i&gt;</translation>
+        <translation type="unfinished">&lt;i&gt;رمزگذاری نشده&amp;&lt;/i&gt;</translation>
+    </message>
+    <message>
+        <source>--</source>
+        <comment>no info</comment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Removing medium...</source>
         <translation type="obsolete">حذف رسانه&amp;...</translation>
+    </message>
+    <message>
+        <source>Moving medium ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Removing medium ...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -8771,7 +11837,7 @@
     </message>
     <message>
         <source>Removing medium...</source>
-        <translation>حذف رسانه&amp;...</translation>
+        <translation type="vanished">حذف رسانه&amp;...</translation>
     </message>
     <message>
         <source>&amp;Hard disks</source>
@@ -8780,84 +11846,84 @@
     <message>
         <source>%1, %2: %3, %4: %5</source>
         <comment>col.1 text, col.2 name: col.2 text, col.3 name: col.3 text</comment>
-        <translation>%1, %2: %3, %4: %5</translation>
+        <translation type="vanished">%1, %2: %3, %4: %5</translation>
     </message>
     <message>
         <source>Format:</source>
-        <translation>فرمت:</translation>
+        <translation type="vanished">فرمت:</translation>
     </message>
     <message>
         <source>Storage details:</source>
-        <translation>جزئیات ذخیره ساز:</translation>
+        <translation type="vanished">جزئیات ذخیره ساز:</translation>
     </message>
     <message>
         <source>Attached to:</source>
-        <translation>ضمیمه شده به:</translation>
+        <translation type="vanished">ضمیمه شده به:</translation>
     </message>
     <message>
         <source>Encrypted with key:</source>
-        <translation>رمزگذاری شده با کلید:</translation>
+        <translation type="vanished">رمزگذاری شده با کلید:</translation>
     </message>
     <message>
         <source>UUID:</source>
-        <translation>UUID:</translation>
+        <translation type="vanished">UUID:</translation>
     </message>
     <message>
         <source>&lt;i&gt;Not&amp;nbsp;Attached&lt;/i&gt;</source>
-        <translation>&lt;i&gt;ضمیمه&amp;nbsp;نشده است&lt;/i&gt;</translation>
+        <translation type="vanished">&lt;i&gt;ضمیمه&amp;nbsp;نشده است&lt;/i&gt;</translation>
     </message>
     <message>
         <source>&lt;i&gt;Not&amp;nbsp;Encrypted&lt;/i&gt;</source>
-        <translation>&lt;i&gt;رمزگذاری نشده&amp;&lt;/i&gt;</translation>
+        <translation type="vanished">&lt;i&gt;رمزگذاری نشده&amp;&lt;/i&gt;</translation>
     </message>
     <message>
         <source>--</source>
         <comment>no info</comment>
-        <translation>--</translation>
+        <translation type="vanished">--</translation>
     </message>
     <message>
         <source>&amp;Medium</source>
-        <translation>&amp;رسانه</translation>
+        <translation type="vanished">&amp;رسانه</translation>
     </message>
     <message>
         <source>&amp;Copy...</source>
-        <translation>کپ&amp;ی...</translation>
+        <translation type="vanished">کپ&amp;ی...</translation>
     </message>
     <message>
         <source>Copy selected disk image file</source>
-        <translation>کپی فایل دیسک ایمیج منتخب</translation>
+        <translation type="vanished">کپی فایل دیسک ایمیج منتخب</translation>
     </message>
     <message>
         <source>&amp;Remove...</source>
-        <translation>ح&amp;ذف...</translation>
+        <translation type="vanished">ح&amp;ذف...</translation>
     </message>
     <message>
         <source>Remove selected disk image file</source>
-        <translation>حذف فایل ایمیج دیسک منتخب</translation>
+        <translation type="vanished">حذف فایل ایمیج دیسک منتخب</translation>
     </message>
     <message>
         <source>Re&amp;lease...</source>
-        <translation>&amp;ترخیص...</translation>
+        <translation type="vanished">&amp;ترخیص...</translation>
     </message>
     <message>
         <source>Release selected disk image file by detaching it from machines</source>
-        <translation>ترخیص فایل ایمیج دیسک منتخب با جداسازی آن از ماشین ها</translation>
+        <translation type="vanished">ترخیص فایل ایمیج دیسک منتخب با جداسازی آن از ماشین ها</translation>
     </message>
     <message>
         <source>&amp;Properties...</source>
-        <translation>&amp;مشخصات...</translation>
+        <translation type="vanished">&amp;مشخصات...</translation>
     </message>
     <message>
         <source>Open pane with selected disk image file properties</source>
-        <translation>بازکردن نوار با مشخصات فایل ایمیج دیسک منتخب</translation>
+        <translation type="vanished">بازکردن نوار با مشخصات فایل ایمیج دیسک منتخب</translation>
     </message>
     <message>
         <source>Re&amp;fresh</source>
-        <translation>تازه&amp; کردن</translation>
+        <translation type="vanished">تازه&amp; کردن</translation>
     </message>
     <message>
         <source>Refresh the list of disk image files</source>
-        <translation>تازه کردن لیست رسانه</translation>
+        <translation type="vanished">تازه کردن لیست رسانه</translation>
     </message>
     <message>
         <source>Name</source>
@@ -8881,7 +11947,7 @@
     </message>
     <message>
         <source>Moving medium...</source>
-        <translation>انتقال رسانه...</translation>
+        <translation type="vanished">انتقال رسانه...</translation>
     </message>
     <message>
         <source>Virtual Media Manager</source>
@@ -8933,35 +11999,23 @@
     </message>
     <message>
         <source>Copy Disk Image File (%1)</source>
-        <translation type="unfinished">کپی فایل دیسک ایمیج (%1)</translation>
-    </message>
-    <message>
-        <source>&amp;Move...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Move Disk Image File (%1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Move selected disk image file</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">کپی فایل دیسک ایمیج (%1)</translation>
     </message>
     <message>
         <source>Remove Disk Image File (%1)</source>
-        <translation type="unfinished">حذف فایل دیسک ایمیج (%1)</translation>
+        <translation type="obsolete">حذف فایل دیسک ایمیج (%1)</translation>
     </message>
     <message>
         <source>Release Disk Image File (%1)</source>
-        <translation type="unfinished">ترخیص فایل ایمیج دیسک (%1)</translation>
+        <translation type="obsolete">ترخیص فایل ایمیج دیسک (%1)</translation>
     </message>
     <message>
         <source>Open Disk Image File Properties (%1)</source>
-        <translation type="unfinished">بازکردن مشخصات فایل ایمیج دیسک (%1)</translation>
+        <translation type="obsolete">بازکردن مشخصات فایل ایمیج دیسک (%1)</translation>
     </message>
     <message>
         <source>Refresh Disk Image Files (%1)</source>
-        <translation type="unfinished">تازه سازی فایل های ایمیج دیسک (%1)</translation>
+        <translation type="obsolete">تازه سازی فایل های ایمیج دیسک (%1)</translation>
     </message>
     <message>
         <source>Size:</source>
@@ -8986,6 +12040,14 @@
     <message>
         <source>&amp;Create</source>
         <translation type="obsolete">&amp;ایجاد</translation>
+    </message>
+    <message>
+        <source>Moving medium ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Resizing medium ...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -9012,34 +12074,109 @@
     </message>
 </context>
 <context>
+    <name>UIMediumSearchWidget</name>
+    <message>
+        <source>Search By Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Search By UUID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the search type</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>UIMediumSelector</name>
     <message>
         <source>&amp;Add...</source>
-        <translation type="obsolete">&amp;افزودن...</translation>
+        <translation type="unfinished">&amp;افزودن...</translation>
+    </message>
+    <message>
+        <source>Add Disk Image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add existing disk image file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Create...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create Disk Image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create new disk image file</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&amp;Refresh</source>
-        <translation type="obsolete">تازه کرد&amp;ن</translation>
+        <translation type="unfinished">تازه کرد&amp;ن</translation>
     </message>
     <message>
         <source>Refresh Disk Image Files (%1)</source>
-        <translation type="obsolete">تازه سازی فایل های ایمیج دیسک (%1)</translation>
+        <translation type="unfinished">تازه سازی فایل های ایمیج دیسک (%1)</translation>
     </message>
     <message>
         <source>Refresh the list of disk image files</source>
-        <translation type="obsolete">تازه کردن لیست رسانه</translation>
+        <translation type="unfinished">تازه کردن لیست رسانه</translation>
+    </message>
+    <message>
+        <source>Choose</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="obsolete">نام</translation>
+        <translation type="unfinished">نام</translation>
     </message>
     <message>
         <source>Virtual Size</source>
-        <translation type="obsolete">حجم مجازی</translation>
+        <translation type="unfinished">حجم مجازی</translation>
     </message>
     <message>
         <source>Actual Size</source>
-        <translation type="obsolete">حجم واقعی</translation>
+        <translation type="unfinished">حجم واقعی</translation>
+    </message>
+    <message>
+        <source>Medium</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Expand All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Collapse All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished">لغو</translation>
+    </message>
+    <message>
+        <source>Leave Empty</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Optical Disk Selector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Floppy Disk Selector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hard Disk Selector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Virtual Medium Selector</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -9100,7 +12237,7 @@
     </message>
     <message>
         <source>Virtual Screen Mapping</source>
-        <translation>مسیردهی نمایشگذ مجازی</translation>
+        <translation type="vanished">مسیردهی نمایشگذ مجازی</translation>
     </message>
     <message>
         <source>Switch</source>
@@ -9121,6 +12258,14 @@
     <message>
         <source>Popup menu %1</source>
         <translation>پاپ آپ منوی %1</translation>
+    </message>
+    <message>
+        <source>Virtual Screen Remap</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Virtual Screen Rescale</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -9298,7 +12443,7 @@
     </message>
     <message>
         <source>&lt;p&gt;The virtual machine execution may run into an error condition as described below. We suggest that you take an appropriate action to avert the error.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;ماشین مجازی ممکن است در وضعیت خطا طوریکه در زیر توصیف شده اِجرا شود. ما پیشنهاد میکنیم کهشما اقدام مقتضی را برای رفع خطا انجام دهید.&lt;/p&gt;</translation>
+        <translation type="vanished">&lt;p&gt;ماشین مجازی ممکن است در وضعیت خطا طوریکه در زیر توصیف شده اِجرا شود. ما پیشنهاد میکنیم کهشما اقدام مقتضی را برای رفع خطا انجام دهید.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Result&amp;nbsp;Code: </source>
@@ -9793,7 +12938,7 @@
     </message>
     <message>
         <source>&lt;p&gt;You are about to add a virtual hard disk to controller &lt;b&gt;%1&lt;/b&gt;.&lt;/p&gt;&lt;p&gt;Would you like to create a new, empty file to hold the disk contents or select an existing one?&lt;/p&gt;</source>
-        <translation>&lt;p&gt;شما در صدد افزودن یک دیسک سخت مجازی به کنترلر &lt;b&gt;%1&lt;/b&gt; هستید.&lt;/p&gt;&lt;p&gt;آیا میخواهید یک فایل خالی جدید برای حفظ محتویات دیسک ایجاد کنید یا یکی که موجود است را انتخاب کنید؟&lt;/p&gt;</translation>
+        <translation type="vanished">&lt;p&gt;شما در صدد افزودن یک دیسک سخت مجازی به کنترلر &lt;b&gt;%1&lt;/b&gt; هستید.&lt;/p&gt;&lt;p&gt;آیا میخواهید یک فایل خالی جدید برای حفظ محتویات دیسک ایجاد کنید یا یکی که موجود است را انتخاب کنید؟&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Create &amp;new disk</source>
@@ -9821,7 +12966,7 @@
     </message>
     <message>
         <source>&lt;p&gt;You are about to add a new floppy drive to controller &lt;b&gt;%1&lt;/b&gt;.&lt;/p&gt;&lt;p&gt;Would you like to choose a virtual floppy disk to put in the drive or to leave it empty for now?&lt;/p&gt;</source>
-        <translation>&lt;p&gt;شما درصدد افزودن درایو فلاپی جدید به کنترلر &lt;b&gt;%1&lt;/b&gt; هستید.&lt;/p&gt;&lt;p&gt;آیا میخواهید یک دیسک فلاپی مجازی برای قراردادن در درایو انتخاب کنید یا آن را حالا خالی بگذارید؟&lt;/p&gt;</translation>
+        <translation type="vanished">&lt;p&gt;شما درصدد افزودن درایو فلاپی جدید به کنترلر &lt;b&gt;%1&lt;/b&gt; هستید.&lt;/p&gt;&lt;p&gt;آیا میخواهید یک دیسک فلاپی مجازی برای قراردادن در درایو انتخاب کنید یا آن را حالا خالی بگذارید؟&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Failed to detach the hard disk (&lt;nobr&gt;&lt;b&gt;%1&lt;/b&gt;&lt;/nobr&gt;) from the slot &lt;i&gt;%2&lt;/i&gt; of the machine &lt;b&gt;%3&lt;/b&gt;.</source>
@@ -10210,19 +13355,19 @@
     </message>
     <message>
         <source>Create &amp;new disk</source>
-        <translation>ایجاد دیسک &amp;جدید</translation>
+        <translation type="vanished">ایجاد دیسک &amp;جدید</translation>
     </message>
     <message>
         <source>&amp;Choose existing disk</source>
-        <translation>انتخاب دی&amp;سک موجود</translation>
+        <translation type="vanished">انتخاب دی&amp;سک موجود</translation>
     </message>
     <message>
         <source>Leave &amp;empty</source>
-        <translation>خالی &amp;بگذار</translation>
+        <translation type="vanished">خالی &amp;بگذار</translation>
     </message>
     <message>
         <source>&amp;Choose disk</source>
-        <translation>انتخاب د&amp;یسک</translation>
+        <translation type="vanished">انتخاب د&amp;یسک</translation>
     </message>
     <message>
         <source>&lt;p&gt;Are you sure you want to release the virtual hard disk &lt;nobr&gt;&lt;b&gt;%1&lt;/b&gt;&lt;/nobr&gt;?&lt;/p&gt;&lt;p&gt;This will detach it from the following virtual machine(s): &lt;b&gt;%2&lt;/b&gt;.&lt;/p&gt;</source>
@@ -10321,11 +13466,11 @@
     </message>
     <message>
         <source>Failed to enable video capturing for the virtual machine &lt;b&gt;%1&lt;/b&gt;.</source>
-        <translation>موفق به فعالسازی ضبط ویدیو برای ماشین مجازی &lt;b&gt;%1&lt;/b&gt; نشد.</translation>
+        <translation type="vanished">موفق به فعالسازی ضبط ویدیو برای ماشین مجازی &lt;b&gt;%1&lt;/b&gt; نشد.</translation>
     </message>
     <message>
         <source>Failed to disable video capturing for the virtual machine &lt;b&gt;%1&lt;/b&gt;.</source>
-        <translation>موفق به ضبط ویدیو برای ماشین مجازی &lt;b&gt;%1&lt;/b&gt; نشد.</translation>
+        <translation type="vanished">موفق به ضبط ویدیو برای ماشین مجازی &lt;b&gt;%1&lt;/b&gt; نشد.</translation>
     </message>
     <message>
         <source>&lt;p&gt;Could not find the &lt;b&gt;VirtualBox Guest Additions&lt;/b&gt; disk image file.&lt;/p&gt;&lt;p&gt;Do you wish to download this disk image file from the Internet?&lt;/p&gt;</source>
@@ -10431,7 +13576,7 @@
     </message>
     <message>
         <source>&lt;p&gt;You are about to add a new optical drive to controller &lt;b&gt;%1&lt;/b&gt;.&lt;/p&gt;&lt;p&gt;Would you like to choose a virtual optical disk to put in the drive or to leave it empty for now?&lt;/p&gt;</source>
-        <translation>&lt;p&gt;شما درصدد افزودن درایو نوری به کنترلر &lt;b&gt;%1&lt;/b&gt; هستید؟&lt;/p&gt;&lt;p&gt;آیا میخواهید دیسک مجازی نوری برای قراردادن در درایو انتخاب کنید یا آن را خالی بگذارید؟&lt;/p&gt;</translation>
+        <translation type="vanished">&lt;p&gt;شما درصدد افزودن درایو نوری به کنترلر &lt;b&gt;%1&lt;/b&gt; هستید؟&lt;/p&gt;&lt;p&gt;آیا میخواهید دیسک مجازی نوری برای قراردادن در درایو انتخاب کنید یا آن را خالی بگذارید؟&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;p&gt;Are you sure you want to delete the optical drive?&lt;/p&gt;&lt;p&gt;You will not be able to insert any optical disks or ISO images or install the Guest Additions without it!&lt;/p&gt;</source>
@@ -10659,15 +13804,28 @@
         <translation>موفق به غیرفعالسازی آداپتور صدای ورودی برای ماشین مجازی &lt;b&gt;%1&lt;/b&gt; نشد.</translation>
     </message>
     <message>
+        <source>Unknown option &lt;b&gt;%1&lt;/b&gt;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;%1&lt;/b&gt; is an option for the VirtualBox VM runner (VirtualBoxVM) application, not the VirtualBox Manager.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;You must specify a machine to start, using the command line.&lt;/p&gt;&lt;p&gt;%1&lt;/p&gt;</source>
+        <comment>There will be a usage text passed as argument.</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;tr&gt;&lt;td&gt;Usage: VirtualBoxVM --startvm &amp;lt;name|UUID&amp;gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Starts the VirtualBox virtual machine with the given name or unique identifier (UUID).&lt;/td&gt;&lt;/tr&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to move the virtual machine &lt;b&gt;%1&lt;/b&gt;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Failed to change the snapshot &lt;b&gt;%1&lt;/b&gt; of the virtual machine &lt;b&gt;%2&lt;/b&gt;.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Failed to create the virtual disk image storage &lt;nobr&gt;&lt;b&gt;%1&lt;/b&gt;.&lt;/nobr&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;Could not insert the &lt;b&gt;%1&lt;/b&gt; disk image file into the virtual machine &lt;b&gt;%2&lt;/b&gt;, as the machine has no optical drives. Please add a drive using the storage page of the virtual machine settings window.&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -10675,8 +13833,152 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Failed to acquire cloud provider manager.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to acquire cloud provider manager parameter.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to find cloud provider with following uuid: &lt;b&gt;%1&lt;/b&gt;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to acquire cloud provider parameter.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to find cloud profile with following name: &lt;b&gt;%1&lt;/b&gt;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to create cloud profile.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to save cloud profiles.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to import cloud profiles.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to acquire cloud profile parameter.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to assign cloud profile parameter.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to create cloud client.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to acquire cloud client parameter.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;Do you want to remove the cloud profile &lt;nobr&gt;&lt;b&gt;%1&lt;/b&gt;?&lt;/nobr&gt;&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;Do you want to import cloud profiles from external files?&lt;/p&gt;&lt;p&gt;VirtualBox cloud profiles will be overwritten and their data will be lost.&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Import</source>
-        <translation type="obsolete">واردکردن</translation>
+        <translation type="unfinished">واردکردن</translation>
+    </message>
+    <message>
+        <source>Failed to create the hard disk storage &lt;nobr&gt;&lt;b&gt;%1&lt;/b&gt;.&lt;/nobr&gt; FAT file systems have 4GB file size limit.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to create the virtual disk image storage &lt;nobr&gt;&lt;b&gt;%1&lt;/b&gt;.&lt;/nobr&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to enable recording for the virtual machine &lt;b&gt;%1&lt;/b&gt;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to disable recording for the virtual machine &lt;b&gt;%1&lt;/b&gt;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;Could not insert the &lt;b&gt;%1&lt;/b&gt; disk image file into the virtual machine &lt;b&gt;%2&lt;/b&gt;, as the machine has no optical drives. Please add a drive using the storage page of the virtual machine settings window.&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to acquire machine parameter.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;This controller has optical devices attached.  You have requested storage bus change to type which doesn&apos;t support optical devices.&lt;/p&gt;&lt;p&gt;If you proceed optical devices will be removed.&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;This controller has devices attached.  You have requested storage bus change to type which supports smaller amount of attached devices.&lt;/p&gt;&lt;p&gt;If you proceed excessive devices will be removed.&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to change the attribute of the virtual machine &lt;b&gt;%1&lt;/b&gt;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to change graphics adapter attribute.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to change audio adapter attribute.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to change network adapter attribute.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to open the medium with following ID: &lt;nobr&gt;&lt;b&gt;%1&lt;/b&gt;&lt;/nobr&gt;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to acquire attachment parameter.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to acquire medium attribute.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to create cloud machine.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to assign form value.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;Cannot create a virtual appliance.&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;Cannot create a virtual system description.&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;Cannot add a virtual system description value.&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;Cannot acquire a virtual system description property.&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;The virtual machine execution ran into a non-fatal problem as described below. We suggest that you take appropriate action to prevent the problem from recurring.&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10717,7 +14019,7 @@
     </message>
     <message>
         <source>Holds the name of the virtual machine.</source>
-        <translation>نام ماشین مجازی را نشان میدهد.</translation>
+        <translation type="vanished">نام ماشین مجازی را نشان میدهد.</translation>
     </message>
     <message>
         <source>&amp;Type:</source>
@@ -10737,11 +14039,59 @@
     </message>
     <message>
         <source>N&amp;ame:</source>
-        <translation>&amp;نام:</translation>
+        <translation type="vanished">&amp;نام:</translation>
     </message>
     <message>
         <source>Holds the location of the virtual machine.</source>
-        <translation>حفظ مکان ماشین مجازی.</translation>
+        <translation type="vanished">حفظ مکان ماشین مجازی.</translation>
+    </message>
+    <message>
+        <source>Name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Machine Folder:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>UINetworkAttachmentEditor</name>
+    <message>
+        <source>&amp;Attached to:</source>
+        <translation type="unfinished">ضمیمه &amp;شده به:</translation>
+    </message>
+    <message>
+        <source>&amp;Name:</source>
+        <translation type="unfinished">نا&amp;م:</translation>
+    </message>
+    <message>
+        <source>Not selected</source>
+        <comment>network adapter name</comment>
+        <translation type="unfinished">انتخاب نشده است</translation>
+    </message>
+    <message>
+        <source>Selects the network adapter on the host system that traffic to and from this network card will go through.</source>
+        <translation type="unfinished">آداپتور شبکه ای را که در سیستم میزبان در آن ترافیک به و از این کارت شبکه انجام میشود را انتخاب کنید.</translation>
+    </message>
+    <message>
+        <source>Holds the name of the internal network that this network card will be connected to. You can create a new internal network by choosing a name which is not used by any other network cards in this virtual machine or others.</source>
+        <translation type="unfinished">نام شبکه داخلی که این کارت شبکه به آن متصل شده است را وارد کنید.میتوانید یک شبکه داخلی جدید با انتخاب نامی که توسط کارت شبکه دیگری در این ماشین مجازی یا سایر آنها بکارنرفته است ایجاد کنید.</translation>
+    </message>
+    <message>
+        <source>Selects the virtual network adapter on the host system that traffic to and from this network card will go through. You can create and remove adapters using the global network settings in the virtual machine manager window.</source>
+        <translation type="unfinished">آداپتور شبکه مجازی را که در سیستم میزبان در آن ترافیک به و از این کارت شبکه انجام میشود را انتخاب کنید.توسط تنظیمات سراسری شبکه در پنجره مدیریت ماشین مجازی میتوانید آداپتور شبکه ایجاد یا حذف کنید.</translation>
+    </message>
+    <message>
+        <source>Selects the driver to be used with this network card.</source>
+        <translation type="unfinished">درایوری که با این کارت شبکه بکار میرود را انتخاب کنید.</translation>
+    </message>
+    <message>
+        <source>Holds the name of the NAT network that this network card will be connected to. You can create and remove networks using the global network settings in the virtual machine manager window.</source>
+        <translation type="unfinished">نام شبکه NAT که این کارت شبکه به آن متصل شده است را نگه دارید. شما میتوانید توسط تنظیمات سراسری شبکه در پنجره مدیریت ماشین مجازی شبکه راحذف و ایجاد کنید.</translation>
+    </message>
+    <message>
+        <source>(experimental) Holds the name of the cloud network that this network card will be connected to. You can add and remove cloud networks using the global network settings in the virtual machine manager window.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -11002,8 +14352,24 @@
 <context>
     <name>UIScaleFactorEditor</name>
     <message>
+        <source>Max</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Min</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>All Monitors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Monitor %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Controls the guest screen scale factor.</source>
-        <translation type="obsolete">کنترل ضریب مقیاس نمایشگر مهمان</translation>
+        <translation type="unfinished">کنترل ضریب مقیاس نمایشگر مهمان</translation>
     </message>
 </context>
 <context>
@@ -11025,19 +14391,19 @@
     <name>UISelectorWindow</name>
     <message>
         <source>Show Toolbar</source>
-        <translation>نمایش نوارابزار</translation>
+        <translation type="vanished">نمایش نوارابزار</translation>
     </message>
     <message>
         <source>Show Statusbar</source>
-        <translation>نمایش نواروضعیت</translation>
+        <translation type="vanished">نمایش نواروضعیت</translation>
     </message>
     <message>
         <source>Select a virtual machine file</source>
-        <translation>فایل ماشین مجازی را انتخاب کنید</translation>
+        <translation type="vanished">فایل ماشین مجازی را انتخاب کنید</translation>
     </message>
     <message>
         <source>Virtual machine files (%1)</source>
-        <translation>فایل ماشین مجازی (%1)</translation>
+        <translation type="vanished">فایل ماشین مجازی (%1)</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Welcome to VirtualBox!&lt;/h3&gt;&lt;p&gt;The left part of this window is  a list of all virtual machines on your computer. The list is empty now because you haven&apos;t created any virtual machines yet.&lt;img src=:/welcome.png align=right/&gt;&lt;/p&gt;&lt;p&gt;In order to create a new virtual machine, press the &lt;b&gt;New&lt;/b&gt; button in the main tool bar located at the top of the window.&lt;/p&gt;&lt;p&gt;You can press the &lt;b&gt;%1&lt;/b&gt; key to get instant help, or visit &lt;a href=https://www.virtualbox.org&gt;www.virtualbox.org&lt;/a&gt; for the latest information and news.&lt;/p&gt;</source>
@@ -11046,11 +14412,11 @@
     <message>
         <source>Manager</source>
         <comment>Note: main window title which is pretended by the product name.</comment>
-        <translation>مدیر</translation>
+        <translation type="vanished">مدیر</translation>
     </message>
     <message>
         <source>Show Toolbar Text</source>
-        <translation>نمایش متن نوار ابزار</translation>
+        <translation type="vanished">نمایش متن نوار ابزار</translation>
     </message>
 </context>
 <context>
@@ -11312,55 +14678,55 @@
     <message>
         <source>Current State (changed)</source>
         <comment>Current State (Modified)</comment>
-        <translation type="obsolete">وضعیت فعلی (تغییر کرده است)</translation>
+        <translation type="unfinished">وضعیت فعلی (تغییر کرده است)</translation>
     </message>
     <message>
         <source>Current State</source>
         <comment>Current State (Unmodified)</comment>
-        <translation type="obsolete">وضعیت فعلی</translation>
+        <translation type="unfinished">وضعیت فعلی</translation>
     </message>
     <message>
         <source>The current state differs from the state stored in the current snapshot</source>
-        <translation type="obsolete">وضعیت فعلی متفاوت از وضعیت ذخیره شده در ضبط وضعیت فعلی</translation>
+        <translation type="unfinished">وضعیت فعلی متفاوت از وضعیت ذخیره شده در ضبط وضعیت فعلی</translation>
     </message>
     <message>
         <source>The current state is identical to the state stored in the current snapshot</source>
-        <translation type="obsolete">وضعیت فعلی برابر است با وضعیت ذخیره شده در ضبط وضعیت فعلی</translation>
+        <translation type="unfinished">وضعیت فعلی برابر است با وضعیت ذخیره شده در ضبط وضعیت فعلی</translation>
     </message>
     <message>
         <source>%1 (%2 ago)</source>
         <comment>date time (how long ago)</comment>
-        <translation type="obsolete">%1 (%2 پیش)</translation>
+        <translation type="unfinished">%1 (%2 پیش)</translation>
     </message>
     <message>
         <source>%1 since %2</source>
         <comment>Current State (time or date + time)</comment>
-        <translation type="obsolete">%1 از %2</translation>
+        <translation type="unfinished">%1 از %2</translation>
     </message>
     <message>
         <source>current</source>
         <comment>snapshot</comment>
-        <translation type="obsolete">فعلی</translation>
+        <translation type="unfinished">فعلی</translation>
     </message>
     <message>
         <source>online</source>
         <comment>snapshot</comment>
-        <translation type="obsolete">آنلاین</translation>
+        <translation type="unfinished">آنلاین</translation>
     </message>
     <message>
         <source>offline</source>
         <comment>snapshot</comment>
-        <translation type="obsolete">آفلاین</translation>
+        <translation type="unfinished">آفلاین</translation>
     </message>
     <message>
         <source>Taken at %1</source>
         <comment>Snapshot (time)</comment>
-        <translation type="obsolete">ایجاد شده در %1</translation>
+        <translation type="unfinished">ایجاد شده در %1</translation>
     </message>
     <message>
         <source>Taken on %1</source>
         <comment>Snapshot (date + time)</comment>
-        <translation type="obsolete">ایجاد شده در %1</translation>
+        <translation type="unfinished">ایجاد شده در %1</translation>
     </message>
 </context>
 <context>
@@ -11368,55 +14734,55 @@
     <message>
         <source>Current State (changed)</source>
         <comment>Current State (Modified)</comment>
-        <translation>وضعیت فعلی (تغییر کرده است)</translation>
+        <translation type="vanished">وضعیت فعلی (تغییر کرده است)</translation>
     </message>
     <message>
         <source>Current State</source>
         <comment>Current State (Unmodified)</comment>
-        <translation>وضعیت فعلی</translation>
+        <translation type="vanished">وضعیت فعلی</translation>
     </message>
     <message>
         <source>The current state differs from the state stored in the current snapshot</source>
-        <translation>وضعیت فعلی متفاوت از وضعیت ذخیره شده در ضبط وضعیت فعلی</translation>
+        <translation type="vanished">وضعیت فعلی متفاوت از وضعیت ذخیره شده در ضبط وضعیت فعلی</translation>
     </message>
     <message>
         <source>The current state is identical to the state stored in the current snapshot</source>
-        <translation>وضعیت فعلی برابر است با وضعیت ذخیره شده در ضبط وضعیت فعلی</translation>
+        <translation type="vanished">وضعیت فعلی برابر است با وضعیت ذخیره شده در ضبط وضعیت فعلی</translation>
     </message>
     <message>
         <source>%1 (%2 ago)</source>
         <comment>date time (how long ago)</comment>
-        <translation>%1 (%2 پیش)</translation>
+        <translation type="vanished">%1 (%2 پیش)</translation>
     </message>
     <message>
         <source>%1 since %2</source>
         <comment>Current State (time or date + time)</comment>
-        <translation>%1 از %2</translation>
+        <translation type="vanished">%1 از %2</translation>
     </message>
     <message>
         <source>current</source>
         <comment>snapshot</comment>
-        <translation>فعلی</translation>
+        <translation type="vanished">فعلی</translation>
     </message>
     <message>
         <source>online</source>
         <comment>snapshot</comment>
-        <translation>آنلاین</translation>
+        <translation type="vanished">آنلاین</translation>
     </message>
     <message>
         <source>offline</source>
         <comment>snapshot</comment>
-        <translation>آفلاین</translation>
+        <translation type="vanished">آفلاین</translation>
     </message>
     <message>
         <source>Taken at %1</source>
         <comment>Snapshot (time)</comment>
-        <translation>ایجاد شده در %1</translation>
+        <translation type="vanished">ایجاد شده در %1</translation>
     </message>
     <message>
         <source>Taken on %1</source>
         <comment>Snapshot (date + time)</comment>
-        <translation>ایجاد شده در %1</translation>
+        <translation type="vanished">ایجاد شده در %1</translation>
     </message>
     <message>
         <source>Contains the snapshot tree of the current virtual machine</source>
@@ -11424,63 +14790,63 @@
     </message>
     <message>
         <source>&amp;Take...</source>
-        <translation>&amp;ایجاد...</translation>
+        <translation type="vanished">&amp;ایجاد...</translation>
     </message>
     <message>
         <source>&amp;Delete</source>
-        <translation>&amp;حذف</translation>
+        <translation type="vanished">&amp;حذف</translation>
     </message>
     <message>
         <source>&amp;Restore</source>
-        <translation>&amp;بازگردانی</translation>
+        <translation type="vanished">&amp;بازگردانی</translation>
     </message>
     <message>
         <source>&amp;Properties...</source>
-        <translation>&amp;مشخصات...</translation>
+        <translation type="vanished">&amp;مشخصات...</translation>
     </message>
     <message>
         <source>&amp;Clone...</source>
-        <translation>شبیه &amp;سازی...</translation>
+        <translation type="vanished">شبیه &amp;سازی...</translation>
     </message>
     <message>
         <source>Take Snapshot (%1)</source>
-        <translation>ایجاد ضبط وضعیت (%1)</translation>
+        <translation type="vanished">ایجاد ضبط وضعیت (%1)</translation>
     </message>
     <message>
         <source>Delete Snapshot (%1)</source>
-        <translation>حذف ضبط وضعیت (%1)</translation>
+        <translation type="vanished">حذف ضبط وضعیت (%1)</translation>
     </message>
     <message>
         <source>Restore Snapshot (%1)</source>
-        <translation>بازگردانی ضبط وضعیت (%1)</translation>
+        <translation type="vanished">بازگردانی ضبط وضعیت (%1)</translation>
     </message>
     <message>
         <source>Open Snapshot Properties (%1)</source>
-        <translation>بازکردن مشخصات ضبط وضعیت (%1)</translation>
+        <translation type="vanished">بازکردن مشخصات ضبط وضعیت (%1)</translation>
     </message>
     <message>
         <source>Clone Virtual Machine (%1)</source>
-        <translation>شبیه سازی ماشین مجازی (%1)</translation>
+        <translation type="vanished">شبیه سازی ماشین مجازی (%1)</translation>
     </message>
     <message>
         <source>Take a snapshot of the current virtual machine state</source>
-        <translation>ایجاد یک ضبط وضعیت از وضعیت فعلی ماشین مجازی</translation>
+        <translation type="vanished">ایجاد یک ضبط وضعیت از وضعیت فعلی ماشین مجازی</translation>
     </message>
     <message>
         <source>Delete selected snapshot of the virtual machine</source>
-        <translation>ضبط وضعیت ماشین مجازی انتخاب شده را حذف میکند</translation>
+        <translation type="vanished">ضبط وضعیت ماشین مجازی انتخاب شده را حذف میکند</translation>
     </message>
     <message>
         <source>Restore selected snapshot of the virtual machine</source>
-        <translation>بازگردانی ضبط وضعیت انتخاب شده ماشین مجازی</translation>
+        <translation type="vanished">بازگردانی ضبط وضعیت انتخاب شده ماشین مجازی</translation>
     </message>
     <message>
         <source>Open pane with the selected snapshot properties</source>
-        <translation>بازکردن نوار با مشخصات ضبط وضعیت منتخب</translation>
+        <translation type="vanished">بازکردن نوار با مشخصات ضبط وضعیت منتخب</translation>
     </message>
     <message>
         <source>Clone selected virtual machine</source>
-        <translation>شبیه سازی ماشین مجازی انتخاب شده</translation>
+        <translation type="vanished">شبیه سازی ماشین مجازی انتخاب شده</translation>
     </message>
     <message>
         <source>Name</source>
@@ -11495,6 +14861,289 @@
     <message>
         <source>Snapshot %1</source>
         <translation>ضبط وضعیت %1</translation>
+    </message>
+</context>
+<context>
+    <name>UISoftKeyboard</name>
+    <message>
+        <source>Layout Editor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Return Back to Layout List</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Back to Layout List</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Physical Layout</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>English Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name of the Layout in English</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Native Language Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name of the Layout in the native Language</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scan Code</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The scan code the key produces. Not editable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Position</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The physical position of the key. Not editable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Base</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shift</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>AltGr</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ShiftAltGr</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Captions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Selected Key</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use the selected layout</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit the selected layout</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete the selected layout</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy the selected layout</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save the selected layout into File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layout List</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close the layout list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Web browser go back</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Web browser go the home page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Web browser go forward</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Web browser reload the current page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Web browser stop loading the page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Web browser search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Jump back to previous media track</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Jump to next media track</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stop playing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Play or pause playing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Start email application</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Start calculator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show &apos;My Computer&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show Media folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Volume up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Volume down</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error! Could not create folder under</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Provide a file name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> is an invalid file name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> is saved</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy</source>
+        <translation type="unfinished">کپی</translation>
+    </message>
+    <message>
+        <source>This will delete the keyboard layout file as well. Proceed?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The file </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> has been deleted</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Deleting the file </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> has failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Settings</source>
+        <translation type="unfinished">تنظیمات</translation>
+    </message>
+    <message>
+        <source>Reset the keyboard and release all keys</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Click to change the color.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This color theme is not editable.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Keyboard Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hide NumPad</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hide OS/Menu Keys</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hide Multimedia Keys</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color Themes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Button Background Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Button Font Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Button Hover Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Button Edit Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pressed Button Font Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Soft Keyboard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;Following layouts are edited/copied but not saved:&lt;/p&gt;%1&lt;p&gt;Closing this dialog will cause loosing the changes. Proceed?&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layout</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The file will be saved under:&lt;br&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -11563,46 +15212,73 @@
 <context>
     <name>UIToolsModel</name>
     <message>
+        <source>Welcome</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Media</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Network</source>
-        <translation type="obsolete">شبکه</translation>
+        <translation type="unfinished">شبکه</translation>
+    </message>
+    <message>
+        <source>Cloud</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Details</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Snapshots</source>
-        <translation type="obsolete">ضبط وضعیت</translation>
+        <translation type="unfinished">ضبط وضعیت</translation>
+    </message>
+    <message>
+        <source>Logs</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>UIToolsPaneGlobal</name>
     <message>
         <source>&lt;h3&gt;Welcome to VirtualBox!&lt;/h3&gt;&lt;p&gt;This window represents a set of global tools which are currently opened (or can be opened). They are not related to any particular machine but to the complete VM collection. For a list of currently available tools check the corresponding menu at the right side of the main tool bar located at the top of the window. This list will be extended with new tools in future releases.&lt;/p&gt;&lt;p&gt;You can press the &lt;b&gt;%1&lt;/b&gt; key to get instant help, or visit &lt;a href=https://www.virtualbox.org&gt;www.virtualbox.org&lt;/a&gt; for more information and latest news.&lt;/p&gt;</source>
-        <translation>&lt;h3&gt;به ویرچوال باکس خوش آمدید!&lt;/h3&gt;&lt;p&gt;این پنجره مجموعه ای از ابزارهای سراسری که اکنون باز است (یا میتواند باز شود) را نشان میدهد. آنها به ماشین خاصی مرتبط نیستند،بلکه به مجموعه ماشین های مجازی تعلق دارند. برای لیست ابزارهای موجود که اکنون موجود اند منو متناظر در سمت راست نوار ابزار اصلی در بالای پنجره را نگاه کنید. این لیست با انتشارات جدیدتر بیشتر خواهد شد.&lt;/p&gt;&lt;p&gt;برای دریافت راهنمای فوری میتواند کلید &lt;b&gt;%1&lt;/b&gt; را فشار دهید، یا از سایت&lt;a href=https://www.virtualbox.org&gt;www.virtualbox.org&lt;/a&gt; برای دریافت جدیدترین اخبار و اطلاعات استفاده کنید.&lt;/p&gt;</translation>
+        <translation type="vanished">&lt;h3&gt;به ویرچوال باکس خوش آمدید!&lt;/h3&gt;&lt;p&gt;این پنجره مجموعه ای از ابزارهای سراسری که اکنون باز است (یا میتواند باز شود) را نشان میدهد. آنها به ماشین خاصی مرتبط نیستند،بلکه به مجموعه ماشین های مجازی تعلق دارند. برای لیست ابزارهای موجود که اکنون موجود اند منو متناظر در سمت راست نوار ابزار اصلی در بالای پنجره را نگاه کنید. این لیست با انتشارات جدیدتر بیشتر خواهد شد.&lt;/p&gt;&lt;p&gt;برای دریافت راهنمای فوری میتواند کلید &lt;b&gt;%1&lt;/b&gt; را فشار دهید، یا از سایت&lt;a href=https://www.virtualbox.org&gt;www.virtualbox.org&lt;/a&gt; برای دریافت جدیدترین اخبار و اطلاعات استفاده کنید.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Tool to observe virtual storage media. Reflects all the chains of &lt;u&gt;virtual disks&lt;/u&gt; you have registered (per each storage type) within your virtual machines and allows for media operations like &lt;u&gt;copy&lt;/u&gt;, &lt;u&gt;remove&lt;/u&gt;, &lt;u&gt;release&lt;/u&gt; (detach it from VMs where it is currently attached to) and observe their properties. Allows to &lt;u&gt;edit&lt;/u&gt; medium attributes like &lt;u&gt;type&lt;/u&gt;, &lt;u&gt;location/name&lt;/u&gt;, &lt;u&gt;description&lt;/u&gt; and &lt;u&gt;size&lt;/u&gt; (for dynamical storages only).</source>
-        <translation>ابزاری برای مشاهده رسانه ذخیره ساز مجازی. نشانگر همه زنجیرهای &lt;u&gt;دیسک های مجازی&lt;/u&gt; که شما (بر هر نوع ذخیره ساز) داخل ماشین مجازی خودتان ثبت کرده اید است واجاازه عملیات رسانه ای مانند &lt;u&gt;کپی&lt;/u&gt;, &lt;u&gt;جذف&lt;/u&gt;, &lt;u&gt;ترخیص&lt;/u&gt; (جدا کردن آن از ماشین مجازی از جایی که اکنون به آن وصل است) و مشاهده مشخصات آنها را میدهد. اجازه &lt;u&gt;ویرایش&lt;/u&gt; صفات رسانه مانند &lt;u&gt;نوع&lt;/u&gt;, &lt;u&gt;مکان/نام&lt;/u&gt;, &lt;u&gt;توضیحات&lt;/u&gt; و &lt;u&gt;حجم&lt;/u&gt; (فقط برای ذخیره ساز های پویا) را میدهد.</translation>
+        <translation type="vanished">ابزاری برای مشاهده رسانه ذخیره ساز مجازی. نشانگر همه زنجیرهای &lt;u&gt;دیسک های مجازی&lt;/u&gt; که شما (بر هر نوع ذخیره ساز) داخل ماشین مجازی خودتان ثبت کرده اید است واجاازه عملیات رسانه ای مانند &lt;u&gt;کپی&lt;/u&gt;, &lt;u&gt;جذف&lt;/u&gt;, &lt;u&gt;ترخیص&lt;/u&gt; (جدا کردن آن از ماشین مجازی از جایی که اکنون به آن وصل است) و مشاهده مشخصات آنها را میدهد. اجازه &lt;u&gt;ویرایش&lt;/u&gt; صفات رسانه مانند &lt;u&gt;نوع&lt;/u&gt;, &lt;u&gt;مکان/نام&lt;/u&gt;, &lt;u&gt;توضیحات&lt;/u&gt; و &lt;u&gt;حجم&lt;/u&gt; (فقط برای ذخیره ساز های پویا) را میدهد.</translation>
     </message>
     <message>
         <source>Tool to control host-only network interfaces. Reflects &lt;u&gt;host-only networks&lt;/u&gt;, their DHCP servers and allows for operations on the networks like possibility to &lt;u&gt;create&lt;/u&gt;, &lt;u&gt;remove&lt;/u&gt; and observe their properties. Allows to &lt;u&gt;edit&lt;/u&gt; various &lt;u&gt;attributes&lt;/u&gt; for host-only interface and corresponding DHCP server.</source>
-        <translation>ابزاری برای کنترل رابط شبکه فقط-میزبان. نشانگر &lt;u&gt;شبکه های فقط-میزبان&lt;/u&gt;, سرورهای دی اِچ سی پی آنها و اجازه عملیات در شبکه ها مانند امکان &lt;u&gt;ایجاد&lt;/u&gt;, &lt;u&gt;حذف&lt;/u&gt; و مشاهده مشخصات آنها را میدهد. اجازه &lt;u&gt;ویرایش&lt;/u&gt; &lt;u&gt;صفات&lt;/u&gt; گوناگون برای رابط فقط میزبان و سرور دی اِچ سی پی متناظر را میدهد.</translation>
+        <translation type="vanished">ابزاری برای کنترل رابط شبکه فقط-میزبان. نشانگر &lt;u&gt;شبکه های فقط-میزبان&lt;/u&gt;, سرورهای دی اِچ سی پی آنها و اجازه عملیات در شبکه ها مانند امکان &lt;u&gt;ایجاد&lt;/u&gt;, &lt;u&gt;حذف&lt;/u&gt; و مشاهده مشخصات آنها را میدهد. اجازه &lt;u&gt;ویرایش&lt;/u&gt; &lt;u&gt;صفات&lt;/u&gt; گوناگون برای رابط فقط میزبان و سرور دی اِچ سی پی متناظر را میدهد.</translation>
     </message>
 </context>
 <context>
     <name>UIToolsPaneMachine</name>
     <message>
         <source>&lt;h3&gt;Welcome to VirtualBox!&lt;/h3&gt;&lt;p&gt;The left part of this window lists all virtual machines and virtual machine groups on your computer. The list is empty now because you haven&apos;t created any virtual machines yet.&lt;/p&gt;&lt;p&gt;In order to create a new virtual machine, press the &lt;b&gt;New&lt;/b&gt; button in the main tool bar located at the top of the window.&lt;/p&gt;&lt;p&gt;You can press the &lt;b&gt;%1&lt;/b&gt; key to get instant help, or visit &lt;a href=https://www.virtualbox.org&gt;www.virtualbox.org&lt;/a&gt; for more information and latest news.&lt;/p&gt;</source>
-        <translation>&lt;h3&gt;به ویرچوال باکس خوش آمدید!&lt;/h3&gt;&lt;p&gt;بخش راست این پنجره همه ماشین های مجازی و گروه های ماشین مجازی در رایانه شما را لیست می کند. این لیست اکنون خالی است چون هنوز ماشین مجازی ایجاد نکرده اید.&lt;/p&gt;&lt;p&gt;بمنظور ایجاد ماشین مجازی جدید، دکمه the &lt;b&gt;جدید&lt;/b&gt; را که در نوار ابزار اصلی در بالای پنجره قرار گرفته است را فشار دهید.&lt;/p&gt;&lt;p&gt;برای دریافت راهنمای فوری میتوانید کلید &lt;b&gt;%1&lt;/b&gt; را فشار دهید، یا از &lt;a href=https://www.virtualbox.org&gt;www.virtualbox.org&lt;/a&gt; برای دریافت جدیدترین اطلاعات و اخبار استفاده کنید.&lt;/p&gt;</translation>
+        <translation type="vanished">&lt;h3&gt;به ویرچوال باکس خوش آمدید!&lt;/h3&gt;&lt;p&gt;بخش راست این پنجره همه ماشین های مجازی و گروه های ماشین مجازی در رایانه شما را لیست می کند. این لیست اکنون خالی است چون هنوز ماشین مجازی ایجاد نکرده اید.&lt;/p&gt;&lt;p&gt;بمنظور ایجاد ماشین مجازی جدید، دکمه the &lt;b&gt;جدید&lt;/b&gt; را که در نوار ابزار اصلی در بالای پنجره قرار گرفته است را فشار دهید.&lt;/p&gt;&lt;p&gt;برای دریافت راهنمای فوری میتوانید کلید &lt;b&gt;%1&lt;/b&gt; را فشار دهید، یا از &lt;a href=https://www.virtualbox.org&gt;www.virtualbox.org&lt;/a&gt; برای دریافت جدیدترین اطلاعات و اخبار استفاده کنید.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Welcome to VirtualBox!&lt;/h3&gt;&lt;p&gt;The left part of this window lists all virtual machines and virtual machine groups on your computer.&lt;/p&gt;&lt;p&gt;The right part of this window represents a set of tools which are currently opened (or can be opened) for the currently chosen machine. For a list of currently available tools check the corresponding menu at the right side of the main tool bar located at the top of the window. This list will be extended with new tools in future releases.&lt;/p&gt;&lt;p&gt;You can press the &lt;b&gt;%1&lt;/b&gt; key to get instant help, or visit &lt;a href=https://www.virtualbox.org&gt;www.virtualbox.org&lt;/a&gt; for more information and latest news.&lt;/p&gt;</source>
-        <translation>&lt;h3&gt;به ویرچوال باکس خوش آمدید!&lt;/h3&gt;&lt;p&gt;بخش راست این پنجره همه ماشین های مجازی و گروه های ماشین مجازی در رایانه شما را لیست می کند.&lt;/p&gt;&lt;p&gt;بخش چپ این پنجره نشان دهنده مجموعه ابزار هایی است که اکنون برای (یا میتواند باز شود) ماشین منتخب فعلی باز شده است. برای لیست ابزارهای موجود که اکنون موجود اند منو متناظر در سمت چپ نوار ابزار اصلی در بالای پنجره را نگاه کنید. این لیست با انتشارات جدیدتر بیشتر خواهد شد.&lt;/p&gt;&lt;p&gt;برای دریافت راهنمای فوری میتوانید کلید &lt;b&gt;%1&lt;/b&gt; را فشار دهید، یا از &lt;a href=https://www.virtualbox.org&gt;www.virtualbox.org&lt;/a&gt; برای دریافت جدیدترین اطلاعات و اخبار استفاده کنید.&lt;/p&gt;</translation>
+        <translation type="vanished">&lt;h3&gt;به ویرچوال باکس خوش آمدید!&lt;/h3&gt;&lt;p&gt;بخش راست این پنجره همه ماشین های مجازی و گروه های ماشین مجازی در رایانه شما را لیست می کند.&lt;/p&gt;&lt;p&gt;بخش چپ این پنجره نشان دهنده مجموعه ابزار هایی است که اکنون برای (یا میتواند باز شود) ماشین منتخب فعلی باز شده است. برای لیست ابزارهای موجود که اکنون موجود اند منو متناظر در سمت چپ نوار ابزار اصلی در بالای پنجره را نگاه کنید. این لیست با انتشارات جدیدتر بیشتر خواهد شد.&lt;/p&gt;&lt;p&gt;برای دریافت راهنمای فوری میتوانید کلید &lt;b&gt;%1&lt;/b&gt; را فشار دهید، یا از &lt;a href=https://www.virtualbox.org&gt;www.virtualbox.org&lt;/a&gt; برای دریافت جدیدترین اطلاعات و اخبار استفاده کنید.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Tool to observe virtual machine (VM) details. Reflects groups of &lt;u&gt;properties&lt;/u&gt; for the currently chosen VM and allows basic operations on certain properties (like the machine storage devices).</source>
-        <translation>ابزاری برای مشاهده جزئیات ماشین مجازی. نشانگر گروهی از &lt;u&gt;مشخصات&lt;/u&gt; برای ماشین مجازی منتخب فعلی است و اجازه عملکردهای پایه در مشخصات معین (مانند دستگاه ذخیره ساز ماشین) را میدهد.</translation>
+        <translation type="vanished">ابزاری برای مشاهده جزئیات ماشین مجازی. نشانگر گروهی از &lt;u&gt;مشخصات&lt;/u&gt; برای ماشین مجازی منتخب فعلی است و اجازه عملکردهای پایه در مشخصات معین (مانند دستگاه ذخیره ساز ماشین) را میدهد.</translation>
     </message>
     <message>
         <source>Tool to control virtual machine (VM) snapshots. Reflects &lt;u&gt;snapshots&lt;/u&gt; created for the currently selected VM and allows snapshot operations like &lt;u&gt;create&lt;/u&gt;, &lt;u&gt;remove&lt;/u&gt;, &lt;u&gt;restore&lt;/u&gt; (make current) and observe their properties. Allows to &lt;u&gt;edit&lt;/u&gt; snapshot attributes like &lt;u&gt;name&lt;/u&gt; and &lt;u&gt;description&lt;/u&gt;.</source>
-        <translation>ابزاری برای کنترل ضبط وضعیت های ماشین مجازی. نشانگر &lt;u&gt;ضبط وضعیت&lt;/u&gt; ایجاد شده برای ماشین مجازی منتخب فعلی است و اجازه عملیات های ضبط وضعیت مثل &lt;u&gt;ایجاد&lt;/u&gt;, &lt;u&gt;حذف&lt;/u&gt;, &lt;u&gt;بازگردانی&lt;/u&gt; (ایجاد فعلی) و مشاهده مشخصات آنها را میدهد. اجازه &lt;u&gt;ویرایش&lt;/u&gt; صفات ضبط وضعیت مثل &lt;u&gt;نام&lt;/u&gt; و &lt;u&gt;توضیحات&lt;/u&gt; را می دهد.</translation>
+        <translation type="vanished">ابزاری برای کنترل ضبط وضعیت های ماشین مجازی. نشانگر &lt;u&gt;ضبط وضعیت&lt;/u&gt; ایجاد شده برای ماشین مجازی منتخب فعلی است و اجازه عملیات های ضبط وضعیت مثل &lt;u&gt;ایجاد&lt;/u&gt;, &lt;u&gt;حذف&lt;/u&gt;, &lt;u&gt;بازگردانی&lt;/u&gt; (ایجاد فعلی) و مشاهده مشخصات آنها را میدهد. اجازه &lt;u&gt;ویرایش&lt;/u&gt; صفات ضبط وضعیت مثل &lt;u&gt;نام&lt;/u&gt; و &lt;u&gt;توضیحات&lt;/u&gt; را می دهد.</translation>
+    </message>
+</context>
+<context>
+    <name>UIToolsView</name>
+    <message>
+        <source>Contains a list of VirtualBox tools</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -11620,42 +15296,42 @@
     <message>
         <source>&lt;nobr&gt;Vendor ID: %1&lt;/nobr&gt;</source>
         <comment>USB filter tooltip</comment>
-        <translation type="obsolete">&lt;nobr&gt;شناسه فروشنده: %1&lt;/nobr&gt;</translation>
+        <translation type="unfinished">&lt;nobr&gt;شناسه فروشنده: %1&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;Product ID: %2&lt;/nobr&gt;</source>
         <comment>USB filter tooltip</comment>
-        <translation type="obsolete">&lt;nobr&gt;شناسه محصول: %2&lt;/nobr&gt;</translation>
+        <translation type="unfinished">&lt;nobr&gt;شناسه محصول: %2&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;Revision: %3&lt;/nobr&gt;</source>
         <comment>USB filter tooltip</comment>
-        <translation type="obsolete">&lt;nobr&gt;بازبینی: %3&lt;/nobr&gt;</translation>
+        <translation type="unfinished">&lt;nobr&gt;بازبینی: %3&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;Product: %4&lt;/nobr&gt;</source>
         <comment>USB filter tooltip</comment>
-        <translation type="obsolete">&lt;nobr&gt;محصول: %4&lt;/nobr&gt;</translation>
+        <translation type="unfinished">&lt;nobr&gt;محصول: %4&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;Manufacturer: %5&lt;/nobr&gt;</source>
         <comment>USB filter tooltip</comment>
-        <translation type="obsolete">&lt;nobr&gt;سازنده: %5&lt;/nobr&gt;</translation>
+        <translation type="unfinished">&lt;nobr&gt;سازنده: %5&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;Serial No.: %1&lt;/nobr&gt;</source>
         <comment>USB filter tooltip</comment>
-        <translation type="obsolete">&lt;nobr&gt;شماره سریال.: %1&lt;/nobr&gt;</translation>
+        <translation type="unfinished">&lt;nobr&gt;شماره سریال.: %1&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;Port: %1&lt;/nobr&gt;</source>
         <comment>USB filter tooltip</comment>
-        <translation type="obsolete">&lt;nobr&gt;پورت: %1&lt;/nobr&gt;</translation>
+        <translation type="unfinished">&lt;nobr&gt;پورت: %1&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;State: %1&lt;/nobr&gt;</source>
         <comment>USB filter tooltip</comment>
-        <translation type="obsolete">&lt;nobr&gt;وضعیت: %1&lt;/nobr&gt;</translation>
+        <translation type="unfinished">&lt;nobr&gt;وضعیت: %1&lt;/nobr&gt;</translation>
     </message>
 </context>
 <context>
@@ -11890,6 +15566,255 @@
         <source>&amp;Runtime Information</source>
         <translation>&amp;اطلاعات زمان اِجرا</translation>
     </message>
+    <message>
+        <source>General</source>
+        <translation type="unfinished">عمومی</translation>
+    </message>
+    <message>
+        <source>System</source>
+        <translation type="unfinished">سیستم</translation>
+    </message>
+    <message>
+        <source>Display</source>
+        <translation type="unfinished">نمایش</translation>
+    </message>
+    <message>
+        <source>Storage</source>
+        <translation type="unfinished">ذخیره ساز</translation>
+    </message>
+    <message>
+        <source>Audio</source>
+        <translation type="unfinished">صدا</translation>
+    </message>
+    <message>
+        <source>Network</source>
+        <translation type="unfinished">شبکه</translation>
+    </message>
+    <message>
+        <source>Serial Ports</source>
+        <translation type="unfinished">پورت سریال</translation>
+    </message>
+    <message>
+        <source>USB</source>
+        <translation type="unfinished">یو اِس بی</translation>
+    </message>
+    <message>
+        <source>Shared Folders</source>
+        <translation type="unfinished">پوشه های اشتراکی</translation>
+    </message>
+    <message>
+        <source>Performance &amp;Monitor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No guest additions! This metric requires guest additions to work properly.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reset</source>
+        <translation type="unfinished">ریست</translation>
+    </message>
+    <message>
+        <source>Show Pie Chart</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Draw Area Chart</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Seconds</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CPU Load</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Guest Load</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>VMM Load</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>RAM Usage</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Total</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Free</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Used</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Network Rate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Receive Rate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transmit Rate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Total Received</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Total Transmitted</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Disk IO Rate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Write Rate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Read Rate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Total Written</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Total Read</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>VM Exits</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Current</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Runtime Attributes</source>
+        <translation type="unfinished">صفات زمان اِجرا</translation>
+    </message>
+    <message>
+        <source>Screen Resolution</source>
+        <translation type="unfinished">وضوح صفحه</translation>
+    </message>
+    <message>
+        <source>VM Uptime</source>
+        <translation type="unfinished">مدت فعالیت ماشین مجازی</translation>
+    </message>
+    <message>
+        <source>Clipboard Mode</source>
+        <translation type="unfinished">حالت کلیپ برد</translation>
+    </message>
+    <message>
+        <source>Drag and Drop Mode</source>
+        <translation type="unfinished">حالت کشیدن و رها کردن</translation>
+    </message>
+    <message>
+        <source>VM Execution Engine</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Nested Paging</source>
+        <translation type="unfinished">صفحه بندی تودرتو</translation>
+    </message>
+    <message>
+        <source>Unrestricted Execution</source>
+        <translation type="unfinished">اِجرای بدون محدودیت</translation>
+    </message>
+    <message>
+        <source>Paravirtualization Interface</source>
+        <translation type="unfinished">رابط پارا مجازی سازی</translation>
+    </message>
+    <message>
+        <source>Active</source>
+        <translation type="obsolete">فعال</translation>
+    </message>
+    <message>
+        <source>Inactive</source>
+        <translation type="obsolete">غیر فعال</translation>
+    </message>
+    <message>
+        <source>Not Available</source>
+        <translation type="obsolete">موجود نیست</translation>
+    </message>
+    <message>
+        <source>Guest Additions</source>
+        <translation type="unfinished">افزونه مهمان</translation>
+    </message>
+    <message>
+        <source>Guest OS Type</source>
+        <translation type="unfinished">نوع سیستم عامل مهمان</translation>
+    </message>
+    <message>
+        <source>Remote Desktop Server Port</source>
+        <translation type="unfinished">پورت سرور ریموت دسکتاپ</translation>
+    </message>
+    <message>
+        <source>Not Detected</source>
+        <translation type="obsolete">تشخیص داده نشده است</translation>
+    </message>
+    <message>
+        <source>&amp;Guest Control</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>turned off</source>
+        <comment>Screen</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Active</source>
+        <comment>Nested Paging</comment>
+        <translation type="unfinished">فعال</translation>
+    </message>
+    <message>
+        <source>Inactive</source>
+        <comment>Nested Paging</comment>
+        <translation type="unfinished">غیر فعال</translation>
+    </message>
+    <message>
+        <source>Active</source>
+        <comment>Unrestricted Execution</comment>
+        <translation type="unfinished">فعال</translation>
+    </message>
+    <message>
+        <source>Inactive</source>
+        <comment>Unrestricted Execution</comment>
+        <translation type="unfinished">غیر فعال</translation>
+    </message>
+    <message>
+        <source>Not Available</source>
+        <comment>VRDE Port</comment>
+        <translation type="unfinished">موجود نیست</translation>
+    </message>
+    <message>
+        <source>not set</source>
+        <comment>Execution Engine</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not Detected</source>
+        <comment>Guest OS Type</comment>
+        <translation type="unfinished">تشخیص داده نشده است</translation>
+    </message>
+    <message>
+        <source>Not Detected</source>
+        <comment>Guest Additions Version</comment>
+        <translation type="unfinished">تشخیص داده نشده است</translation>
+    </message>
 </context>
 <context>
     <name>UIVMListView</name>
@@ -11912,106 +15837,229 @@
     <name>UIVMLogViewer</name>
     <message>
         <source>Close the search panel</source>
-        <translation>بستن پنل جستجو</translation>
+        <translation type="vanished">بستن پنل جستجو</translation>
     </message>
     <message>
         <source>&amp;Find</source>
-        <translation>یاف&amp;تن</translation>
+        <translation type="vanished">یاف&amp;تن</translation>
     </message>
     <message>
         <source>Enter a search string here</source>
-        <translation>عبارت جستجو را اینجا وارد کنید</translation>
+        <translation type="vanished">عبارت جستجو را اینجا وارد کنید</translation>
     </message>
     <message>
         <source>&amp;Previous</source>
-        <translation>&amp;قبلی</translation>
+        <translation type="vanished">&amp;قبلی</translation>
     </message>
     <message>
         <source>Search for the previous occurrence of the string</source>
-        <translation>جستجوی رخداد قبلی استرینگ</translation>
+        <translation type="vanished">جستجوی رخداد قبلی استرینگ</translation>
     </message>
     <message>
         <source>&amp;Next</source>
-        <translation>بعد&amp;ی</translation>
+        <translation type="vanished">بعد&amp;ی</translation>
     </message>
     <message>
         <source>Search for the next occurrence of the string</source>
-        <translation>جستجوی رخداد بعدی استرینگ</translation>
+        <translation type="vanished">جستجوی رخداد بعدی استرینگ</translation>
     </message>
     <message>
         <source>C&amp;ase Sensitive</source>
-        <translation>حساس به &amp;حروف</translation>
+        <translation type="vanished">حساس به &amp;حروف</translation>
     </message>
     <message>
         <source>Perform case sensitive search (when checked)</source>
-        <translation>اِجرای جستجوی حساس به حروف (وقتیکه انتخاب شده)</translation>
+        <translation type="vanished">اِجرای جستجوی حساس به حروف (وقتیکه انتخاب شده)</translation>
     </message>
     <message>
         <source>String not found</source>
-        <translation>استرینگ یافت نشد</translation>
+        <translation type="vanished">استرینگ یافت نشد</translation>
     </message>
     <message>
         <source>&lt;p&gt;No log files found. Press the &lt;b&gt;Refresh&lt;/b&gt; button to rescan the log folder &lt;nobr&gt;&lt;b&gt;%1&lt;/b&gt;&lt;/nobr&gt;.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;فایل وقایع یافت نشد. دکمه &lt;b&gt;تازه کردن&lt;/b&gt; را برای اسکن مجدد پوشه وقایع &lt;nobr&gt;&lt;b&gt;%1&lt;/b&gt;&lt;/nobr&gt; فشار دهید.&lt;/p&gt;</translation>
+        <translation type="vanished">&lt;p&gt;فایل وقایع یافت نشد. دکمه &lt;b&gt;تازه کردن&lt;/b&gt; را برای اسکن مجدد پوشه وقایع &lt;nobr&gt;&lt;b&gt;%1&lt;/b&gt;&lt;/nobr&gt; فشار دهید.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Save VirtualBox Log As</source>
-        <translation>ذخیره وقایه ویرچوال باکس بعنوان</translation>
+        <translation type="vanished">ذخیره وقایه ویرچوال باکس بعنوان</translation>
     </message>
     <message>
         <source>%1 - VirtualBox Log Viewer</source>
-        <translation>%1 - نمایش دهنده وقایع ویرچوال باکس</translation>
+        <translation type="vanished">%1 - نمایش دهنده وقایع ویرچوال باکس</translation>
     </message>
     <message>
         <source>&amp;Refresh</source>
-        <translation>تازه کرد&amp;ن</translation>
+        <translation type="vanished">تازه کرد&amp;ن</translation>
     </message>
     <message>
         <source>&amp;Save</source>
-        <translation>ذخیر&amp;ه</translation>
+        <translation type="vanished">ذخیر&amp;ه</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation>بستن</translation>
+        <translation type="vanished">بستن</translation>
     </message>
     <message>
         <source>Filter</source>
-        <translation>فیلتر</translation>
+        <translation type="vanished">فیلتر</translation>
     </message>
     <message>
         <source>Enter filtering string here</source>
-        <translation>رشته فیلترینگ را اینجا وارد کنید</translation>
+        <translation type="vanished">رشته فیلترینگ را اینجا وارد کنید</translation>
     </message>
     <message>
         <source>Fil&amp;ter</source>
-        <translation>&amp;فیلتر</translation>
+        <translation type="vanished">&amp;فیلتر</translation>
+    </message>
+</context>
+<context>
+    <name>UIVMLogViewerDialog</name>
+    <message>
+        <source>%1 - Log Viewer</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>UIVMLogViewerWidget</name>
     <message>
+        <source>Delete the current bookmark</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete all bookmarks</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Log Viewer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Close</source>
-        <translation type="obsolete">بستن</translation>
+        <translation type="unfinished">بستن</translation>
+    </message>
+    <message>
+        <source>Select or enter a term which will be used in filtering the log text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add the filter term to the set of filter terms</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Showing %1/%2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The filter terms list, select one to remove or click the button on the right side to remove them all</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The type of boolean operator for filter operation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show Line Numbers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>When checked, show line numbers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrap Lines</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>When checked, wrap lines</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Font Size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Log viewer font size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open a font dialog to select font face for the logviewer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reset options to application defaults</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Enter a search string here</source>
-        <translation type="obsolete">عبارت جستجو را اینجا وارد کنید</translation>
+        <translation type="unfinished">عبارت جستجو را اینجا وارد کنید</translation>
+    </message>
+    <message>
+        <source>Search for the next occurrence of the string (F3)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Search for the previous occurrence of the string (Shift+F3)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>C&amp;ase Sensitive</source>
-        <translation type="obsolete">حساس به &amp;حروف</translation>
+        <translation type="unfinished">حساس به &amp;حروف</translation>
+    </message>
+    <message>
+        <source>When checked, perform case sensitive search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ma&amp;tch Whole Word</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>When checked, search matches only complete words</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Highlight All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>When checked, all occurence of the search text are highlighted</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>String not found</source>
         <translation type="obsolete">استرینگ یافت نشد</translation>
     </message>
     <message>
+        <source>Filtered</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bookmark</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Save VirtualBox Log As</source>
-        <translation type="obsolete">ذخیره وقایه ویرچوال باکس بعنوان</translation>
+        <translation type="unfinished">ذخیره وقایه ویرچوال باکس بعنوان</translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;&lt;b&gt;No machine&lt;/b&gt; is currently selected or the selected machine is not valid. Please select a Virtual Machine to see its logs</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&lt;p&gt;No log files found. Press the &lt;b&gt;Refresh&lt;/b&gt; button to rescan the log folder &lt;nobr&gt;&lt;b&gt;%1&lt;/b&gt;&lt;/nobr&gt;.&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;p&gt;فایل وقایع یافت نشد. دکمه &lt;b&gt;تازه کردن&lt;/b&gt; را برای اسکن مجدد پوشه وقایع &lt;nobr&gt;&lt;b&gt;%1&lt;/b&gt;&lt;/nobr&gt; فشار دهید.&lt;/p&gt;</translation>
+        <translation type="unfinished">&lt;p&gt;فایل وقایع یافت نشد. دکمه &lt;b&gt;تازه کردن&lt;/b&gt; را برای اسکن مجدد پوشه وقایع &lt;nobr&gt;&lt;b&gt;%1&lt;/b&gt;&lt;/nobr&gt; فشار دهید.&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>Go to the next bookmark</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Go to the previous bookmark</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Go to selected bookmark</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -12046,23 +16094,42 @@
     </message>
 </context>
 <context>
+    <name>UIVideoMemoryEditor</name>
+    <message>
+        <source>Video &amp;Memory:</source>
+        <translation type="unfinished">حافظه وی&amp;دیو:</translation>
+    </message>
+    <message>
+        <source>%1 MB</source>
+        <translation type="unfinished">%1 مگابایت</translation>
+    </message>
+    <message>
+        <source>MB</source>
+        <translation type="unfinished">مگابایت</translation>
+    </message>
+</context>
+<context>
     <name>UIVirtualBoxManager</name>
     <message>
         <source>Manager</source>
         <comment>Note: main window title which is prepended by the product name.</comment>
-        <translation type="obsolete">مدیر</translation>
+        <translation type="unfinished">مدیر</translation>
     </message>
     <message>
         <source>Select a virtual machine file</source>
-        <translation type="obsolete">فایل ماشین مجازی را انتخاب کنید</translation>
+        <translation type="unfinished">فایل ماشین مجازی را انتخاب کنید</translation>
     </message>
     <message>
         <source>Virtual machine files (%1)</source>
-        <translation type="obsolete">فایل ماشین مجازی (%1)</translation>
+        <translation type="unfinished">فایل ماشین مجازی (%1)</translation>
+    </message>
+    <message>
+        <source>Select a destination folder to move the selected virtual machine</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Show Toolbar Text</source>
-        <translation type="obsolete">نمایش متن نوار ابزار</translation>
+        <translation type="unfinished">نمایش متن نوار ابزار</translation>
     </message>
 </context>
 <context>
@@ -12075,20 +16142,131 @@
 <context>
     <name>UIVisoCreator</name>
     <message>
+        <source>Remove selected file objects from VISO</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Name</source>
-        <translation type="obsolete">نام</translation>
+        <translation type="unfinished">نام</translation>
     </message>
     <message>
         <source>Size</source>
-        <translation type="obsolete">حجم</translation>
+        <translation type="unfinished">حجم</translation>
+    </message>
+    <message>
+        <source>Change Time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Owner</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Permissions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Local Path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ISO Path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Options...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show Hidden Objects</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create a new directory under the current location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rename the selected object</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Configuration...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>VISO Configuration</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Manage VISO Configuration</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dialog Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Manage Dialog Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>VISO Name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Custom VISO options:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close the pane</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Remove</source>
-        <translation type="obsolete">حذف</translation>
+        <translation type="unfinished">حذف</translation>
+    </message>
+    <message>
+        <source>New Directory</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Reset</source>
-        <translation type="obsolete">ریست</translation>
+        <translation type="unfinished">ریست</translation>
+    </message>
+    <message>
+        <source>VISO Creator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>VISO</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove current option.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Click to show/hide the tree view</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add selected file objects to VISO</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reset VISO content.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>UIWelcomePane</name>
+    <message>
+        <source>&lt;h3&gt;Welcome to VirtualBox!&lt;/h3&gt;&lt;p&gt;The left part of application window contains global tools and lists all virtual machines and virtual machine groups on your computer. You can import, add and create new VMs using corresponding toolbar buttons. You can popup a tools of currently selected element using corresponding element button.&lt;/p&gt;&lt;p&gt;You can press the &lt;b&gt;%1&lt;/b&gt; key to get instant help, or visit &lt;a href=https://www.virtualbox.org&gt;www.virtualbox.org&lt;/a&gt; for more information and latest news.&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -12290,18 +16468,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Disk image to copy</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;Please select the virtual disk image file that you would like to copy if it is not already selected. You can either choose one from the list or use the folder icon beside the list to select one.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Choose a virtual disk image file to copy...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Disk image file type</source>
         <translation type="unfinished"></translation>
     </message>
@@ -12347,10 +16513,6 @@
         <translation type="unfinished">%1_کپی</translation>
     </message>
     <message>
-        <source>Disk image to &amp;copy</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&amp;New disk image to create</source>
         <translation type="unfinished"></translation>
     </message>
@@ -12379,19 +16541,19 @@
     </message>
     <message>
         <source>New machine name</source>
-        <translation>نام ماشین جدید</translation>
+        <translation type="vanished">نام ماشین جدید</translation>
     </message>
     <message>
         <source>&lt;p&gt;Please choose a name for the new virtual machine. The new machine will be a clone of the machine &lt;b&gt;%1&lt;/b&gt;.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;لطفا یک نام برای ماشین مجازی جدید انتخاب کنید. ماشین جدید از ماشین &lt;b&gt;%1&lt;/b&gt; شبیه سازی خواهد شد.&lt;/p&gt;</translation>
+        <translation type="vanished">&lt;p&gt;لطفا یک نام برای ماشین مجازی جدید انتخاب کنید. ماشین جدید از ماشین &lt;b&gt;%1&lt;/b&gt; شبیه سازی خواهد شد.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>When checked a new unique MAC address will be assigned to all configured network cards.</source>
-        <translation>وقتیکه انتخاب شده یک آدرس مَک جدید منحصر بفرد به همه کارت های شبکه پیکربندی شده اختصاص داده خواهد شد.</translation>
+        <translation type="vanished">وقتیکه انتخاب شده یک آدرس مَک جدید منحصر بفرد به همه کارت های شبکه پیکربندی شده اختصاص داده خواهد شد.</translation>
     </message>
     <message>
         <source>&amp;Reinitialize the MAC address of all network cards</source>
-        <translation>مقداردهی مجدد &amp;آدرس مک همه کارت های شبکه</translation>
+        <translation type="vanished">مقداردهی مجدد &amp;آدرس مک همه کارت های شبکه</translation>
     </message>
     <message>
         <source>Clone type</source>
@@ -12447,7 +16609,7 @@
     </message>
     <message>
         <source>New machine &amp;name</source>
-        <translation>&amp;نام ماشین جدید</translation>
+        <translation type="vanished">&amp;نام ماشین جدید</translation>
     </message>
     <message>
         <source>&amp;Full Clone</source>
@@ -12460,6 +16622,78 @@
     <message>
         <source>&lt;p&gt;Please choose the type of clone you wish to create.&lt;/p&gt;&lt;p&gt;If you choose &lt;b&gt;Full clone&lt;/b&gt;, an exact copy (including all virtual hard disk files) of the original virtual machine will be created.&lt;/p&gt;&lt;p&gt;If you choose &lt;b&gt;Linked clone&lt;/b&gt;, a new machine will be created, but the virtual hard disk files will be tied to the virtual hard disk files of original machine and you will not be able to move the new virtual machine to a different computer without moving the original as well.&lt;/p&gt;</source>
         <translation>&lt;p&gt;لطفا نوع شبیه سازی را که میخواهید برای ایجاد انتخاب کنید.&lt;/p&gt;&lt;p&gt;اگر شما &lt;b&gt;شبیه سازی کامل &lt;/b&gt; را انتخاب کنید، یک کپی دقیق (شامل همه فایل های دیسک سخت مجازی) از ماشین مجازی اصلی ایجاد خواهد شد.&lt;/p&gt;&lt;p&gt;اگر شما &lt;b&gt;شبیه سازی لینک شده&lt;/b&gt; را انتخاب کنید، یک ماشین جدید ایجاد خواهد شد، اما فایل های دیسک سخت مجازی به فایل های دیسک سخت مجازی ماشین اصلی گره خورده است و شما قادر به انتقال ماشین مجازی جدید به رایانه دیگر بدون انتقال فایل اصلی نیستید.&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;Please choose a name and optionally a folder for the new virtual machine. The new machine will be a clone of the machine &lt;b&gt;%1&lt;/b&gt;.&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Path:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>MAC Address &amp;Policy:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Include all network adapter MAC addresses</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Include only NAT network adapter MAC addresses</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Generate new MAC addresses for all network adapters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Include only NAT network adapter MAC addresses during cloning.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Generate new MAC addresses for all network adapters during cloning.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Additional Options:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Don&apos;t change the disk names during cloning.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Keep &amp;Disk Names</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Don&apos;t change hardware UUIDs during cloning.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Keep &amp;Hardware UUIDs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New machine &amp;name and path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New machine name and path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Include all network adapter MAC addresses during cloning.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Additional options</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -12502,23 +16736,23 @@
     </message>
     <message>
         <source>Please choose where to create the virtual appliance. You can create it on your own computer, on the Sun Cloud service or on an S3 storage server.</source>
-        <translation>لطفا انتخاب کنید کجا وسیله مجازی ایجاد شود. میتوانید آن را روی رایانه خود، یا در سرویس سان کلاود یا در سرور ذخیره ساز اِس 3 ایجاد کنید.</translation>
+        <translation type="vanished">لطفا انتخاب کنید کجا وسیله مجازی ایجاد شود. میتوانید آن را روی رایانه خود، یا در سرویس سان کلاود یا در سرور ذخیره ساز اِس 3 ایجاد کنید.</translation>
     </message>
     <message>
         <source>Create on</source>
-        <translation>ایجاد در</translation>
+        <translation type="vanished">ایجاد در</translation>
     </message>
     <message>
         <source>&amp;This computer</source>
-        <translation>&amp;این رایانه</translation>
+        <translation type="vanished">&amp;این رایانه</translation>
     </message>
     <message>
         <source>Sun &amp;Cloud</source>
-        <translation>سان &amp;کلاود</translation>
+        <translation type="vanished">سان &amp;کلاود</translation>
     </message>
     <message>
         <source>&amp;Simple Storage System (S3)</source>
-        <translation>&amp;سیستم ذخیره ساز ساده (S3)</translation>
+        <translation type="vanished">&amp;سیستم ذخیره ساز ساده (S3)</translation>
     </message>
     <message>
         <source>Appliance</source>
@@ -12526,19 +16760,19 @@
     </message>
     <message>
         <source>&amp;Username:</source>
-        <translation>نام ک&amp;اربر:</translation>
+        <translation type="vanished">نام ک&amp;اربر:</translation>
     </message>
     <message>
         <source>&amp;Password:</source>
-        <translation>&amp;رمزعبور:</translation>
+        <translation type="vanished">&amp;رمزعبور:</translation>
     </message>
     <message>
         <source>&amp;Hostname:</source>
-        <translation>نام &amp;میزبان:</translation>
+        <translation type="vanished">نام &amp;میزبان:</translation>
     </message>
     <message>
         <source>&amp;Bucket:</source>
-        <translation>&amp;سطل:</translation>
+        <translation type="vanished">&amp;سطل:</translation>
     </message>
     <message>
         <source>&amp;File:</source>
@@ -12570,7 +16804,7 @@
     </message>
     <message>
         <source>Write &amp;Manifest file</source>
-        <translation>نوشتن &amp;فایل مانیفست</translation>
+        <translation type="vanished">نوشتن &amp;فایل مانیفست</translation>
     </message>
     <message>
         <source>This is the descriptive information which will be added to the virtual appliance.  You can change it by double clicking on individual lines.</source>
@@ -12582,19 +16816,19 @@
     </message>
     <message>
         <source>Appliance &amp;settings</source>
-        <translation>تنظیمات &amp;وسیله</translation>
+        <translation type="vanished">تنظیمات &amp;وسیله</translation>
     </message>
     <message>
         <source>&amp;Destination</source>
-        <translation>&amp;مقصد</translation>
+        <translation type="vanished">&amp;مقصد</translation>
     </message>
     <message>
         <source>&amp;Local Filesystem </source>
-        <translation>&amp;فایل سیستم محلی </translation>
+        <translation type="vanished">&amp;فایل سیستم محلی </translation>
     </message>
     <message>
         <source>Storage settings</source>
-        <translation>تنظیمات ذخیره ساز</translation>
+        <translation type="vanished">تنظیمات ذخیره ساز</translation>
     </message>
     <message>
         <source>Please choose a file to export the virtual appliance to</source>
@@ -12626,11 +16860,11 @@
     </message>
     <message>
         <source>&amp;Storage settings</source>
-        <translation>&amp;تنظیمات ذخیره ساز</translation>
+        <translation type="vanished">&amp;تنظیمات ذخیره ساز</translation>
     </message>
     <message>
         <source>Oracle Public Cloud Format Archive (%1)</source>
-        <translation>آرشیو فرمت اوراکل ابری عمومی (%1)</translation>
+        <translation type="vanished">آرشیو فرمت اوراکل ابری عمومی (%1)</translation>
     </message>
     <message>
         <source>Open Virtualization Format 0.9</source>
@@ -12646,7 +16880,7 @@
     </message>
     <message>
         <source>Oracle Public Cloud Format 1.0</source>
-        <translation>فرمت اوراکل ابری عمومی 1.0</translation>
+        <translation type="vanished">فرمت اوراکل ابری عمومی 1.0</translation>
     </message>
     <message>
         <source>Write in new OVF 2.0 format.</source>
@@ -12654,11 +16888,111 @@
     </message>
     <message>
         <source>Write in Oracle Public Cloud 1.0 format.</source>
-        <translation>نوشتن در فرمت اوراکل ابری عمومی 1.0.</translation>
+        <translation type="vanished">نوشتن در فرمت اوراکل ابری عمومی 1.0.</translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;Please choose a format to export the virtual appliance to.&lt;/p&gt;&lt;p&gt;The &lt;b&gt;Open Virtualization Format&lt;/b&gt; supports only &lt;b&gt;ovf&lt;/b&gt; or &lt;b&gt;ova&lt;/b&gt; extensions. If you use the &lt;b&gt;ovf&lt;/b&gt; extension, several files will be written separately. If you use the &lt;b&gt;ova&lt;/b&gt; extension, all the files will be combined into one Open Virtualization Format archive.&lt;/p&gt;&lt;p&gt;The &lt;b&gt;Oracle Cloud Infrastructure&lt;/b&gt; format supports exporting to remote cloud servers only. Main virtual disk of each selected machine will be uploaded to remote server.&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Choose a file to export the virtual appliance to...</source>
-        <translation type="obsolete">یک فایل برای خروجیگیری ماشین مجازی انتخاب کنید</translation>
+        <translation type="unfinished">یک فایل برای خروجیگیری ماشین مجازی انتخاب کنید</translation>
+    </message>
+    <message>
+        <source>Export to cloud service provider.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>MAC Address &amp;Policy:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Include all network adapter MAC addresses</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Include only NAT network adapter MAC addresses</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Strip all network adapter MAC addresses</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Include all network adapter MAC addresses in exported appliance archive.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Include only NAT network adapter MAC addresses in exported appliance archive.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Strip all network adapter MAC addresses from exported appliance archive.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Additionally:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Write Manifest file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Include ISO image files in exported VM archive.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Include ISO image files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Account:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;Please choose a filename to export the virtual appliance to. Besides that you can specify a certain amount of options which affects the size and content of resulting archive.&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Virtual system settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Virtual &amp;system settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Include ISO image files into exported VM archive.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;Please choose one of cloud service accounts you have registered to export virtual machines to. Make sure profile settings reflected in the underlying table are valid. They will be used to establish network connection required to upload your virtual machine files to a remote cloud facility.&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Machine Creation:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ask me about it &amp;after exporting disk as custom image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ask me about it &amp;before exporting disk as custom image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Do &amp;not ask me about it, leave custom image for future usage</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This is the descriptive information which will be used to determine settings for a cloud storage your VM being exported to.  You can change it by double clicking on individual lines.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Acquire export form ...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -12669,26 +17003,26 @@
     </message>
     <message>
         <source>Please complete the additional fields like the username, password and the bucket, and provide a filename for the OVF target.</source>
-        <translation>لطفا فیلدهای اضافی مانند نام کاربری،رمزعبور، و سطل را پرکنید، و یک نام فایل برای OVF ارائه کنید.</translation>
+        <translation type="vanished">لطفا فیلدهای اضافی مانند نام کاربری،رمزعبور، و سطل را پرکنید، و یک نام فایل برای OVF ارائه کنید.</translation>
     </message>
     <message>
         <source>Please complete the additional fields like the username, password, hostname and the bucket, and provide a filename for the OVF target.</source>
-        <translation>لطفا فیلدهای اضافی مانند نام کاربری،رمزعبور،نام میزبان، و سطل را پرکنید، و یک نام فایل برای OVF ارائه کنید.</translation>
+        <translation type="vanished">لطفا فیلدهای اضافی مانند نام کاربری،رمزعبور،نام میزبان، و سطل را پرکنید، و یک نام فایل برای OVF ارائه کنید.</translation>
     </message>
     <message>
         <source>Choose a file to export the virtual appliance to...</source>
-        <translation>یک فایل برای خروجیگیری ماشین مجازی انتخاب کنید</translation>
+        <translation type="vanished">یک فایل برای خروجیگیری ماشین مجازی انتخاب کنید</translation>
     </message>
     <message>
         <source>&lt;p&gt;Please choose a filename to export the virtual appliance to.&lt;/p&gt;&lt;p&gt;The &lt;b&gt;Open Virtualization Format&lt;/b&gt; supports only &lt;b&gt;ovf&lt;/b&gt; or &lt;b&gt;ova&lt;/b&gt; extensions. &lt;br&gt;If you use the &lt;b&gt;ovf&lt;/b&gt; extension, several files will be written separately.&lt;br&gt;If you use the &lt;b&gt;ova&lt;/b&gt; extension, all the files will be combined into one Open Virtualization Format archive.&lt;/p&gt;&lt;p&gt;The &lt;b&gt;Oracle Public Cloud Format&lt;/b&gt; supports only the &lt;b&gt;tar.gz&lt;/b&gt; extension.&lt;br&gt;Each virtual disk file will be written separately.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;لطفا نام فایل را برای خروجیگیری وسیله انتخاب کنید.&lt;/p&gt;&lt;p&gt;The &lt;b&gt;فرمت مجازی سازی باز&lt;/b&gt; فقط از پسوند &lt;b&gt;ovf&lt;/b&gt; یا &lt;b&gt;ova&lt;/b&gt; پشتیبانی می کند. &lt;br&gt;اگر از پسوند &lt;b&gt;ovf&lt;/b&gt; استفاده می کنید، چندین فایل جداگنه نوشته می شوند.&lt;br&gt;اگر از پسوند &lt;b&gt;ova&lt;/b&gt; استفاده می کنید، همه فایل ها در یک آرشیو فرمت مجازی سازی باز ادغام می شوند.&lt;/p&gt;&lt;p&gt;نوع &lt;b&gt;فرمت اوراکل ابری عمومی&lt;/b&gt; فقط از پسوند &lt;b&gt;tar.gz&lt;/b&gt; پشتیبانی می کند.&lt;br&gt;هر فایل دیسک مجازی جداگانه نوشته می شوند.&lt;/p&gt;</translation>
+        <translation type="vanished">&lt;p&gt;لطفا نام فایل را برای خروجیگیری وسیله انتخاب کنید.&lt;/p&gt;&lt;p&gt;The &lt;b&gt;فرمت مجازی سازی باز&lt;/b&gt; فقط از پسوند &lt;b&gt;ovf&lt;/b&gt; یا &lt;b&gt;ova&lt;/b&gt; پشتیبانی می کند. &lt;br&gt;اگر از پسوند &lt;b&gt;ovf&lt;/b&gt; استفاده می کنید، چندین فایل جداگنه نوشته می شوند.&lt;br&gt;اگر از پسوند &lt;b&gt;ova&lt;/b&gt; استفاده می کنید، همه فایل ها در یک آرشیو فرمت مجازی سازی باز ادغام می شوند.&lt;/p&gt;&lt;p&gt;نوع &lt;b&gt;فرمت اوراکل ابری عمومی&lt;/b&gt; فقط از پسوند &lt;b&gt;tar.gz&lt;/b&gt; پشتیبانی می کند.&lt;br&gt;هر فایل دیسک مجازی جداگانه نوشته می شوند.&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
     <name>UIWizardExportAppPageExpert</name>
     <message>
         <source>Choose a file to export the virtual appliance to...</source>
-        <translation>یک فایل برای خروجیگیری ماشین مجازی انتخاب کنید</translation>
+        <translation type="vanished">یک فایل برای خروجیگیری ماشین مجازی انتخاب کنید</translation>
     </message>
 </context>
 <context>
@@ -12734,7 +17068,7 @@
     </message>
     <message>
         <source>&lt;p&gt;VirtualBox currently supports importing appliances saved in the Open Virtualization Format (OVF). To continue, select the file to import below.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;ویرچوال باکس اکنون از واردکردن وسیله در فرمت مجازی سازی شده باز (OVF) پشتیبانی میکند. برای ادامه،از زیر یک فایل برای واردکردن انتخاب کنید.&lt;/p&gt;</translation>
+        <translation type="vanished">&lt;p&gt;ویرچوال باکس اکنون از واردکردن وسیله در فرمت مجازی سازی شده باز (OVF) پشتیبانی میکند. برای ادامه،از زیر یک فایل برای واردکردن انتخاب کنید.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Open appliance...</source>
@@ -12795,6 +17129,141 @@
     <message>
         <source>Unverified self signed signature by %1!</source>
         <translation>امضای دیجیتالی خود امضاء شده تأیید نشده توسط %1!</translation>
+    </message>
+    <message>
+        <source>Importing Appliance ...</source>
+        <translation type="unfinished">واردکردن وسیله...</translation>
+    </message>
+    <message>
+        <source>Local File System</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import from local file system.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import from cloud service provider.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;File:</source>
+        <translation type="unfinished">&amp;فایل:</translation>
+    </message>
+    <message>
+        <source>&amp;Account:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Machines:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;Please choose one of cloud service accounts you have registered to import virtual machine from.  Corresponding machines list will be updated.  To continue, select one of machines to import below.&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;Please choose a file to import the virtual appliance from.  VirtualBox currently supports importing appliances saved in the Open Virtualization Format (OVF).  To continue, select the file to import below.&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>These are the the suggested settings of the cloud VM import procedure, they are influencing the resulting local VM instance. You can change many of the properties shown by double-clicking on the items and disable others using the check boxes below.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Source</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Settings</source>
+        <translation type="unfinished">تنظیمات</translation>
+    </message>
+    <message>
+        <source>Acquire cloud instances ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Read appliance ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Acquire import form ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please choose the source to import appliance from.  This can be a local file system to import OVF archive or one of known cloud service providers to import cloud VM from.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Source:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>UIWizardNewCloudVM</name>
+    <message>
+        <source>Create Cloud Machine ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create Cloud Virtual Machine</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create</source>
+        <translation type="unfinished">ایجاد</translation>
+    </message>
+    <message>
+        <source>Destination to create</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please choose the destination to create cloud virtual machine in.  This can be one of known cloud service providers below.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create VM for cloud service provider.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;Please choose one of cloud service accounts you have registered to create virtual machine for.  Existing custom images list will be updated.  To continue, select one of custom images to create virtual machine on the basis of it.&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Account:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Images:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cloud Virtual Machine settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>These are the the suggested settings of the cloud VM creation procedure, they are influencing the resulting cloud VM instance.  You can change many of the properties shown by double-clicking on the items and disable others using the check boxes below.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Destination</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Settings</source>
+        <translation type="unfinished">تنظیمات</translation>
+    </message>
+    <message>
+        <source>Acquire launch form ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Acquire cloud images ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Destination:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -12964,7 +17433,7 @@
     </message>
     <message>
         <source>Please choose a descriptive name for the new virtual machine and select the type of operating system you intend to install on it. The name you choose will be used throughout VirtualBox to identify this machine.</source>
-        <translation>لطفا یک نام تشریحی برای ماشین مجازی جدید و نوع سیستم عاملی را که میخواهید در آن نصب کنید انتخاب کنید.نامی که انتخاب میکنید برای شناسایی کلی این ماشین بکار میرود.</translation>
+        <translation type="vanished">لطفا یک نام تشریحی برای ماشین مجازی جدید و نوع سیستم عاملی را که میخواهید در آن نصب کنید انتخاب کنید.نامی که انتخاب میکنید برای شناسایی کلی این ماشین بکار میرود.</translation>
     </message>
     <message>
         <source>Memory size</source>
@@ -13025,6 +17494,10 @@
     <message>
         <source>Choose a virtual hard disk file...</source>
         <translation>یک فایل ديسک سخت مجازی انتخاب کنید...</translation>
+    </message>
+    <message>
+        <source>Please choose a descriptive name and destination folder for the new virtual machine and select the type of operating system you intend to install on it. The name you choose will be used throughout VirtualBox to identify this machine.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -13134,22 +17607,22 @@
     <message>
         <source>Unknown device %1:%2</source>
         <comment>USB device details</comment>
-        <translation>دستگاه ناشناخته %1:%2</translation>
+        <translation type="vanished">دستگاه ناشناخته %1:%2</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;Vendor ID: %1&lt;/nobr&gt;&lt;br&gt;&lt;nobr&gt;Product ID: %2&lt;/nobr&gt;&lt;br&gt;&lt;nobr&gt;Revision: %3&lt;/nobr&gt;</source>
         <comment>USB device tooltip</comment>
-        <translation>&lt;nobr&gt;شناسه فروشنده: %1&lt;/nobr&gt;&lt;br&gt;&lt;nobr&gt;شناسه محصول: %2&lt;/nobr&gt;&lt;br&gt;&lt;nobr&gt;بازبینی: %3&lt;/nobr&gt;</translation>
+        <translation type="vanished">&lt;nobr&gt;شناسه فروشنده: %1&lt;/nobr&gt;&lt;br&gt;&lt;nobr&gt;شناسه محصول: %2&lt;/nobr&gt;&lt;br&gt;&lt;nobr&gt;بازبینی: %3&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;Serial No. %1&lt;/nobr&gt;</source>
         <comment>USB device tooltip</comment>
-        <translation>&lt;br&gt;&lt;nobr&gt;شماره سریال. %1&lt;/nobr&gt;</translation>
+        <translation type="vanished">&lt;br&gt;&lt;nobr&gt;شماره سریال. %1&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;State: %1&lt;/nobr&gt;</source>
         <comment>USB device tooltip</comment>
-        <translation>&lt;br&gt;&lt;nobr&gt;وضعیت: %1&lt;/nobr&gt;</translation>
+        <translation type="vanished">&lt;br&gt;&lt;nobr&gt;وضعیت: %1&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>Name</source>
@@ -13224,7 +17697,7 @@
     <message>
         <source>Adapter %1</source>
         <comment>details report (network)</comment>
-        <translation>آداپتور %1</translation>
+        <translation type="vanished">آداپتور %1</translation>
     </message>
     <message>
         <source>Disabled</source>
@@ -13254,62 +17727,62 @@
     <message>
         <source>Powered Off</source>
         <comment>MachineState</comment>
-        <translation>قطع برق شده است</translation>
+        <translation type="vanished">قطع برق شده است</translation>
     </message>
     <message>
         <source>Saved</source>
         <comment>MachineState</comment>
-        <translation>ذخیره شده</translation>
+        <translation type="vanished">ذخیره شده</translation>
     </message>
     <message>
         <source>Aborted</source>
         <comment>MachineState</comment>
-        <translation>لغو شده است</translation>
+        <translation type="vanished">لغو شده است</translation>
     </message>
     <message>
         <source>Running</source>
         <comment>MachineState</comment>
-        <translation>در حال اِجرا</translation>
+        <translation type="vanished">در حال اِجرا</translation>
     </message>
     <message>
         <source>Paused</source>
         <comment>MachineState</comment>
-        <translation>وقفه شده است</translation>
+        <translation type="vanished">وقفه شده است</translation>
     </message>
     <message>
         <source>Starting</source>
         <comment>MachineState</comment>
-        <translation>درحال شروع</translation>
+        <translation type="vanished">درحال شروع</translation>
     </message>
     <message>
         <source>Stopping</source>
         <comment>MachineState</comment>
-        <translation>درحال توقف</translation>
+        <translation type="vanished">درحال توقف</translation>
     </message>
     <message>
         <source>Saving</source>
         <comment>MachineState</comment>
-        <translation>ذخیره کردن</translation>
+        <translation type="vanished">ذخیره کردن</translation>
     </message>
     <message>
         <source>Restoring</source>
         <comment>MachineState</comment>
-        <translation>بازگردانی</translation>
+        <translation type="vanished">بازگردانی</translation>
     </message>
     <message>
         <source>Spawning</source>
         <comment>SessionState</comment>
-        <translation>Spawning</translation>
+        <translation type="vanished">Spawning</translation>
     </message>
     <message>
         <source>None</source>
         <comment>DeviceType</comment>
-        <translation>هیچیک</translation>
+        <translation type="vanished">هیچیک</translation>
     </message>
     <message>
         <source>Floppy</source>
         <comment>DeviceType</comment>
-        <translation>فلاپی</translation>
+        <translation type="vanished">فلاپی</translation>
     </message>
     <message>
         <source>CD/DVD</source>
@@ -13319,107 +17792,107 @@
     <message>
         <source>Hard Disk</source>
         <comment>DeviceType</comment>
-        <translation>دیسک سخت</translation>
+        <translation type="vanished">دیسک سخت</translation>
     </message>
     <message>
         <source>Network</source>
         <comment>DeviceType</comment>
-        <translation>شبکه</translation>
+        <translation type="vanished">شبکه</translation>
     </message>
     <message>
         <source>Null Audio Driver</source>
         <comment>AudioDriverType</comment>
-        <translation>درایور صوتی تهی</translation>
+        <translation type="vanished">درایور صوتی تهی</translation>
     </message>
     <message>
         <source>Windows Multimedia</source>
         <comment>AudioDriverType</comment>
-        <translation>Windows Multimedia</translation>
+        <translation type="vanished">Windows Multimedia</translation>
     </message>
     <message>
         <source>OSS Audio Driver</source>
         <comment>AudioDriverType</comment>
-        <translation>درایور صوتی OSS</translation>
+        <translation type="vanished">درایور صوتی OSS</translation>
     </message>
     <message>
         <source>ALSA Audio Driver</source>
         <comment>AudioDriverType</comment>
-        <translation>درایور صوتی ALSA</translation>
+        <translation type="vanished">درایور صوتی ALSA</translation>
     </message>
     <message>
         <source>Windows DirectSound</source>
         <comment>AudioDriverType</comment>
-        <translation>Windows DirectSound</translation>
+        <translation type="vanished">Windows DirectSound</translation>
     </message>
     <message>
         <source>CoreAudio</source>
         <comment>AudioDriverType</comment>
-        <translation>CoreAudio</translation>
+        <translation type="vanished">CoreAudio</translation>
     </message>
     <message>
         <source>Not attached</source>
         <comment>NetworkAttachmentType</comment>
-        <translation>ضمیمه نشده است</translation>
+        <translation type="vanished">ضمیمه نشده است</translation>
     </message>
     <message>
         <source>NAT</source>
         <comment>NetworkAttachmentType</comment>
-        <translation>NAT</translation>
+        <translation type="vanished">NAT</translation>
     </message>
     <message>
         <source>Internal Network</source>
         <comment>NetworkAttachmentType</comment>
-        <translation>شبکه داخلی</translation>
+        <translation type="vanished">شبکه داخلی</translation>
     </message>
     <message>
         <source>Not supported</source>
         <comment>USBDeviceState</comment>
-        <translation>پشتیبانی نمیشود</translation>
+        <translation type="vanished">پشتیبانی نمیشود</translation>
     </message>
     <message>
         <source>Unavailable</source>
         <comment>USBDeviceState</comment>
-        <translation>دردسترس نیست</translation>
+        <translation type="vanished">دردسترس نیست</translation>
     </message>
     <message>
         <source>Busy</source>
         <comment>USBDeviceState</comment>
-        <translation>مشغول است</translation>
+        <translation type="vanished">مشغول است</translation>
     </message>
     <message>
         <source>Available</source>
         <comment>USBDeviceState</comment>
-        <translation>در دسترس است</translation>
+        <translation type="vanished">در دسترس است</translation>
     </message>
     <message>
         <source>Held</source>
         <comment>USBDeviceState</comment>
-        <translation>نگه داشده شده است</translation>
+        <translation type="vanished">نگه داشده شده است</translation>
     </message>
     <message>
         <source>Captured</source>
         <comment>USBDeviceState</comment>
-        <translation>ضبط شده</translation>
+        <translation type="vanished">ضبط شده</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>ClipboardType</comment>
-        <translation>غیرفعال شده</translation>
+        <translation type="vanished">غیرفعال شده</translation>
     </message>
     <message>
         <source>Host To Guest</source>
         <comment>ClipboardType</comment>
-        <translation>میزبان به مهمان</translation>
+        <translation type="vanished">میزبان به مهمان</translation>
     </message>
     <message>
         <source>Guest To Host</source>
         <comment>ClipboardType</comment>
-        <translation>مهمان به میزبان</translation>
+        <translation type="vanished">مهمان به میزبان</translation>
     </message>
     <message>
         <source>Bidirectional</source>
         <comment>ClipboardType</comment>
-        <translation>دوطرفه</translation>
+        <translation type="vanished">دوطرفه</translation>
     </message>
     <message>
         <source>Port %1</source>
@@ -13459,27 +17932,27 @@
     <message>
         <source>Disconnected</source>
         <comment>PortMode</comment>
-        <translation>قطع شده است</translation>
+        <translation type="vanished">قطع شده است</translation>
     </message>
     <message>
         <source>Host Pipe</source>
         <comment>PortMode</comment>
-        <translation>میله میزبان</translation>
+        <translation type="vanished">میله میزبان</translation>
     </message>
     <message>
         <source>Host Device</source>
         <comment>PortMode</comment>
-        <translation>دستگاه میزبان</translation>
+        <translation type="vanished">دستگاه میزبان</translation>
     </message>
     <message>
         <source>User-defined</source>
         <comment>serial port</comment>
-        <translation>تعریف شده توسط کاربر</translation>
+        <translation type="vanished">تعریف شده توسط کاربر</translation>
     </message>
     <message>
         <source>VT-x/AMD-V</source>
         <comment>details report</comment>
-        <translation>VT-x/AMD-V</translation>
+        <translation type="vanished">VT-x/AMD-V</translation>
     </message>
     <message>
         <source>PAE/NX</source>
@@ -13534,112 +18007,112 @@
     <message>
         <source>USB</source>
         <comment>DeviceType</comment>
-        <translation>یو اِس بی</translation>
+        <translation type="vanished">یو اِس بی</translation>
     </message>
     <message>
         <source>Shared Folder</source>
         <comment>DeviceType</comment>
-        <translation>پوشه اشتراکی</translation>
+        <translation type="vanished">پوشه اشتراکی</translation>
     </message>
     <message>
         <source>IDE</source>
         <comment>StorageBus</comment>
-        <translation>IDE</translation>
+        <translation type="vanished">IDE</translation>
     </message>
     <message>
         <source>SATA</source>
         <comment>StorageBus</comment>
-        <translation>SATA</translation>
+        <translation type="vanished">SATA</translation>
     </message>
     <message>
         <source>Solaris Audio</source>
         <comment>AudioDriverType</comment>
-        <translation>صوت سولاریس</translation>
+        <translation type="vanished">صوت سولاریس</translation>
     </message>
     <message>
         <source>PulseAudio</source>
         <comment>AudioDriverType</comment>
-        <translation>PulseAudio</translation>
+        <translation type="vanished">PulseAudio</translation>
     </message>
     <message>
         <source>ICH AC97</source>
         <comment>AudioControllerType</comment>
-        <translation>ICH AC97</translation>
+        <translation type="vanished">ICH AC97</translation>
     </message>
     <message>
         <source>SoundBlaster 16</source>
         <comment>AudioControllerType</comment>
-        <translation>SoundBlaster 16</translation>
+        <translation type="vanished">SoundBlaster 16</translation>
     </message>
     <message>
         <source>PCnet-PCI II (Am79C970A)</source>
         <comment>NetworkAdapterType</comment>
-        <translation>PCnet-PCI II (Am79C970A)</translation>
+        <translation type="vanished">PCnet-PCI II (Am79C970A)</translation>
     </message>
     <message>
         <source>PCnet-FAST III (Am79C973)</source>
         <comment>NetworkAdapterType</comment>
-        <translation>PCnet-FAST III (Am79C973)</translation>
+        <translation type="vanished">PCnet-FAST III (Am79C973)</translation>
     </message>
     <message>
         <source>Intel PRO/1000 MT Desktop (82540EM)</source>
         <comment>NetworkAdapterType</comment>
-        <translation>Intel PRO/1000 MT Desktop (82540EM)</translation>
+        <translation type="vanished">Intel PRO/1000 MT Desktop (82540EM)</translation>
     </message>
     <message>
         <source>Intel PRO/1000 T Server (82543GC)</source>
         <comment>NetworkAdapterType</comment>
-        <translation>Intel PRO/1000 T Server (82543GC)</translation>
+        <translation type="vanished">Intel PRO/1000 T Server (82543GC)</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;Vendor ID: %1&lt;/nobr&gt;</source>
         <comment>USB filter tooltip</comment>
-        <translation>&lt;nobr&gt;شناسه فروشنده: %1&lt;/nobr&gt;</translation>
+        <translation type="vanished">&lt;nobr&gt;شناسه فروشنده: %1&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;Product ID: %2&lt;/nobr&gt;</source>
         <comment>USB filter tooltip</comment>
-        <translation>&lt;nobr&gt;شناسه محصول: %2&lt;/nobr&gt;</translation>
+        <translation type="vanished">&lt;nobr&gt;شناسه محصول: %2&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;Revision: %3&lt;/nobr&gt;</source>
         <comment>USB filter tooltip</comment>
-        <translation>&lt;nobr&gt;بازبینی: %3&lt;/nobr&gt;</translation>
+        <translation type="vanished">&lt;nobr&gt;بازبینی: %3&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;Product: %4&lt;/nobr&gt;</source>
         <comment>USB filter tooltip</comment>
-        <translation>&lt;nobr&gt;محصول: %4&lt;/nobr&gt;</translation>
+        <translation type="vanished">&lt;nobr&gt;محصول: %4&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;Manufacturer: %5&lt;/nobr&gt;</source>
         <comment>USB filter tooltip</comment>
-        <translation>&lt;nobr&gt;سازنده: %5&lt;/nobr&gt;</translation>
+        <translation type="vanished">&lt;nobr&gt;سازنده: %5&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;Serial No.: %1&lt;/nobr&gt;</source>
         <comment>USB filter tooltip</comment>
-        <translation>&lt;nobr&gt;شماره سریال.: %1&lt;/nobr&gt;</translation>
+        <translation type="vanished">&lt;nobr&gt;شماره سریال.: %1&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;Port: %1&lt;/nobr&gt;</source>
         <comment>USB filter tooltip</comment>
-        <translation>&lt;nobr&gt;پورت: %1&lt;/nobr&gt;</translation>
+        <translation type="vanished">&lt;nobr&gt;پورت: %1&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;State: %1&lt;/nobr&gt;</source>
         <comment>USB filter tooltip</comment>
-        <translation>&lt;nobr&gt;وضعیت: %1&lt;/nobr&gt;</translation>
+        <translation type="vanished">&lt;nobr&gt;وضعیت: %1&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>Checking...</source>
         <comment>medium</comment>
-        <translation>درحال برسی...</translation>
+        <translation type="vanished">درحال برسی...</translation>
     </message>
     <message>
         <source>Inaccessible</source>
         <comment>medium</comment>
-        <translation>قابل دسترسی نیست</translation>
+        <translation type="vanished">قابل دسترسی نیست</translation>
     </message>
     <message>
         <source>3D Acceleration</source>
@@ -13649,17 +18122,17 @@
     <message>
         <source>Enabled</source>
         <comment>details report (3D Acceleration)</comment>
-        <translation>فعال شده</translation>
+        <translation type="vanished">فعال شده</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>details report (3D Acceleration)</comment>
-        <translation>غیرفعال شده</translation>
+        <translation type="vanished">غیرفعال شده</translation>
     </message>
     <message>
         <source>Setting Up</source>
         <comment>MachineState</comment>
-        <translation>تنظیم کردن</translation>
+        <translation type="vanished">تنظیم کردن</translation>
     </message>
     <message>
         <source>Differencing</source>
@@ -13689,37 +18162,37 @@
     <message>
         <source>SCSI</source>
         <comment>StorageBus</comment>
-        <translation>SCSI</translation>
+        <translation type="vanished">SCSI</translation>
     </message>
     <message>
         <source>PIIX3</source>
         <comment>StorageControllerType</comment>
-        <translation>PIIX3</translation>
+        <translation type="vanished">PIIX3</translation>
     </message>
     <message>
         <source>PIIX4</source>
         <comment>StorageControllerType</comment>
-        <translation>PIIX4</translation>
+        <translation type="vanished">PIIX4</translation>
     </message>
     <message>
         <source>ICH6</source>
         <comment>StorageControllerType</comment>
-        <translation>ICH6</translation>
+        <translation type="vanished">ICH6</translation>
     </message>
     <message>
         <source>AHCI</source>
         <comment>StorageControllerType</comment>
-        <translation>AHCI</translation>
+        <translation type="vanished">AHCI</translation>
     </message>
     <message>
         <source>Lsilogic</source>
         <comment>StorageControllerType</comment>
-        <translation>Lsilogic</translation>
+        <translation type="vanished">Lsilogic</translation>
     </message>
     <message>
         <source>BusLogic</source>
         <comment>StorageControllerType</comment>
-        <translation>BusLogic</translation>
+        <translation type="vanished">BusLogic</translation>
     </message>
     <message>
         <source>Bridged adapter, %1</source>
@@ -13734,27 +18207,27 @@
     <message>
         <source>Intel PRO/1000 MT Server (82545EM)</source>
         <comment>NetworkAdapterType</comment>
-        <translation>Intel PRO/1000 MT Server (82545EM)</translation>
+        <translation type="vanished">Intel PRO/1000 MT Server (82545EM)</translation>
     </message>
     <message>
         <source>Bridged Adapter</source>
         <comment>NetworkAttachmentType</comment>
-        <translation>آداپتور پل شده</translation>
+        <translation type="vanished">آداپتور پل شده</translation>
     </message>
     <message>
         <source>Host-only Adapter</source>
         <comment>NetworkAttachmentType</comment>
-        <translation>آداپتور فقط-میزبان</translation>
+        <translation type="vanished">آداپتور فقط-میزبان</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;%1 MB&lt;/nobr&gt;</source>
         <comment>details report</comment>
-        <translation>&lt;nobr&gt;%1 مگابایت&lt;/nobr&gt;</translation>
+        <translation type="vanished">&lt;nobr&gt;%1 مگابایت&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>Processor(s)</source>
         <comment>details report</comment>
-        <translation>پردازشگر(ها)</translation>
+        <translation type="vanished">پردازشگر(ها)</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;%1&lt;/nobr&gt;</source>
@@ -13774,7 +18247,7 @@
     <message>
         <source>Raw File</source>
         <comment>PortMode</comment>
-        <translation>فایل خام</translation>
+        <translation type="vanished">فایل خام</translation>
     </message>
     <message>
         <source>Enabled</source>
@@ -13804,106 +18277,106 @@
     <message>
         <source>Teleported</source>
         <comment>MachineState</comment>
-        <translation>تِلِپورت شده</translation>
+        <translation type="vanished">تِلِپورت شده</translation>
     </message>
     <message>
         <source>Guru Meditation</source>
         <comment>MachineState</comment>
-        <translation>Guru Meditation</translation>
+        <translation type="vanished">Guru Meditation</translation>
     </message>
     <message>
         <source>Teleporting</source>
         <comment>MachineState</comment>
-        <translation>درحال تِلِپورت</translation>
+        <translation type="vanished">درحال تِلِپورت</translation>
     </message>
     <message>
         <source>Taking Live Snapshot</source>
         <comment>MachineState</comment>
-        <translation>ایجاد ضبط وضعیت زنده</translation>
+        <translation type="vanished">ایجاد ضبط وضعیت زنده</translation>
     </message>
     <message>
         <source>Teleporting Paused VM</source>
         <comment>MachineState</comment>
-        <translation>تِلِپورت ماشین مجازی را متوقف کرده</translation>
+        <translation type="vanished">تِلِپورت ماشین مجازی را متوقف کرده</translation>
     </message>
     <message>
         <source>Restoring Snapshot</source>
         <comment>MachineState</comment>
-        <translation>بازگردانی ضبط وضعیت</translation>
+        <translation type="vanished">بازگردانی ضبط وضعیت</translation>
     </message>
     <message>
         <source>Deleting Snapshot</source>
         <comment>MachineState</comment>
-        <translation>حذف ضبط وضعیت</translation>
+        <translation type="vanished">حذف ضبط وضعیت</translation>
     </message>
     <message>
         <source>Floppy</source>
         <comment>StorageBus</comment>
-        <translation>فلاپی</translation>
+        <translation type="vanished">فلاپی</translation>
     </message>
     <message>
         <source>Paravirtualized Network (virtio-net)</source>
         <comment>NetworkAdapterType</comment>
-        <translation>شبکه پارا مجازی سازی شده (virtio-net)</translation>
+        <translation type="vanished">شبکه پارا مجازی سازی شده (virtio-net)</translation>
     </message>
     <message>
         <source>I82078</source>
         <comment>StorageControllerType</comment>
-        <translation>I82078</translation>
+        <translation type="vanished">I82078</translation>
     </message>
     <message>
         <source>Empty</source>
         <comment>medium</comment>
-        <translation>ندارد</translation>
+        <translation type="vanished">ندارد</translation>
     </message>
     <message>
         <source>Host Drive &apos;%1&apos;</source>
         <comment>medium</comment>
-        <translation>درایو میزبان &apos;%1&apos;</translation>
+        <translation type="vanished">درایو میزبان &apos;%1&apos;</translation>
     </message>
     <message>
         <source>Host Drive %1 (%2)</source>
         <comment>medium</comment>
-        <translation>درایو میزبان %1 (%2)</translation>
+        <translation type="vanished">درایو میزبان %1 (%2)</translation>
     </message>
     <message>
         <source>&lt;p style=white-space:pre&gt;Type (Format):  %1 (%2)&lt;/p&gt;</source>
         <comment>medium</comment>
-        <translation>&lt;p style=white-space:pre&gt;نوع (فرمت):  %1 (%2)&lt;/p&gt;</translation>
+        <translation type="vanished">&lt;p style=white-space:pre&gt;نوع (فرمت):  %1 (%2)&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;p&gt;Attached to:  %1&lt;/p&gt;</source>
         <comment>image</comment>
-        <translation>&lt;p&gt;ضمیمه شده به:  %1&lt;/p&gt;</translation>
+        <translation type="vanished">&lt;p&gt;ضمیمه شده به:  %1&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;i&gt;Not Attached&lt;/i&gt;</source>
         <comment>image</comment>
-        <translation>&lt;i&gt;ضمیمه نشده است&lt;/i&gt;</translation>
+        <translation type="vanished">&lt;i&gt;ضمیمه نشده است&lt;/i&gt;</translation>
     </message>
     <message>
         <source>&lt;i&gt;Checking accessibility...&lt;/i&gt;</source>
         <comment>medium</comment>
-        <translation>&lt;i&gt;بررسی دسترسی پذیری...&lt;/i&gt;</translation>
+        <translation type="vanished">&lt;i&gt;بررسی دسترسی پذیری...&lt;/i&gt;</translation>
     </message>
     <message>
         <source>Failed to check accessibility of disk image files.</source>
         <comment>medium</comment>
-        <translation>موفق به بررسی دسترسی پذیری رسانه نشد.</translation>
+        <translation type="vanished">موفق به بررسی دسترسی پذیری رسانه نشد.</translation>
     </message>
     <message>
         <source>&lt;b&gt;No disk image file selected&lt;/b&gt;</source>
         <comment>medium</comment>
-        <translation>&lt;b&gt;رسانه ای انتخاب نشده است&lt;/b&gt;</translation>
+        <translation type="vanished">&lt;b&gt;رسانه ای انتخاب نشده است&lt;/b&gt;</translation>
     </message>
     <message>
         <source>You can also change this while the machine is running.</source>
-        <translation>همچنین میتوانید زمانی که ماشین در حال اِجراست این را تغییر دهید.</translation>
+        <translation type="vanished">همچنین میتوانید زمانی که ماشین در حال اِجراست این را تغییر دهید.</translation>
     </message>
     <message>
         <source>&lt;b&gt;No disk image files available&lt;/b&gt;</source>
         <comment>medium</comment>
-        <translation>&lt;b&gt;رسانه ای موجود نیست&lt;/b&gt;</translation>
+        <translation type="vanished">&lt;b&gt;رسانه ای موجود نیست&lt;/b&gt;</translation>
     </message>
     <message>
         <source>You can create disk image files using the virtual media manager.</source>
@@ -13912,7 +18385,7 @@
     <message>
         <source>Attaching this hard disk will be performed indirectly using a newly created differencing hard disk.</source>
         <comment>medium</comment>
-        <translation>ضمیمه کردن این دیسک سخت بطور غیرمستقیم توسط یک دیسک سخت متفاوت ایجاد شده جدید اِجرا شده است.</translation>
+        <translation type="vanished">ضمیمه کردن این دیسک سخت بطور غیرمستقیم توسط یک دیسک سخت متفاوت ایجاد شده جدید اِجرا شده است.</translation>
     </message>
     <message>
         <source>Some of the files in this hard disk chain are inaccessible. Please use the Virtual Media Manager in &lt;b&gt;Show Differencing Hard Disks&lt;/b&gt; mode to inspect these files.</source>
@@ -13922,41 +18395,41 @@
     <message>
         <source>This base hard disk is indirectly attached using the following differencing hard disk:</source>
         <comment>medium</comment>
-        <translation>این دیسک سخت پایه غیرمستقیم ضمیمه شده توسط دیسک سخت متفاوت زیر:</translation>
+        <translation type="vanished">این دیسک سخت پایه غیرمستقیم ضمیمه شده توسط دیسک سخت متفاوت زیر:</translation>
     </message>
     <message numerus="yes">
         <source>%n year(s)</source>
-        <translation>
+        <translation type="vanished">
             <numerusform>%n سال</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>%n month(s)</source>
-        <translation>
+        <translation type="vanished">
             <numerusform>%n ماه</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>%n day(s)</source>
-        <translation>
+        <translation type="vanished">
             <numerusform>%n روز</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>%n hour(s)</source>
-        <translation>
+        <translation type="vanished">
             <numerusform>%n ساعت</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>%n minute(s)</source>
-        <translation>
+        <translation type="vanished">
             <numerusform>%n دقیقه</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>%n second(s)</source>
-        <translation>
+        <translation type="vanished">
             <numerusform>%n ثانیه</numerusform>
         </translation>
     </message>
@@ -13972,42 +18445,42 @@
     <message>
         <source>SAS</source>
         <comment>StorageBus</comment>
-        <translation>SAS</translation>
+        <translation type="vanished">SAS</translation>
     </message>
     <message>
         <source>LsiLogic SAS</source>
         <comment>StorageControllerType</comment>
-        <translation>LsiLogic SAS</translation>
+        <translation type="vanished">LsiLogic SAS</translation>
     </message>
     <message>
         <source>B</source>
         <comment>size suffix Bytes</comment>
-        <translation>بایت</translation>
+        <translation type="vanished">بایت</translation>
     </message>
     <message>
         <source>KB</source>
         <comment>size suffix KBytes=1024 Bytes</comment>
-        <translation>کیلوبایت</translation>
+        <translation type="vanished">کیلوبایت</translation>
     </message>
     <message>
         <source>MB</source>
         <comment>size suffix MBytes=1024 KBytes</comment>
-        <translation>مگابایت</translation>
+        <translation type="vanished">مگابایت</translation>
     </message>
     <message>
         <source>GB</source>
         <comment>size suffix GBytes=1024 MBytes</comment>
-        <translation>گیگابایت</translation>
+        <translation type="vanished">گیگابایت</translation>
     </message>
     <message>
         <source>TB</source>
         <comment>size suffix TBytes=1024 GBytes</comment>
-        <translation>ترابایت</translation>
+        <translation type="vanished">ترابایت</translation>
     </message>
     <message>
         <source>PB</source>
         <comment>size suffix PBytes=1024 TBytes</comment>
-        <translation>PB</translation>
+        <translation type="vanished">PB</translation>
     </message>
     <message>
         <source>Enabled</source>
@@ -14021,12 +18494,12 @@
     </message>
     <message>
         <source>Nested Paging</source>
-        <translation>صفحه بندی تودرتو</translation>
+        <translation type="vanished">صفحه بندی تودرتو</translation>
     </message>
     <message>
         <source>Unknown device</source>
         <comment>USB device details</comment>
-        <translation>دستگاه ناشناخته</translation>
+        <translation type="vanished">دستگاه ناشناخته</translation>
     </message>
     <message>
         <source>Remote Desktop Server Port</source>
@@ -14045,62 +18518,62 @@
     </message>
     <message>
         <source>All files (*)</source>
-        <translation>همه فایل ها (*)</translation>
+        <translation type="vanished">همه فایل ها (*)</translation>
     </message>
     <message>
         <source>Fault Tolerant Syncing</source>
         <comment>MachineState</comment>
-        <translation>Fault Tolerant Syncing</translation>
+        <translation type="vanished">Fault Tolerant Syncing</translation>
     </message>
     <message>
         <source>Unlocked</source>
         <comment>SessionState</comment>
-        <translation>گشوده شده</translation>
+        <translation type="vanished">گشوده شده</translation>
     </message>
     <message>
         <source>Locked</source>
         <comment>SessionState</comment>
-        <translation>قفل شده</translation>
+        <translation type="vanished">قفل شده</translation>
     </message>
     <message>
         <source>Unlocking</source>
         <comment>SessionState</comment>
-        <translation>گشودن</translation>
+        <translation type="vanished">گشودن</translation>
     </message>
     <message>
         <source>Null</source>
         <comment>AuthType</comment>
-        <translation>تهی</translation>
+        <translation type="vanished">تهی</translation>
     </message>
     <message>
         <source>External</source>
         <comment>AuthType</comment>
-        <translation>خارجی</translation>
+        <translation type="vanished">خارجی</translation>
     </message>
     <message>
         <source>Guest</source>
         <comment>AuthType</comment>
-        <translation>مهمان</translation>
+        <translation type="vanished">مهمان</translation>
     </message>
     <message>
         <source>Intel HD Audio</source>
         <comment>AudioControllerType</comment>
-        <translation>Intel HD Audio</translation>
+        <translation type="vanished">Intel HD Audio</translation>
     </message>
     <message>
         <source>PIIX3</source>
         <comment>ChipsetType</comment>
-        <translation>PIIX3</translation>
+        <translation type="vanished">PIIX3</translation>
     </message>
     <message>
         <source>ICH9</source>
         <comment>ChipsetType</comment>
-        <translation>ICH9</translation>
+        <translation type="vanished">ICH9</translation>
     </message>
     <message>
         <source>Execution Cap</source>
         <comment>details report</comment>
-        <translation>درپوش اِجرا</translation>
+        <translation type="vanished">درپوش اِجرا</translation>
     </message>
     <message>
         <source>&lt;nobr&gt;%1%&lt;/nobr&gt;</source>
@@ -14115,226 +18588,226 @@
     <message>
         <source>Generic Driver</source>
         <comment>NetworkAttachmentType</comment>
-        <translation>درایور کلی</translation>
+        <translation type="vanished">درایور کلی</translation>
     </message>
     <message>
         <source>Adapter %1</source>
-        <translation>آداپتور %1</translation>
+        <translation type="vanished">آداپتور %1</translation>
     </message>
     <message>
         <source>Disabled</source>
         <comment>DragAndDropType</comment>
-        <translation>غیرفعال شده</translation>
+        <translation type="vanished">غیرفعال شده</translation>
     </message>
     <message>
         <source>Host To Guest</source>
         <comment>DragAndDropType</comment>
-        <translation>میزبان به مهمان</translation>
+        <translation type="vanished">میزبان به مهمان</translation>
     </message>
     <message>
         <source>Guest To Host</source>
         <comment>DragAndDropType</comment>
-        <translation>مهمان به میزبان</translation>
+        <translation type="vanished">مهمان به میزبان</translation>
     </message>
     <message>
         <source>Bidirectional</source>
         <comment>DragAndDropType</comment>
-        <translation>دوطرفه</translation>
+        <translation type="vanished">دوطرفه</translation>
     </message>
     <message>
         <source>Normal</source>
         <comment>MediumType</comment>
-        <translation>معمولی</translation>
+        <translation type="vanished">معمولی</translation>
     </message>
     <message>
         <source>Immutable</source>
         <comment>MediumType</comment>
-        <translation>تغییر ناپذیر است</translation>
+        <translation type="vanished">تغییر ناپذیر است</translation>
     </message>
     <message>
         <source>Writethrough</source>
         <comment>MediumType</comment>
-        <translation>نوشتن سرتاسری</translation>
+        <translation type="vanished">نوشتن سرتاسری</translation>
     </message>
     <message>
         <source>Shareable</source>
         <comment>MediumType</comment>
-        <translation>قابل اشتراک گذاری</translation>
+        <translation type="vanished">قابل اشتراک گذاری</translation>
     </message>
     <message>
         <source>Readonly</source>
         <comment>MediumType</comment>
-        <translation>فقط خواندنی</translation>
+        <translation type="vanished">فقط خواندنی</translation>
     </message>
     <message>
         <source>Multi-attach</source>
         <comment>MediumType</comment>
-        <translation>چند-ضمیمه</translation>
+        <translation type="vanished">چند-ضمیمه</translation>
     </message>
     <message>
         <source>Dynamically allocated storage</source>
         <comment>MediumVariant</comment>
-        <translation>ذخیر ساز پویا اختصاص داده شده</translation>
+        <translation type="vanished">ذخیر ساز پویا اختصاص داده شده</translation>
     </message>
     <message>
         <source>Dynamically allocated differencing storage</source>
         <comment>MediumVariant</comment>
-        <translation>ذخیره ساز متفاوت پویا اختصاص داده شده</translation>
+        <translation type="vanished">ذخیره ساز متفاوت پویا اختصاص داده شده</translation>
     </message>
     <message>
         <source>Fixed size storage</source>
         <comment>MediumVariant</comment>
-        <translation>ذخیره ساز حجم ثابت شده</translation>
+        <translation type="vanished">ذخیره ساز حجم ثابت شده</translation>
     </message>
     <message>
         <source>Dynamically allocated storage split into files of less than 2GB</source>
         <comment>MediumVariant</comment>
-        <translation>ذخیر ساز پویا اختصاص داده شده به فایل هایی کوچکتر از 2 گیگابایت تقسیم میشود</translation>
+        <translation type="vanished">ذخیر ساز پویا اختصاص داده شده به فایل هایی کوچکتر از 2 گیگابایت تقسیم میشود</translation>
     </message>
     <message>
         <source>Dynamically allocated differencing storage split into files of less than 2GB</source>
         <comment>MediumVariant</comment>
-        <translation>ذخیره ساز متفاوت پویا اختصاص داده شده به فایل هایی کوچکتر از 2 گیگابایت تقسیم میشود</translation>
+        <translation type="vanished">ذخیره ساز متفاوت پویا اختصاص داده شده به فایل هایی کوچکتر از 2 گیگابایت تقسیم میشود</translation>
     </message>
     <message>
         <source>Fixed size storage split into files of less than 2GB</source>
         <comment>MediumVariant</comment>
-        <translation>ذخیره ساز حجم ثابت شده به فایل هایی کوچکتر از 2 گیگابایت تقسیم میشود</translation>
+        <translation type="vanished">ذخیره ساز حجم ثابت شده به فایل هایی کوچکتر از 2 گیگابایت تقسیم میشود</translation>
     </message>
     <message>
         <source>Dynamically allocated compressed storage</source>
         <comment>MediumVariant</comment>
-        <translation>ذخیره ساز فشرده شده پویا اختصاص داده شده</translation>
+        <translation type="vanished">ذخیره ساز فشرده شده پویا اختصاص داده شده</translation>
     </message>
     <message>
         <source>Dynamically allocated differencing compressed storage</source>
         <comment>MediumVariant</comment>
-        <translation>ذخیره ساز فشرده شده متفاوت پویا اختصاص داده شده</translation>
+        <translation type="vanished">ذخیره ساز فشرده شده متفاوت پویا اختصاص داده شده</translation>
     </message>
     <message>
         <source>Fixed size ESX storage</source>
         <comment>MediumVariant</comment>
-        <translation>حجم ثابت شده ذخیره ساز ای اِس ایکس</translation>
+        <translation type="vanished">حجم ثابت شده ذخیره ساز ای اِس ایکس</translation>
     </message>
     <message>
         <source>Fixed size storage on raw disk</source>
         <comment>MediumVariant</comment>
-        <translation>حجم ثابت شده ذخیره ساز در دیسک خام</translation>
+        <translation type="vanished">حجم ثابت شده ذخیره ساز در دیسک خام</translation>
     </message>
     <message>
         <source>Deny</source>
         <comment>NetworkAdapterPromiscModePolicy</comment>
-        <translation>انکار کرده</translation>
+        <translation type="vanished">انکار کرده</translation>
     </message>
     <message>
         <source>Allow VMs</source>
         <comment>NetworkAdapterPromiscModePolicy</comment>
-        <translation>اِجازه ماشین مجازی</translation>
+        <translation type="vanished">اِجازه ماشین مجازی</translation>
     </message>
     <message>
         <source>Allow All</source>
         <comment>NetworkAdapterPromiscModePolicy</comment>
-        <translation>اجازه همه</translation>
+        <translation type="vanished">اجازه همه</translation>
     </message>
     <message>
         <source>Ignore</source>
         <comment>USBDeviceFilterAction</comment>
-        <translation>چشمپوشی</translation>
+        <translation type="vanished">چشمپوشی</translation>
     </message>
     <message>
         <source>Hold</source>
         <comment>USBDeviceFilterAction</comment>
-        <translation>نگه داشته شده است</translation>
+        <translation type="vanished">نگه داشته شده است</translation>
     </message>
     <message>
         <source>UDP</source>
         <comment>NATProtocol</comment>
-        <translation>UDP</translation>
+        <translation type="vanished">UDP</translation>
     </message>
     <message>
         <source>TCP</source>
         <comment>NATProtocol</comment>
-        <translation>TCP</translation>
+        <translation type="vanished">TCP</translation>
     </message>
     <message>
         <source>IDE Primary Master</source>
         <comment>StorageSlot</comment>
-        <translation>IDE اولیه مَستر</translation>
+        <translation type="vanished">IDE اولیه مَستر</translation>
     </message>
     <message>
         <source>IDE Primary Slave</source>
         <comment>StorageSlot</comment>
-        <translation>IDE اولیه اِسلیو</translation>
+        <translation type="vanished">IDE اولیه اِسلیو</translation>
     </message>
     <message>
         <source>IDE Secondary Master</source>
         <comment>StorageSlot</comment>
-        <translation>IDE ثانویه مَستر</translation>
+        <translation type="vanished">IDE ثانویه مَستر</translation>
     </message>
     <message>
         <source>IDE Secondary Slave</source>
         <comment>StorageSlot</comment>
-        <translation>IDE ثانویه اِسلیو</translation>
+        <translation type="vanished">IDE ثانویه اِسلیو</translation>
     </message>
     <message>
         <source>SATA Port %1</source>
         <comment>StorageSlot</comment>
-        <translation>پورت SATA %1</translation>
+        <translation type="vanished">پورت SATA %1</translation>
     </message>
     <message>
         <source>SCSI Port %1</source>
         <comment>StorageSlot</comment>
-        <translation>پورت SCSI %1</translation>
+        <translation type="vanished">پورت SCSI %1</translation>
     </message>
     <message>
         <source>SAS Port %1</source>
         <comment>StorageSlot</comment>
-        <translation>پورت SAS %1</translation>
+        <translation type="vanished">پورت SAS %1</translation>
     </message>
     <message>
         <source>Floppy Device %1</source>
         <comment>StorageSlot</comment>
-        <translation>دستگاه فلاپی %1</translation>
+        <translation type="vanished">دستگاه فلاپی %1</translation>
     </message>
     <message>
         <source>General</source>
         <comment>DetailsElementType</comment>
-        <translation>عمومی</translation>
+        <translation type="vanished">عمومی</translation>
     </message>
     <message>
         <source>Preview</source>
         <comment>DetailsElementType</comment>
-        <translation>پیشنمایش</translation>
+        <translation type="vanished">پیشنمایش</translation>
     </message>
     <message>
         <source>System</source>
         <comment>DetailsElementType</comment>
-        <translation>سیستم</translation>
+        <translation type="vanished">سیستم</translation>
     </message>
     <message>
         <source>Display</source>
         <comment>DetailsElementType</comment>
-        <translation>نمایش</translation>
+        <translation type="vanished">نمایش</translation>
     </message>
     <message>
         <source>Storage</source>
         <comment>DetailsElementType</comment>
-        <translation>ذخیره ساز</translation>
+        <translation type="vanished">ذخیره ساز</translation>
     </message>
     <message>
         <source>Audio</source>
         <comment>DetailsElementType</comment>
-        <translation>صدا</translation>
+        <translation type="vanished">صدا</translation>
     </message>
     <message>
         <source>Network</source>
         <comment>DetailsElementType</comment>
-        <translation>شبکه</translation>
+        <translation type="vanished">شبکه</translation>
     </message>
     <message>
         <source>Serial ports</source>
         <comment>DetailsElementType</comment>
-        <translation>پورت سریال</translation>
+        <translation type="vanished">پورت سریال</translation>
     </message>
     <message>
         <source>Parallel ports</source>
@@ -14344,17 +18817,17 @@
     <message>
         <source>USB</source>
         <comment>DetailsElementType</comment>
-        <translation>یو اِس بی</translation>
+        <translation type="vanished">یو اِس بی</translation>
     </message>
     <message>
         <source>Shared folders</source>
         <comment>DetailsElementType</comment>
-        <translation>پوشه های اشتراکی</translation>
+        <translation type="vanished">پوشه های اشتراکی</translation>
     </message>
     <message>
         <source>Description</source>
         <comment>DetailsElementType</comment>
-        <translation>توضیحات</translation>
+        <translation type="vanished">توضیحات</translation>
     </message>
     <message>
         <source>Please choose a virtual hard drive file</source>
@@ -14366,43 +18839,43 @@
     </message>
     <message>
         <source>Please choose a virtual optical disk file</source>
-        <translation>لطفا یک فایل دیسک نوری مجازی انتخاب کنید</translation>
+        <translation type="vanished">لطفا یک فایل دیسک نوری مجازی انتخاب کنید</translation>
     </message>
     <message>
         <source>All virtual optical disk files (%1)</source>
-        <translation>همه فایل های دیسک نوری مجازی (%1)</translation>
+        <translation type="vanished">همه فایل های دیسک نوری مجازی (%1)</translation>
     </message>
     <message>
         <source>Please choose a virtual floppy disk file</source>
-        <translation>لطفا یک فایل دیسک فلاپی مجازی انتخاب کنید</translation>
+        <translation type="vanished">لطفا یک فایل دیسک فلاپی مجازی انتخاب کنید</translation>
     </message>
     <message>
         <source>All virtual floppy disk files (%1)</source>
-        <translation>همه فایل های دیسک فلاپی مجازی (%1)</translation>
+        <translation type="vanished">همه فایل های دیسک فلاپی مجازی (%1)</translation>
     </message>
     <message>
         <source>VDI (VirtualBox Disk Image)</source>
-        <translation>VDI (دیسک ایمیج ویرچوال باکس)</translation>
+        <translation type="vanished">VDI (دیسک ایمیج ویرچوال باکس)</translation>
     </message>
     <message>
         <source>VMDK (Virtual Machine Disk)</source>
-        <translation>VMDK (دیسک ماشین مجازی)</translation>
+        <translation type="vanished">VMDK (دیسک ماشین مجازی)</translation>
     </message>
     <message>
         <source>VHD (Virtual Hard Disk)</source>
-        <translation>VHD (دیسک سخت مجازی)</translation>
+        <translation type="vanished">VHD (دیسک سخت مجازی)</translation>
     </message>
     <message>
         <source>HDD (Parallels Hard Disk)</source>
-        <translation>HDD (دیسک سخت پارالل)</translation>
+        <translation type="vanished">HDD (دیسک سخت پارالل)</translation>
     </message>
     <message>
         <source>QED (QEMU enhanced disk)</source>
-        <translation>QED (دیسک بهسازی شده کیو ای اِم یو)</translation>
+        <translation type="vanished">QED (دیسک بهسازی شده کیو ای اِم یو)</translation>
     </message>
     <message>
         <source>QCOW (QEMU Copy-On-Write)</source>
-        <translation>QCOW (کیو ای اِم یو کپی-در-نوشتن)</translation>
+        <translation type="vanished">QCOW (کیو ای اِم یو کپی-در-نوشتن)</translation>
     </message>
     <message>
         <source>Please choose a location for new virtual hard drive file</source>
@@ -14426,32 +18899,32 @@
     <message>
         <source>PS/2 Mouse</source>
         <comment>PointingHIDType</comment>
-        <translation>PS/2 Mouse</translation>
+        <translation type="vanished">PS/2 Mouse</translation>
     </message>
     <message>
         <source>USB Mouse</source>
         <comment>PointingHIDType</comment>
-        <translation>موس یو اِس بی</translation>
+        <translation type="vanished">موس یو اِس بی</translation>
     </message>
     <message>
         <source>USB Tablet</source>
         <comment>PointingHIDType</comment>
-        <translation>تبلت یو اِس بی</translation>
+        <translation type="vanished">تبلت یو اِس بی</translation>
     </message>
     <message>
         <source>PS/2 and USB Mouse</source>
         <comment>PointingHIDType</comment>
-        <translation>ماوس پی اِس/2 و یو اِس بی</translation>
+        <translation type="vanished">ماوس پی اِس/2 و یو اِس بی</translation>
     </message>
     <message>
         <source>USB Multi-Touch Tablet</source>
         <comment>PointingHIDType</comment>
-        <translation>تبلت چند لمسی یو اِس بی</translation>
+        <translation type="vanished">تبلت چند لمسی یو اِس بی</translation>
     </message>
     <message>
         <source>NAT Network</source>
         <comment>NetworkAttachmentType</comment>
-        <translation>شبکه NAT</translation>
+        <translation type="vanished">شبکه NAT</translation>
     </message>
     <message>
         <source>NAT network, &apos;%1&apos;</source>
@@ -14460,7 +18933,7 @@
     </message>
     <message>
         <source>You can create or add disk image files in the virtual machine settings.</source>
-        <translation>شما میتوانید فایل های ایمیج دیسک را در تنظیمات ماشین مجازی اضافه یا ایجاد نمائیید.</translation>
+        <translation type="vanished">شما میتوانید فایل های ایمیج دیسک را در تنظیمات ماشین مجازی اضافه یا ایجاد نمائیید.</translation>
     </message>
     <message>
         <source>Enabled</source>
@@ -14474,132 +18947,132 @@
     </message>
     <message>
         <source>Unrestricted Execution</source>
-        <translation>اِجرای بدون محدودیت</translation>
+        <translation type="vanished">اِجرای بدون محدودیت</translation>
     </message>
     <message>
         <source>USB</source>
         <comment>StorageControllerType</comment>
-        <translation>یو اِس بی</translation>
+        <translation type="vanished">یو اِس بی</translation>
     </message>
     <message>
         <source>off</source>
         <comment>guest monitor status</comment>
-        <translation>خاموش</translation>
+        <translation type="vanished">خاموش</translation>
     </message>
     <message>
         <source>Active</source>
         <comment>details report (VT-x/AMD-V)</comment>
-        <translation>فعال</translation>
+        <translation type="vanished">فعال</translation>
     </message>
     <message>
         <source>Inactive</source>
         <comment>details report (VT-x/AMD-V)</comment>
-        <translation>غیر فعال</translation>
+        <translation type="vanished">غیر فعال</translation>
     </message>
     <message>
         <source>Active</source>
         <comment>details report (Nested Paging)</comment>
-        <translation>فعال</translation>
+        <translation type="vanished">فعال</translation>
     </message>
     <message>
         <source>Inactive</source>
         <comment>details report (Nested Paging)</comment>
-        <translation>غیر فعال</translation>
+        <translation type="vanished">غیر فعال</translation>
     </message>
     <message>
         <source>Active</source>
         <comment>details report (Unrestricted Execution)</comment>
-        <translation>فعال</translation>
+        <translation type="vanished">فعال</translation>
     </message>
     <message>
         <source>Inactive</source>
         <comment>details report (Unrestricted Execution)</comment>
-        <translation>غیر فعال</translation>
+        <translation type="vanished">غیر فعال</translation>
     </message>
     <message>
         <source>Paravirtualization Interface</source>
         <comment>details report</comment>
-        <translation>رابط پارا مجازی سازی</translation>
+        <translation type="vanished">رابط پارا مجازی سازی</translation>
     </message>
     <message>
         <source>Taking Snapshot</source>
         <comment>MachineState</comment>
-        <translation>گرفتن ضبط وضعیت</translation>
+        <translation type="vanished">گرفتن ضبط وضعیت</translation>
     </message>
     <message>
         <source>Taking Online Snapshot</source>
         <comment>MachineState</comment>
-        <translation>گرفتن ضبط وضعیت آنلاین</translation>
+        <translation type="vanished">گرفتن ضبط وضعیت آنلاین</translation>
     </message>
     <message>
         <source>None</source>
         <comment>ParavirtProvider</comment>
-        <translation>ندارد</translation>
+        <translation type="vanished">ندارد</translation>
     </message>
     <message>
         <source>Default</source>
         <comment>ParavirtProvider</comment>
-        <translation>پیش فرض</translation>
+        <translation type="vanished">پیش فرض</translation>
     </message>
     <message>
         <source>Legacy</source>
         <comment>ParavirtProvider</comment>
-        <translation>میراث</translation>
+        <translation type="vanished">میراث</translation>
     </message>
     <message>
         <source>Minimal</source>
         <comment>ParavirtProvider</comment>
-        <translation>حداقل</translation>
+        <translation type="vanished">حداقل</translation>
     </message>
     <message>
         <source>Hyper-V</source>
         <comment>ParavirtProvider</comment>
-        <translation>Hyper-V</translation>
+        <translation type="vanished">Hyper-V</translation>
     </message>
     <message>
         <source>KVM</source>
         <comment>ParavirtProvider</comment>
-        <translation>KVM</translation>
+        <translation type="vanished">KVM</translation>
     </message>
     <message>
         <source>Optical</source>
         <comment>DeviceType</comment>
-        <translation>نوری</translation>
+        <translation type="vanished">نوری</translation>
     </message>
     <message>
         <source>New dynamically allocated storage</source>
         <comment>MediumVariant</comment>
-        <translation>ذخیر ساز پویا اختصاص داده شده جدید</translation>
+        <translation type="vanished">ذخیر ساز پویا اختصاص داده شده جدید</translation>
     </message>
     <message>
         <source>TCP</source>
         <comment>PortMode</comment>
-        <translation>TCP</translation>
+        <translation type="vanished">TCP</translation>
     </message>
     <message>
         <source>OHCI</source>
         <comment>USBControllerType</comment>
-        <translation>OHCI</translation>
+        <translation type="vanished">OHCI</translation>
     </message>
     <message>
         <source>EHCI</source>
         <comment>USBControllerType</comment>
-        <translation>EHCI</translation>
+        <translation type="vanished">EHCI</translation>
     </message>
     <message>
         <source>xHCI</source>
         <comment>USBControllerType</comment>
-        <translation>xHCI</translation>
+        <translation type="vanished">xHCI</translation>
     </message>
     <message>
         <source>USB Port %1</source>
         <comment>StorageSlot</comment>
-        <translation>پورت یو اِس بی %1</translation>
+        <translation type="vanished">پورت یو اِس بی %1</translation>
     </message>
     <message>
         <source>User interface</source>
         <comment>DetailsElementType</comment>
-        <translation>رابط کاربری</translation>
+        <translation type="vanished">رابط کاربری</translation>
     </message>
     <message>
         <source>(Optical Drive)</source>
@@ -14607,85 +19080,85 @@
     </message>
     <message>
         <source>Please choose a virtual hard disk file</source>
-        <translation>لطفا یک فایل دیسک سخت مجازی انتخاب کنید</translation>
+        <translation type="vanished">لطفا یک فایل دیسک سخت مجازی انتخاب کنید</translation>
     </message>
     <message>
         <source>All virtual hard disk files (%1)</source>
-        <translation>همه فایل های دیسک سخت مجازی (%1)</translation>
+        <translation type="vanished">همه فایل های دیسک سخت مجازی (%1)</translation>
     </message>
     <message>
         <source>Encrypted</source>
         <comment>medium</comment>
-        <translation>رمزگذاری شده</translation>
+        <translation type="vanished">رمزگذاری شده</translation>
     </message>
     <message>
         <source>Some of the files in this hard disk chain are inaccessible. Please use the Virtual Medium Manager to inspect these files.</source>
         <comment>medium</comment>
-        <translation>بعضی از فایل ها در این زنجیره دیسک سخت قابل دسترسی نیست.لطفا از مدیر رسانه مجازی برای بازرسی این فایل ها استفاده کنید</translation>
+        <translation type="vanished">بعضی از فایل ها در این زنجیره دیسک سخت قابل دسترسی نیست.لطفا از مدیر رسانه مجازی برای بازرسی این فایل ها استفاده کنید</translation>
     </message>
     <message>
         <source>Please choose a location for new virtual hard disk file</source>
-        <translation>لطفا مکان فایل دیسک سخت مجازی جدید را انتخاب کنید</translation>
+        <translation type="vanished">لطفا مکان فایل دیسک سخت مجازی جدید را انتخاب کنید</translation>
     </message>
     <message>
         <source>USB</source>
         <comment>StorageBus</comment>
-        <translation>یو اِس بی</translation>
+        <translation type="vanished">یو اِس بی</translation>
     </message>
     <message>
         <source>PCIe</source>
         <comment>StorageBus</comment>
-        <translation>PCIe</translation>
+        <translation type="vanished">PCIe</translation>
     </message>
     <message>
         <source>NVMe</source>
         <comment>StorageControllerType</comment>
-        <translation>NVMe</translation>
+        <translation type="vanished">NVMe</translation>
     </message>
     <message>
         <source>NVMe Port %1</source>
         <comment>StorageSlot</comment>
-        <translation>NVMe پورت %1</translation>
+        <translation type="vanished">NVMe پورت %1</translation>
     </message>
     <message>
         <source>General</source>
         <comment>InformationElementType</comment>
-        <translation>عمومی</translation>
+        <translation type="vanished">عمومی</translation>
     </message>
     <message>
         <source>Preview</source>
         <comment>InformationElementType</comment>
-        <translation>پیشنمایش</translation>
+        <translation type="vanished">پیشنمایش</translation>
     </message>
     <message>
         <source>System</source>
         <comment>InformationElementType</comment>
-        <translation>سیستم</translation>
+        <translation type="vanished">سیستم</translation>
     </message>
     <message>
         <source>Display</source>
         <comment>InformationElementType</comment>
-        <translation>نمایش</translation>
+        <translation type="vanished">نمایش</translation>
     </message>
     <message>
         <source>Storage</source>
         <comment>InformationElementType</comment>
-        <translation>ذخیره ساز</translation>
+        <translation type="vanished">ذخیره ساز</translation>
     </message>
     <message>
         <source>Audio</source>
         <comment>InformationElementType</comment>
-        <translation>صدا</translation>
+        <translation type="vanished">صدا</translation>
     </message>
     <message>
         <source>Network</source>
         <comment>InformationElementType</comment>
-        <translation>شبکه</translation>
+        <translation type="vanished">شبکه</translation>
     </message>
     <message>
         <source>Serial ports</source>
         <comment>InformationElementType</comment>
-        <translation>پورت سریال</translation>
+        <translation type="vanished">پورت سریال</translation>
     </message>
     <message>
         <source>Parallel ports</source>
@@ -14695,102 +19168,102 @@
     <message>
         <source>USB</source>
         <comment>InformationElementType</comment>
-        <translation>یو اِس بی</translation>
+        <translation type="vanished">یو اِس بی</translation>
     </message>
     <message>
         <source>Shared folders</source>
         <comment>InformationElementType</comment>
-        <translation>پوشه های اشتراکی</translation>
+        <translation type="vanished">پوشه های اشتراکی</translation>
     </message>
     <message>
         <source>User interface</source>
         <comment>InformationElementType</comment>
-        <translation>رابط کاربری</translation>
+        <translation type="vanished">رابط کاربری</translation>
     </message>
     <message>
         <source>Description</source>
         <comment>InformationElementType</comment>
-        <translation>توضیحات</translation>
+        <translation type="vanished">توضیحات</translation>
     </message>
     <message>
         <source>Runtime attributes</source>
         <comment>InformationElementType</comment>
-        <translation>صفات زمان اِجرا</translation>
+        <translation type="vanished">صفات زمان اِجرا</translation>
     </message>
     <message>
         <source>Storage statistics</source>
         <comment>InformationElementType</comment>
-        <translation>آمار ذخیره ساز</translation>
+        <translation type="vanished">آمار ذخیره ساز</translation>
     </message>
     <message>
         <source>Network statistics</source>
         <comment>InformationElementType</comment>
-        <translation>آمار شبکه</translation>
+        <translation type="vanished">آمار شبکه</translation>
     </message>
     <message>
         <source>Hard Disks</source>
         <comment>IndicatorType</comment>
-        <translation>دیسک سخت</translation>
+        <translation type="vanished">دیسک سخت</translation>
     </message>
     <message>
         <source>Optical Disks</source>
         <comment>IndicatorType</comment>
-        <translation>ذیسک نوری</translation>
+        <translation type="vanished">ذیسک نوری</translation>
     </message>
     <message>
         <source>Floppy Disks</source>
         <comment>IndicatorType</comment>
-        <translation>دیسک فلاپی</translation>
+        <translation type="vanished">دیسک فلاپی</translation>
     </message>
     <message>
         <source>Network</source>
         <comment>IndicatorType</comment>
-        <translation>شبکه</translation>
+        <translation type="vanished">شبکه</translation>
     </message>
     <message>
         <source>USB</source>
         <comment>IndicatorType</comment>
-        <translation>یو اِس بی</translation>
+        <translation type="vanished">یو اِس بی</translation>
     </message>
     <message>
         <source>Shared Folders</source>
         <comment>IndicatorType</comment>
-        <translation>پوشه های اشتراکی</translation>
+        <translation type="vanished">پوشه های اشتراکی</translation>
     </message>
     <message>
         <source>Display</source>
         <comment>IndicatorType</comment>
-        <translation>نمایش</translation>
+        <translation type="vanished">نمایش</translation>
     </message>
     <message>
         <source>Video Capture</source>
         <comment>IndicatorType</comment>
-        <translation>ضبط ویدیو</translation>
+        <translation type="vanished">ضبط ویدیو</translation>
     </message>
     <message>
         <source>Features</source>
         <comment>IndicatorType</comment>
-        <translation>ویژگی ها</translation>
+        <translation type="vanished">ویژگی ها</translation>
     </message>
     <message>
         <source>Mouse</source>
         <comment>IndicatorType</comment>
-        <translation>ماوس</translation>
+        <translation type="vanished">ماوس</translation>
     </message>
     <message>
         <source>Keyboard</source>
         <comment>IndicatorType</comment>
-        <translation>صفحه کلید</translation>
+        <translation type="vanished">صفحه کلید</translation>
     </message>
     <message>
         <source>Differencing</source>
         <comment>MediumType</comment>
-        <translation>متفاوت</translation>
+        <translation type="vanished">متفاوت</translation>
     </message>
     <message>
         <source>Audio</source>
         <comment>IndicatorType</comment>
-        <translation>صدا</translation>
+        <translation type="vanished">صدا</translation>
     </message>
     <message>
         <source>Processors</source>

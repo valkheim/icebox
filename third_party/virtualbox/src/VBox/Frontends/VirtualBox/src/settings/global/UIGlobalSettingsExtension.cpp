@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2010-2017 Oracle Corporation
+ * Copyright (C) 2010-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -15,27 +15,23 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
-#ifdef VBOX_WITH_PRECOMPILED_HEADERS
-# include <precomp.h>
-#else  /* !VBOX_WITH_PRECOMPILED_HEADERS */
-
 /* Qt includes: */
-# include <QHeaderView>
+#include <QHeaderView>
+#include <QMenu>
+#ifdef VBOX_WS_WIN
+# include <QTextStream>
+#endif
 
 /* GUI includes: */
-# include "QIFileDialog.h"
-# include "UIGlobalSettingsExtension.h"
-# include "UIIconPool.h"
-# include "UIMessageCenter.h"
-# include "VBoxGlobal.h"
-# include "VBoxLicenseViewer.h"
+#include "QIFileDialog.h"
+#include "UICommon.h"
+#include "UIGlobalSettingsExtension.h"
+#include "UIIconPool.h"
+#include "UIMessageCenter.h"
 
 /* COM includes: */
-# include "CExtPack.h"
-# include "CExtPackFile.h"
-# include "CExtPackManager.h"
-
-#endif /* !VBOX_WITH_PRECOMPILED_HEADERS */
+#include "CExtPack.h"
+#include "CExtPackManager.h"
 
 
 /** Global settings: Extension page item data structure. */
@@ -113,6 +109,8 @@ struct UIDataSettingsGlobalExtension
 /* Extension package item: */
 class UIExtensionPackageItem : public QITreeWidgetItem
 {
+    Q_OBJECT;
+
 public:
 
     /* Extension package item constructor: */
@@ -183,91 +181,6 @@ UIGlobalSettingsExtension::~UIGlobalSettingsExtension()
     cleanup();
 }
 
-/* static */
-void UIGlobalSettingsExtension::doInstallation(QString const &strFilePath, QString const &strDigest,
-                                               QWidget *pParent, QString *pstrExtPackName)
-{
-    /* Open the extpack tarball via IExtPackManager: */
-    CExtPackManager manager = vboxGlobal().virtualBox().GetExtensionPackManager();
-    CExtPackFile extPackFile;
-    if (strDigest.isEmpty())
-        extPackFile = manager.OpenExtPackFile(strFilePath);
-    else
-    {
-        QString strFileAndHash = QString("%1::SHA-256=%2").arg(strFilePath).arg(strDigest);
-        extPackFile = manager.OpenExtPackFile(strFileAndHash);
-    }
-    if (!manager.isOk())
-    {
-        msgCenter().cannotOpenExtPack(strFilePath, manager, pParent);
-        return;
-    }
-
-    if (!extPackFile.GetUsable())
-    {
-        msgCenter().warnAboutBadExtPackFile(strFilePath, extPackFile, pParent);
-        return;
-    }
-
-    const QString strPackName = extPackFile.GetName();
-    const QString strPackDescription = extPackFile.GetDescription();
-    const QString strPackVersion = QString("%1r%2%3").arg(extPackFile.GetVersion()).arg(extPackFile.GetRevision()).arg(extPackFile.GetEdition());
-
-    /* Check if there is a version of the extension pack already
-     * installed on the system and let the user decide what to do about it. */
-    CExtPack extPackCur = manager.Find(strPackName);
-    bool fReplaceIt = extPackCur.isOk();
-    if (fReplaceIt)
-    {
-        QString strPackVersionCur = QString("%1r%2%3").arg(extPackCur.GetVersion()).arg(extPackCur.GetRevision()).arg(extPackCur.GetEdition());
-        if (!msgCenter().confirmReplaceExtensionPack(strPackName, strPackVersion, strPackVersionCur, strPackDescription, pParent))
-            return;
-    }
-    /* If it's a new package just ask for general confirmation. */
-    else
-    {
-        if (!msgCenter().confirmInstallExtensionPack(strPackName, strPackVersion, strPackDescription, pParent))
-            return;
-    }
-
-    /* Display the license dialog if required by the extension pack. */
-    if (extPackFile.GetShowLicense())
-    {
-        QString strLicense = extPackFile.GetLicense();
-        VBoxLicenseViewer licenseViewer(pParent);
-        if (licenseViewer.showLicenseFromString(strLicense) != QDialog::Accepted)
-            return;
-    }
-
-    /* Install the selected package.
-     * Set the package name return value before doing
-     * this as the caller should do a refresh even on failure. */
-    QString displayInfo;
-#ifdef VBOX_WS_WIN
-    if (pParent)
-        displayInfo.sprintf("hwnd=%#llx", (uint64_t)(uintptr_t)pParent->winId());
-#endif
-    /* Prepare installation progress: */
-    CProgress progress = extPackFile.Install(fReplaceIt, displayInfo);
-    if (extPackFile.isOk())
-    {
-        /* Show installation progress: */
-        msgCenter().showModalProgressDialog(progress, tr("Extensions"), ":/progress_install_guest_additions_90px.png", pParent);
-        if (!progress.GetCanceled())
-        {
-            if (progress.isOk() && progress.GetResultCode() == 0)
-                msgCenter().warnAboutExtPackInstalled(strPackName, pParent);
-            else
-                msgCenter().cannotInstallExtPack(progress, strFilePath, pParent);
-        }
-    }
-    else
-        msgCenter().cannotInstallExtPack(extPackFile, strFilePath, pParent);
-
-    if (pstrExtPackName)
-        *pstrExtPackName = strPackName;
-}
-
 void UIGlobalSettingsExtension::loadToCacheFrom(QVariant &data)
 {
     /* Fetch data to properties: */
@@ -280,7 +193,7 @@ void UIGlobalSettingsExtension::loadToCacheFrom(QVariant &data)
     UIDataSettingsGlobalExtension oldExtensionData;
 
     /* Gather old extension data: */
-    const CExtPackVector &packages = vboxGlobal().virtualBox().
+    const CExtPackVector &packages = uiCommon().virtualBox().
                                      GetExtensionPackManager().GetInstalledExtPacks();
     foreach (const CExtPack &package, packages)
     {
@@ -392,7 +305,7 @@ void UIGlobalSettingsExtension::sltAddPackage()
     if (!strFilePath.isEmpty())
     {
         QString strExtPackName;
-        doInstallation(strFilePath, QString(), this, &strExtPackName);
+        uiCommon().doExtPackInstallation(strFilePath, QString(), this, &strExtPackName);
 
         /* Since we might be reinstalling an existing package, we have to
          * do a little refreshing regardless of what the user chose. */
@@ -421,7 +334,7 @@ void UIGlobalSettingsExtension::sltAddPackage()
             }
 
             /* Reinsert it into the cache and tree: */
-            CExtPackManager manager = vboxGlobal().virtualBox().GetExtensionPackManager();
+            CExtPackManager manager = uiCommon().virtualBox().GetExtensionPackManager();
             const CExtPack &package = manager.Find(strExtPackName);
             if (package.isOk())
             {
@@ -453,12 +366,16 @@ void UIGlobalSettingsExtension::sltRemovePackage()
         if (msgCenter().confirmRemoveExtensionPack(strSelectedPackageName, this))
         {
             /* Uninstall the package: */
-            CExtPackManager manager = vboxGlobal().virtualBox().GetExtensionPackManager();
+            CExtPackManager manager = uiCommon().virtualBox().GetExtensionPackManager();
             /** @todo Refuse this if any VMs are running. */
             QString displayInfo;
 #ifdef VBOX_WS_WIN
-            displayInfo.sprintf("hwnd=%#llx", (uint64_t)(uintptr_t)this->winId());
-#endif /* VBOX_WS_WIN */
+            QTextStream stream(&displayInfo);
+            stream.setNumberFlags(QTextStream::ShowBase);
+            stream.setIntegerBase(16);
+            stream << "hwnd=" << winId();
+#endif
+
             /* Prepare uninstallation progress: */
             CProgress progress = manager.Uninstall(strSelectedPackageName, false /* forced removal? */, displayInfo);
             if (manager.isOk())
@@ -508,10 +425,10 @@ void UIGlobalSettingsExtension::prepare()
             m_pPackagesTree->header()->setSectionResizeMode(1, QHeaderView::Stretch);
             m_pPackagesTree->header()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
             m_pPackagesTree->setContextMenuPolicy(Qt::CustomContextMenu);
-            connect(m_pPackagesTree, SIGNAL(currentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)),
-                    this, SLOT(sltHandleCurrentItemChange(QTreeWidgetItem *)));
-            connect(m_pPackagesTree, SIGNAL(customContextMenuRequested(const QPoint &)),
-                    this, SLOT(sltHandleContextMenuRequest(const QPoint &)));
+            connect(m_pPackagesTree, &QITreeWidget::currentItemChanged,
+                    this, &UIGlobalSettingsExtension::sltHandleCurrentItemChange);
+            connect(m_pPackagesTree, &QITreeWidget::customContextMenuRequested,
+                    this, &UIGlobalSettingsExtension::sltHandleContextMenuRequest);
         }
 
         /* Tool-bar created in the .ui file. */
@@ -556,3 +473,5 @@ void UIGlobalSettingsExtension::loadData(const CExtPack &package, UIDataSettings
         item.m_strWhyUnusable = package.GetWhyUnusable();
 }
 
+
+#include "UIGlobalSettingsExtension.moc"

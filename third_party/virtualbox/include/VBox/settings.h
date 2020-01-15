@@ -17,7 +17,7 @@
  */
 
 /*
- * Copyright (C) 2007-2017 Oracle Corporation
+ * Copyright (C) 2007-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -37,8 +37,11 @@
  * terms and conditions of either the GPL or the CDDL or both.
  */
 
-#ifndef ___VBox_settings_h
-#define ___VBox_settings_h
+#ifndef VBOX_INCLUDED_settings_h
+#define VBOX_INCLUDED_settings_h
+#ifndef RT_WITHOUT_PRAGMA_ONCE
+# pragma once
+#endif
 
 #include <iprt/time.h>
 
@@ -317,7 +320,9 @@ struct SystemProperties
     com::Utf8Str            strDefaultAdditionsISO;
     com::Utf8Str            strDefaultFrontend;
     com::Utf8Str            strLoggingLevel;
-    uint32_t                ulLogHistoryCount;
+    com::Utf8Str            strProxyUrl;
+    uint32_t                uProxyMode; /**< ProxyMode_T */
+    uint32_t                uLogHistoryCount;
     bool                    fExclusiveHwVirt;
 };
 
@@ -332,45 +337,73 @@ typedef std::list<MachineRegistryEntry> MachinesRegistry;
 struct DhcpOptValue
 {
     DhcpOptValue();
-    DhcpOptValue(const com::Utf8Str &aText, DhcpOptEncoding_T aEncoding = DhcpOptEncoding_Legacy);
+    DhcpOptValue(const com::Utf8Str &aText, DHCPOptionEncoding_T aEncoding = DHCPOptionEncoding_Normal);
 
-    com::Utf8Str text;
-    DhcpOptEncoding_T encoding;
+    com::Utf8Str            strValue;
+    DHCPOptionEncoding_T    enmEncoding;
 };
 
-typedef std::map<DhcpOpt_T, DhcpOptValue> DhcpOptionMap;
+typedef std::map<DHCPOption_T, DhcpOptValue> DhcpOptionMap;
 typedef DhcpOptionMap::value_type DhcpOptValuePair;
 typedef DhcpOptionMap::iterator DhcpOptIterator;
 typedef DhcpOptionMap::const_iterator DhcpOptConstIterator;
 
-typedef struct VmNameSlotKey
+struct DHCPGroupCondition
 {
-    VmNameSlotKey(const com::Utf8Str& aVmName, LONG aSlot);
+    DHCPGroupCondition();
 
-    bool operator<(const VmNameSlotKey& that) const;
+    bool                    fInclusive;
+    DHCPGroupConditionType_T enmType;
+    com::Utf8Str            strValue;
+};
+typedef std::vector<DHCPGroupCondition> DHCPGroupConditionVec;
 
-    const com::Utf8Str VmName;
-    LONG      Slot;
-} VmNameSlotKey;
 
-typedef std::map<VmNameSlotKey, DhcpOptionMap> VmSlot2OptionsMap;
-typedef VmSlot2OptionsMap::value_type VmSlot2OptionsPair;
-typedef VmSlot2OptionsMap::iterator VmSlot2OptionsIterator;
-typedef VmSlot2OptionsMap::const_iterator VmSlot2OptionsConstIterator;
+struct DHCPConfig
+{
+    DHCPConfig();
+
+    DhcpOptionMap           mapOptions;
+    uint32_t                secMinLeaseTime;
+    uint32_t                secDefaultLeaseTime;
+    uint32_t                secMaxLeaseTime;
+    com::Utf8Str            strForcedOptions;
+    com::Utf8Str            strSuppressedOptions;
+};
+
+struct DHCPGroupConfig : DHCPConfig
+{
+    DHCPGroupConfig();
+
+    com::Utf8Str            strName;
+    DHCPGroupConditionVec   vecConditions;
+};
+typedef std::vector<DHCPGroupConfig> DHCPGroupConfigVec;
+
+struct DHCPIndividualConfig : DHCPConfig
+{
+    DHCPIndividualConfig();
+
+    com::Utf8Str            strMACAddress;
+    com::Utf8Str            strVMName;
+    uint32_t                uSlot;
+    com::Utf8Str            strFixedAddress;
+};
+typedef std::map<com::Utf8Str, DHCPIndividualConfig> DHCPIndividualConfigMap;
 
 struct DHCPServer
 {
     DHCPServer();
 
-    com::Utf8Str    strNetworkName,
-                    strIPAddress,
-                    strIPLower,
-                    strIPUpper;
-    bool            fEnabled;
-    DhcpOptionMap   GlobalDhcpOptions;
-    VmSlot2OptionsMap VmSlot2OptionsM;
+    com::Utf8Str            strNetworkName;
+    com::Utf8Str            strIPAddress;
+    com::Utf8Str            strIPLower;
+    com::Utf8Str            strIPUpper;
+    bool                    fEnabled;
+    DHCPConfig              globalConfig;
+    DHCPGroupConfigVec      vecGroupConfigs;
+    DHCPIndividualConfigMap mapIndividualConfigs;
 };
-
 typedef std::list<DHCPServer> DHCPServersList;
 
 
@@ -396,6 +429,24 @@ struct NATNetwork
 
 typedef std::list<NATNetwork> NATNetworksList;
 
+#ifdef VBOX_WITH_CLOUD_NET
+/**
+ * Cloud Networking settings.
+ */
+struct CloudNetwork
+{
+    CloudNetwork();
+
+    com::Utf8Str strNetworkName;
+    com::Utf8Str strProviderShortName;
+    com::Utf8Str strProfileName;
+    com::Utf8Str strNetworkId;
+    bool         fEnabled;
+};
+
+typedef std::list<CloudNetwork> CloudNetworksList;
+#endif /* VBOX_WITH_CLOUD_NET */
+
 
 class MainConfigFile : public ConfigFileBase
 {
@@ -403,9 +454,10 @@ public:
     MainConfigFile(const com::Utf8Str *pstrFilename);
 
     void readMachineRegistry(const xml::ElementNode &elmMachineRegistry);
-    void readDHCPServers(const xml::ElementNode &elmDHCPServers);
-    void readDhcpOptions(DhcpOptionMap& map, const xml::ElementNode& options);
     void readNATNetworks(const xml::ElementNode &elmNATNetworks);
+#ifdef VBOX_WITH_CLOUD_NET
+    void readCloudNetworks(const xml::ElementNode &elmCloudNetworks);
+#endif /* VBOX_WITH_CLOUD_NET */
 
     void write(const com::Utf8Str strFilename);
 
@@ -415,12 +467,20 @@ public:
     MachinesRegistry        llMachines;
     DHCPServersList         llDhcpServers;
     NATNetworksList         llNATNetworks;
+#ifdef VBOX_WITH_CLOUD_NET
+    CloudNetworksList       llCloudNetworks;
+#endif /* VBOX_WITH_CLOUD_NET */
     StringsMap              mapExtraDataItems;
 
 private:
     void bumpSettingsVersionIfNeeded();
     void buildUSBDeviceSources(xml::ElementNode &elmParent, const USBDeviceSourcesList &ll);
     void readUSBDeviceSources(const xml::ElementNode &elmDeviceSources, USBDeviceSourcesList &ll);
+    void buildDHCPServers(xml::ElementNode &elmDHCPServers, DHCPServersList const &ll);
+    void buildDHCPOptions(xml::ElementNode &elmOptions, DHCPConfig const &rConfig, bool fIgnoreSubnetMask);
+    void readDHCPServers(const xml::ElementNode &elmDHCPServers);
+    void readDHCPOptions(DHCPConfig &rConfig, const xml::ElementNode &elmOptions, bool fIgnoreSubnetMask);
+    bool convertGuiProxySettings(const com::Utf8Str &strUIProxySettings);
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -469,12 +529,149 @@ struct BIOSSettings
                     fIOAPICEnabled,
                     fLogoFadeIn,
                     fLogoFadeOut,
-                    fPXEDebugEnabled;
+                    fPXEDebugEnabled,
+                    fSmbiosUuidLittleEndian;
     uint32_t        ulLogoDisplayTime;
     BIOSBootMenuMode_T biosBootMenuMode;
     APICMode_T      apicMode;           // requires settings version 1.16 (VirtualBox 5.1)
     int64_t         llTimeOffset;
     com::Utf8Str    strLogoImagePath;
+    com::Utf8Str    strNVRAMPath;
+};
+
+/** List for keeping a recording feature list. */
+typedef std::map<RecordingFeature_T, bool> RecordingFeatureMap;
+
+struct RecordingScreenSettings
+{
+    RecordingScreenSettings();
+
+    virtual ~RecordingScreenSettings();
+
+    void applyDefaults(void);
+
+    bool areDefaultSettings(void) const;
+
+    bool isFeatureEnabled(RecordingFeature_T enmFeature) const;
+
+    bool operator==(const RecordingScreenSettings &d) const;
+
+    /** Whether to record this screen or not. */
+    bool                   fEnabled;   // requires settings version 1.14 (VirtualBox 4.3)
+    /** Destination to record to. */
+    RecordingDestination_T enmDest;    /** @todo Implement with next settings version bump. */
+    /** Which features are enable or not. */
+    RecordingFeatureMap    featureMap; /** @todo Implement with next settings version bump. */
+    /** Maximum time (in s) to record. If set to 0, no time limit is set. */
+    uint32_t               ulMaxTimeS; // requires settings version 1.14 (VirtualBox 4.3)
+    /** Options string for hidden / advanced / experimental features. */
+    com::Utf8Str           strOptions; // new since VirtualBox 5.2.
+
+    /**
+     * Structure holding settings for audio recording.
+     */
+    struct Audio
+    {
+        Audio()
+            : enmAudioCodec(RecordingAudioCodec_Opus)
+            , uHz(22050)
+            , cBits(16)
+            , cChannels(2) { }
+
+        /** The audio codec type to use. */
+        RecordingAudioCodec_T enmAudioCodec; /** @todo Implement with next settings version bump. */
+        /** Hz rate. */
+        uint16_t              uHz;           /** @todo Implement with next settings version bump. */
+        /** Bits per sample. */
+        uint8_t               cBits;         /** @todo Implement with next settings version bump. */
+        /** Number of audio channels. */
+        uint8_t               cChannels;     /** @todo Implement with next settings version bump. */
+    } Audio;
+
+    /**
+     * Structure holding settings for video recording.
+     */
+    struct Video
+    {
+        Video()
+            : enmCodec(RecordingVideoCodec_VP8)
+            , ulWidth(1024)
+            , ulHeight(768)
+            , ulRate(512)
+            , ulFPS(25) { }
+
+        /** The codec to use. */
+        RecordingVideoCodec_T enmCodec;  /** @todo Implement with next settings version bump. */
+        /** Target frame width in pixels (X). */
+        uint32_t              ulWidth;   // requires settings version 1.14 (VirtualBox 4.3)
+        /** Target frame height in pixels (Y). */
+        uint32_t              ulHeight;  // requires settings version 1.14 (VirtualBox 4.3)
+        /** Encoding rate. */
+        uint32_t              ulRate;    // requires settings version 1.14 (VirtualBox 4.3)
+        /** Frames per second (FPS). */
+        uint32_t              ulFPS;     // requires settings version 1.14 (VirtualBox 4.3)
+    } Video;
+
+    /**
+     * Structure holding settings if the destination is a file.
+     */
+    struct File
+    {
+        File()
+            : ulMaxSizeMB(0) { }
+
+        /** Maximum size (in MB) the file is allowed to have.
+         *  When reaching the limit, recording will stop. */
+        uint32_t     ulMaxSizeMB; // requires settings version 1.14 (VirtualBox 4.3)
+        /** Absolute file name path to use for recording. */
+        com::Utf8Str strName;     // requires settings version 1.14 (VirtualBox 4.3)
+    } File;
+};
+
+/** Map for keeping settings per virtual screen.
+ *  The key specifies the screen ID. */
+typedef std::map<uint32_t, RecordingScreenSettings> RecordingScreenMap;
+
+/**
+ * NOTE: If you add any fields in here, you must update a) the constructor and b)
+ * the operator== which is used by MachineConfigFile::operator==(), or otherwise
+ * your settings might never get saved.
+ */
+struct RecordingSettings
+{
+    RecordingSettings();
+
+    void applyDefaults(void);
+
+    bool areDefaultSettings(void) const;
+
+    bool operator==(const RecordingSettings &d) const;
+
+    /** Whether recording as a whole is enabled or disabled. */
+    bool               fEnabled;       // requires settings version 1.14 (VirtualBox 4.3)
+    /** Map of handled recording screen settings.
+     *  The key specifies the screen ID. */
+    RecordingScreenMap mapScreens;
+};
+
+/**
+ * NOTE: If you add any fields in here, you must update a) the constructor and b)
+ * the operator== which is used by MachineConfigFile::operator==(), or otherwise
+ * your settings might never get saved.
+ */
+struct GraphicsAdapter
+{
+    GraphicsAdapter();
+
+    bool areDefaultSettings() const;
+
+    bool operator==(const GraphicsAdapter &g) const;
+
+    GraphicsControllerType_T graphicsControllerType;
+    uint32_t            ulVRAMSizeMB;
+    uint32_t            cMonitors;
+    bool                fAccelerate3D,
+                        fAccelerate2DVideo;     // requires settings version 1.8 (VirtualBox 3.1)
 };
 
 /**
@@ -570,6 +767,9 @@ struct NetworkAdapter
     com::Utf8Str                        strGenericDriver;
     StringsMap                          genericProperties;
     com::Utf8Str                        strNATNetworkName;
+#ifdef VBOX_WITH_CLOUD_NET
+    com::Utf8Str                        strCloudNetworkName;
+#endif /* VBOX_WITH_CLOUD_NET */
     uint32_t                            ulBootPriority;
     com::Utf8Str                        strBandwidthGroup; // requires settings version 1.13 (VirtualBox 4.2)
 };
@@ -595,6 +795,7 @@ struct SerialPort
     PortMode_T      portMode;
     com::Utf8Str    strPath;
     bool            fServer;
+    UartType_T      uartType;
 };
 
 typedef std::list<SerialPort> SerialPortsList;
@@ -657,6 +858,7 @@ struct SharedFolder
                     strHostPath;
     bool            fWritable;
     bool            fAutoMount;
+    com::Utf8Str    strAutoMountPoint;
 };
 
 typedef std::list<SharedFolder> SharedFoldersList;
@@ -885,7 +1087,6 @@ struct Hardware
     bool areParavirtDefaultSettings(SettingsVersion_T sv) const;
     bool areBootOrderDefaultSettings() const;
     bool areDisplayDefaultSettings() const;
-    bool areVideoCaptureDefaultSettings() const;
     bool areAllNetworkAdaptersDefaultSettings(SettingsVersion_T sv) const;
 
     bool operator==(const Hardware&) const;
@@ -899,6 +1100,7 @@ struct Hardware
                         fVPID,
                         fUnrestrictedExecution,
                         fHardwareVirtForce,
+                        fUseNativeApi,
                         fSyntheticCpu,
                         fTripleFaultReset,
                         fPAE,
@@ -912,6 +1114,7 @@ struct Hardware
     bool                fL1DFlushOnVMEntry ;    //< added out of cycle, after 1.16 was out.
     bool                fMDSClearOnSched;       //< added out of cycle, after 1.16 was out.
     bool                fMDSClearOnVMEntry;     //< added out of cycle, after 1.16 was out.
+    bool                fNestedHWVirt;          //< requires settings version 1.17 (VirtualBox 6.0)
     typedef enum LongModeType { LongMode_Enabled, LongMode_Disabled, LongMode_Legacy } LongModeType;
     LongModeType        enmLongMode;
     uint32_t            cCPUs;
@@ -928,23 +1131,6 @@ struct Hardware
 
     BootOrderMap        mapBootOrder;           // item 0 has highest priority
 
-    GraphicsControllerType_T graphicsControllerType;
-    uint32_t            ulVRAMSizeMB;
-    uint32_t            cMonitors;
-    bool                fAccelerate3D,
-                        fAccelerate2DVideo;     // requires settings version 1.8 (VirtualBox 3.1)
-
-    uint32_t            ulVideoCaptureHorzRes;  // requires settings version 1.14 (VirtualBox 4.3)
-    uint32_t            ulVideoCaptureVertRes;  // requires settings version 1.14 (VirtualBox 4.3)
-    uint32_t            ulVideoCaptureRate;     // requires settings version 1.14 (VirtualBox 4.3)
-    uint32_t            ulVideoCaptureFPS;      // requires settings version 1.14 (VirtualBox 4.3)
-    uint32_t            ulVideoCaptureMaxTime;  // requires settings version 1.14 (VirtualBox 4.3)
-    uint32_t            ulVideoCaptureMaxSize;  // requires settings version 1.14 (VirtualBox 4.3)
-    bool                fVideoCaptureEnabled;   // requires settings version 1.14 (VirtualBox 4.3)
-    uint64_t            u64VideoCaptureScreens; // requires settings version 1.14 (VirtualBox 4.3)
-    com::Utf8Str        strVideoCaptureFile;    // requires settings version 1.14 (VirtualBox 4.3)
-    com::Utf8Str        strVideoCaptureOptions; // new since VirtualBox 5.2.
-
     FirmwareType_T      firmwareType;           // requires settings version 1.9 (VirtualBox 3.1)
 
     PointingHIDType_T   pointingHIDType;        // requires settings version 1.10 (VirtualBox 3.2)
@@ -959,6 +1145,8 @@ struct Hardware
     VRDESettings        vrdeSettings;
 
     BIOSSettings        biosSettings;
+    RecordingSettings   recordingSettings;
+    GraphicsAdapter     graphicsAdapter;
     USB                 usbSettings;
     NetworkAdaptersList llNetworkAdapters;
     SerialPortsList     llSerialPorts;
@@ -969,7 +1157,10 @@ struct Hardware
     // technically these two have no business in the hardware section, but for some
     // clever reason <Hardware> is where they are in the XML....
     SharedFoldersList   llSharedFolders;
+
     ClipboardMode_T     clipboardMode;
+    bool                fClipboardFileTransfersEnabled;
+
     DnDMode_T           dndMode;
 
     uint32_t            ulMemoryBalloonSize;
@@ -1068,14 +1259,9 @@ struct MachineUserData
     uint32_t                uTeleporterPort;
     com::Utf8Str            strTeleporterAddress;
     com::Utf8Str            strTeleporterPassword;
-    FaultToleranceState_T   enmFaultToleranceState;
-    uint32_t                uFaultTolerancePort;
-    com::Utf8Str            strFaultToleranceAddress;
-    com::Utf8Str            strFaultTolerancePassword;
-    uint32_t                uFaultToleranceInterval;
     bool                    fRTCUseUTC;
     IconBlob                ovIcon;
-    com::Utf8Str            strVMPriority;
+    VMProcPriority_T        enmVMPriority;
 };
 
 
@@ -1174,4 +1360,4 @@ private:
 } // namespace settings
 
 
-#endif /* ___VBox_settings_h */
+#endif /* !VBOX_INCLUDED_settings_h */

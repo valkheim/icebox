@@ -3,7 +3,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -23,8 +23,11 @@
  * terms and conditions of either the GPL or the CDDL or both.
  */
 
-#ifndef ___iprt_types_h
-#define ___iprt_types_h
+#ifndef IPRT_INCLUDED_types_h
+#define IPRT_INCLUDED_types_h
+#ifndef RT_WITHOUT_PRAGMA_ONCE
+# pragma once
+#endif
 
 #include <iprt/cdefs.h>
 #include <iprt/stdint.h>
@@ -56,21 +59,28 @@ RT_C_DECLS_END
 #  include <sys/types.h>
 
 # elif defined(RT_OS_FREEBSD) && defined(_KERNEL)
+#  include <sys/param.h>
+#  undef PVM
+#  if __FreeBSD_version < 1200000
     /*
      * Kludge for the FreeBSD kernel:
      *  stddef.h and sys/types.h have slightly different offsetof definitions
      *  when compiling in kernel mode. This is just to make GCC shut up.
      */
-#  ifndef _STDDEF_H_
-#   undef offsetof
-#  endif
-#  include <sys/stddef.h>
-#  ifndef _SYS_TYPES_H_
-#   undef offsetof
-#  endif
-#  include <sys/types.h>
-#  ifndef offsetof
-#   error "offsetof is not defined!"
+#   ifndef _STDDEF_H_
+#    undef offsetof
+#   endif
+#   include <sys/stddef.h>
+#   ifndef _SYS_TYPES_H_
+#    undef offsetof
+#   endif
+#   include <sys/types.h>
+#   ifndef offsetof
+#    error "offsetof is not defined!"
+#   endif
+#  else
+#   include <sys/stddef.h>
+#   include <sys/types.h>
 #  endif
 
 # elif defined(RT_OS_FREEBSD) && HC_ARCH_BITS == 64 && defined(RT_ARCH_X86)
@@ -1511,7 +1521,7 @@ typedef const RTHCPHYS  RT_FAR *PCRTHCPHYS;
 
 
 /** HC pointer. */
-#ifndef IN_RC
+#if !defined(IN_RC) || defined(DOXYGEN_RUNNING)
 typedef void            RT_FAR *RTHCPTR;
 #else
 typedef RTHCUINTPTR             RTHCPTR;
@@ -1761,33 +1771,28 @@ typedef const RTGCPTR64 RT_FAR *PCRTGCPTR64;
  */
 #define NIL_RTGCPTR64           ((RTGCPTR64)0)
 
-/** Guest context pointer.
- * Keep in mind that this type is an unsigned integer in
- * HC and void pointer in GC.
- */
-#if GC_ARCH_BITS == 64
-typedef RTGCPTR64               RTGCPTR;
-/** Pointer to a guest context pointer. */
-typedef PRTGCPTR64              PRTGCPTR;
-/** Pointer to a const guest context pointer. */
-typedef PCRTGCPTR64             PCRTGCPTR;
+/** @typedef RTGCPTR
+ * Guest context pointer.
+ * Keep in mind that this type is an unsigned integer in HC and void pointer in GC. */
+/** @typedef PRTGCPTR
+ * Pointer to a guest context pointer. */
+/** @typedef PCRTGCPTR
+ * Pointer to a const guest context pointer. */
 /** @def NIL_RTGCPTR
- * NIL GC pointer.
- */
-# define NIL_RTGCPTR    NIL_RTGCPTR64
-/** Max RTGCPTR value. */
+ * NIL GC pointer.  */
+/** @def RTGCPTR_MAX
+ * Max RTGCPTR value. */
+#if GC_ARCH_BITS == 64 || defined(DOXYGEN_RUNNING)
+typedef RTGCPTR64               RTGCPTR;
+typedef PRTGCPTR64              PRTGCPTR;
+typedef PCRTGCPTR64             PCRTGCPTR;
+# define NIL_RTGCPTR            NIL_RTGCPTR64
 # define RTGCPTR_MAX            UINT64_MAX
 #elif GC_ARCH_BITS == 32
 typedef RTGCPTR32               RTGCPTR;
-/** Pointer to a guest context pointer. */
 typedef PRTGCPTR32              PRTGCPTR;
-/** Pointer to a const guest context pointer. */
 typedef PCRTGCPTR32             PCRTGCPTR;
-/** @def NIL_RTGCPTR
- * NIL GC pointer.
- */
 # define NIL_RTGCPTR            NIL_RTGCPTR32
-/** Max RTGCPTR value. */
 # define RTGCPTR_MAX            UINT32_MAX
 #else
 # error "Unsupported GC_ARCH_BITS!"
@@ -1837,13 +1842,12 @@ typedef uint32_t                RTRCPTR;
 typedef RTRCPTR         RT_FAR *PRTRCPTR;
 /** Pointer to a const raw mode context pointer. */
 typedef const RTRCPTR   RT_FAR *PCRTRCPTR;
-/** @def NIL_RTGCPTR
- * NIL RC pointer.
- */
-#ifndef IN_RC
-# define NIL_RTRCPTR            ((RTRCPTR)0)
-#else
+/** @def NIL_RTRCPTR
+ * NIL RC pointer.  */
+#ifdef IN_RC
 # define NIL_RTRCPTR            (NULL)
+#else
+# define NIL_RTRCPTR            ((RTRCPTR)0)
 #endif
 /** @def RTRCPTR_MAX
  * The maximum value a RTRCPTR can have. Mostly used as INVALID value.
@@ -1867,6 +1871,20 @@ typedef uint32_t                RTRCUINTPTR;
  * The maximum value a RTRCINPTR can have.
  */
 #define RTRCINTPTR_MAX          ((RTRCINTPTR)INT32_MAX)
+
+/* The following are only temporarily while we clean up RTRCPTR usage: */
+#ifdef IN_RC
+typedef void            RT_FAR *RTRGPTR;
+#else
+typedef uint64_t                RTRGPTR;
+#endif
+typedef RTRGPTR         RT_FAR *PRTRGPTR;
+typedef const RTRGPTR   RT_FAR *PCRTRGPTR;
+#ifdef IN_RC
+# define NIL_RTRGPTR            (NULL)
+#else
+# define NIL_RTRGPTR            ((RTRGPTR)0)
+#endif
 
 /** @} */
 
@@ -2085,6 +2103,13 @@ typedef R3R0PTRTYPE(struct RTCRDIGESTINT RT_FAR *) RTCRDIGEST;
 typedef RTCRDIGEST                          RT_FAR *PRTCRDIGEST;
 /** NIL cryptographic message digest handle. */
 #define NIL_RTCRDIGEST                              (0)
+
+/** Cryptographic key handle. */
+typedef R3R0PTRTYPE(struct RTCRKEYINT RT_FAR *)     RTCRKEY;
+/** Pointer to a cryptographic key handle. */
+typedef RTCRKEY                             RT_FAR *PRTCRKEY;
+/** Cryptographic key handle nil value. */
+#define NIL_RTCRKEY                                 (0)
 
 /** Public key encryption schema handle. */
 typedef R3R0PTRTYPE(struct RTCRPKIXENCRYPTIONINT RT_FAR *) RTCRPKIXENCRYPTION;
@@ -2361,9 +2386,15 @@ typedef RTCPUID const                       RT_FAR *PCRTCPUID;
 
 /** The maximum number of CPUs a set can contain and IPRT is able
  * to reference. (Should be max of support arch/platforms.)
- * @remarks Must be a multiple of 64 (see RTCPUSET).  */
+ * @remarks Must be a power of two and multiple of 64 (see RTCPUSET).  */
 #if defined(RT_ARCH_X86) || defined(RT_ARCH_AMD64)
-# define RTCPUSET_MAX_CPUS      256
+# if defined(RT_OS_OS2)
+#  define RTCPUSET_MAX_CPUS     64
+# elif defined(RT_OS_DARWIN) || defined(RT_ARCH_X86)
+#  define RTCPUSET_MAX_CPUS     256
+# else
+#  define RTCPUSET_MAX_CPUS     1024
+# endif
 #elif defined(RT_ARCH_SPARC) || defined(RT_ARCH_SPARC64)
 # define RTCPUSET_MAX_CPUS      1024
 #else
@@ -2418,6 +2449,11 @@ typedef R3R0PTRTYPE(struct RTDBGMODINT RT_FAR *)    RTDBGMOD;
 typedef RTDBGMOD                            RT_FAR *PRTDBGMOD;
 /** NIL debug module handle. */
 #define NIL_RTDBGMOD                                ((RTDBGMOD)0)
+
+/** Pointer to an unwind machine state. */
+typedef struct RTDBGUNWINDSTATE RT_FAR              *PRTDBGUNWINDSTATE;
+/** Pointer to a const unwind machine state. */
+typedef struct RTDBGUNWINDSTATE const RT_FAR        *PCRTDBGUNWINDSTATE;
 
 /** Manifest handle. */
 typedef struct RTMANIFESTINT                RT_FAR *RTMANIFEST;
@@ -2514,6 +2550,13 @@ typedef struct RTKRNLMODINFOINT             RT_FAR *RTKRNLMODINFO;
 typedef RTKRNLMODINFO                       RT_FAR *PRTKRNLMODINFO;
 /** A NIL kernel module information record handle. */
 #define NIL_RTKRNLMODINFO                          ((RTKRNLMODINFO)~(uintptr_t)0);
+
+/** Shared memory object handle. */
+typedef struct RTSHMEMINT                   RT_FAR *RTSHMEM;
+/** Pointer to a shared memory object handle. */
+typedef RTSHMEM                             RT_FAR *PRTSHMEM;
+/** A NIL shared memory object handle. */
+#define NIL_RTSHMEM                                ((RTSHMEM)~(uintptr_t)0)
 
 /**
  * Handle type.
@@ -3191,5 +3234,5 @@ public:
 #endif /* __cplusplus */
 /** @} */
 
-#endif
+#endif /* !IPRT_INCLUDED_types_h */
 

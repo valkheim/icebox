@@ -1,10 +1,10 @@
-/* $Rev: 129379 $ */
+/* $Id: SUPDrv-linux.c $ */
 /** @file
  * VBoxDrv - The VirtualBox Support Driver - Linux specifics.
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -144,9 +144,9 @@ static int force_async_tsc = 0;
  * Memory for the executable memory heap (in IPRT).
  */
 # ifdef DEBUG
-#  define EXEC_MEMORY_SIZE   6291456    /* 6 MB */
+#  define EXEC_MEMORY_SIZE   8388608    /* 8 MB */
 # else
-#  define EXEC_MEMORY_SIZE   1572864    /* 1.5 MB */
+#  define EXEC_MEMORY_SIZE   2097152    /* 2 MB */
 # endif
 extern uint8_t g_abExecMemory[EXEC_MEMORY_SIZE];
 # ifndef VBOX_WITH_TEXT_MODMEM_HACK
@@ -557,7 +557,8 @@ static int VBoxDrvLinuxIOCtl(struct inode *pInode, struct file *pFilp, unsigned 
 {
     PSUPDRVSESSION pSession = (PSUPDRVSESSION)pFilp->private_data;
     int rc;
-#if defined(VBOX_STRICT) || defined(VBOX_WITH_EFLAGS_AC_SET_IN_VBOXDRV)
+#ifndef VBOX_WITHOUT_EFLAGS_AC_SET_IN_VBOXDRV
+# if defined(VBOX_STRICT) || defined(VBOX_WITH_EFLAGS_AC_SET_IN_VBOXDRV)
     RTCCUINTREG fSavedEfl;
 
     /*
@@ -576,32 +577,31 @@ static int VBoxDrvLinuxIOCtl(struct inode *pInode, struct file *pFilp, unsigned 
 # else
     stac();
 # endif
+#endif
 
     /*
      * Deal with the two high-speed IOCtl that takes it's arguments from
      * the session and iCmd, and only returns a VBox status code.
      */
+    AssertCompile(_IOC_NRSHIFT == 0 && _IOC_NRBITS == 8);
 #ifdef HAVE_UNLOCKED_IOCTL
-    if (RT_LIKELY(   (   uCmd == SUP_IOCTL_FAST_DO_RAW_RUN
-                      || uCmd == SUP_IOCTL_FAST_DO_HM_RUN
-                      || uCmd == SUP_IOCTL_FAST_DO_NOP)
-                  && pSession->fUnrestricted == true))
-        rc = supdrvIOCtlFast(uCmd, ulArg, &g_DevExt, pSession);
+    if (RT_LIKELY(   (unsigned int)(uCmd - SUP_IOCTL_FAST_DO_FIRST) < (unsigned int)32
+                  && pSession->fUnrestricted))
+        rc = supdrvIOCtlFast(uCmd - SUP_IOCTL_FAST_DO_FIRST, ulArg, &g_DevExt, pSession);
     else
         rc = VBoxDrvLinuxIOCtlSlow(pFilp, uCmd, ulArg, pSession);
 #else   /* !HAVE_UNLOCKED_IOCTL */
     unlock_kernel();
-    if (RT_LIKELY(   (   uCmd == SUP_IOCTL_FAST_DO_RAW_RUN
-                      || uCmd == SUP_IOCTL_FAST_DO_HM_RUN
-                      || uCmd == SUP_IOCTL_FAST_DO_NOP)
-                  && pSession->fUnrestricted == true))
-        rc = supdrvIOCtlFast(uCmd, ulArg, &g_DevExt, pSession);
+    if (RT_LIKELY(   (unsigned int)(uCmd - SUP_IOCTL_FAST_DO_FIRST) < (unsigned int)32
+                  && pSession->fUnrestricted))
+        rc = supdrvIOCtlFast(uCmd - SUP_IOCTL_FAST_DO_FIRST, ulArg, &g_DevExt, pSession);
     else
         rc = VBoxDrvLinuxIOCtlSlow(pFilp, uCmd, ulArg, pSession);
     lock_kernel();
 #endif  /* !HAVE_UNLOCKED_IOCTL */
 
-#if defined(VBOX_STRICT) || defined(VBOX_WITH_EFLAGS_AC_SET_IN_VBOXDRV)
+#ifndef VBOX_WITHOUT_EFLAGS_AC_SET_IN_VBOXDRV
+# if defined(VBOX_STRICT) || defined(VBOX_WITH_EFLAGS_AC_SET_IN_VBOXDRV)
     /*
      * Before we restore AC and the rest of EFLAGS, check if the IOCtl handler code
      * accidentially modified it or some other important flag.
@@ -614,8 +614,9 @@ static int VBoxDrvLinuxIOCtl(struct inode *pInode, struct file *pFilp, unsigned 
         supdrvBadContext(&g_DevExt, "SUPDrv-linux.c",  __LINE__, szTmp);
     }
     ASMSetFlags(fSavedEfl);
-#else
+# else
     clac();
+# endif
 #endif
     return rc;
 }
@@ -1387,6 +1388,17 @@ static int VBoxDrvLinuxErr2LinuxErr(int rc)
     }
 
     return -EPERM;
+}
+
+
+SUPR0DECL(int) SUPR0HCPhysToVirt(RTHCPHYS HCPhys, void **ppv)
+{
+    AssertReturn(!(HCPhys & PAGE_OFFSET_MASK), VERR_INVALID_POINTER);
+    AssertReturn(HCPhys != NIL_RTHCPHYS, VERR_INVALID_POINTER);
+    /* Would've like to use valid_phys_addr_range for this test, but it isn't exported. */
+    AssertReturn((HCPhys | PAGE_OFFSET_MASK) < __pa(high_memory), VERR_INVALID_POINTER);
+    *ppv = phys_to_virt(HCPhys);
+    return VINF_SUCCESS;
 }
 
 

@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2005-2017 Oracle Corporation
+ * Copyright (C) 2005-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -15,6 +15,7 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
+#define LOG_GROUP LOG_GROUP_MAIN_USBDEVICEFILTERS
 #include "USBDeviceFiltersImpl.h"
 
 #include "Global.h"
@@ -31,7 +32,7 @@
 #include <iprt/string.h>
 #include <iprt/cpp/utils.h>
 
-#include <VBox/err.h>
+#include <iprt/errcore.h>
 #include <VBox/settings.h>
 #include <VBox/com/array.h>
 
@@ -39,7 +40,7 @@
 
 #include "AutoStateDep.h"
 #include "AutoCaller.h"
-#include "Logging.h"
+#include "LoggingNew.h"
 
 // defines
 /////////////////////////////////////////////////////////////////////////////
@@ -514,6 +515,8 @@ HRESULT USBDeviceFilters::i_loadSettings(const settings::USB &data)
         m->llDeviceFilters->push_back(pFilter);
         pFilter->mInList = true;
     }
+#else
+    RT_NOREF(data);
 #endif /* VBOX_WITH_USB */
 
     return S_OK;
@@ -567,6 +570,8 @@ HRESULT USBDeviceFilters::i_saveSettings(settings::USB &data)
 
         data.llDeviceFilters.push_back(f);
     }
+#else
+    RT_NOREF(data);
 #endif /* VBOX_WITH_USB */
 
     return S_OK;

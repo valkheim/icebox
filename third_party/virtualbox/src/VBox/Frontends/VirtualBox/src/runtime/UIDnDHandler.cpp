@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2011-2017 Oracle Corporation
+ * Copyright (C) 2011-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -15,52 +15,44 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
-#ifdef VBOX_WITH_PRECOMPILED_HEADERS
-# include <precomp.h>
-#else  /* !VBOX_WITH_PRECOMPILED_HEADERS */
-
 /* Qt includes: */
 #include <QApplication>
+#include <QDrag>
 #include <QKeyEvent>
 #include <QStringList>
 #include <QTimer>
-#include <QDrag>
 #include <QUrl>
+#include <QWidget>
 
 /* VirtualBox interface declarations: */
-#ifndef VBOX_WITH_XPCOM
-# include "VirtualBox.h"
-#else
-# include "VirtualBox_XPCOM.h"
-#endif
+#include <VBox/com/VirtualBox.h>
 
 /* GUI includes: */
-# include "UIDnDHandler.h"
+#include "UIDnDHandler.h"
 #ifdef VBOX_WITH_DRAG_AND_DROP_GH
-# include "CDnDSource.h"
-# ifdef RT_OS_WINDOWS
-#  include "UIDnDDataObject_win.h"
-#  include "UIDnDDropSource_win.h"
-# endif
-# include "UIDnDMIMEData.h"
+#include "CDnDSource.h"
+#ifdef RT_OS_WINDOWS
+# include "UIDnDDataObject_win.h"
+# include "UIDnDDropSource_win.h"
+#endif
+#include "UIDnDMIMEData.h"
 #endif /* VBOX_WITH_DRAG_AND_DROP_GH */
 #include "UIMessageCenter.h"
 #include "UISession.h"
 
 /* COM includes: */
-# include "CConsole.h"
-# include "CGuest.h"
-# include "CGuestDnDSource.h"
-# include "CGuestDnDTarget.h"
-# include "CSession.h"
-
-#endif /* !VBOX_WITH_PRECOMPILED_HEADERS */
+#include "CConsole.h"
+#include "CGuest.h"
+#include "CGuestDnDSource.h"
+#include "CGuestDnDTarget.h"
+#include "CSession.h"
 
 #ifdef LOG_GROUP
  #undef LOG_GROUP
 #endif
 #define LOG_GROUP LOG_GROUP_GUEST_DND
 #include <VBox/log.h>
+#include <iprt/err.h>
 
 #if 0
 # ifdef DEBUG
@@ -387,12 +379,12 @@ int UIDnDHandler::dragStartInternal(const QStringList &lstFormats,
     }
 
     /* Inform the MIME data object of any changes in the current action. */
-    connect(pDrag, SIGNAL(actionChanged(Qt::DropAction)),
-            m_pMIMEData, SLOT(sltDropActionChanged(Qt::DropAction)));
+    connect(pDrag, &QDrag::actionChanged,
+            m_pMIMEData, &UIDnDMIMEData::sltDropActionChanged);
 
     /* Invoke this handler as data needs to be retrieved by our derived QMimeData class. */
-    connect(m_pMIMEData, SIGNAL(sigGetData(Qt::DropAction, const QString&, QVariant::Type, QVariant&)),
-            this, SLOT(sltGetData(Qt::DropAction, const QString&, QVariant::Type, QVariant&)));
+    connect(m_pMIMEData, &UIDnDMIMEData::sigGetData,
+            this, &UIDnDHandler::sltGetData);
 
     /*
      * Set MIME data object and start the (modal) drag'n drop operation on the host.
@@ -814,4 +806,3 @@ Qt::DropActions UIDnDHandler::toQtDnDActions(const QVector<KDnDAction> &vecActio
     LogFlowFunc(("dropActions=0x%x\n", int(dropActs)));
     return dropActs;
 }
-

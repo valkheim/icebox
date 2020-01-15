@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -332,7 +332,7 @@ VMMR3_INT_DECL(int) PGMR3DbgReadGCPtr(PVM pVM, void *pvDst, RTGCPTR GCPtrSrc, si
     AssertReturn(pVM, VERR_INVALID_PARAMETER);
 
     /** @todo SMP support! */
-    PVMCPU pVCpu = &pVM->aCpus[0];
+    PVMCPU pVCpu = pVM->apCpusR3[0];
 
 /** @todo deal with HMA */
     /* try simple first. */
@@ -388,7 +388,7 @@ VMMR3_INT_DECL(int) PGMR3DbgWriteGCPtr(PVM pVM, RTGCPTR GCPtrDst, void const *pv
     AssertReturn(pVM, VERR_INVALID_PARAMETER);
 
     /** @todo SMP support! */
-    PVMCPU pVCpu = &pVM->aCpus[0];
+    PVMCPU pVCpu = pVM->apCpusR3[0];
 
 /** @todo deal with HMA */
     /* try simple first. */
@@ -866,49 +866,69 @@ VMMR3_INT_DECL(int) PGMR3DbgScanVirtual(PVM pVM, PVMCPU pVCpu, RTGCPTR GCPtr, RT
     PFNPGMR3DBGFIXEDMEMSCAN pfnMemScan;
     pgmR3DbgSelectMemScanFunction(&pfnMemScan, (uint32_t)GCPtrAlign, cbNeedle);
 
-    uint32_t        cYieldCountDown = 4096;
+    VMSTATE         enmVMState              = pVM->enmVMState;
+    uint32_t const  cYieldCountDownReload   = VMSTATE_IS_RUNNING(enmVMState) ? 4096 : 65536;
+    uint32_t        cYieldCountDown         = cYieldCountDownReload;
+    RTGCPHYS        GCPhysPrev              = NIL_RTGCPHYS;
+    bool            fFullWalk               = true;
+    PGMPTWALKGST    Walk;
+    RT_ZERO(Walk);
+
     pgmLock(pVM);
     for (;; offPage = 0)
     {
-        PGMPTWALKGST Walk;
-        int rc = pgmGstPtWalk(pVCpu, GCPtr, &Walk);
+        int rc;
+        if (fFullWalk)
+            rc = pgmGstPtWalk(pVCpu, GCPtr, &Walk);
+        else
+            rc = pgmGstPtWalkNext(pVCpu, GCPtr, &Walk);
         if (RT_SUCCESS(rc) && Walk.u.Core.fSucceeded)
         {
-            PPGMPAGE pPage = pgmPhysGetPage(pVM, Walk.u.Core.GCPhys);
-            if (   pPage
-                && (   !PGM_PAGE_IS_ZERO(pPage)
-                    || fAllZero)
-                && !PGM_PAGE_IS_MMIO_OR_ALIAS(pPage)
-                && !PGM_PAGE_IS_BALLOONED(pPage))
+            fFullWalk = false;
+
+            /* Skip if same page as previous one (W10 optimization). */
+            if (   Walk.u.Core.GCPhys != GCPhysPrev
+                || cbPrev != 0)
             {
-                void const *pvPage;
-                PGMPAGEMAPLOCK Lock;
-                rc = PGMPhysGCPhys2CCPtrReadOnly(pVM, Walk.u.Core.GCPhys, &pvPage, &Lock);
-                if (RT_SUCCESS(rc))
+                PPGMPAGE pPage = pgmPhysGetPage(pVM, Walk.u.Core.GCPhys);
+                if (   pPage
+                    && (   !PGM_PAGE_IS_ZERO(pPage)
+                        || fAllZero)
+                    && !PGM_PAGE_IS_MMIO_OR_ALIAS(pPage)
+                    && !PGM_PAGE_IS_BALLOONED(pPage))
                 {
-                    int32_t offHit = offPage;
-                    bool    fRc;
-                    if (GCPtrAlign < PAGE_SIZE)
+                    GCPhysPrev = Walk.u.Core.GCPhys;
+                    void const *pvPage;
+                    PGMPAGEMAPLOCK Lock;
+                    rc = PGMPhysGCPhys2CCPtrReadOnly(pVM, Walk.u.Core.GCPhys, &pvPage, &Lock);
+                    if (RT_SUCCESS(rc))
                     {
-                        uint32_t cbSearch = cPages > 0
-                                          ? PAGE_SIZE                          - (uint32_t)offPage
-                                          : (GCPtrLast & PAGE_OFFSET_MASK) + 1 - (uint32_t)offPage;
-                        fRc = pgmR3DbgScanPage((uint8_t const *)pvPage, &offHit, cbSearch, (uint32_t)GCPtrAlign,
-                                               pabNeedle, cbNeedle, pfnMemScan, &abPrev[0], &cbPrev);
+                        int32_t offHit = offPage;
+                        bool    fRc;
+                        if (GCPtrAlign < PAGE_SIZE)
+                        {
+                            uint32_t cbSearch = cPages > 0
+                                              ? PAGE_SIZE                          - (uint32_t)offPage
+                                              : (GCPtrLast & PAGE_OFFSET_MASK) + 1 - (uint32_t)offPage;
+                            fRc = pgmR3DbgScanPage((uint8_t const *)pvPage, &offHit, cbSearch, (uint32_t)GCPtrAlign,
+                                                   pabNeedle, cbNeedle, pfnMemScan, &abPrev[0], &cbPrev);
+                        }
+                        else
+                            fRc = memcmp(pvPage, pabNeedle, cbNeedle) == 0
+                               && (GCPtrLast - GCPtr) >= cbNeedle;
+                        PGMPhysReleasePageMappingLock(pVM, &Lock);
+                        if (fRc)
+                        {
+                            *pGCPtrHit = GCPtr + offHit;
+                            pgmUnlock(pVM);
+                            return VINF_SUCCESS;
+                        }
                     }
                     else
-                        fRc = memcmp(pvPage, pabNeedle, cbNeedle) == 0
-                           && (GCPtrLast - GCPtr) >= cbNeedle;
-                    PGMPhysReleasePageMappingLock(pVM, &Lock);
-                    if (fRc)
-                    {
-                        *pGCPtrHit = GCPtr + offHit;
-                        pgmUnlock(pVM);
-                        return VINF_SUCCESS;
-                    }
+                        cbPrev = 0; /* ignore error. */
                 }
                 else
-                    cbPrev = 0; /* ignore error. */
+                    cbPrev = 0;
             }
             else
                 cbPrev = 0;
@@ -965,6 +985,7 @@ VMMR3_INT_DECL(int) PGMR3DbgScanVirtual(PVM pVM, PVMCPU pVCpu, RTGCPTR GCPtr, RT
             }
             if (cPages <= cPagesCanSkip)
                 break;
+            fFullWalk = true;
             if (cPagesCanSkip >= cIncPages)
             {
                 cPages -= cPagesCanSkip;
@@ -982,8 +1003,8 @@ VMMR3_INT_DECL(int) PGMR3DbgScanVirtual(PVM pVM, PVMCPU pVCpu, RTGCPTR GCPtr, RT
         /* Yield the PGM lock every now and then. */
         if (!--cYieldCountDown)
         {
-            PDMR3CritSectYield(&pVM->pgm.s.CritSectX);
-            cYieldCountDown = 4096;
+            fFullWalk = PDMR3CritSectYield(pVM, &pVM->pgm.s.CritSectX);
+            cYieldCountDown = cYieldCountDownReload;
         }
     }
     pgmUnlock(pVM);
@@ -1094,17 +1115,19 @@ static int pgmR3DumpHierarchyShwMapPage(PPGMR3DUMPHIERARCHYSTATE pState, RTHCPHY
     void *pvPage;
     if (!fIsMapping)
     {
-        int rc = MMPagePhys2PageTry(pState->pVM, HCPhys, &pvPage);
-        if (RT_FAILURE(rc))
+        PPGMPOOLPAGE pPoolPage = pgmPoolQueryPageForDbg(pState->pVM->pgm.s.pPoolR3, HCPhys);
+        if (pPoolPage)
         {
             pState->pHlp->pfnPrintf(pState->pHlp, "%0*llx error! %s at HCPhys=%RHp was not found in the page pool!\n",
                                     pState->cchAddress, pState->u64Address, pszDesc, HCPhys);
-            return rc;
+            return VERR_PGM_POOL_GET_PAGE_FAILED;
         }
+        pvPage = (uint8_t *)pPoolPage->pvPageR3 + (HCPhys & PAGE_OFFSET_MASK);
     }
     else
     {
         pvPage = NULL;
+#ifndef PGM_WITHOUT_MAPPINGS
         for (PPGMMAPPING pMap = pState->pVM->pgm.s.pMappingsR3; pMap; pMap = pMap->pNextR3)
         {
             uint64_t off = pState->u64Address - pMap->GCPtr;
@@ -1121,6 +1144,7 @@ static int pgmR3DumpHierarchyShwMapPage(PPGMR3DUMPHIERARCHYSTATE pState, RTHCPHY
                 break;
             }
         }
+#endif /* !PGM_WITHOUT_MAPPINGS */
         if (!pvPage)
         {
             pState->pHlp->pfnPrintf(pState->pHlp, "%0*llx error! PT mapping %s at HCPhys=%RHp was not found in the page pool!\n",
@@ -1150,6 +1174,7 @@ static void pgmR3DumpHierarchyShwTablePageInfo(PPGMR3DUMPHIERARCHYSTATE pState, 
     {
         /* probably a mapping */
         strcpy(szPage, " not found");
+#ifndef PGM_WITHOUT_MAPPINGS
         for (PPGMMAPPING pMap = pState->pVM->pgm.s.pMappingsR3; pMap; pMap = pMap->pNextR3)
         {
             uint64_t off = pState->u64Address - pMap->GCPtr;
@@ -1167,6 +1192,7 @@ static void pgmR3DumpHierarchyShwTablePageInfo(PPGMR3DUMPHIERARCHYSTATE pState, 
                 break;
             }
         }
+#endif /* !PGM_WITHOUT_MAPPINGS */
     }
     pgmUnlock(pState->pVM);
     pState->pHlp->pfnPrintf(pState->pHlp, "%s", szPage);
@@ -1198,12 +1224,14 @@ static void pgmR3DumpHierarchyShwGuestPageInfo(PPGMR3DUMPHIERARCHYSTATE pState, 
     }
     else
     {
+#ifndef PGM_WITHOUT_MAPPINGS
         /* check the heap */
         uint32_t cbAlloc;
         rc = MMR3HyperQueryInfoFromHCPhys(pState->pVM, HCPhys, szPage, sizeof(szPage), &cbAlloc);
         if (RT_SUCCESS(rc))
             pState->pHlp->pfnPrintf(pState->pHlp, " %s %#x bytes", szPage, cbAlloc);
         else
+#endif
             pState->pHlp->pfnPrintf(pState->pHlp, " not found");
     }
     NOREF(cbPage);
@@ -1820,7 +1848,7 @@ VMMR3DECL(int) PGMR3DumpHierarchyHC(PVM pVM, uint64_t cr3, uint64_t cr4, bool fL
 
     PVMCPU pVCpu = VMMGetCpu(pVM);
     if (!pVCpu)
-        pVCpu = &pVM->aCpus[0];
+        pVCpu = pVM->apCpusR3[0];
 
     uint32_t fFlags = DBGFPGDMP_FLAGS_HEADER | DBGFPGDMP_FLAGS_PRINT_CR3 | DBGFPGDMP_FLAGS_PAGE_INFO | DBGFPGDMP_FLAGS_SHADOW;
     fFlags |= cr4 & (X86_CR4_PAE | X86_CR4_PSE);

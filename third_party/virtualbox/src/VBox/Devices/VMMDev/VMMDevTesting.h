@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2010-2017 Oracle Corporation
+ * Copyright (C) 2010-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -15,19 +15,22 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
-
-#ifndef ___VMMDev_VMMDevTesting_h
-#define ___VMMDev_VMMDevTesting_h
+#ifndef VBOX_INCLUDED_SRC_VMMDev_VMMDevTesting_h
+#define VBOX_INCLUDED_SRC_VMMDev_VMMDevTesting_h
+#ifndef RT_WITHOUT_PRAGMA_ONCE
+# pragma once
+#endif
 
 #include <VBox/types.h>
 #include <VBox/VMMDevTesting.h>
 
 RT_C_DECLS_BEGIN
 
-int  vmmdevTestingInitialize(PPDMDEVINS pDevIns);
-void vmmdevTestingTerminate(PPDMDEVINS pDevIns);
+int  vmmdevR3TestingInitialize(PPDMDEVINS pDevIns);
+void vmmdevR3TestingTerminate(PPDMDEVINS pDevIns);
+int  vmmdevRZTestingInitialize(PPDMDEVINS pDevIns);
 
 RT_C_DECLS_END
 
-#endif
+#endif /* !VBOX_INCLUDED_SRC_VMMDev_VMMDevTesting_h */
 

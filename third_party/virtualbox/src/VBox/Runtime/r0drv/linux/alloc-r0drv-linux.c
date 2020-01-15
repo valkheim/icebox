@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -33,7 +33,7 @@
 #include <iprt/mem.h>
 
 #include <iprt/assert.h>
-#include <iprt/err.h>
+#include <iprt/errcore.h>
 #include "r0drv/alloc-r0drv.h"
 
 
@@ -59,8 +59,10 @@
 #ifdef RTMEMALLOC_EXEC_HEAP
 # include <iprt/heap.h>
 # include <iprt/spinlock.h>
-# include <iprt/err.h>
+# include <iprt/errcore.h>
 #endif
+
+#include "internal/initterm.h"
 
 
 /*********************************************************************************************************************************
@@ -441,9 +443,6 @@ RTR0DECL(void *) RTMemContAlloc(PRTCCPHYS pPhys, size_t cb)
             }
 
             SetPageReserved(&paPages[iPage]);
-#if LINUX_VERSION_CODE > KERNEL_VERSION(2, 4, 20) /** @todo find the exact kernel where change_page_attr was introduced. */
-            MY_SET_PAGES_EXEC(&paPages[iPage], 1);
-#endif
         }
         *pPhys = page_to_phys(paPages);
         pvRet = phys_to_virt(page_to_phys(paPages));
@@ -489,9 +488,6 @@ RTR0DECL(void) RTMemContFree(void *pv, size_t cb)
         for (iPage = 0; iPage < cPages; iPage++)
         {
             ClearPageReserved(&paPages[iPage]);
-#if LINUX_VERSION_CODE > KERNEL_VERSION(2, 4, 20) /** @todo find the exact kernel where change_page_attr was introduced. */
-            MY_SET_PAGES_NOEXEC(&paPages[iPage], 1);
-#endif
         }
         __free_pages(paPages, cOrder);
         IPRT_LINUX_RESTORE_EFL_AC();

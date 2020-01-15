@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2011-2017 Oracle Corporation
+ * Copyright (C) 2011-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -15,14 +15,18 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
-#ifndef ___UINetworkRequest_h___
-#define ___UINetworkRequest_h___
+#ifndef FEQT_INCLUDED_SRC_net_UINetworkRequest_h
+#define FEQT_INCLUDED_SRC_net_UINetworkRequest_h
+#ifndef RT_WITHOUT_PRAGMA_ONCE
+# pragma once
+#endif
 
 /* Qt includes: */
 #include <QUuid>
 #include <QPointer>
 
 /* GUI inludes: */
+#include "UILibraryDefs.h"
 #include "UINetworkDefs.h"
 #include "UINetworkReply.h"
 
@@ -34,7 +38,7 @@ class UINetworkRequestWidget;
 class UINetworkCustomer;
 
 /** QObject extension used as network-request container. */
-class UINetworkRequest : public QObject
+class SHARED_LIBRARY_STUFF UINetworkRequest : public QObject
 {
     Q_OBJECT;
 
@@ -66,11 +70,12 @@ signals:
 
 public:
 
-    /** Constructs network-request of the passed @a type
-      * on the basis of the passed @a urls and the @a requestHeaders
+    /** Constructs network-request of the passed @a enmType
+      * on the basis of the passed @a urls, @a strTarget and the @a requestHeaders
       * for the @a pCustomer and @a pNetworkManager specified. */
-    UINetworkRequest(UINetworkRequestType type,
+    UINetworkRequest(UINetworkRequestType enmType,
                      const QList<QUrl> &urls,
+                     const QString &strTarget,
                      const UserDictionary &requestHeaders,
                      UINetworkCustomer *pCustomer,
                      UINetworkManager *pNetworkManager);
@@ -117,9 +122,11 @@ private:
     void cleanup();
 
     /** Holds the request type. */
-    const UINetworkRequestType m_type;
+    const UINetworkRequestType m_enmType;
     /** Holds the request urls. */
     const QList<QUrl> m_urls;
+    /** Holds the request target. */
+    const QString m_strTarget;
     /** Holds the request headers. */
     const UserDictionary m_requestHeaders;
     /** Holds the request customer. */
@@ -140,5 +147,5 @@ private:
     QPointer<UINetworkReply> m_pReply;
 };
 
-#endif /* !___UINetworkRequest_h___ */
+#endif /* !FEQT_INCLUDED_SRC_net_UINetworkRequest_h */
 

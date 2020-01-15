@@ -1,10 +1,10 @@
 /* $Id: biosint.h $ */
 /** @file
- * PC BIOS - ???
+ * PC BIOS - BIOS internal definitions.
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -52,6 +52,11 @@
  * of the LGPL is applied is otherwise unspecified.
  */
 
+#ifndef VBOX_INCLUDED_SRC_PC_BIOS_biosint_h
+#define VBOX_INCLUDED_SRC_PC_BIOS_biosint_h
+#ifndef RT_WITHOUT_PRAGMA_ONCE
+# pragma once
+#endif
 
 /* Compile-time assertion macro. */
 #define ct_assert(a)    extern int ct_ass_arr[!!(a) == 1];
@@ -285,6 +290,8 @@ extern  bx_bool     set_enable_a20(bx_bool val);
 #endif /* !VBOX */
 #define BX_PANIC(...)   bios_printf(BIOS_PRINTF_DEBHALT, __VA_ARGS__)
 
+uint16_t pci16_find_device(uint32_t search_item, uint16_t index, int search_class, int ignore_if);
+
 /* Because we don't tell the recompiler when guest physical memory
  * is written, it can incorrectly cache guest code overwritten by
  * DMA (bus master or not). We just re-write the memory block to flush
@@ -301,3 +308,6 @@ extern  bx_bool     set_enable_a20(bx_bool val);
 #define PIC_CMD_EOI         0x20
 #define PIC_CMD_RD_ISR      0x0B
 #define PIC_CMD_INIT        0x11
+
+#endif /* !VBOX_INCLUDED_SRC_PC_BIOS_biosint_h */
+

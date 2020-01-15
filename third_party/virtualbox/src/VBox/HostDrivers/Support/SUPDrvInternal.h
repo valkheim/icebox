@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -24,8 +24,11 @@
  * terms and conditions of either the GPL or the CDDL or both.
  */
 
-#ifndef ___SUPDrvInternal_h
-#define ___SUPDrvInternal_h
+#ifndef VBOX_INCLUDED_SRC_Support_SUPDrvInternal_h
+#define VBOX_INCLUDED_SRC_Support_SUPDrvInternal_h
+#ifndef RT_WITHOUT_PRAGMA_ONCE
+# pragma once
+#endif
 
 
 /*******************************************************************************
@@ -327,6 +330,8 @@ typedef struct SUPDRVLDRIMAGE
      * pvImage is 32-byte aligned or it may governed by the native loader (this
      * member is NULL then). */
     void                           *pvImageAlloc;
+    /** Magic value (SUPDRVLDRIMAGE_MAGIC). */
+    uint32_t                        uMagic;
     /** Size of the image including the tables. This is mainly for verification
      * of the load request. */
     uint32_t                        cbImageWithTabs;
@@ -380,6 +385,11 @@ typedef struct SUPDRVLDRIMAGE
     char                            szName[32];
 } SUPDRVLDRIMAGE, *PSUPDRVLDRIMAGE;
 
+/** Magic value for SUPDRVLDRIMAGE::uMagic (Charlotte Bronte). */
+#define SUPDRVLDRIMAGE_MAGIC        UINT32_C(0x18160421)
+/** Magic value for SUPDRVLDRIMAGE::uMagic when freed. */
+#define SUPDRVLDRIMAGE_MAGIC_DEAD   UINT32_C(0x18550331)
+
 
 /** Image usage record. */
 typedef struct SUPDRVLDRUSAGE
@@ -388,8 +398,10 @@ typedef struct SUPDRVLDRUSAGE
     struct SUPDRVLDRUSAGE * volatile pNext;
     /** The image. */
     PSUPDRVLDRIMAGE                 pImage;
-    /** Load count. */
-    uint32_t volatile               cUsage;
+    /** Load count (ring-3). */
+    uint32_t volatile               cRing3Usage;
+    /** Ring-0 usage counter. */
+    uint32_t volatile               cRing0Usage;
 } SUPDRVLDRUSAGE, *PSUPDRVLDRUSAGE;
 
 
@@ -460,6 +472,32 @@ typedef struct SUPDRVUSAGE
     /** The usage count. */
     uint32_t volatile               cUsage;
 } SUPDRVUSAGE, *PSUPDRVUSAGE;
+
+
+/**
+ * I/O control context.
+ */
+typedef struct SUPR0IOCTLCTX
+{
+    /** Magic value (SUPR0IOCTLCTX_MAGIC). */
+    uint32_t                u32Magic;
+    /** Reference counter. */
+    uint32_t volatile       cRefs;
+#ifdef RT_OS_WINDOWS
+# ifndef SUPDRV_AGNOSTIC
+    /** The file object, referenced. */
+    PFILE_OBJECT            pFileObject;
+    /** The device object, not referenced. */
+    PDEVICE_OBJECT          pDeviceObject;
+    /** Pointer to fast I/O routine if available. */
+    FAST_IO_DEVICE_CONTROL *pfnFastIoDeviceControl;
+# else
+    void                   *apvPadding[3];
+# endif
+#endif
+} SUPR0IOCTLCTX;
+/** Magic value for SUPR0IOCTLCTX (Ahmad Jamal). */
+#define SUPR0IOCTLCTX_MAGIC     UINT32_C(0x19300702)
 
 
 /**
@@ -617,6 +655,8 @@ typedef struct SUPDRVDEVEXT
     PSUPDRVLDRIMAGE volatile        pLdrInitImage;
     /** The thread currently executing a ModuleInit function. */
     RTNATIVETHREAD volatile         hLdrInitThread;
+    /** The thread currently executing a ModuleTerm function. */
+    RTNATIVETHREAD volatile         hLdrTermThread;
     /** @} */
 
     /** Number of times someone reported bad execution context via SUPR0BadContext.
@@ -860,7 +900,6 @@ RTCCUINTREG VBOXCALL supdrvOSChangeCR4(RTCCUINTREG fOrMask, RTCCUINTREG fAndMask
 bool VBOXCALL   supdrvOSSuspendVTxOnCpu(void);
 void VBOXCALL   supdrvOSResumeVTxOnCpu(bool fSuspended);
 int  VBOXCALL   supdrvOSGetCurrentGdtRw(RTHCUINTPTR *pGdtRw);
-int  VBOXCALL   supdrvOSGetRawModeUsability(void);
 
 /**
  * Try open the image using the native loader.
@@ -1009,7 +1048,7 @@ int VBOXCALL    supdrvDarwinResumeSuspendedKbds(void);
 *******************************************************************************/
 /* SUPDrv.c */
 int  VBOXCALL   supdrvIOCtl(uintptr_t uIOCtl, PSUPDRVDEVEXT pDevExt, PSUPDRVSESSION pSession, PSUPREQHDR pReqHdr, size_t cbReq);
-int  VBOXCALL   supdrvIOCtlFast(uintptr_t uIOCtl, VMCPUID idCpu, PSUPDRVDEVEXT pDevExt, PSUPDRVSESSION pSession);
+int  VBOXCALL   supdrvIOCtlFast(uintptr_t uOperation, VMCPUID idCpu, PSUPDRVDEVEXT pDevExt, PSUPDRVSESSION pSession);
 int  VBOXCALL   supdrvIDC(uintptr_t uIOCtl, PSUPDRVDEVEXT pDevExt, PSUPDRVSESSION pSession, PSUPDRVIDCREQHDR pReqHdr);
 int  VBOXCALL   supdrvInitDevExt(PSUPDRVDEVEXT pDevExt, size_t cbSession);
 void VBOXCALL   supdrvDeleteDevExt(PSUPDRVDEVEXT pDevExt);
@@ -1056,5 +1095,5 @@ const SUPDRVTRACERREG * VBOXCALL supdrvDTraceInit(void);
 
 RT_C_DECLS_END
 
-#endif
+#endif /* !VBOX_INCLUDED_SRC_Support_SUPDrvInternal_h */
 

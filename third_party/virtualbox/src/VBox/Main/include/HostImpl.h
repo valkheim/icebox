@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -15,8 +15,11 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
-#ifndef ____H_HOSTIMPL
-#define ____H_HOSTIMPL
+#ifndef MAIN_INCLUDED_HostImpl_h
+#define MAIN_INCLUDED_HostImpl_h
+#ifndef RT_WITHOUT_PRAGMA_ONCE
+# pragma once
+#endif
 
 #include "HostWrap.h"
 
@@ -61,6 +64,8 @@ public:
     HRESULT i_loadSettings(const settings::Host &data);
     HRESULT i_saveSettings(settings::Host &data);
 
+    void    i_updateProcessorFeatures();
+
     HRESULT i_getDrives(DeviceType_T mediumType, bool fRefresh, MediaList *&pll, AutoWriteLock &treeLock);
     HRESULT i_findHostDriveById(DeviceType_T mediumType, const Guid &uuid, bool fRefresh, ComObjPtr<Medium> &pMedium);
     HRESULT i_findHostDriveByName(DeviceType_T mediumType, const Utf8Str &strLocationFull, bool fRefresh, ComObjPtr<Medium> &pMedium);
@@ -81,6 +86,12 @@ public:
 #endif /* !VBOX_WITH_USB */
 
     static void i_generateMACAddress(Utf8Str &mac);
+
+#ifdef RT_OS_WINDOWS
+    HRESULT i_updatePersistentConfigForHostOnlyAdapters(void);
+    HRESULT i_removePersistentConfig(const Bstr &bstrGuid);
+#endif /* RT_OS_WINDOWS */
+
 
 private:
 
@@ -104,6 +115,7 @@ private:
     HRESULT getUTCTime(LONG64 *aUTCTime);
     HRESULT getAcceleration3DAvailable(BOOL *aAcceleration3DAvailable);
     HRESULT getVideoInputDevices(std::vector<ComPtr<IHostVideoInputDevice> > &aVideoInputDevices);
+    HRESULT getUpdate(ComPtr<IHostUpdate> &aUpdate);
 
     // wrapped IHost methods
     HRESULT getProcessorSpeed(ULONG aCpuId,
@@ -184,5 +196,5 @@ private:
     Data *m;
 };
 
-#endif // ____H_HOSTIMPL
+#endif /* !MAIN_INCLUDED_HostImpl_h */
 

@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2010-2017 Oracle Corporation
+ * Copyright (C) 2010-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -15,44 +15,42 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
-#ifdef VBOX_WITH_PRECOMPILED_HEADERS
-# include <precomp.h>
-#else  /* !VBOX_WITH_PRECOMPILED_HEADERS */
-
 /* Qt includes: */
-# include <QCloseEvent>
-# include <QProcess>
-# include <QTimer>
+#include <QCloseEvent>
+#include <QGridLayout>
+#include <QProcess>
+#include <QStyle>
+#include <QTimer>
 
 /* GUI includes: */
-# include "VBoxGlobal.h"
-# include "UIConverter.h"
-# include "UIModalWindowManager.h"
-# include "UIExtraDataManager.h"
-# include "UIMessageCenter.h"
-# include "UISession.h"
-# include "UIMachineLogic.h"
-# include "UIMachineWindow.h"
-# include "UIMachineWindowNormal.h"
-# include "UIMachineWindowFullscreen.h"
-# include "UIMachineWindowSeamless.h"
-# include "UIMachineWindowScale.h"
-# include "UIMachineView.h"
-# include "UIKeyboardHandler.h"
-# include "UIMouseHandler.h"
-# include "UIVMCloseDialog.h"
+#include "UICommon.h"
+#include "UIConverter.h"
+#include "UIModalWindowManager.h"
+#include "UIExtraDataManager.h"
+#include "UIMessageCenter.h"
+#include "UISession.h"
+#include "UIMachineLogic.h"
+#include "UIMachineWindow.h"
+#include "UIMachineWindowNormal.h"
+#include "UIMachineWindowFullscreen.h"
+#include "UIMachineWindowSeamless.h"
+#include "UIMachineWindowScale.h"
+#include "UIMachineView.h"
+#include "UIKeyboardHandler.h"
+#include "UIMouseHandler.h"
+#include "UIVMCloseDialog.h"
+#include "VBox2DHelpers.h"
 
 /* COM includes: */
-# include "CConsole.h"
-# include "CSnapshot.h"
+#include "CConsole.h"
+#include "CGraphicsAdapter.h"
+#include "CSnapshot.h"
 
 /* Other VBox includes: */
-# include <VBox/version.h>
-# ifdef VBOX_BLEEDING_EDGE
-#  include <iprt/buildconfig.h>
-# endif /* VBOX_BLEEDING_EDGE */
-
-#endif /* !VBOX_WITH_PRECOMPILED_HEADERS */
+#include <VBox/version.h>
+#ifdef VBOX_BLEEDING_EDGE
+# include <iprt/buildconfig.h>
+#endif /* VBOX_BLEEDING_EDGE */
 
 
 /* static */
@@ -133,10 +131,10 @@ void UIMachineWindow::prepare()
     const QString strWindowClass = QString("VirtualBox Machine");
     QString strWindowName = strWindowClass;
     /* Check if we want Window Manager to distinguish Virtual Machine windows: */
-    if (gEDataManager->distinguishMachineWindowGroups(vboxGlobal().managedVMUuid()))
-        strWindowName = QString("VirtualBox Machine UUID: %1").arg(vboxGlobal().managedVMUuid());
+    if (gEDataManager->distinguishMachineWindowGroups(uiCommon().managedVMUuid()))
+        strWindowName = QString("VirtualBox Machine UUID: %1").arg(uiCommon().managedVMUuid().toString());
     /* Assign WM_CLASS property: */
-    VBoxGlobal::setWMClass(this, strWindowName, strWindowClass);
+    UICommon::setWMClass(this, strWindowName, strWindowClass);
 #endif
 }
 
@@ -256,13 +254,53 @@ void UIMachineWindow::retranslateUi()
     updateAppearanceOf(UIVisualElement_WindowTitle);
 }
 
-void UIMachineWindow::showEvent(QShowEvent *pShowEvent)
+bool UIMachineWindow::event(QEvent *pEvent)
 {
-    /* Call to base class: */
-    QMainWindow::showEvent(pShowEvent);
+    /* Call to base-class: */
+    const bool fResult = QIWithRetranslateUI2<QMainWindow>::event(pEvent);
+
+    /* Handle particular events: */
+    switch (pEvent->type())
+    {
+        case QEvent::WindowActivate:
+        {
+            /* Initiate registration in the modal window manager: */
+            windowManager().setMainWindowShown(this);
+            break;
+        }
+        default:
+            break;
+    }
+
+    /* Return result: */
+    return fResult;
+}
+
+void UIMachineWindow::showEvent(QShowEvent *pEvent)
+{
+    /* Call to base-class: */
+    QMainWindow::showEvent(pEvent);
+
+    /* Initiate registration in the modal window manager: */
+    windowManager().setMainWindowShown(this);
 
     /* Update appearance for indicator-pool: */
     updateAppearanceOf(UIVisualElement_IndicatorPoolStuff);
+}
+
+void UIMachineWindow::hideEvent(QHideEvent *pEvent)
+{
+    /* Update registration in the modal window manager: */
+    if (windowManager().mainWindowShown() == this)
+    {
+        if (machineLogic()->activeMachineWindow())
+            windowManager().setMainWindowShown(machineLogic()->activeMachineWindow());
+        else
+            windowManager().setMainWindowShown(machineLogic()->mainMachineWindow());
+    }
+
+    /* Call to base-class: */
+    QMainWindow::hideEvent(pEvent);
 }
 
 void UIMachineWindow::closeEvent(QCloseEvent *pCloseEvent)
@@ -275,11 +313,11 @@ void UIMachineWindow::closeEvent(QCloseEvent *pCloseEvent)
         return;
 
     /* If there is a close hook script defined: */
-    const QString strScript = gEDataManager->machineCloseHookScript(vboxGlobal().managedVMUuid());
+    const QString strScript = gEDataManager->machineCloseHookScript(uiCommon().managedVMUuid());
     if (!strScript.isEmpty())
     {
         /* Execute asynchronously and leave: */
-        QProcess::startDetached(strScript, QStringList() << machine().GetId());
+        QProcess::startDetached(strScript, QStringList() << machine().GetId().toString());
         return;
     }
 
@@ -318,10 +356,7 @@ void UIMachineWindow::closeEvent(QCloseEvent *pCloseEvent)
                                                                   restrictedCloseActions);
         /* Configure close-dialog: */
         if (uisession() && uisession()->machineWindowIcon())
-        {
-            const int iIconMetric = QApplication::style()->pixelMetric(QStyle::PM_LargeIconSize);
-            pCloseDlg->setPixmap(uisession()->machineWindowIcon()->pixmap(QSize(iIconMetric, iIconMetric)));
-        }
+            pCloseDlg->setIcon(*uisession()->machineWindowIcon());
 
         /* Make sure close-dialog is valid: */
         if (pCloseDlg->isValid())
@@ -340,7 +375,7 @@ void UIMachineWindow::closeEvent(QCloseEvent *pCloseEvent)
                 if (!fIsPaused)
                 {
                     /* If that is NOT the separate VM process UI: */
-                    if (!vboxGlobal().isSeparateProcess())
+                    if (!uiCommon().isSeparateProcess())
                     {
                         /* We are not going to show close-dialog: */
                         fShowCloseDialog = false;
@@ -430,7 +465,7 @@ void UIMachineWindow::closeEvent(QCloseEvent *pCloseEvent)
 void UIMachineWindow::prepareSessionConnections()
 {
     /* We should watch for console events: */
-    connect(uisession(), SIGNAL(sigMachineStateChange()), this, SLOT(sltMachineStateChanged()));
+    connect(uisession(), &UISession::sigMachineStateChange, this, &UIMachineWindow::sltMachineStateChanged);
 }
 
 void UIMachineWindow::prepareMainLayout()
@@ -460,7 +495,7 @@ void UIMachineWindow::prepareMachineView()
 {
 #ifdef VBOX_WITH_VIDEOHWACCEL
     /* Need to force the QGL framebuffer in case 2D Video Acceleration is supported & enabled: */
-    bool bAccelerate2DVideo = machine().GetAccelerate2DVideoEnabled() && VBoxGlobal::isAcceleration2DVideoAvailable();
+    bool bAccelerate2DVideo = machine().GetGraphicsAdapter().GetAccelerate2DVideoEnabled() && VBox2DHelpers::isAcceleration2DVideoAvailable();
 #endif /* VBOX_WITH_VIDEOHWACCEL */
 
     /* Get visual-state type: */
@@ -476,7 +511,7 @@ void UIMachineWindow::prepareMachineView()
                                            );
 
     /* Listen for frame-buffer resize: */
-    connect(m_pMachineView, SIGNAL(sigFrameBufferResize()), this, SIGNAL(sigFrameBufferResize()));
+    connect(m_pMachineView, &UIMachineView::sigFrameBufferResize, this, &UIMachineWindow::sigFrameBufferResize);
 
     /* Add machine-view into main-layout: */
     m_pMainLayout->addWidget(m_pMachineView, 1, 1, viewAlignment(visualStateType));
@@ -513,7 +548,7 @@ void UIMachineWindow::cleanupMachineView()
 void UIMachineWindow::cleanupSessionConnections()
 {
     /* We should stop watching for console events: */
-    disconnect(uisession(), SIGNAL(sigMachineStateChange()), this, SLOT(sltMachineStateChanged()));
+    disconnect(uisession(), &UISession::sigMachineStateChange, this, &UIMachineWindow::sltMachineStateChanged);
 }
 
 void UIMachineWindow::updateAppearanceOf(int iElement)
@@ -538,7 +573,7 @@ void UIMachineWindow::updateAppearanceOf(int iElement)
         const QString strUserProductName = uisession()->machineWindowNamePostfix();
         strMachineName += " - " + (strUserProductName.isEmpty() ? defaultWindowTitle() : strUserProductName);
 #endif /* !VBOX_WS_MAC */
-        if (machine().GetMonitorCount() > 1)
+        if (machine().GetGraphicsAdapter().GetMonitorCount() > 1)
             strMachineName += QString(" : %1").arg(m_uScreenId + 1);
         setWindowTitle(strMachineName);
     }

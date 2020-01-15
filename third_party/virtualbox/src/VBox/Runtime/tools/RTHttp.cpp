@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -31,7 +31,8 @@
 #include <iprt/http.h>
 
 #include <iprt/assert.h>
-#include <iprt/err.h>
+#include <iprt/ctype.h>
+#include <iprt/errcore.h>
 #include <iprt/getopt.h>
 #include <iprt/initterm.h>
 #include <iprt/message.h>
@@ -67,6 +68,7 @@ int main(int argc, char **argv)
         { "--output",       'o', RTGETOPT_REQ_STRING },
         { "--quiet",        'q', RTGETOPT_REQ_NOTHING },
         { "--verbose",      'v', RTGETOPT_REQ_NOTHING },
+        { "--set-header",   's', RTGETOPT_REQ_STRING },
     };
 
     RTEXITCODE      rcExit          = RTEXITCODE_SUCCESS;
@@ -108,8 +110,24 @@ int main(int argc, char **argv)
                 return RTEXITCODE_SUCCESS;
 
             case 'V':
-                RTPrintf("$Revision: 130367 $\n");
+                RTPrintf("$Revision: 129781 $\n");
                 return RTEXITCODE_SUCCESS;
+
+            case 's':
+            {
+                char *pszColon = (char *)strchr(ValueUnion.psz, ':');
+                if (!pszColon)
+                    return RTMsgErrorExit(RTEXITCODE_FAILURE, "No colon in --set-header value: %s", ValueUnion.psz);
+                *pszColon = '\0'; /* evil */
+                const char *pszValue = pszColon + 1;
+                if (RT_C_IS_BLANK(*pszValue))
+                    pszValue++;
+                rc = RTHttpAddHeader(hHttp, ValueUnion.psz, pszValue, RTSTR_MAX, RTHTTPADDHDR_F_BACK);
+                *pszColon = ':';
+                if (RT_FAILURE(rc))
+                    return RTMsgErrorExit(RTEXITCODE_FAILURE, "RTHttpAddHeader failed: %Rrc (on %s)", rc, ValueUnion.psz);
+                break;
+            }
 
             case VINF_GETOPT_NOT_OPTION:
             {
@@ -154,6 +172,7 @@ int main(int argc, char **argv)
         }
     }
 
+    RTHttpDestroy(hHttp);
     return rcExit;
 }
 

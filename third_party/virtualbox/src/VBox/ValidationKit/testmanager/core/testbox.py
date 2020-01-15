@@ -7,7 +7,7 @@ Test Manager - TestBox.
 
 __copyright__ = \
 """
-Copyright (C) 2012-2017 Oracle Corporation
+Copyright (C) 2012-2019 Oracle Corporation
 
 This file is part of VirtualBox Open Source Edition (OSE), as
 available from http://www.virtualbox.org. This file is free software;
@@ -26,11 +26,12 @@ CDDL are applicable instead of those of the GPL.
 You may elect to license modified versions of this file under the
 terms and conditions of either the GPL or the CDDL or both.
 """
-__version__ = "$Revision: 118412 $"
+__version__ = "$Revision: 131247 $"
 
 
 # Standard python imports.
 import copy;
+import sys;
 import unittest;
 
 # Validation Kit imports.
@@ -39,6 +40,10 @@ from testmanager.core.base          import ModelDataBase, ModelDataBaseTestCase,
                                            TMInvalidData, TMTooManyRows, TMRowNotFound, \
                                            ChangeLogEntry, AttributeChangeEntry, AttributeChangeEntryPre;
 from testmanager.core.useraccount   import UserAccountLogic;
+
+# Python 3 hacks:
+if sys.version_info[0] >= 3:
+    xrange = range; # pylint: disable=redefined-builtin,invalid-name
 
 
 class TestBoxInSchedGroupData(ModelDataBase):
@@ -93,7 +98,7 @@ class TestBoxInSchedGroupDataEx(TestBoxInSchedGroupData):
 
     def __init__(self):
         TestBoxInSchedGroupData.__init__(self);
-        self.oSchedGroup        = None; # type: SchedGroupData
+        self.oSchedGroup        = None  # type: SchedGroupData
 
     def initFromDbRowEx(self, aoRow, oDb, tsNow = None, sPeriodBack = None):
         """
@@ -105,8 +110,8 @@ class TestBoxInSchedGroupDataEx(TestBoxInSchedGroupData):
         return self;
 
 
-# pylint: disable=C0103
-class TestBoxData(ModelDataBase):  # pylint: disable=R0902
+# pylint: disable=invalid-name
+class TestBoxData(ModelDataBase):  # pylint: disable=too-many-instance-attributes
     """
     TestBox Data.
     """
@@ -470,7 +475,7 @@ class TestBoxData(ModelDataBase):  # pylint: disable=R0902
         elif sCpuVendor == 'AuthenticAMD':
             if uFam == 0xf:
                 if uMod < 0x10:                             return 'K8_130nm';
-                if uMod >= 0x60 and uMod < 0x80:            return 'K8_65nm';
+                if 0x60 <= uMod < 0x80:                     return 'K8_65nm';
                 if uMod >= 0x40:                            return 'K8_90nm_AMDV';
                 if uMod in [0x21, 0x23, 0x2b, 0x37, 0x3f]:  return 'K8_90nm_DualCore';
                 return 'AMD_K8_90nm';
@@ -498,6 +503,9 @@ class TestBoxData(ModelDataBase):  # pylint: disable=R0902
                 if uMod == 0x09: return 'VIA_C3_C5XL' if TestBoxData.getCpuSteppingEx(lCpuRevision) < 8 else 'VIA_C3_C5P';
                 if uMod == 0x0a: return 'VIA_C7_C5J';
                 if uMod == 0x0f: return 'VIA_Isaiah';
+        elif sCpuVendor == '  Shanghai  ':
+            if uFam == 0x07:
+                if uMod == 0x0b: return 'Shanghai_KX-5000';
         return None;
 
     def queryCpuMicroarch(self):
@@ -538,6 +546,7 @@ class TestBoxData(ModelDataBase):  # pylint: disable=R0902
         if self.sCpuVendor == 'GenuineIntel':     return 'Intel';
         if self.sCpuVendor == 'AuthenticAMD':     return 'AMD';
         if self.sCpuVendor == 'CentaurHauls':     return 'VIA';
+        if self.sCpuVendor == '  Shanghai  ':     return 'Shanghai';
         return self.sCpuVendor;
 
 
@@ -557,7 +566,7 @@ class TestBoxDataEx(TestBoxData):
 
     def __init__(self):
         TestBoxData.__init__(self);
-        self.aoInSchedGroups        = [];   # type: list[TestBoxInSchedGroupData]
+        self.aoInSchedGroups        = []    # type: list[TestBoxInSchedGroupData]
 
     def _initExtraMembersFromDb(self, oDb, tsNow = None, sPeriodBack = None):
         """
@@ -624,7 +633,7 @@ class TestBoxDataEx(TestBoxData):
                 aoNewValues.append(oMember);
         return aoNewValues;
 
-    def _validateAndConvertAttribute(self, sAttr, sParam, oValue, aoNilValues, fAllowNull, oDb): # pylint: disable=R0914
+    def _validateAndConvertAttribute(self, sAttr, sParam, oValue, aoNilValues, fAllowNull, oDb): # pylint: disable=too-many-locals
         """
         Validate special arrays and requirement expressions.
 
@@ -763,7 +772,7 @@ class TestBoxLogic(ModelLogicBase):
             def __init__(self):
                 TestBoxDataEx.__init__(self);
                 self.tsCurrent = None;  # CURRENT_TIMESTAMP
-                self.oStatus   = None;  # type: TestBoxStatusData
+                self.oStatus   = None   # type: TestBoxStatusData
 
         from testmanager.core.testboxstatus import TestBoxStatusData;
 
@@ -801,7 +810,7 @@ class TestBoxLogic(ModelLogicBase):
             aoRows.append(oTestBox);
         return aoRows;
 
-    def fetchForChangeLog(self, idTestBox, iStart, cMaxRows, tsNow): # pylint: disable=R0914
+    def fetchForChangeLog(self, idTestBox, iStart, cMaxRows, tsNow): # pylint: disable=too-many-locals
         """
         Fetches change log entries for a testbox.
 
@@ -1003,7 +1012,7 @@ class TestBoxLogic(ModelLogicBase):
         return True;
 
 
-    def updateOnSignOn(self, idTestBox, idGenTestBox, sTestBoxAddr, sOs, sOsVersion, # pylint: disable=R0913,R0914
+    def updateOnSignOn(self, idTestBox, idGenTestBox, sTestBoxAddr, sOs, sOsVersion, # pylint: disable=too-many-arguments,too-many-locals
                        sCpuVendor, sCpuArch, sCpuName, lCpuRevision, cCpus, fCpuHwVirt, fCpuNestedPaging, fCpu64BitGuest,
                        fChipsetIoMmu, fRawMode, cMbMemory, cMbScratch, sReport, iTestBoxScriptRev, iPythonHexVersion):
         """
@@ -1143,8 +1152,6 @@ class TestBoxLogic(ModelLogicBase):
                             uidAuthor = uidAuthor, fCommit = fCommit, sComment = sComment);
         except TMInFligthCollision:
             return False;
-        except:
-            raise;
         return True;
 
 
@@ -1167,7 +1174,7 @@ class TestBoxLogic(ModelLogicBase):
 # Unit testing.
 #
 
-# pylint: disable=C0111
+# pylint: disable=missing-docstring
 class TestBoxDataTestCase(ModelDataBaseTestCase):
     def setUp(self):
         self.aoSamples = [TestBoxData(),];

@@ -3,7 +3,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -23,27 +23,27 @@
  * terms and conditions of either the GPL or the CDDL or both.
  */
 
-#ifndef ___VBox_vmm_pdmdrv_h
-#define ___VBox_vmm_pdmdrv_h
+#ifndef VBOX_INCLUDED_vmm_pdmdrv_h
+#define VBOX_INCLUDED_vmm_pdmdrv_h
+#ifndef RT_WITHOUT_PRAGMA_ONCE
+# pragma once
+#endif
 
 #include <VBox/vmm/pdmqueue.h>
 #include <VBox/vmm/pdmcritsect.h>
-#include <VBox/vmm/pdmthread.h>
 #include <VBox/vmm/pdmifs.h>
 #include <VBox/vmm/pdmins.h>
 #include <VBox/vmm/pdmcommon.h>
-#include <VBox/vmm/pdmasynccompletion.h>
-#ifdef VBOX_WITH_NETSHAPER
-#include <VBox/vmm/pdmnetshaper.h>
-#endif /* VBOX_WITH_NETSHAPER */
-#include <VBox/vmm/pdmblkcache.h>
+#ifdef IN_RING3
+# include <VBox/vmm/pdmthread.h>
+# include <VBox/vmm/pdmasynccompletion.h>
+# include <VBox/vmm/pdmblkcache.h>
+#endif
 #include <VBox/vmm/tm.h>
 #include <VBox/vmm/ssm.h>
 #include <VBox/vmm/cfgm.h>
 #include <VBox/vmm/dbgf.h>
 #include <VBox/vmm/mm.h>
-#include <VBox/vmm/ftm.h>
-#include <VBox/err.h>
 #include <iprt/stdarg.h>
 
 
@@ -646,20 +646,11 @@ typedef struct PDMDRVHLPRC
      */
     DECLRCCALLBACKMEMBER(bool, pfnAssertOther,(PPDMDRVINS pDrvIns, const char *pszFile, unsigned iLine, const char *pszFunction));
 
-    /**
-     * Notify FTM about a checkpoint occurrence
-     *
-     * @param   pDrvIns             The driver instance.
-     * @param   enmType             Checkpoint type
-     * @thread  Any
-     */
-    DECLRCCALLBACKMEMBER(int, pfnFTSetCheckpoint,(PPDMDRVINS pDrvIns, FTMCHECKPOINTTYPE enmType));
-
     /** Just a safety precaution. */
     uint32_t                        u32TheEnd;
 } PDMDRVHLPRC;
 /** Current PDMDRVHLPRC version number. */
-#define PDM_DRVHLPRC_VERSION                    PDM_VERSION_MAKE(0xf0f9, 2, 0)
+#define PDM_DRVHLPRC_VERSION                    PDM_VERSION_MAKE(0xf0f9, 3, 0)
 
 
 /**
@@ -746,20 +737,11 @@ typedef struct PDMDRVHLPR0
      */
     DECLR0CALLBACKMEMBER(bool, pfnAssertOther,(PPDMDRVINS pDrvIns, const char *pszFile, unsigned iLine, const char *pszFunction));
 
-    /**
-     * Notify FTM about a checkpoint occurrence
-     *
-     * @param   pDrvIns             The driver instance.
-     * @param   enmType             Checkpoint type
-     * @thread  Any
-     */
-    DECLR0CALLBACKMEMBER(int, pfnFTSetCheckpoint,(PPDMDRVINS pDrvIns, FTMCHECKPOINTTYPE enmType));
-
     /** Just a safety precaution. */
     uint32_t                        u32TheEnd;
 } PDMDRVHLPR0;
 /** Current DRVHLP version number. */
-#define PDM_DRVHLPR0_VERSION                    PDM_VERSION_MAKE(0xf0f8, 2, 0)
+#define PDM_DRVHLPR0_VERSION                    PDM_VERSION_MAKE(0xf0f8, 3, 0)
 
 
 #ifdef IN_RING3
@@ -1023,6 +1005,19 @@ typedef struct PDMDRVHLPR3
     DECLR3CALLBACKMEMBER(int, pfnDBGFInfoRegister,(PPDMDRVINS pDrvIns, const char *pszName, const char *pszDesc, PFNDBGFHANDLERDRV pfnHandler));
 
     /**
+     * Register an info handler with DBGF, argv style.
+     *
+     * @returns VBox status code.
+     * @param   pDrvIns         Driver instance.
+     * @param   pszName         Data unit name.
+     * @param   pszDesc         The description of the info and any arguments
+     *                          the handler may take.
+     * @param   pfnHandler      The handler function to be called to display the
+     *                          info.
+     */
+    DECLR3CALLBACKMEMBER(int, pfnDBGFInfoRegisterArgv,(PPDMDRVINS pDrvIns, const char *pszName, const char *pszDesc, PFNDBGFINFOARGVDRV pfnHandler));
+
+    /**
      * Deregister an info handler from DBGF.
      *
      * @returns VBox status code.
@@ -1183,7 +1178,6 @@ typedef struct PDMDRVHLPR3
                                                                 PFNPDMASYNCCOMPLETEDRV pfnCompleted, void *pvTemplateUser,
                                                                 const char *pszDesc));
 
-#ifdef VBOX_WITH_NETSHAPER
     /**
      * Attaches network filter driver to a bandwidth group.
      *
@@ -1192,9 +1186,7 @@ typedef struct PDMDRVHLPR3
      * @param   pcszBwGroup     Name of the bandwidth group to attach to.
      * @param   pFilter         Pointer to the filter we attach.
      */
-    DECLR3CALLBACKMEMBER(int, pfnNetShaperAttach,(PPDMDRVINS pDrvIns, const char *pszBwGroup,
-                                                  PPDMNSFILTER pFilter));
-
+    DECLR3CALLBACKMEMBER(int, pfnNetShaperAttach,(PPDMDRVINS pDrvIns, const char *pszBwGroup, PPDMNSFILTER pFilter));
 
     /**
      * Detaches network filter driver to a bandwidth group.
@@ -1204,8 +1196,6 @@ typedef struct PDMDRVHLPR3
      * @param   pFilter         Pointer to the filter we attach.
      */
     DECLR3CALLBACKMEMBER(int, pfnNetShaperDetach,(PPDMDRVINS pDrvIns, PPDMNSFILTER pFilter));
-#endif /* VBOX_WITH_NETSHAPER */
-
 
     /**
      * Resolves the symbol for a raw-mode context interface.
@@ -1286,15 +1276,6 @@ typedef struct PDMDRVHLPR3
     DECLR3CALLBACKMEMBER(int, pfnCallR0,(PPDMDRVINS pDrvIns, uint32_t uOperation, uint64_t u64Arg));
 
     /**
-     * Notify FTM about a checkpoint occurrence
-     *
-     * @param   pDrvIns             The driver instance.
-     * @param   enmType             Checkpoint type
-     * @thread  Any
-     */
-    DECLR3CALLBACKMEMBER(int, pfnFTSetCheckpoint,(PPDMDRVINS pDrvIns, FTMCHECKPOINTTYPE enmType));
-
-    /**
      * Creates a block cache for a driver driver instance.
      *
      * @returns VBox status code.
@@ -1346,7 +1327,7 @@ typedef struct PDMDRVHLPR3
     uint32_t                        u32TheEnd;
 } PDMDRVHLPR3;
 /** Current DRVHLP version number. */
-#define PDM_DRVHLPR3_VERSION                    PDM_VERSION_MAKE(0xf0fb, 3, 0)
+#define PDM_DRVHLPR3_VERSION                    PDM_VERSION_MAKE(0xf0fb, 5, 0)
 
 #endif /* IN_RING3 */
 
@@ -1428,14 +1409,6 @@ DECLINLINE(int)  RT_IPRT_FORMAT_ATTR(4, 0) PDMDrvHlpVMSetRuntimeErrorV(PPDMDRVIN
 #else
 # define PDMDRV_ASSERT_OTHER(pDrvIns)  do { } while (0)
 #endif
-
-/**
- * @copydoc PDMDRVHLPR3::pfnFTSetCheckpoint
- */
-DECLINLINE(int) PDMDrvHlpFTSetCheckpoint(PPDMDRVINS pDrvIns, FTMCHECKPOINTTYPE enmType)
-{
-    return pDrvIns->CTX_SUFF(pHlp)->pfnFTSetCheckpoint(pDrvIns, enmType);
-}
 
 
 #ifdef IN_RING3
@@ -1595,6 +1568,14 @@ DECLINLINE(int) PDMDrvHlpSSMRegisterLoadDone(PPDMDRVINS pDrvIns, PFNSSMDRVLOADDO
 DECLINLINE(int) PDMDrvHlpDBGFInfoRegister(PPDMDRVINS pDrvIns, const char *pszName, const char *pszDesc, PFNDBGFHANDLERDRV pfnHandler)
 {
     return pDrvIns->pHlpR3->pfnDBGFInfoRegister(pDrvIns, pszName, pszDesc, pfnHandler);
+}
+
+/**
+ * @copydoc PDMDRVHLPR3::pfnDBGFInfoRegisterArgv
+ */
+DECLINLINE(int) PDMDrvHlpDBGFInfoRegisterArgv(PPDMDRVINS pDrvIns, const char *pszName, const char *pszDesc, PFNDBGFINFOARGVDRV pfnHandler)
+{
+    return pDrvIns->pHlpR3->pfnDBGFInfoRegisterArgv(pDrvIns, pszName, pszDesc, pfnHandler);
 }
 
 /**
@@ -1892,4 +1873,4 @@ VMMR3DECL(int) PDMR3DrvStaticRegistration(PVM pVM, FNPDMVBOXDRIVERSREGISTER pfnC
 
 RT_C_DECLS_END
 
-#endif
+#endif /* !VBOX_INCLUDED_vmm_pdmdrv_h */

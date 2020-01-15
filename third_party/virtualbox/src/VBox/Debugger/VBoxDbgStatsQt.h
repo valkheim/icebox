@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -15,8 +15,11 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
-#ifndef ___Debugger_VBoxDbgStats_h
-#define ___Debugger_VBoxDbgStats_h
+#ifndef DEBUGGER_INCLUDED_SRC_VBoxDbgStatsQt_h
+#define DEBUGGER_INCLUDED_SRC_VBoxDbgStatsQt_h
+#ifndef RT_WITHOUT_PRAGMA_ONCE
+# pragma once
+#endif
 
 #include "VBoxDbgBase.h"
 
@@ -200,14 +203,6 @@ protected:
      */
     virtual void closeEvent(QCloseEvent *a_pCloseEvt);
 
-    /**
-     * Event filter for various purposes.
-     *
-     * @param  pWatched         The object event came to.
-     * @param  pEvent           The event being handled.
-     */
-    virtual bool eventFilter(QObject *pWatched, QEvent *pEvent);
-
 protected slots:
     /** Apply the activated combobox pattern. */
     void apply(const QString &Str);
@@ -246,5 +241,5 @@ protected:
 };
 
 
-#endif
+#endif /* !DEBUGGER_INCLUDED_SRC_VBoxDbgStatsQt_h */
 

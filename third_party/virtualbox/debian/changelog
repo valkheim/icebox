@@ -1,104 +1,69 @@
-virtualbox-ose (5.2.34) unstable; urgency=low
+virtualbox-ose (6.1.2) unstable; urgency=low
 
   * rebuild Debian package.
 
- -- Oracle Corporation <info@virtualbox.org>  Thu, 10 Oct 2019 12:00:00 +0200
+ -- Oracle Corporation <info@virtualbox.org>  Tue, 14 Jan 2020 12:00:00 +0200
 
-virtualbox-ose (5.2.32) unstable; urgency=low
 
-  * rebuild Debian package.
-
- -- Oracle Corporation <info@virtualbox.org>  Tue, 16 July 2019 12:00:00 +0200
-
-virtualbox-ose (5.2.30) unstable; urgency=low
+virtualbox-ose (6.1.0) unstable; urgency=low
 
   * rebuild Debian package.
 
- -- Oracle Corporation <info@virtualbox.org>  Mon, 13 May 2019 12:00:00 +0200
+ -- Oracle Corporation <info@virtualbox.org>  Tue, 10 Dec 2019 12:00:00 +0200
 
-virtualbox-ose (5.2.28) unstable; urgency=low
-
-  * rebuild Debian package.
-
- -- Oracle Corporation <info@virtualbox.org>  Tue, 16 April 2019 12:00:00 +0200
-
-virtualbox-ose (5.2.26) unstable; urgency=low
+virtualbox-ose (6.1.0~rc1) unstable; urgency=low
 
   * rebuild Debian package.
 
- -- Oracle Corporation <info@virtualbox.org>  Mon, 28 January 2019 12:00:00 +0200
+ -- Oracle Corporation <info@virtualbox.org>  Thu, 22 Nov 2019 12:00:00 +0200
 
-virtualbox-ose (5.2.24) unstable; urgency=low
-
-  * rebuild Debian package.
-
- -- Oracle Corporation <info@virtualbox.org>  Tue, 15 January 2019 12:00:00 +0200
-
-virtualbox-ose (5.2.22) unstable; urgency=low
+virtualbox-ose (6.1.0~beta2) unstable; urgency=low
 
   * rebuild Debian package.
 
- -- Oracle Corporation <info@virtualbox.org>  Tue, 9 November 2018 12:00:00 +0200
+ -- Oracle Corporation <info@virtualbox.org>  Thu, 24 Oct 2019 12:00:00 +0200
 
-virtualbox-ose (5.2.20) unstable; urgency=low
-
-  * rebuild Debian package.
-
- -- Oracle Corporation <info@virtualbox.org>  Tue, 16 October 2018 12:00:00 +0200
-
-virtualbox-ose (5.2.18) unstable; urgency=low
+virtualbox-ose (6.1.0~beta1) unstable; urgency=low
 
   * rebuild Debian package.
 
- -- Oracle Corporation <info@virtualbox.org>  Tue, 14 August 2018 12:00:00 +0200
+ -- Oracle Corporation <info@virtualbox.org>  Thu, 12 Sep 2019 12:00:00 +0200
 
-virtualbox-ose (5.2.16) unstable; urgency=low
-
-  * rebuild Debian package.
-
- -- Oracle Corporation <info@virtualbox.org>  Tue, 17 July 2018 12:00:00 +0200
-
-virtualbox-ose (5.2.14) unstable; urgency=low
+virtualbox-ose (6.0.0) unstable; urgency=low
 
   * rebuild Debian package.
 
- -- Oracle Corporation <info@virtualbox.org>  Mon, 2 July 2018 12:00:00 +0200
+ -- Oracle Corporation <info@virtualbox.org>  Tue, 18 Dec 2018 12:00:00 +0200
 
-virtualbox-ose (5.2.12) unstable; urgency=low
-
-  * rebuild Debian package.
-
- -- Oracle Corporation <info@virtualbox.org>  Wed, 9 May 2018 12:00:00 +0200
-
-virtualbox-ose (5.2.10) unstable; urgency=low
+virtualbox-ose (6.0.0~rc1) unstable; urgency=low
 
   * rebuild Debian package.
 
- -- Oracle Corporation <info@virtualbox.org>  Tue, 17 Apr 2018 12:00:00 +0200
+ -- Oracle Corporation <info@virtualbox.org>  Mon, 10 Dec 2018 12:00:00 +0200
 
-virtualbox-ose (5.2.8) unstable; urgency=low
-
-  * rebuild Debian package.
-
- -- Oracle Corporation <info@virtualbox.org>  Mon, 26 Feb 2018 12:00:00 +0200
-
-virtualbox-ose (5.2.6) unstable; urgency=low
+virtualbox-ose (6.0.0~beta3) unstable; urgency=low
 
   * rebuild Debian package.
 
- -- Oracle Corporation <info@virtualbox.org>  Mon, 15 Jan 2018 12:00:00 +0200
+ -- Oracle Corporation <info@virtualbox.org>  Fri, 30 Nov 2018 12:00:00 +0200
 
-virtualbox-ose (5.2.4) unstable; urgency=low
+virtualbox-ose (6.0.0~beta2) unstable; urgency=low
 
   * rebuild Debian package.
 
- -- Oracle Corporation <info@virtualbox.org>  Tue, 19 Dec 2017 12:00:00 +0200
+ -- Oracle Corporation <info@virtualbox.org>  Thu, 11 Nov 2018 12:00:00 +0200
+
+virtualbox-ose (6.0.0~beta1) unstable; urgency=low
+
+  * rebuild Debian package.
+
+ -- Oracle Corporation <info@virtualbox.org>  Mon, 22 Oct 2018 12:00:00 +0200
 
 virtualbox-ose (5.2.2) unstable; urgency=low
 
   * rebuild Debian package.
 
- -- Oracle Corporation <info@virtualbox.org>  Wed, 22 Nov 2017 12:00:00 +0200
+ -- Oracle Corporation <info@virtualbox.org>  Wed, 22 Dec 2017 12:00:00 +0200
 
 virtualbox-ose (5.2.0) unstable; urgency=low
 

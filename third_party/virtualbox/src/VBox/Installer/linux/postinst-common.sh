@@ -6,7 +6,7 @@
 #
 
 #
-# Copyright (C) 2015-2017 Oracle Corporation
+# Copyright (C) 2015-2019 Oracle Corporation
 #
 # This file is part of VirtualBox Open Source Edition (OSE), as
 # available from http://www.virtualbox.org. This file is free software;
@@ -105,7 +105,7 @@ test -n "${START}" &&
         echo "  /sbin/vboxconfig" >&2
         echo "as root.  If your system is using EFI Secure Boot you may need to sign the" >&2
         echo "kernel modules (vboxdrv, vboxnetflt, vboxnetadp, vboxpci) before you can load" >&2
-        echo " them. Please see your Linux system's documentation for more information." >&2
+        echo "them. Please see your Linux system's documentation for more information." >&2
     else
         start_init_script vboxdrv
         start_init_script vboxballoonctrl-service

@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -164,6 +164,7 @@
 #include <VBox/vmm/dbgf.h>
 #include <VBox/vmm/vmapi.h> /* VMR3GetVM() */
 #include <VBox/vmm/hm.h>    /* HMR3IsEnabled */
+#include <VBox/vmm/nem.h>   /* NEMR3IsEnabled */
 #include <VBox/err.h>
 #include <VBox/log.h>
 
@@ -655,7 +656,6 @@ static int dbgcProcessEvent(PDBGC pDbgc, PCDBGFEVENT pEvent)
         {
             rc = pDbgc->CmdHlp.pfnPrintf(&pDbgc->CmdHlp, NULL, "\ndbgf event: VM %p is halted! (%s)\n",
                                          pDbgc->pVM, dbgcGetEventCtx(pEvent->enmCtx));
-            pDbgc->fRegCtxGuest = true; /* we're always in guest context when halted. */
             if (RT_SUCCESS(rc))
                 rc = pDbgc->CmdHlp.pfnExec(&pDbgc->CmdHlp, "r");
             break;
@@ -669,7 +669,6 @@ static int dbgcProcessEvent(PDBGC pDbgc, PCDBGFEVENT pEvent)
         {
             rc = pDbgc->CmdHlp.pfnPrintf(&pDbgc->CmdHlp, NULL, "\ndbf event: Fatal error! (%s)\n",
                                          dbgcGetEventCtx(pEvent->enmCtx));
-            pDbgc->fRegCtxGuest = false; /* fatal errors are always in hypervisor. */
             if (RT_SUCCESS(rc))
                 rc = pDbgc->CmdHlp.pfnExec(&pDbgc->CmdHlp, "r");
             break;
@@ -680,9 +679,6 @@ static int dbgcProcessEvent(PDBGC pDbgc, PCDBGFEVENT pEvent)
         case DBGFEVENT_BREAKPOINT_MMIO:
         case DBGFEVENT_BREAKPOINT_HYPER:
         {
-            bool fRegCtxGuest = pDbgc->fRegCtxGuest;
-            pDbgc->fRegCtxGuest = pEvent->enmType != DBGFEVENT_BREAKPOINT_HYPER;
-
             rc = dbgcBpExec(pDbgc, pEvent->u.Bp.iBp);
             switch (rc)
             {
@@ -713,16 +709,12 @@ static int dbgcProcessEvent(PDBGC pDbgc, PCDBGFEVENT pEvent)
                     && pEvent->enmType == DBGFEVENT_BREAKPOINT)
                     rc = pDbgc->CmdHlp.pfnExec(&pDbgc->CmdHlp, "r eflags.rf = 1");
             }
-            else
-                pDbgc->fRegCtxGuest = fRegCtxGuest;
             break;
         }
 
         case DBGFEVENT_STEPPED:
         case DBGFEVENT_STEPPED_HYPER:
         {
-            pDbgc->fRegCtxGuest = pEvent->enmType == DBGFEVENT_STEPPED;
-
             rc = pDbgc->CmdHlp.pfnPrintf(&pDbgc->CmdHlp, NULL, "\ndbgf event: Single step! (%s)\n", dbgcGetEventCtx(pEvent->enmCtx));
             if (RT_SUCCESS(rc))
             {
@@ -731,10 +723,7 @@ static int dbgcProcessEvent(PDBGC pDbgc, PCDBGFEVENT pEvent)
                 else
                 {
                     char szCmd[80];
-                    if (!pDbgc->fRegCtxGuest)
-                        rc = DBGFR3RegPrintf(pDbgc->pUVM, pDbgc->idCpu | DBGFREG_HYPER_VMCPUID, szCmd, sizeof(szCmd),
-                                             "u %VR{cs}:%VR{eip} L 0");
-                    else if (DBGFR3CpuIsIn64BitCode(pDbgc->pUVM, pDbgc->idCpu))
+                    if (DBGFR3CpuIsIn64BitCode(pDbgc->pUVM, pDbgc->idCpu))
                         rc = DBGFR3RegPrintf(pDbgc->pUVM, pDbgc->idCpu, szCmd, sizeof(szCmd), "u %016VR{rip} L 0");
                     else if (DBGFR3CpuIsInV86Code(pDbgc->pUVM, pDbgc->idCpu))
                         rc = DBGFR3RegPrintf(pDbgc->pUVM, pDbgc->idCpu, szCmd, sizeof(szCmd), "uv86 %04VR{cs}:%08VR{eip} L 0");
@@ -749,8 +738,6 @@ static int dbgcProcessEvent(PDBGC pDbgc, PCDBGFEVENT pEvent)
 
         case DBGFEVENT_ASSERTION_HYPER:
         {
-            pDbgc->fRegCtxGuest = false;
-
             rc = pDbgc->CmdHlp.pfnPrintf(&pDbgc->CmdHlp, NULL,
                                          "\ndbgf event: Hypervisor Assertion! (%s)\n"
                                          "%s"
@@ -814,18 +801,39 @@ static int dbgcProcessEvent(PDBGC pDbgc, PCDBGFEVENT pEvent)
                 if (pEvtDesc->enmKind == kDbgcSxEventKind_Interrupt)
                 {
                     Assert(pEvtDesc->pszDesc);
+                    Assert(pEvent->u.Generic.cArgs == 1);
                     rc = pDbgc->CmdHlp.pfnPrintf(&pDbgc->CmdHlp, NULL, "\ndbgf event: %s no %#llx! (%s)\n",
-                                                 pEvtDesc->pszDesc, pEvent->u.Generic.uArg, pEvtDesc->pszName);
+                                                 pEvtDesc->pszDesc, pEvent->u.Generic.auArgs[0], pEvtDesc->pszName);
+                }
+                else if (pEvtDesc->fFlags & DBGCSXEVT_F_BUGCHECK)
+                {
+                    Assert(pEvent->u.Generic.cArgs >= 5);
+                    char szDetails[512];
+                    DBGFR3FormatBugCheck(pDbgc->pUVM, szDetails, sizeof(szDetails), pEvent->u.Generic.auArgs[0],
+                                         pEvent->u.Generic.auArgs[1], pEvent->u.Generic.auArgs[2],
+                                         pEvent->u.Generic.auArgs[3], pEvent->u.Generic.auArgs[4]);
+                    rc = pDbgc->CmdHlp.pfnPrintf(&pDbgc->CmdHlp, NULL, "\ndbgf event: %s %s%s!\n%s", pEvtDesc->pszName,
+                                                 pEvtDesc->pszDesc ? "- " : "", pEvtDesc->pszDesc ? pEvtDesc->pszDesc : "",
+                                                 szDetails);
                 }
                 else if (   (pEvtDesc->fFlags & DBGCSXEVT_F_TAKE_ARG)
-                         || pEvent->u.Generic.uArg != 0)
+                         || pEvent->u.Generic.cArgs > 1
+                         || (   pEvent->u.Generic.cArgs == 1
+                             && pEvent->u.Generic.auArgs[0] != 0))
                 {
                     if (pEvtDesc->pszDesc)
-                        rc = pDbgc->CmdHlp.pfnPrintf(&pDbgc->CmdHlp, NULL, "\ndbgf event: %s - %s! arg=%#llx\n",
-                                                     pEvtDesc->pszName, pEvtDesc->pszDesc, pEvent->u.Generic.uArg);
+                        rc = pDbgc->CmdHlp.pfnPrintf(&pDbgc->CmdHlp, NULL, "\ndbgf event: %s - %s!",
+                                                     pEvtDesc->pszName, pEvtDesc->pszDesc);
                     else
-                        rc = pDbgc->CmdHlp.pfnPrintf(&pDbgc->CmdHlp, NULL, "\ndbgf event: %s! arg=%#llx\n",
-                                                     pEvtDesc->pszName, pEvent->u.Generic.uArg);
+                        rc = pDbgc->CmdHlp.pfnPrintf(&pDbgc->CmdHlp, NULL, "\ndbgf event: %s!", pEvtDesc->pszName);
+                    if (pEvent->u.Generic.cArgs <= 1)
+                        rc = pDbgc->CmdHlp.pfnPrintf(&pDbgc->CmdHlp, NULL, " arg=%#llx\n", pEvent->u.Generic.auArgs[0]);
+                    else
+                    {
+                        for (uint32_t i = 0; i < pEvent->u.Generic.cArgs; i++)
+                            rc = pDbgc->CmdHlp.pfnPrintf(&pDbgc->CmdHlp, NULL, " args[%u]=%#llx", i, pEvent->u.Generic.auArgs[i]);
+                        rc = pDbgc->CmdHlp.pfnPrintf(&pDbgc->CmdHlp, NULL, "\n");
+                    }
                 }
                 else
                 {
@@ -1101,7 +1109,6 @@ int dbgcCreate(PDBGC *ppDbgc, PDBGCBACK pBack, unsigned fFlags)
     pDbgc->paEmulationFuncs = &g_aFuncsCodeView[0];
     pDbgc->cEmulationFuncs  = g_cFuncsCodeView;
     //pDbgc->fLog             = false;
-    pDbgc->fRegCtxGuest     = true;
     pDbgc->fRegTerse        = true;
     pDbgc->fStepTraceRegs   = true;
     //pDbgc->cPagingHierarchyDumps = 0;
@@ -1210,7 +1217,7 @@ DBGDECL(int) DBGCCreate(PUVM pUVM, PDBGCBACK pBack, unsigned fFlags)
     int rc = dbgcCreate(&pDbgc, pBack, fFlags);
     if (RT_FAILURE(rc))
         return rc;
-    if (!HMR3IsEnabled(pUVM))
+    if (!HMR3IsEnabled(pUVM) && !NEMR3IsEnabled(pUVM))
         pDbgc->hDbgAs = DBGF_AS_RC_AND_GC_GLOBAL;
 
     /*

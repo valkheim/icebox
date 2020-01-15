@@ -4,7 +4,7 @@
 #
 
 #
-# Copyright (C) 2010-2017 Oracle Corporation
+# Copyright (C) 2010-2019 Oracle Corporation
 #
 # This file is part of VirtualBox Open Source Edition (OSE), as
 # available from http://www.virtualbox.org. This file is free software;
@@ -51,7 +51,7 @@ ifn1of ($(KBUILD_TARGET), darwin solaris win)
 endif
 TEMPLATE_VBoxValidationKitR3Base_LIBS = $(TEMPLATE_VBoxR3Static_LIBS)
 if1of ($(KBUILD_TARGET), linux)
- TEMPLATE_VBoxValidationKitR3Base_LIBS += supc++ crypt
+ TEMPLATE_VBoxValidationKitR3Base_LIBS += supc++
  TEMPLATE_VBoxValidationKitR3Base_LDTOOL = $(subst GXX,GCC,$(TEMPLATE_VBoxR3Static_TOOL))
 endif
 TEMPLATE_VBoxValidationKitR3Base_LDFLAGS.darwin = $(TEMPLATE_VBoxR3Static_LDFLAGS.darwin) -framework IOKit
@@ -85,22 +85,30 @@ ifneq ($(KBUILD_TARGET),win)
  	$(SDK_VBOX_ZLIB_LIBS)
 endif
 
-# Make VCC100 output work on NT4, W2K, XP and W2K3.
+# Make VCC100 output work on NT3.x, NT4, W2K, XP and W2K3.
 TEMPLATE_VBoxValidationKitR3_LIBS.win.x86 = \
        $(PATH_TOOL_$(TEMPLATE_VBoxValidationKitR3_TOOL.win.x86)_LIB)/oldnames.lib \
        $(PATH_TOOL_$(TEMPLATE_VBoxValidationKitR3_TOOL.win.x86)_LIB)/libcmt$(VBOX_VCC_CRT_TYPE).lib \
        $(PATH_TOOL_$(TEMPLATE_VBoxValidationKitR3_TOOL.win.x86)_LIB)/libcpmt$(VBOX_VCC_CRT_TYPE).lib \
 	$(PATH_STAGE_LIB)/RuntimeR3VccTricks$(VBOX_SUFF_LIB)
+TEMPLATE_VBoxValidationKitR3_LDFLAGS.win.x86 = \
+  	-Include:_vcc100_shell32_fakes_cpp \
+	-Include:_vcc100_shell32_fakes_asm \
+	-Section:.bss,RW!K
 ifeq ($(KBUILD_TARGET).$(KBUILD_TARGET_ARCH),win.x86)
-TEMPLATE_VBoxValidationKitR3_POST_CMDS = $(if $(eq $(tool_do),LINK_LIBRARY),,$(VBOX_PE_SET_VERSION) $(out)$$(NLTAB))$(TEMPLATE_VBoxValidationKitR3Base_POST_CMDS)$$(NLTAB)
+ TEMPLATE_VBoxValidationKitR3_POST_CMDS = $(if $(eq $(tool_do),LINK_LIBRARY),,$(VBOX_PE_SET_VERSION) $(out)$$(NLTAB))$(TEMPLATE_VBoxValidationKitR3Base_POST_CMDS)$$(NLTAB)
 endif
 TEMPLATE_VBoxValidationKitR3_LNK_DEPS.win.x86  = $(if $(eq $(tool_do),LINK_LIBRARY),,$(VBOX_PE_SET_VERSION))
 
 #TODO: TEMPLATE_VBoxValidationKitR3_EXTENDS = VBOXGUESTR3EXE
 
+TEMPLATE_VBoxValidationKitR3_USES += vboximportchecker
+TEMPLATE_VBoxValidationKitR3_VBOX_IMPORT_CHECKER.win.x86   = nt31
+TEMPLATE_VBoxValidationKitR3_VBOX_IMPORT_CHECKER.win.amd64 = xp64
+
 
 #
-# Template for building ring-3 progams for the Validation Kit.
+# Template for building ring-3 programs for the Validation Kit.
 # These programs can run on the host and may take advantage of the support
 # driver when installed.
 #
@@ -157,16 +165,16 @@ endif
 # Process python sources.
 #
 if1of ($(KBUILD_TARGET), win os2)
- VBOX_PYTHONPATH_VALIDATIONKIT = $(PYTHONPATH);$(VBOX_PATH_VALIDATIONKIT_SRC);$(VBOX_PATH_VALIDATIONKIT_SRC)/testboxscript;$(VBOX_PATH_VALIDATIONKIT_SRC)/testmanager:$(VBOX_PATH_VALIDATIONKIT_SRC)/../VMM/VMMAll
+ VBOX_PYTHONPATH_VALIDATIONKIT = $(PYTHONPATH);$(VBOX_PATH_VALIDATIONKIT_SRC);$(VBOX_PATH_VALIDATIONKIT_SRC)/testboxscript;$(VBOX_PATH_VALIDATIONKIT_SRC)/testmanager;$(VBOX_PATH_VALIDATIONKIT_SRC)/tests/additions;$(VBOX_PATH_VALIDATIONKIT_SRC)/../VMM/VMMAll
 else
- VBOX_PYTHONPATH_VALIDATIONKIT = $(PYTHONPATH):$(VBOX_PATH_VALIDATIONKIT_SRC):$(VBOX_PATH_VALIDATIONKIT_SRC)/testboxscript:$(VBOX_PATH_VALIDATIONKIT_SRC)/testmanager;$(VBOX_PATH_VALIDATIONKIT_SRC)/../VMM/VMMAll
+ VBOX_PYTHONPATH_VALIDATIONKIT = $(PYTHONPATH):$(VBOX_PATH_VALIDATIONKIT_SRC):$(VBOX_PATH_VALIDATIONKIT_SRC)/testboxscript:$(VBOX_PATH_VALIDATIONKIT_SRC)/testmanager:$(VBOX_PATH_VALIDATIONKIT_SRC)/tests/additions:$(VBOX_PATH_VALIDATIONKIT_SRC)/../VMM/VMMAll
 endif
 BLDDIRS += $(PATH_TARGET)/pylint $(PATH_TARGET)/pyunittest
 
 define def_vbox_validationkit_py_check
 $(eval name:=$(basename $(notdir $(py))))
 
-pylint::   $(name)-py-phony.o
+pylint:   $(name)-py-phony.o
 $(name).o: $(name)-py-phony.o
 $(PATH_TARGET)/pylint/$(name).o $(name)-py-phony.o:: $(py) | $(PATH_TARGET)/pylint/
 ifdef VBOX_WITH_PYLINT
@@ -177,7 +185,7 @@ endif
 	$(QUIET)$(APPEND) -t "$(PATH_TARGET)/pylint/$(name).o"
 
 ifn1of ($(py),$(VBOX_VALIDATIONKIT_PYUNITTEST_EXCLUDE))
-pyunittest:: $(name)-pyunittest.o
+pyunittest: $(name)-pyunittest.o
 $(PATH_TARGET)/pyunittest/$(name).o $(name)-pyunittest.o:: $(py) | $(PATH_TARGET)/pyunittest/
 	$(QUIET2)$(call MSG_L1,Unittesting Python source $(py)...)
 	$(QUIET)$(REDIRECT) -E LC_ALL=C -E PYTHONPATH="$(VBOX_PYTHONPATH_VALIDATIONKIT)" -C $(dir $(py)) \

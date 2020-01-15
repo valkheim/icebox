@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2018 Oracle Corporation
+ * Copyright (C) 2018-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -15,8 +15,11 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
-#ifndef ____H_AUDIODRIVER
-#define ____H_AUDIODRIVER
+#ifndef MAIN_INCLUDED_AudioDriver_h
+#define MAIN_INCLUDED_AudioDriver_h
+#ifndef RT_WITHOUT_PRAGMA_ONCE
+# pragma once
+#endif
 
 #include <VBox/com/ptr.h>
 #include <VBox/com/string.h>
@@ -36,12 +39,13 @@ struct AudioDriverCfg
         , uLUN(a_uLUN)
         , strName(a_strName) { }
 
-    AudioDriverCfg& operator=(AudioDriverCfg that)
+    /** Copy assignment operator. */
+    AudioDriverCfg& operator=(AudioDriverCfg const &a_rThat) RT_NOEXCEPT
     {
-        this->strDev  = that.strDev;
-        this->uInst   = that.uInst;
-        this->uLUN    = that.uLUN;
-        this->strName = that.strName;
+        this->strDev  = a_rThat.strDev;
+        this->uInst   = a_rThat.uInst;
+        this->uLUN    = a_rThat.uLUN;
+        this->strName = a_rThat.strName;
 
         return *this;
     }
@@ -68,6 +72,9 @@ class AudioDriver
 public:
     AudioDriver(Console *pConsole);
     virtual ~AudioDriver();
+
+    /** Copy assignment operator. */
+    AudioDriver &operator=(AudioDriver const &a_rThat) RT_NOEXCEPT;
 
     Console *GetParent(void) { return mpConsole; }
 
@@ -108,5 +115,5 @@ protected:
     bool                 mfAttached;
 };
 
-#endif /* !____H_AUDIODRIVER */
+#endif /* !MAIN_INCLUDED_AudioDriver_h */
 

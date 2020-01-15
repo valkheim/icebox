@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -28,6 +28,7 @@
 #ifdef VBOX_WITH_WDDM
 # include <iprt/asm.h>
 #endif
+#include <iprt/system.h>
 
 #ifdef DEBUG /** @todo r=bird: these are all default values. sigh. */
 # define LOG_ENABLED
@@ -81,21 +82,19 @@ static DECLCALLBACK(int) VBoxDisplayInit(const PVBOXSERVICEENV pEnv, void **ppIn
     PVBOXDISPLAYCONTEXT pCtx = &g_Ctx; /** @todo r=andy Use instance data via service lookup (add void *pInstance). */
     AssertPtr(pCtx);
 
-    OSVERSIONINFO OSinfo; /** @todo r=andy Use VBoxTray's g_dwMajorVersion? */
-    OSinfo.dwOSVersionInfoSize = sizeof(OSinfo);
-    GetVersionEx (&OSinfo);
-
     int rc;
     HMODULE hUser = GetModuleHandle("user32.dll"); /** @todo r=andy Use RTLdrXXX and friends. */
 
     pCtx->pEnv = pEnv;
+
+    uint64_t const uNtVersion = RTSystemGetNtVersion();
 
     if (NULL == hUser)
     {
         LogFlowFunc(("Could not get module handle of USER32.DLL!\n"));
         rc = VERR_NOT_IMPLEMENTED;
     }
-    else if (OSinfo.dwMajorVersion >= 5)        /* APIs available only on W2K and up. */
+    else if (uNtVersion >= RTSYSTEM_MAKE_NT_VERSION(5, 0, 0)) /* APIs available only on W2K and up. */
     {
         /** @todo r=andy Use RTLdrXXX and friends. */
         /** @todo r=andy No unicode version available? */
@@ -106,7 +105,7 @@ static DECLCALLBACK(int) VBoxDisplayInit(const PVBOXSERVICEENV pEnv, void **ppIn
         LogFlowFunc(("pfnEnumDisplayDevices = %p\n", pCtx->pfnEnumDisplayDevices));
 
 #ifdef VBOX_WITH_WDDM
-        if (OSinfo.dwMajorVersion >= 6)
+        if (uNtVersion >= RTSYSTEM_MAKE_NT_VERSION(6, 0, 0))
         {
             /* This is Vista and up, check if we need to switch the display driver if to WDDM mode. */
             LogFlowFunc(("this is Windows Vista and up\n"));
@@ -115,7 +114,8 @@ static DECLCALLBACK(int) VBoxDisplayInit(const PVBOXSERVICEENV pEnv, void **ppIn
             {
                 LogFlowFunc(("WDDM driver is installed, switching display driver if to WDDM mode\n"));
                 /* This is hacky, but the most easiest way. */
-                VBOXDISPIF_MODE enmMode = (OSinfo.dwMajorVersion == 6 && OSinfo.dwMinorVersion == 0) ? VBOXDISPIF_MODE_WDDM : VBOXDISPIF_MODE_WDDM_W7;
+                VBOXDISPIF_MODE enmMode = uNtVersion < RTSYSTEM_MAKE_NT_VERSION(6, 1, 0)
+                                        ? VBOXDISPIF_MODE_WDDM : VBOXDISPIF_MODE_WDDM_W7;
                 DWORD dwErr = VBoxDispIfSwitchMode(const_cast<PVBOXDISPIF>(&pEnv->dispIf), enmMode, NULL /* old mode, we don't care about it */);
                 if (dwErr == NO_ERROR)
                 {
@@ -135,7 +135,7 @@ static DECLCALLBACK(int) VBoxDisplayInit(const PVBOXSERVICEENV pEnv, void **ppIn
             rc = VINF_SUCCESS;
 #endif
     }
-    else if (OSinfo.dwMajorVersion <= 4) /* Windows NT 4.0. */
+    else if (uNtVersion < RTSYSTEM_MAKE_NT_VERSION(5, 0, 0)) /* Windows NT 4.0. */
     {
         /* Nothing to do here yet. */
         /** @todo r=andy Has this been tested? */
@@ -279,16 +279,14 @@ DWORD EnableAndResizeDispDev(DEVMODE *paDeviceModes, DISPLAY_DEVICE *paDisplayDe
                 deviceMode.dmPosition.x = paDeviceModes[0].dmPelsWidth;
                 deviceMode.dmPosition.y = 0;
                 deviceMode.dmBitsPerPel = 32;
-                OSVERSIONINFO OSinfo;
-                OSinfo.dwOSVersionInfoSize = sizeof (OSinfo);
-                GetVersionEx (&OSinfo);
 
-                if (OSinfo.dwMajorVersion < 6)
+                uint64_t const uNtVersion = RTSystemGetNtVersion();
+                if (uNtVersion < RTSYSTEM_MAKE_NT_VERSION(6, 0, 0))
                     /* dont any more flags here as, only DM_POISITON is used to enable the secondary display */
                     deviceMode.dmFields = DM_POSITION;
                 else /* for win 7 and above */
                     /* for vista and above DM_BITSPERPEL is necessary */
-                    deviceMode.dmFields =   DM_BITSPERPEL | DM_DISPLAYFLAGS | DM_DISPLAYFREQUENCY  | DM_POSITION;
+                    deviceMode.dmFields = DM_BITSPERPEL | DM_DISPLAYFLAGS | DM_DISPLAYFREQUENCY  | DM_POSITION;
 
                 dwStatus = pCtx->pfnChangeDisplaySettingsEx((LPSTR)displayDevice.DeviceName,&deviceMode, NULL, (CDS_UPDATEREGISTRY | CDS_NORESET), NULL);
                 /* A second call to ChangeDisplaySettings updates the monitor.*/
@@ -768,6 +766,129 @@ static BOOL ResizeDisplayDevice(PVBOXDISPLAYCONTEXT pCtx,
     return TRUE;
 }
 
+static void doResize(PVBOXDISPLAYCONTEXT pCtx,
+                     uint32_t iDisplay,
+                     uint32_t cx,
+                     uint32_t cy,
+                     uint32_t cBits,
+                     bool     fEnabled,
+                     uint32_t cxOrigin,
+                     uint32_t cyOrigin,
+                     bool     fChangeOrigin)
+{
+    for (;;)
+    {
+        VBOXDISPLAY_DRIVER_TYPE enmDriverType = getVBoxDisplayDriverType(pCtx);
+        if (enmDriverType == VBOXDISPLAY_DRIVER_TYPE_UNKNOWN)
+        {
+            LogFlowFunc(("vboxDisplayDriver is not active\n"));
+            break;
+        }
+
+        if (pCtx->pfnChangeDisplaySettingsEx != 0)
+        {
+            LogFlowFunc(("Detected W2K or later\n"));
+            if (!ResizeDisplayDevice(pCtx,
+                                     iDisplay,
+                                     cx,
+                                     cy,
+                                     cBits,
+                                     fEnabled,
+                                     cxOrigin,
+                                     cyOrigin,
+                                     fChangeOrigin,
+                                     true /*fExtDispSup*/ ))
+            {
+                LogFlowFunc(("ResizeDipspalyDevice return 0\n"));
+                break;
+            }
+
+        }
+        else
+        {
+            LogFlowFunc(("Detected NT\n"));
+            ResizeDisplayDeviceNT4(cx, cy, cBits);
+            break;
+        }
+
+        /* Retry the change a bit later. */
+        RTThreadSleep(1000);
+    }
+}
+
+static BOOL DisplayChangeRequestHandler(PVBOXDISPLAYCONTEXT pCtx)
+{
+    VMMDevDisplayDef aDisplays[64];
+    uint32_t cDisplays = RT_ELEMENTS(aDisplays);
+    int rc = VINF_SUCCESS;
+
+    /* Multidisplay resize is still implemented only for Win7 and newer guests. */
+    if (pCtx->pEnv->dispIf.enmMode >= VBOXDISPIF_MODE_WDDM_W7 &&
+        RT_SUCCESS(rc = VbglR3GetDisplayChangeRequestMulti(cDisplays, &cDisplays, &aDisplays[0], true /* fAck */)))
+    {
+        uint32_t i;
+
+        LogRel(("Got multi resize request %d displays\n", cDisplays));
+
+        for (i = 0; i < cDisplays; ++i)
+        {
+            LogRel(("[%d]: %d 0x%02X %d,%d %dx%d %d\n",
+                i, aDisplays[i].idDisplay,
+                aDisplays[i].fDisplayFlags,
+                aDisplays[i].xOrigin,
+                aDisplays[i].yOrigin,
+                aDisplays[i].cx,
+                aDisplays[i].cy,
+                aDisplays[i].cBitsPerPixel));
+        }
+
+        return VBoxDispIfResizeDisplayWin7(&pCtx->pEnv->dispIf, cDisplays, &aDisplays[0]);
+    }
+
+    /* Fall back to the single monitor resize request. */
+
+    /*
+    * We got at least one event. (bird: What does that mean actually?  The driver wakes us up immediately upon
+    * receiving the event.  Or are we refering to mouse & display?  In the latter case it's misleading.)
+    *
+    * Read the requested resolution and try to set it until success.
+    * New events will not be seen but a new resolution will be read in
+    * this poll loop.
+    *
+    * Note! The interface we're using here was added in VBox 4.2.4.  As of 2017-08-16, this
+    *       version has been unsupported for a long time and we therefore don't bother
+    *       implementing fallbacks using VMMDevDisplayChangeRequest2 and VMMDevDisplayChangeRequest.
+    */
+    uint32_t cx = 0;
+    uint32_t cy = 0;
+    uint32_t cBits = 0;
+    uint32_t iDisplay = 0;
+    uint32_t cxOrigin = 0;
+    uint32_t cyOrigin = 0;
+    bool     fChangeOrigin = false;
+    bool     fEnabled = false;
+    rc = VbglR3GetDisplayChangeRequest(&cx, &cy, &cBits, &iDisplay, &cxOrigin, &cyOrigin, &fEnabled, &fChangeOrigin,
+        true /*fAck*/);
+    if (RT_SUCCESS(rc))
+    {
+        /* Try to set the requested video mode. Repeat until it is successful or is rejected by the driver. */
+        LogFlowFunc(("DisplayChangeReqEx parameters  iDisplay=%d x cx=%d x cy=%d x cBits=%d x SecondayMonEnb=%d x NewOriginX=%d x NewOriginY=%d x ChangeOrigin=%d\n",
+            iDisplay, cx, cy, cBits, fEnabled, cxOrigin, cyOrigin, fChangeOrigin));
+
+        doResize(pCtx,
+            iDisplay,
+            cx,
+            cy,
+            cBits,
+            fEnabled,
+            cxOrigin,
+            cyOrigin,
+            fChangeOrigin);
+    }
+
+    return rc;
+}
+
 /**
  * Thread function to wait for and process display change requests.
  */
@@ -818,77 +939,7 @@ static DECLCALLBACK(int) VBoxDisplayWorker(void *pvInstance, bool volatile *pfSh
         if (RT_SUCCESS(rc))
         {
             if (fEvents & VMMDEV_EVENT_DISPLAY_CHANGE_REQUEST)
-            {
-                LogFlowFunc(("going to get display change information\n"));
-
-                /*
-                 * We got at least one event. (bird: What does that mean actually?  The driver wakes us up immediately upon
-                 * receiving the event.  Or are we refering to mouse & display?  In the latter case it's misleading.)
-                 *
-                 * Read the requested resolution and try to set it until success.
-                 * New events will not be seen but a new resolution will be read in
-                 * this poll loop.
-                 *
-                 * Note! The interface we're using here was added in VBox 4.2.4.  As of 2017-08-16, this
-                 *       version has been unsupported for a long time and we therefore don't bother
-                 *       implementing fallbacks using VMMDevDisplayChangeRequest2 and VMMDevDisplayChangeRequest.
-                 */
-                uint32_t cx             = 0;
-                uint32_t cy             = 0;
-                uint32_t cBits          = 0;
-                uint32_t iDisplay       = 0;
-                uint32_t cxOrigin       = 0;
-                uint32_t cyOrigin       = 0;
-                bool     fChangeOrigin  = false;
-                bool     fEnabled       = false;
-                rc = VbglR3GetDisplayChangeRequest(&cx, &cy, &cBits, &iDisplay, &cxOrigin, &cyOrigin, &fEnabled, &fChangeOrigin,
-                                                   true /*fAck*/);
-                if (RT_SUCCESS(rc))
-                {
-                    /* Try to set the requested video mode. Repeat until it is successful or is rejected by the driver. */
-                    LogFlowFunc(("DisplayChangeReqEx parameters  iDisplay=%d x cx=%d x cy=%d x cBits=%d x SecondayMonEnb=%d x NewOriginX=%d x NewOriginY=%d x ChangeOrigin=%d\n",
-                                 iDisplay, cx, cy, cBits, fEnabled, cxOrigin, cyOrigin, fChangeOrigin));
-
-                    for (;;)
-                    {
-                        VBOXDISPLAY_DRIVER_TYPE enmDriverType = getVBoxDisplayDriverType(pCtx);
-                        if (enmDriverType == VBOXDISPLAY_DRIVER_TYPE_UNKNOWN)
-                        {
-                            LogFlowFunc(("vboxDisplayDriver is not active\n"));
-                            break;
-                        }
-
-                        if (pCtx->pfnChangeDisplaySettingsEx != 0)
-                        {
-                            LogFlowFunc(("Detected W2K or later\n"));
-                            if (!ResizeDisplayDevice(pCtx,
-                                                     iDisplay,
-                                                     cx,
-                                                     cy,
-                                                     cBits,
-                                                     fEnabled,
-                                                     cxOrigin,
-                                                     cyOrigin,
-                                                     fChangeOrigin,
-                                                     true /*fExtDispSup*/ ))
-                            {
-                                LogFlowFunc(("ResizeDipspalyDevice return 0\n"));
-                                break;
-                            }
-
-                        }
-                        else
-                        {
-                            LogFlowFunc(("Detected NT\n"));
-                            ResizeDisplayDeviceNT4(cx, cy, cBits);
-                            break;
-                        }
-
-                        /* Retry the change a bit later. */
-                        RTThreadSleep(1000);
-                    }
-                }
-            } // if (fDisplayChangeQueried)
+                DisplayChangeRequestHandler(pCtx);
 
             if (fEvents & VMMDEV_EVENT_MOUSE_CAPABILITIES_CHANGED)
                 hlpReloadCursor();

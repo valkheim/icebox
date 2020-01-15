@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2017 Oracle Corporation
+ * Copyright (C) 2017-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -35,8 +35,10 @@
 #include <iprt/assert.h>
 #include <iprt/ctype.h>
 #include <iprt/err.h>
+#include <iprt/latin1.h>
 #include <iprt/mem.h>
 #include <iprt/string.h>
+#include <iprt/utf16.h>
 #include <iprt/vfs.h>
 
 #include "internal/magics.h"
@@ -144,7 +146,7 @@ static int rtIniFileLoad(PRTINIFILEINT pThis)
      * Load the entire file into memory, ensuring two terminating zeros.
      */
     uint64_t cbFile;
-    int rc = RTVfsFileGetSize(pThis->hVfsFile, &cbFile);
+    int rc = RTVfsFileQuerySize(pThis->hVfsFile, &cbFile);
     AssertRCReturn(rc, rc);
 
     if (cbFile > RTINIFILE_MAX_SIZE)

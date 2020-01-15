@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -68,10 +68,10 @@ static FNDBGCCMD dbgcCmdGoUp;
 static FNDBGCCMD dbgcCmdListModules;
 static FNDBGCCMD dbgcCmdListNear;
 static FNDBGCCMD dbgcCmdListSource;
+static FNDBGCCMD dbgcCmdListSymbols;
 static FNDBGCCMD dbgcCmdMemoryInfo;
 static FNDBGCCMD dbgcCmdReg;
 static FNDBGCCMD dbgcCmdRegGuest;
-static FNDBGCCMD dbgcCmdRegHyper;
 static FNDBGCCMD dbgcCmdRegTerse;
 static FNDBGCCMD dbgcCmdSearchMem;
 static FNDBGCCMD dbgcCmdSearchMemType;
@@ -354,6 +354,13 @@ static const DBGCVARDESC    g_aArgUnassembleCfg[] =
     {  0,           1,          DBGCVAR_CAT_POINTER,    0,                              "address",      "Address where to start disassembling." },
 };
 
+/** 'x' arguments. */
+static const DBGCVARDESC    g_aArgListSyms[] =
+{
+    /* cTimesMin,   cTimesMax,  enmCategory,            fFlags,                         pszName,        pszDescription */
+    {  1,           1,          DBGCVAR_CAT_STRING,     0,                              "symbols",      "The symbols to list, format is Module!Symbol with wildcards being supoprted." }
+};
+
 
 /** Command descriptors for the CodeView / WinDbg emulation.
  * The emulation isn't attempting to be identical, only somewhat similar.
@@ -371,10 +378,13 @@ const DBGCCMD    g_aCmdsCodeView[] =
                                                                                                                                                  "Sets a breakpoint (int 3)." },
     { "br",         1,        4,        &g_aArgBrkREM[0],   RT_ELEMENTS(g_aArgBrkREM),      0,       dbgcCmdBrkREM,      "<address> [passes [max passes]] [cmds]",
                                                                                                                                                  "Sets a recompiler specific breakpoint." },
-    { "d",          0,        1,        &g_aArgDumpMem[0],  RT_ELEMENTS(g_aArgDumpMem),     0,       dbgcCmdDumpMem,     "[addr]",               "Dump memory using last element size." },
+    { "d",          0,        1,        &g_aArgDumpMem[0],  RT_ELEMENTS(g_aArgDumpMem),     0,       dbgcCmdDumpMem,     "[addr]",               "Dump memory using last element size and type." },
+    { "dF",         0,        1,        &g_aArgDumpMem[0],  RT_ELEMENTS(g_aArgDumpMem),     0,       dbgcCmdDumpMem,     "[addr]",               "Dump memory as far 16:16." },
+    { "dFs",        0,        1,        &g_aArgDumpMem[0],  RT_ELEMENTS(g_aArgDumpMem),     0,       dbgcCmdDumpMem,     "[addr]",               "Dump memory as far 16:16 with near symbols." },
     { "da",         0,        1,        &g_aArgDumpMem[0],  RT_ELEMENTS(g_aArgDumpMem),     0,       dbgcCmdDumpMem,     "[addr]",               "Dump memory as ascii string." },
     { "db",         0,        1,        &g_aArgDumpMem[0],  RT_ELEMENTS(g_aArgDumpMem),     0,       dbgcCmdDumpMem,     "[addr]",               "Dump memory in bytes." },
     { "dd",         0,        1,        &g_aArgDumpMem[0],  RT_ELEMENTS(g_aArgDumpMem),     0,       dbgcCmdDumpMem,     "[addr]",               "Dump memory in double words." },
+    { "dds",        0,        1,        &g_aArgDumpMem[0],  RT_ELEMENTS(g_aArgDumpMem),     0,       dbgcCmdDumpMem,     "[addr]",               "Dump memory as double words with near symbols." },
     { "da",         0,        1,        &g_aArgDumpMem[0],  RT_ELEMENTS(g_aArgDumpMem),     0,       dbgcCmdDumpMem,     "[addr]",               "Dump memory as ascii string." },
     { "dg",         0,       ~0U,       &g_aArgDumpDT[0],   RT_ELEMENTS(g_aArgDumpDT),      0,       dbgcCmdDumpDT,      "[sel [..]]",           "Dump the global descriptor table (GDT)." },
     { "dga",        0,       ~0U,       &g_aArgDumpDT[0],   RT_ELEMENTS(g_aArgDumpDT),      0,       dbgcCmdDumpDT,      "[sel [..]]",           "Dump the global descriptor table (GDT) including not-present entries." },
@@ -390,18 +400,22 @@ const DBGCCMD    g_aCmdsCodeView[] =
     { "dph",        0,        3,        &g_aArgDumpPH[0],   RT_ELEMENTS(g_aArgDumpPH),      0, dbgcCmdDumpPageHierarchy, "[addr [cr3 [mode]]",   "Dumps the paging hierarchy at for specfied address range. Default context." },
     { "dphg",       0,        3,        &g_aArgDumpPH[0],   RT_ELEMENTS(g_aArgDumpPH),      0, dbgcCmdDumpPageHierarchy, "[addr [cr3 [mode]]",   "Dumps the paging hierarchy at for specfied address range. Guest context." },
     { "dphh",       0,        3,        &g_aArgDumpPH[0],   RT_ELEMENTS(g_aArgDumpPH),      0, dbgcCmdDumpPageHierarchy, "[addr [cr3 [mode]]",   "Dumps the paging hierarchy at for specfied address range. Hypervisor context." },
+    { "dp",         0,        1,        &g_aArgDumpMem[0],  RT_ELEMENTS(g_aArgDumpMem),     0,       dbgcCmdDumpMem,     "[addr]",               "Dump memory in mode sized words." },
+    { "dps",        0,        1,        &g_aArgDumpMem[0],  RT_ELEMENTS(g_aArgDumpMem),     0,       dbgcCmdDumpMem,     "[addr]",               "Dump memory in mode sized words with near symbols." },
     { "dpt",        1,        1,        &g_aArgDumpPT[0],   RT_ELEMENTS(g_aArgDumpPT),      0,       dbgcCmdDumpPageTable,"<addr>",              "Dumps page table entries of the default context." },
     { "dpta",       1,        1,        &g_aArgDumpPTAddr[0],RT_ELEMENTS(g_aArgDumpPTAddr), 0,       dbgcCmdDumpPageTable,"<addr>",              "Dumps memory at given address as a page table." },
     { "dptb",       1,        1,        &g_aArgDumpPT[0],   RT_ELEMENTS(g_aArgDumpPT),      0,       dbgcCmdDumpPageTableBoth,"<addr>",          "Dumps page table entries of the guest and the hypervisor." },
     { "dptg",       1,        1,        &g_aArgDumpPT[0],   RT_ELEMENTS(g_aArgDumpPT),      0,       dbgcCmdDumpPageTable,"<addr>",              "Dumps page table entries of the guest." },
     { "dpth",       1,        1,        &g_aArgDumpPT[0],   RT_ELEMENTS(g_aArgDumpPT),      0,       dbgcCmdDumpPageTable,"<addr>",              "Dumps page table entries of the hypervisor." },
     { "dq",         0,        1,        &g_aArgDumpMem[0],  RT_ELEMENTS(g_aArgDumpMem),     0,       dbgcCmdDumpMem,     "[addr]",               "Dump memory in quad words." },
+    { "dqs",        0,        1,        &g_aArgDumpMem[0],  RT_ELEMENTS(g_aArgDumpMem),     0,       dbgcCmdDumpMem,     "[addr]",               "Dump memory as quad words with near symbols." },
     { "dt",         0,        1,        &g_aArgDumpTSS[0],  RT_ELEMENTS(g_aArgDumpTSS),     0,       dbgcCmdDumpTSS,     "[tss|tss:ign|addr]",   "Dump the task state segment (TSS)." },
     { "dt16",       0,        1,        &g_aArgDumpTSS[0],  RT_ELEMENTS(g_aArgDumpTSS),     0,       dbgcCmdDumpTSS,     "[tss|tss:ign|addr]",   "Dump the 16-bit task state segment (TSS)." },
     { "dt32",       0,        1,        &g_aArgDumpTSS[0],  RT_ELEMENTS(g_aArgDumpTSS),     0,       dbgcCmdDumpTSS,     "[tss|tss:ign|addr]",   "Dump the 32-bit task state segment (TSS)." },
     { "dt64",       0,        1,        &g_aArgDumpTSS[0],  RT_ELEMENTS(g_aArgDumpTSS),     0,       dbgcCmdDumpTSS,     "[tss|tss:ign|addr]",   "Dump the 64-bit task state segment (TSS)." },
     { "dti",        1,        2,        &g_aArgDumpTypeInfo[0],RT_ELEMENTS(g_aArgDumpTypeInfo), 0,   dbgcCmdDumpTypeInfo,"<type> [levels]",      "Dump type information." },
     { "dtv",        2,        3,        &g_aArgDumpTypedVal[0],RT_ELEMENTS(g_aArgDumpTypedVal), 0,   dbgcCmdDumpTypedVal,"<type> <addr> [levels]", "Dump a memory buffer using the information in the given type." },
+    { "du",         0,        1,        &g_aArgDumpMem[0],  RT_ELEMENTS(g_aArgDumpMem),     0,       dbgcCmdDumpMem,     "[addr]",               "Dump memory as unicode string (little endian)." },
     { "dw",         0,        1,        &g_aArgDumpMem[0],  RT_ELEMENTS(g_aArgDumpMem),     0,       dbgcCmdDumpMem,     "[addr]",               "Dump memory in words." },
     /** @todo add 'e', 'ea str', 'eza str', 'eu str' and 'ezu str'. See also
      *        dbgcCmdSearchMem and its dbgcVarsToBytes usage. */
@@ -412,7 +426,9 @@ const DBGCCMD    g_aCmdsCodeView[] =
     { "g",          0,        0,        NULL,               0,                              0,       dbgcCmdGo,          "",                     "Continue execution." },
     { "gu",         0,        0,        NULL,               0,                              0,       dbgcCmdGoUp,        "",                     "Go up - continue execution till after return." },
     { "k",          0,        0,        NULL,               0,                              0,       dbgcCmdStack,       "",                     "Callstack." },
+    { "kv",         0,        0,        NULL,               0,                              0,       dbgcCmdStack,       "",                     "Verbose callstack." },
     { "kg",         0,        0,        NULL,               0,                              0,       dbgcCmdStack,       "",                     "Callstack - guest." },
+    { "kgv",        0,        0,        NULL,               0,                              0,       dbgcCmdStack,       "",                     "Verbose callstack - guest." },
     { "kh",         0,        0,        NULL,               0,                              0,       dbgcCmdStack,       "",                     "Callstack - hypervisor." },
     { "lm",         0,        ~0U,      &g_aArgListMods[0], RT_ELEMENTS(g_aArgListMods),    0,       dbgcCmdListModules, "[module [..]]",        "List modules." },
     { "lmv",        0,        ~0U,      &g_aArgListMods[0], RT_ELEMENTS(g_aArgListMods),    0,       dbgcCmdListModules, "[module [..]]",        "List modules, verbose." },
@@ -430,7 +446,6 @@ const DBGCCMD    g_aCmdsCodeView[] =
     { "rg",         0,        3,        &g_aArgReg[0],      RT_ELEMENTS(g_aArgReg),         0,       dbgcCmdRegGuest,    "[reg [[=] newval]]",   "Show or set register(s) - guest reg set." },
     { "rg32",       0,        0,        NULL,               0,                              0,       dbgcCmdRegGuest,    "",                     "Show 32-bit guest registers." },
     { "rg64",       0,        0,        NULL,               0,                              0,       dbgcCmdRegGuest,    "",                     "Show 64-bit guest registers." },
-    { "rh",         0,        3,        &g_aArgReg[0],      RT_ELEMENTS(g_aArgReg),         0,       dbgcCmdRegHyper,    "[reg [[=] newval]]",   "Show or set register(s) - hypervisor reg set." },
     { "rt",         0,        0,        NULL,               0,                              0,       dbgcCmdRegTerse,    "",                     "Toggles terse / verbose register info." },
     { "s",          0,       ~0U,       &g_aArgSearchMem[0], RT_ELEMENTS(g_aArgSearchMem),  0,       dbgcCmdSearchMem,   "[options] <range> <pattern>",  "Continue last search." },
     { "sa",         2,       ~0U,       &g_aArgSearchMemType[0], RT_ELEMENTS(g_aArgSearchMemType),0, dbgcCmdSearchMemType, "<range> <pattern>",  "Search memory for an ascii string." },
@@ -457,6 +472,7 @@ const DBGCCMD    g_aCmdsCodeView[] =
     { "uv86",       0,        1,        &g_aArgUnassemble[0],RT_ELEMENTS(g_aArgUnassemble), 0,       dbgcCmdUnassemble,  "[addr]",               "Unassemble 16-bit code with v8086/real mode addressing." },
     { "ucfg",       0,        1,        &g_aArgUnassembleCfg[0], RT_ELEMENTS(g_aArgUnassembleCfg), 0, dbgcCmdUnassembleCfg,  "[addr]",               "Unassemble creating a control flow graph." },
     { "ucfgc",      0,        1,        &g_aArgUnassembleCfg[0], RT_ELEMENTS(g_aArgUnassembleCfg), 0, dbgcCmdUnassembleCfg,  "[addr]",               "Unassemble creating a control flow graph with colors." },
+    { "x",          1,        1,        &g_aArgListSyms[0], RT_ELEMENTS(g_aArgListSyms),    0,       dbgcCmdListSymbols,  "* | <Module!Symbol>", "Examine symbols." },
 };
 
 /** The number of commands in the CodeView/WinDbg emulation. */
@@ -616,8 +632,9 @@ const DBGCSXEVT g_aDbgcSxEvents[] =
     { DBGFEVENT_IOPORT_UNUSED,          "pio_unused",           NULL,       kDbgcSxEventKind_Plain,     kDbgcEvtState_Disabled, 0,                    NULL },
     { DBGFEVENT_MEMORY_UNASSIGNED,      "mmio_unassigned",      NULL,       kDbgcSxEventKind_Plain,     kDbgcEvtState_Disabled, 0,                    NULL },
     { DBGFEVENT_MEMORY_ROM_WRITE,       "rom_write",            NULL,       kDbgcSxEventKind_Plain,     kDbgcEvtState_Disabled, 0,                    NULL },
-    { DBGFEVENT_BSOD_MSR,               "bsod_msr",             NULL,       kDbgcSxEventKind_Plain,     kDbgcEvtState_Disabled, 0,                    NULL },
-    { DBGFEVENT_BSOD_EFI,               "bsod_efi",             NULL,       kDbgcSxEventKind_Plain,     kDbgcEvtState_Disabled, 0,                    NULL },
+    { DBGFEVENT_BSOD_MSR,               "bsod_msr",             NULL,       kDbgcSxEventKind_Plain,     kDbgcEvtState_Disabled, DBGCSXEVT_F_BUGCHECK, NULL },
+    { DBGFEVENT_BSOD_EFI,               "bsod_efi",             NULL,       kDbgcSxEventKind_Plain,     kDbgcEvtState_Disabled, DBGCSXEVT_F_BUGCHECK, NULL },
+    { DBGFEVENT_BSOD_VMMDEV,            "bsod_vmmdev",          NULL,       kDbgcSxEventKind_Plain,     kDbgcEvtState_Disabled, DBGCSXEVT_F_BUGCHECK, NULL },
 };
 /** Number of entries in g_aDbgcSxEvents.  */
 const uint32_t   g_cDbgcSxEvents = RT_ELEMENTS(g_aDbgcSxEvents);
@@ -995,7 +1012,8 @@ static DECLCALLBACK(int) dbgcEnumBreakpointsCallback(PUVM pUVM, void *pvUser, PC
         RTINTPTR    off;
         DBGFADDRESS Addr;
         int rc = DBGFR3AsSymbolByAddr(pUVM, pDbgc->hDbgAs, DBGFR3AddrFromFlat(pDbgc->pUVM, &Addr, pBp->u.GCPtr),
-                                      RTDBGSYMADDR_FLAGS_LESS_OR_EQUAL, &off, &Sym, NULL);
+                                      RTDBGSYMADDR_FLAGS_LESS_OR_EQUAL | RTDBGSYMADDR_FLAGS_SKIP_ABS_IN_DEFERRED,
+                                      &off, &Sym, NULL);
         if (RT_SUCCESS(rc))
         {
             if (!off)
@@ -1179,9 +1197,13 @@ static void dbgcCmdUnassambleHelpListNear(PUVM pUVM, PDBGCCMDHLP pCmdHlp, RTDBGA
 {
     RTDBGSYMBOL Symbol;
     RTGCINTPTR  offDispSym;
-    int rc = DBGFR3AsSymbolByAddr(pUVM, hDbgAs, pAddress, RTDBGSYMADDR_FLAGS_LESS_OR_EQUAL, &offDispSym, &Symbol, NULL);
+    int rc = DBGFR3AsSymbolByAddr(pUVM, hDbgAs, pAddress,
+                                  RTDBGSYMADDR_FLAGS_LESS_OR_EQUAL | RTDBGSYMADDR_FLAGS_SKIP_ABS_IN_DEFERRED,
+                                  &offDispSym, &Symbol, NULL);
     if (RT_FAILURE(rc) || offDispSym > _1G)
-        rc = DBGFR3AsSymbolByAddr(pUVM, hDbgAs, pAddress, RTDBGSYMADDR_FLAGS_GREATER_OR_EQUAL, &offDispSym, &Symbol, NULL);
+        rc = DBGFR3AsSymbolByAddr(pUVM, hDbgAs, pAddress,
+                                  RTDBGSYMADDR_FLAGS_GREATER_OR_EQUAL | RTDBGSYMADDR_FLAGS_SKIP_ABS_IN_DEFERRED,
+                                  &offDispSym, &Symbol, NULL);
     if (RT_SUCCESS(rc) && offDispSym < _1G)
     {
         if (!offDispSym)
@@ -1247,8 +1269,7 @@ static DECLCALLBACK(int) dbgcCmdUnassemble(PCDBGCCMD pCmd, PDBGCCMDHLP pCmdHlp, 
         {
             /** @todo Batch query CS, RIP, CPU mode and flags. */
             PVMCPU pVCpu = VMMR3GetCpuByIdU(pUVM, pDbgc->idCpu);
-            if (    pDbgc->fRegCtxGuest
-                &&  CPUMIsGuestIn64BitCode(pVCpu))
+            if (CPUMIsGuestIn64BitCode(pVCpu))
             {
                 pDbgc->DisasmPos.enmType    = DBGCVAR_TYPE_GC_FLAT;
                 pDbgc->SourcePos.u.GCFlat   = CPUMGetGuestRIP(pVCpu);
@@ -1256,10 +1277,9 @@ static DECLCALLBACK(int) dbgcCmdUnassemble(PCDBGCCMD pCmd, PDBGCCMDHLP pCmdHlp, 
             else
             {
                 pDbgc->DisasmPos.enmType     = DBGCVAR_TYPE_GC_FAR;
-                pDbgc->SourcePos.u.GCFar.off = pDbgc->fRegCtxGuest ? CPUMGetGuestEIP(pVCpu) : CPUMGetHyperEIP(pVCpu);
-                pDbgc->SourcePos.u.GCFar.sel = pDbgc->fRegCtxGuest ? CPUMGetGuestCS(pVCpu)  : CPUMGetHyperCS(pVCpu);
+                pDbgc->SourcePos.u.GCFar.off = CPUMGetGuestEIP(pVCpu);
+                pDbgc->SourcePos.u.GCFar.sel = CPUMGetGuestCS(pVCpu);
                 if (   (fFlags & DBGF_DISAS_FLAGS_MODE_MASK) == DBGF_DISAS_FLAGS_DEFAULT_MODE
-                    && pDbgc->fRegCtxGuest
                     && (CPUMGetGuestEFlags(pVCpu) & X86_EFL_VM))
                 {
                     fFlags &= ~DBGF_DISAS_FLAGS_MODE_MASK;
@@ -1267,15 +1287,12 @@ static DECLCALLBACK(int) dbgcCmdUnassemble(PCDBGCCMD pCmd, PDBGCCMDHLP pCmdHlp, 
                 }
             }
 
-            if (pDbgc->fRegCtxGuest)
-                fFlags |= DBGF_DISAS_FLAGS_CURRENT_GUEST;
-            else
-                fFlags |= DBGF_DISAS_FLAGS_CURRENT_HYPER | DBGF_DISAS_FLAGS_HYPER;
+            fFlags |= DBGF_DISAS_FLAGS_CURRENT_GUEST;
         }
         else if ((fFlags & DBGF_DISAS_FLAGS_MODE_MASK) == DBGF_DISAS_FLAGS_DEFAULT_MODE && pDbgc->fDisasm)
         {
             fFlags &= ~DBGF_DISAS_FLAGS_MODE_MASK;
-            fFlags |= pDbgc->fDisasm & (DBGF_DISAS_FLAGS_MODE_MASK | DBGF_DISAS_FLAGS_HYPER);
+            fFlags |= pDbgc->fDisasm & DBGF_DISAS_FLAGS_MODE_MASK;
         }
         pDbgc->DisasmPos.enmRangeType = DBGCVAR_RANGE_NONE;
     }
@@ -1344,8 +1361,6 @@ static DECLCALLBACK(int) dbgcCmdUnassemble(PCDBGCCMD pCmd, PDBGCCMDHLP pCmdHlp, 
             return DBGCCmdHlpFailRc(pCmdHlp, pCmd, rc, "DBGCCmdHlpVarToDbgfAddr failed on '%Dv'", &pDbgc->DisasmPos);
     }
 
-    if (CurAddr.fFlags & DBGFADDRESS_FLAGS_HMA)
-        fFlags |= DBGF_DISAS_FLAGS_HYPER; /* This crap is due to not using DBGFADDRESS as DBGFR3Disas* input. */
     pDbgc->fDisasm = fFlags;
 
     /*
@@ -1405,7 +1420,7 @@ static DECLCALLBACK(int) dbgcCmdUnassemble(PCDBGCCMD pCmd, PDBGCCMDHLP pCmdHlp, 
             return DBGCCmdHlpFailRc(pCmdHlp, pCmd, rc, "DBGCCmdHlpEval(,,'(%Dv) + %x')", &pDbgc->DisasmPos, cbInstr);
         if (iRangeLeft <= 0)
             break;
-        fFlags &= ~(DBGF_DISAS_FLAGS_CURRENT_GUEST | DBGF_DISAS_FLAGS_CURRENT_HYPER);
+        fFlags &= ~DBGF_DISAS_FLAGS_CURRENT_GUEST;
 
         /* Print next symbol? */
         if (cbCheckSymbol <= cbInstr)
@@ -2019,8 +2034,7 @@ static DECLCALLBACK(int) dbgcCmdUnassembleCfg(PCDBGCCMD pCmd, PDBGCCMDHLP pCmdHl
         {
             /** @todo Batch query CS, RIP, CPU mode and flags. */
             PVMCPU pVCpu = VMMR3GetCpuByIdU(pUVM, pDbgc->idCpu);
-            if (    pDbgc->fRegCtxGuest
-                &&  CPUMIsGuestIn64BitCode(pVCpu))
+            if (CPUMIsGuestIn64BitCode(pVCpu))
             {
                 pDbgc->DisasmPos.enmType    = DBGCVAR_TYPE_GC_FLAT;
                 pDbgc->SourcePos.u.GCFlat   = CPUMGetGuestRIP(pVCpu);
@@ -2028,10 +2042,9 @@ static DECLCALLBACK(int) dbgcCmdUnassembleCfg(PCDBGCCMD pCmd, PDBGCCMDHLP pCmdHl
             else
             {
                 pDbgc->DisasmPos.enmType     = DBGCVAR_TYPE_GC_FAR;
-                pDbgc->SourcePos.u.GCFar.off = pDbgc->fRegCtxGuest ? CPUMGetGuestEIP(pVCpu) : CPUMGetHyperEIP(pVCpu);
-                pDbgc->SourcePos.u.GCFar.sel = pDbgc->fRegCtxGuest ? CPUMGetGuestCS(pVCpu)  : CPUMGetHyperCS(pVCpu);
+                pDbgc->SourcePos.u.GCFar.off = CPUMGetGuestEIP(pVCpu);
+                pDbgc->SourcePos.u.GCFar.sel = CPUMGetGuestCS(pVCpu);
                 if (   (fFlags & DBGF_DISAS_FLAGS_MODE_MASK) == DBGF_DISAS_FLAGS_DEFAULT_MODE
-                    && pDbgc->fRegCtxGuest
                     && (CPUMGetGuestEFlags(pVCpu) & X86_EFL_VM))
                 {
                     fFlags &= ~DBGF_DISAS_FLAGS_MODE_MASK;
@@ -2039,15 +2052,12 @@ static DECLCALLBACK(int) dbgcCmdUnassembleCfg(PCDBGCCMD pCmd, PDBGCCMDHLP pCmdHl
                 }
             }
 
-            if (pDbgc->fRegCtxGuest)
-                fFlags |= DBGF_DISAS_FLAGS_CURRENT_GUEST;
-            else
-                fFlags |= DBGF_DISAS_FLAGS_CURRENT_HYPER | DBGF_DISAS_FLAGS_HYPER;
+            fFlags |= DBGF_DISAS_FLAGS_CURRENT_GUEST;
         }
         else if ((fFlags & DBGF_DISAS_FLAGS_MODE_MASK) == DBGF_DISAS_FLAGS_DEFAULT_MODE && pDbgc->fDisasm)
         {
             fFlags &= ~DBGF_DISAS_FLAGS_MODE_MASK;
-            fFlags |= pDbgc->fDisasm & (DBGF_DISAS_FLAGS_MODE_MASK | DBGF_DISAS_FLAGS_HYPER);
+            fFlags |= pDbgc->fDisasm & DBGF_DISAS_FLAGS_MODE_MASK;
         }
         pDbgc->DisasmPos.enmRangeType = DBGCVAR_RANGE_NONE;
     }
@@ -2160,8 +2170,8 @@ static DECLCALLBACK(int) dbgcCmdListSource(PCDBGCCMD pCmd, PDBGCCMDHLP pCmdHlp, 
         {
             PVMCPU pVCpu = VMMR3GetCpuByIdU(pUVM, pDbgc->idCpu);
             pDbgc->SourcePos.enmType     = DBGCVAR_TYPE_GC_FAR;
-            pDbgc->SourcePos.u.GCFar.off = pDbgc->fRegCtxGuest ? CPUMGetGuestEIP(pVCpu) : CPUMGetHyperEIP(pVCpu);
-            pDbgc->SourcePos.u.GCFar.sel = pDbgc->fRegCtxGuest ? CPUMGetGuestCS(pVCpu)  : CPUMGetHyperCS(pVCpu);
+            pDbgc->SourcePos.u.GCFar.off = CPUMGetGuestEIP(pVCpu);
+            pDbgc->SourcePos.u.GCFar.sel = CPUMGetGuestCS(pVCpu);
         }
         pDbgc->SourcePos.enmRangeType = DBGCVAR_RANGE_NONE;
     }
@@ -2327,9 +2337,6 @@ static DECLCALLBACK(int) dbgcCmdListSource(PCDBGCCMD pCmd, PDBGCCMDHLP pCmdHlp, 
  */
 static DECLCALLBACK(int) dbgcCmdReg(PCDBGCCMD pCmd, PDBGCCMDHLP pCmdHlp, PUVM pUVM, PCDBGCVAR paArgs, unsigned cArgs)
 {
-    PDBGC pDbgc = DBGC_CMDHLP2DBGC(pCmdHlp);
-    if (!pDbgc->fRegCtxGuest)
-        return dbgcCmdRegHyper(pCmd, pCmdHlp, pUVM, paArgs, cArgs);
     return dbgcCmdRegGuest(pCmd, pCmdHlp, pUVM, paArgs, cArgs);
 }
 
@@ -2544,56 +2551,6 @@ static DECLCALLBACK(int) dbgcCmdRegGuest(PCDBGCCMD pCmd, PDBGCCMDHLP pCmdHlp, PU
 
 
 /**
- * @callback_method_impl{FNDBGCCMD, The 'rh' command.}
- */
-static DECLCALLBACK(int) dbgcCmdRegHyper(PCDBGCCMD pCmd, PDBGCCMDHLP pCmdHlp, PUVM pUVM, PCDBGCVAR paArgs, unsigned cArgs)
-{
-    /*
-     * Show all registers our selves.
-     */
-    if (cArgs == 0)
-    {
-        PDBGC   pDbgc = DBGC_CMDHLP2DBGC(pCmdHlp);
-        char    szDisAndRegs[8192];
-        int     rc;
-
-        if (pDbgc->fRegTerse)
-            rc = DBGFR3RegPrintf(pUVM, pDbgc->idCpu | DBGFREG_HYPER_VMCPUID, szDisAndRegs, sizeof(szDisAndRegs),
-                                 "u %VR{cs}:%VR{eip} L 0\n"
-                                 ".eax=%08VR{eax} .ebx=%08VR{ebx} .ecx=%08VR{ecx} .edx=%08VR{edx} .esi=%08VR{esi} .edi=%08VR{edi}\n"
-                                 ".eip=%08VR{eip} .esp=%08VR{esp} .ebp=%08VR{ebp} .%VRF{eflags}\n"
-                                 ".cs=%04VR{cs} .ds=%04VR{ds} .es=%04VR{es} .fs=%04VR{fs} .gs=%04VR{gs} .ss=%04VR{ss}              .eflags=%08VR{eflags}\n");
-        else
-            rc = DBGFR3RegPrintf(pUVM, pDbgc->idCpu | DBGFREG_HYPER_VMCPUID, szDisAndRegs, sizeof(szDisAndRegs),
-                                 "u %04VR{cs}:%08VR{eip} L 0\n"
-                                 ".eax=%08VR{eax} .ebx=%08VR{ebx} .ecx=%08VR{ecx} .edx=%08VR{edx} .esi=%08VR{esi} .edi=%08VR{edi}\n"
-                                 ".eip=%08VR{eip} .esp=%08VR{esp} .ebp=%08VR{ebp} .%VRF{eflags}\n"
-                                 ".cs={%04VR{cs} base=%08VR{cs_base} limit=%08VR{cs_lim} flags=%04VR{cs_attr}} .dr0=%08VR{dr0} .dr1=%08VR{dr1}\n"
-                                 ".ds={%04VR{ds} base=%08VR{ds_base} limit=%08VR{ds_lim} flags=%04VR{ds_attr}} .dr2=%08VR{dr2} .dr3=%08VR{dr3}\n"
-                                 ".es={%04VR{es} base=%08VR{es_base} limit=%08VR{es_lim} flags=%04VR{es_attr}} .dr6=%08VR{dr6} .dr6=%08VR{dr6}\n"
-                                 ".fs={%04VR{fs} base=%08VR{fs_base} limit=%08VR{fs_lim} flags=%04VR{fs_attr}} .cr3=%016VR{cr3}\n"
-                                 ".gs={%04VR{gs} base=%08VR{gs_base} limit=%08VR{gs_lim} flags=%04VR{gs_attr}}\n"
-                                 ".ss={%04VR{ss} base=%08VR{ss_base} limit=%08VR{ss_lim} flags=%04VR{ss_attr}}\n"
-                                 ".gdtr=%08VR{gdtr_base}:%04VR{gdtr_lim}  .idtr=%08VR{idtr_base}:%04VR{idtr_lim}  .eflags=%08VR{eflags}\n"
-                                 ".ldtr={%04VR{ldtr} base=%08VR{ldtr_base} limit=%08VR{ldtr_lim} flags=%04VR{ldtr_attr}}\n"
-                                 ".tr  ={%04VR{tr} base=%08VR{tr_base} limit=%08VR{tr_lim} flags=%04VR{tr_attr}}\n"
-                                 );
-        if (RT_FAILURE(rc))
-            return DBGCCmdHlpVBoxError(pCmdHlp, rc, "DBGFR3RegPrintf failed");
-        char *pszRegs = strchr(szDisAndRegs, '\n');
-        *pszRegs++ = '\0';
-        rc = DBGCCmdHlpPrintf(pCmdHlp, "%s", pszRegs);
-
-        /*
-         * Disassemble one instruction at cs:[r|e]ip.
-         */
-        return pCmdHlp->pfnExec(pCmdHlp, "%s", szDisAndRegs);
-    }
-    return dbgcCmdRegCommon(pCmd, pCmdHlp, pUVM, paArgs, cArgs, ".");
-}
-
-
-/**
  * @callback_method_impl{FNDBGCCMD, The 'rt' command.}
  */
 static DECLCALLBACK(int) dbgcCmdRegTerse(PCDBGCCMD pCmd, PDBGCCMDHLP pCmdHlp, PUVM pUVM, PCDBGCVAR paArgs, unsigned cArgs)
@@ -2691,6 +2648,50 @@ static DECLCALLBACK(int) dbgcCmdStepTraceTo(PCDBGCCMD pCmd, PDBGCCMDHLP pCmdHlp,
 
 
 /**
+ * Helper that tries to resolve a far address to a symbol and formats it.
+ *
+ * @returns Pointer to symbol string on success, NULL if not resolved.
+ *          Free using RTStrFree.
+ * @param   pCmdHlp             The command helper structure.
+ * @param   hAs                 The address space to use.  NIL_RTDBGAS means no symbol resolving.
+ * @param   sel                 The selector part of the address.
+ * @param   off                 The offset part of the address.
+ * @param   pszPrefix           How to prefix the symbol string.
+ * @param   pszSuffix           How to suffix the symbol string.
+ */
+static char *dbgcCmdHlpFarAddrToSymbol(PDBGCCMDHLP pCmdHlp, RTDBGAS hAs, RTSEL sel, uint64_t off,
+                                       const char *pszPrefix, const char *pszSuffix)
+{
+    char *pszRet = NULL;
+    if (hAs != NIL_RTDBGAS)
+    {
+        PDBGC        pDbgc      = DBGC_CMDHLP2DBGC(pCmdHlp);
+        DBGFADDRESS  Addr;
+        int rc = DBGFR3AddrFromSelOff(pDbgc->pUVM, pDbgc->idCpu, &Addr, sel, off);
+        if (RT_SUCCESS(rc))
+        {
+            RTGCINTPTR   offDispSym = 0;
+            PRTDBGSYMBOL pSymbol = DBGFR3AsSymbolByAddrA(pDbgc->pUVM, hAs, &Addr,
+                                                           RTDBGSYMADDR_FLAGS_GREATER_OR_EQUAL
+                                                         | RTDBGSYMADDR_FLAGS_SKIP_ABS_IN_DEFERRED,
+                                                         &offDispSym, NULL);
+            if (pSymbol)
+            {
+                if (offDispSym == 0)
+                    pszRet = RTStrAPrintf2("%s%s%s", pszPrefix, pSymbol->szName, pszSuffix);
+                else if (offDispSym > 0)
+                    pszRet = RTStrAPrintf2("%s%s+%llx%s", pszPrefix, pSymbol->szName, (int64_t)offDispSym, pszSuffix);
+                else
+                    pszRet = RTStrAPrintf2("%s%s-%llx%s", pszPrefix, pSymbol->szName, -(int64_t)offDispSym, pszSuffix);
+                RTDbgSymbolFree(pSymbol);
+            }
+        }
+    }
+    return pszRet;
+}
+
+
+/**
  * @callback_method_impl{FNDBGCCMD, The 'k'\, 'kg' and 'kh' commands.}
  */
 static DECLCALLBACK(int) dbgcCmdStack(PCDBGCCMD pCmd, PDBGCCMDHLP pCmdHlp, PUVM pUVM, PCDBGCVAR paArgs, unsigned cArgs)
@@ -2702,16 +2703,17 @@ static DECLCALLBACK(int) dbgcCmdStack(PCDBGCCMD pCmd, PDBGCCMDHLP pCmdHlp, PUVM 
      */
     int                 rc;
     PCDBGFSTACKFRAME    pFirstFrame;
-    bool const          fGuest = pCmd->pszCmd[1] == 'g'
-                              || (!pCmd->pszCmd[1] && pDbgc->fRegCtxGuest);
+    bool const          fGuest = true;
+    bool const          fVerbose = pCmd->pszCmd[1] == 'v'
+                                || (pCmd->pszCmd[1] != '\0' && pCmd->pszCmd[2] == 'v');
     rc = DBGFR3StackWalkBegin(pUVM, pDbgc->idCpu, fGuest ? DBGFCODETYPE_GUEST : DBGFCODETYPE_HYPER, &pFirstFrame);
     if (RT_FAILURE(rc))
         return DBGCCmdHlpPrintf(pCmdHlp, "Failed to begin stack walk, rc=%Rrc\n", rc);
 
     /*
-     * Print header.
-     *                                      12345678 12345678 0023:87654321 12345678 87654321 12345678 87654321 symbol
+     * Print the frames.
      */
+    char     szTmp[1024];
     uint32_t fBitFlags = 0;
     for (PCDBGFSTACKFRAME pFrame = pFirstFrame;
          pFrame;
@@ -2721,42 +2723,45 @@ static DECLCALLBACK(int) dbgcCmdStack(PCDBGCCMD pCmd, PDBGCCMDHLP pCmdHlp, PUVM 
         if (fCurBitFlags & DBGFSTACKFRAME_FLAGS_16BIT)
         {
             if (fCurBitFlags != fBitFlags)
-                pCmdHlp->pfnPrintf(pCmdHlp,  NULL, "SS:BP     Ret SS:BP Ret CS:EIP    Arg0     Arg1     Arg2     Arg3     CS:EIP / Symbol [line]\n");
-            rc = DBGCCmdHlpPrintf(pCmdHlp, "%04RX16:%04RX16 %04RX16:%04RX16 %04RX32:%08RX32 %08RX32 %08RX32 %08RX32 %08RX32",
-                                    pFrame->AddrFrame.Sel,
-                                    (uint16_t)pFrame->AddrFrame.off,
-                                    pFrame->AddrReturnFrame.Sel,
-                                    (uint16_t)pFrame->AddrReturnFrame.off,
-                                    (uint32_t)pFrame->AddrReturnPC.Sel,
-                                    (uint32_t)pFrame->AddrReturnPC.off,
-                                    pFrame->Args.au32[0],
-                                    pFrame->Args.au32[1],
-                                    pFrame->Args.au32[2],
-                                    pFrame->Args.au32[3]);
+                pCmdHlp->pfnPrintf(pCmdHlp,  NULL, "#  SS:BP     Ret SS:BP Ret CS:EIP    Arg0     Arg1     Arg2     Arg3     CS:EIP / Symbol [line]\n");
+            rc = DBGCCmdHlpPrintf(pCmdHlp, "%02x %04RX16:%04RX16 %04RX16:%04RX16 %04RX32:%08RX32 %08RX32 %08RX32 %08RX32 %08RX32",
+                                  pFrame->iFrame,
+                                  pFrame->AddrFrame.Sel,
+                                  (uint16_t)pFrame->AddrFrame.off,
+                                  pFrame->AddrReturnFrame.Sel,
+                                  (uint16_t)pFrame->AddrReturnFrame.off,
+                                  (uint32_t)pFrame->AddrReturnPC.Sel,
+                                  (uint32_t)pFrame->AddrReturnPC.off,
+                                  pFrame->Args.au32[0],
+                                  pFrame->Args.au32[1],
+                                  pFrame->Args.au32[2],
+                                  pFrame->Args.au32[3]);
         }
         else if (fCurBitFlags & DBGFSTACKFRAME_FLAGS_32BIT)
         {
             if (fCurBitFlags != fBitFlags)
-                pCmdHlp->pfnPrintf(pCmdHlp,  NULL, "EBP      Ret EBP  Ret CS:EIP    Arg0     Arg1     Arg2     Arg3     CS:EIP / Symbol [line]\n");
-            rc = DBGCCmdHlpPrintf(pCmdHlp, "%08RX32 %08RX32 %04RX32:%08RX32 %08RX32 %08RX32 %08RX32 %08RX32",
-                                    (uint32_t)pFrame->AddrFrame.off,
-                                    (uint32_t)pFrame->AddrReturnFrame.off,
-                                    (uint32_t)pFrame->AddrReturnPC.Sel,
-                                    (uint32_t)pFrame->AddrReturnPC.off,
-                                    pFrame->Args.au32[0],
-                                    pFrame->Args.au32[1],
-                                    pFrame->Args.au32[2],
-                                    pFrame->Args.au32[3]);
+                pCmdHlp->pfnPrintf(pCmdHlp,  NULL, "#  EBP      Ret EBP  Ret CS:EIP    Arg0     Arg1     Arg2     Arg3     CS:EIP / Symbol [line]\n");
+            rc = DBGCCmdHlpPrintf(pCmdHlp, "%02x %08RX32 %08RX32 %04RX32:%08RX32 %08RX32 %08RX32 %08RX32 %08RX32",
+                                  pFrame->iFrame,
+                                  (uint32_t)pFrame->AddrFrame.off,
+                                  (uint32_t)pFrame->AddrReturnFrame.off,
+                                  (uint32_t)pFrame->AddrReturnPC.Sel,
+                                  (uint32_t)pFrame->AddrReturnPC.off,
+                                  pFrame->Args.au32[0],
+                                  pFrame->Args.au32[1],
+                                  pFrame->Args.au32[2],
+                                  pFrame->Args.au32[3]);
         }
         else if (fCurBitFlags & DBGFSTACKFRAME_FLAGS_64BIT)
         {
             if (fCurBitFlags != fBitFlags)
-                pCmdHlp->pfnPrintf(pCmdHlp,  NULL, "RBP              Ret SS:RBP            Ret RIP          CS:RIP / Symbol [line]\n");
-            rc = DBGCCmdHlpPrintf(pCmdHlp, "%016RX64 %04RX16:%016RX64 %016RX64",
-                                    (uint64_t)pFrame->AddrFrame.off,
-                                    pFrame->AddrReturnFrame.Sel,
-                                    (uint64_t)pFrame->AddrReturnFrame.off,
-                                    (uint64_t)pFrame->AddrReturnPC.off);
+                pCmdHlp->pfnPrintf(pCmdHlp,  NULL, "#  RBP              Ret SS:RBP            Ret RIP          CS:RIP / Symbol [line]\n");
+            rc = DBGCCmdHlpPrintf(pCmdHlp, "%02x %016RX64 %04RX16:%016RX64 %016RX64",
+                                  pFrame->iFrame,
+                                  (uint64_t)pFrame->AddrFrame.off,
+                                  pFrame->AddrReturnFrame.Sel,
+                                  (uint64_t)pFrame->AddrReturnFrame.off,
+                                  (uint64_t)pFrame->AddrReturnPC.off);
         }
         if (RT_FAILURE(rc))
             break;
@@ -2782,6 +2787,69 @@ static DECLCALLBACK(int) dbgcCmdStack(PCDBGCCMD pCmd, PDBGCCMDHLP pCmdHlp, PUVM 
             rc = DBGCCmdHlpPrintf(pCmdHlp, " [%s @ 0i%d]", pFrame->pLinePC->szFilename, pFrame->pLinePC->uLineNo);
         if (RT_SUCCESS(rc))
             rc = DBGCCmdHlpPrintf(pCmdHlp, "\n");
+
+        if (fVerbose && RT_SUCCESS(rc))
+        {
+            /*
+             * Display verbose frame info.
+             */
+            const char *pszRetType = "invalid";
+            switch (pFrame->enmReturnType)
+            {
+                case RTDBGRETURNTYPE_NEAR16:        pszRetType = "retn/16"; break;
+                case RTDBGRETURNTYPE_NEAR32:        pszRetType = "retn/32"; break;
+                case RTDBGRETURNTYPE_NEAR64:        pszRetType = "retn/64"; break;
+                case RTDBGRETURNTYPE_FAR16:         pszRetType = "retf/16"; break;
+                case RTDBGRETURNTYPE_FAR32:         pszRetType = "retf/32"; break;
+                case RTDBGRETURNTYPE_FAR64:         pszRetType = "retf/64"; break;
+                case RTDBGRETURNTYPE_IRET16:        pszRetType = "iret-16"; break;
+                case RTDBGRETURNTYPE_IRET32:        pszRetType = "iret/32s"; break;
+                case RTDBGRETURNTYPE_IRET32_PRIV:   pszRetType = "iret/32p"; break;
+                case RTDBGRETURNTYPE_IRET32_V86:    pszRetType = "iret/v86"; break;
+                case RTDBGRETURNTYPE_IRET64:        pszRetType = "iret/64"; break;
+
+                case RTDBGRETURNTYPE_END:
+                case RTDBGRETURNTYPE_INVALID:
+                case RTDBGRETURNTYPE_32BIT_HACK:
+                    break;
+            }
+            size_t cchLine = DBGCCmdHlpPrintfLen(pCmdHlp, "   %s", pszRetType);
+            if (pFrame->fFlags & DBGFSTACKFRAME_FLAGS_USED_UNWIND_INFO)
+                cchLine += DBGCCmdHlpPrintfLen(pCmdHlp, " used-unwind-info");
+            if (pFrame->fFlags & DBGFSTACKFRAME_FLAGS_USED_ODD_EVEN)
+                cchLine += DBGCCmdHlpPrintfLen(pCmdHlp, " used-odd-even");
+            if (pFrame->fFlags & DBGFSTACKFRAME_FLAGS_REAL_V86)
+                cchLine += DBGCCmdHlpPrintfLen(pCmdHlp, " real-v86");
+            if (pFrame->fFlags & DBGFSTACKFRAME_FLAGS_MAX_DEPTH)
+                cchLine += DBGCCmdHlpPrintfLen(pCmdHlp, " max-depth");
+            if (pFrame->fFlags & DBGFSTACKFRAME_FLAGS_TRAP_FRAME)
+                cchLine += DBGCCmdHlpPrintfLen(pCmdHlp, " trap-frame");
+
+            if (pFrame->cSureRegs > 0)
+            {
+                cchLine = 1024; /* force new line */
+                for (uint32_t i = 0; i < pFrame->cSureRegs; i++)
+                {
+                    if (cchLine > 80)
+                    {
+                        DBGCCmdHlpPrintf(pCmdHlp, "\n  ");
+                        cchLine = 2;
+                    }
+
+                    szTmp[0] = '\0';
+                    DBGFR3RegFormatValue(szTmp, sizeof(szTmp), &pFrame->paSureRegs[i].Value,
+                                         pFrame->paSureRegs[i].enmType, false);
+                    const char *pszName = pFrame->paSureRegs[i].enmReg != DBGFREG_END
+                                        ? DBGFR3RegCpuName(pUVM, pFrame->paSureRegs[i].enmReg, pFrame->paSureRegs[i].enmType)
+                                        : pFrame->paSureRegs[i].pszName;
+                    cchLine += DBGCCmdHlpPrintfLen(pCmdHlp, " %s=%s", pszName, szTmp);
+                }
+            }
+
+            if (RT_SUCCESS(rc))
+                rc = DBGCCmdHlpPrintf(pCmdHlp, "\n");
+        }
+
         if (RT_FAILURE(rc))
             break;
 
@@ -2795,7 +2863,20 @@ static DECLCALLBACK(int) dbgcCmdStack(PCDBGCCMD pCmd, PDBGCCMDHLP pCmdHlp, PUVM 
 }
 
 
-static int dbgcCmdDumpDTWorker64(PDBGCCMDHLP pCmdHlp, PCX86DESC64 pDesc, unsigned iEntry, bool fHyper, bool *pfDblEntry)
+/**
+ * Worker function that displays one descriptor entry (GDT, LDT, IDT).
+ *
+ * @returns pfnPrintf status code.
+ * @param   pCmdHlp     The DBGC command helpers.
+ * @param   pDesc       The descriptor to display.
+ * @param   iEntry      The descriptor entry number.
+ * @param   fHyper      Whether the selector belongs to the hypervisor or not.
+ * @param   hAs         Address space to use when resolving symbols.
+ * @param   pfDblEntry  Where to indicate whether the entry is two entries wide.
+ *                      Optional.
+ */
+static int dbgcCmdDumpDTWorker64(PDBGCCMDHLP pCmdHlp, PCX86DESC64 pDesc, unsigned iEntry, bool fHyper, RTDBGAS hAs,
+                                 bool *pfDblEntry)
 {
     /* GUEST64 */
     int rc;
@@ -2902,9 +2983,11 @@ static int dbgcCmdDumpDTWorker64(PDBGCCMDHLP pCmdHlp, PCX86DESC64 pDesc, unsigne
                 uint64_t off =    pDesc->au16[0]
                                 | ((uint64_t)pDesc->au16[3] << 16)
                                 | ((uint64_t)pDesc->Gen.u32BaseHigh3 << 32);
-                rc = DBGCCmdHlpPrintf(pCmdHlp, "%04x %s Sel:Off=%04x:%016RX64     DPL=%d %s %s=%d%s\n",
-                                        iEntry, s_apszTypes[pDesc->Gen.u4Type], sel, off,
-                                        pDesc->Gen.u2Dpl, pszPresent, pszCountOf, cParams, pszHyper);
+                char *pszSymbol = dbgcCmdHlpFarAddrToSymbol(pCmdHlp, hAs, sel, off, " (", ")");
+                rc = DBGCCmdHlpPrintf(pCmdHlp, "%04x %s Sel:Off=%04x:%016RX64     DPL=%d %s %s=%d%s%s\n",
+                                      iEntry, s_apszTypes[pDesc->Gen.u4Type], sel, off,
+                                      pDesc->Gen.u2Dpl, pszPresent, pszCountOf, cParams, pszHyper, pszSymbol ? pszSymbol : "");
+                RTStrFree(pszSymbol);
                 if (pfDblEntry)
                     *pfDblEntry = true;
                 break;
@@ -2917,9 +3000,11 @@ static int dbgcCmdDumpDTWorker64(PDBGCCMDHLP pCmdHlp, PCX86DESC64 pDesc, unsigne
                 uint64_t off =            pDesc->Gate.u16OffsetLow
                              | ((uint64_t)pDesc->Gate.u16OffsetHigh << 16)
                              | ((uint64_t)pDesc->Gate.u32OffsetTop  << 32);
-                rc = DBGCCmdHlpPrintf(pCmdHlp, "%04x %s Sel:Off=%04x:%016RX64     DPL=%u %s IST=%u%s\n",
+                char *pszSymbol = dbgcCmdHlpFarAddrToSymbol(pCmdHlp, hAs, sel, off, " (", ")");
+                rc = DBGCCmdHlpPrintf(pCmdHlp, "%04x %s Sel:Off=%04x:%016RX64     DPL=%u %s IST=%u%s%s\n",
                                         iEntry, s_apszTypes[pDesc->Gate.u4Type], sel, off,
-                                        pDesc->Gate.u2Dpl, pszPresent, pDesc->Gate.u3IST, pszHyper);
+                                        pDesc->Gate.u2Dpl, pszPresent, pDesc->Gate.u3IST, pszHyper, pszSymbol ? pszSymbol : "");
+                RTStrFree(pszSymbol);
                 if (pfDblEntry)
                     *pfDblEntry = true;
                 break;
@@ -2942,8 +3027,9 @@ static int dbgcCmdDumpDTWorker64(PDBGCCMDHLP pCmdHlp, PCX86DESC64 pDesc, unsigne
  * @param   pDesc       The descriptor to display.
  * @param   iEntry      The descriptor entry number.
  * @param   fHyper      Whether the selector belongs to the hypervisor or not.
+ * @param   hAs         Address space to use when resolving symbols.
  */
-static int dbgcCmdDumpDTWorker32(PDBGCCMDHLP pCmdHlp, PCX86DESC pDesc, unsigned iEntry, bool fHyper)
+static int dbgcCmdDumpDTWorker32(PDBGCCMDHLP pCmdHlp, PCX86DESC pDesc, unsigned iEntry, bool fHyper, RTDBGAS hAs)
 {
     int rc;
 
@@ -3057,9 +3143,11 @@ static int dbgcCmdDumpDTWorker32(PDBGCCMDHLP pCmdHlp, PCX86DESC pDesc, unsigned 
                 const char *pszCountOf = pDesc->Gen.u4Type & RT_BIT(3) ? "DC" : "WC";
                 RTSEL sel = pDesc->au16[1];
                 uint32_t off = pDesc->au16[0] | ((uint32_t)pDesc->au16[3] << 16);
-                rc = DBGCCmdHlpPrintf(pCmdHlp, "%04x %s Sel:Off=%04x:%08x     DPL=%d %s %s=%d%s\n",
-                                        iEntry, s_apszTypes[pDesc->Gen.u4Type], sel, off,
-                                        pDesc->Gen.u2Dpl, pszPresent, pszCountOf, cParams, pszHyper);
+                char *pszSymbol = dbgcCmdHlpFarAddrToSymbol(pCmdHlp, hAs, sel, off, " (", ")");
+                rc = DBGCCmdHlpPrintf(pCmdHlp, "%04x %s Sel:Off=%04x:%08x     DPL=%d %s %s=%d%s%s\n",
+                                      iEntry, s_apszTypes[pDesc->Gen.u4Type], sel, off,
+                                      pDesc->Gen.u2Dpl, pszPresent, pszCountOf, cParams, pszHyper, pszSymbol ? pszSymbol : "");
+                RTStrFree(pszSymbol);
                 break;
             }
 
@@ -3070,9 +3158,11 @@ static int dbgcCmdDumpDTWorker32(PDBGCCMDHLP pCmdHlp, PCX86DESC pDesc, unsigned 
             {
                 RTSEL sel = pDesc->au16[1];
                 uint32_t off = pDesc->au16[0] | ((uint32_t)pDesc->au16[3] << 16);
-                rc = DBGCCmdHlpPrintf(pCmdHlp, "%04x %s Sel:Off=%04x:%08x     DPL=%d %s%s\n",
+                char *pszSymbol = dbgcCmdHlpFarAddrToSymbol(pCmdHlp, hAs, sel, off, " (", ")");
+                rc = DBGCCmdHlpPrintf(pCmdHlp, "%04x %s Sel:Off=%04x:%08x     DPL=%d %s%s%s\n",
                                         iEntry, s_apszTypes[pDesc->Gen.u4Type], sel, off,
-                                        pDesc->Gen.u2Dpl, pszPresent, pszHyper);
+                                        pDesc->Gen.u2Dpl, pszPresent, pszHyper, pszSymbol ? pszSymbol : "");
+                RTStrFree(pszSymbol);
                 break;
             }
 
@@ -3167,11 +3257,13 @@ static DECLCALLBACK(int) dbgcCmdDumpDT(PCDBGCCMD pCmd, PDBGCCMDHLP pCmdHlp, PUVM
                              || SelInfo.u.Raw.Gen.u1Present)
                     {
                         if (enmMode == CPUMMODE_PROTECTED)
-                            rc = dbgcCmdDumpDTWorker32(pCmdHlp, &SelInfo.u.Raw, Sel, !!(SelInfo.fFlags & DBGFSELINFO_FLAGS_HYPER));
+                            rc = dbgcCmdDumpDTWorker32(pCmdHlp, &SelInfo.u.Raw, Sel,
+                                                       !!(SelInfo.fFlags & DBGFSELINFO_FLAGS_HYPER), DBGF_AS_GLOBAL);
                         else
                         {
                             bool fDblSkip = false;
-                            rc = dbgcCmdDumpDTWorker64(pCmdHlp, &SelInfo.u.Raw64, Sel, !!(SelInfo.fFlags & DBGFSELINFO_FLAGS_HYPER), &fDblSkip);
+                            rc = dbgcCmdDumpDTWorker64(pCmdHlp, &SelInfo.u.Raw64, Sel,
+                                                       !!(SelInfo.fFlags & DBGFSELINFO_FLAGS_HYPER), DBGF_AS_GLOBAL, &fDblSkip);
                             if (fDblSkip)
                                 Sel += 4;
                         }
@@ -3212,11 +3304,13 @@ static DECLCALLBACK(int) dbgcCmdDumpIDT(PCDBGCCMD pCmd, PDBGCCMDHLP pCmdHlp, PUV
      * Establish some stuff like the current IDTR and CPU mode,
      * and fix a default parameter.
      */
-    PDBGC       pDbgc = DBGC_CMDHLP2DBGC(pCmdHlp);
-    PVMCPU      pVCpu     = VMMR3GetCpuByIdU(pUVM, pDbgc->idCpu);
-    uint16_t    cbLimit;
-    RTGCUINTPTR GCPtrBase = CPUMGetGuestIDTR(pVCpu, &cbLimit);
-    CPUMMODE    enmMode   = CPUMGetGuestMode(pVCpu);
+    PDBGC       pDbgc     = DBGC_CMDHLP2DBGC(pCmdHlp);
+    CPUMMODE    enmMode   = DBGCCmdHlpGetCpuMode(pCmdHlp);
+    uint16_t    cbLimit   = 0;
+    uint64_t    GCFlat    = 0;
+    int rc = DBGFR3RegCpuQueryXdtr(pDbgc->pUVM, pDbgc->idCpu, DBGFREG_IDTR, &GCFlat, &cbLimit);
+    if (RT_FAILURE(rc))
+        return DBGCCmdHlpFailRc(pCmdHlp, pCmd, rc, "DBGFR3RegCpuQueryXdtr/DBGFREG_IDTR");
     unsigned    cbEntry;
     switch (enmMode)
     {
@@ -3272,9 +3366,9 @@ static DECLCALLBACK(int) dbgcCmdDumpIDT(PCDBGCCMD pCmd, PDBGCCMDHLP pCmdHlp, PUV
                 }
                 DBGCVAR AddrVar;
                 AddrVar.enmType = DBGCVAR_TYPE_GC_FLAT;
-                AddrVar.u.GCFlat = GCPtrBase + iInt * cbEntry;
+                AddrVar.u.GCFlat = GCFlat + iInt * cbEntry;
                 AddrVar.enmRangeType = DBGCVAR_RANGE_NONE;
-                int rc = pCmdHlp->pfnMemRead(pCmdHlp, &u, cbEntry, &AddrVar, NULL);
+                rc = pCmdHlp->pfnMemRead(pCmdHlp, &u, cbEntry, &AddrVar, NULL);
                 if (RT_FAILURE(rc))
                     return pCmdHlp->pfnVBoxError(pCmdHlp, rc, "Reading IDT entry %#04x.\n", (unsigned)iInt);
 
@@ -3284,16 +3378,19 @@ static DECLCALLBACK(int) dbgcCmdDumpIDT(PCDBGCCMD pCmd, PDBGCCMDHLP pCmdHlp, PUV
                 switch (enmMode)
                 {
                     case CPUMMODE_REAL:
-                        rc = DBGCCmdHlpPrintf(pCmdHlp, "%04x %RTfp16\n", (unsigned)iInt, u.Real);
-                        /** @todo resolve 16:16 IDTE to a symbol */
+                    {
+                        char *pszSymbol = dbgcCmdHlpFarAddrToSymbol(pCmdHlp, DBGF_AS_GLOBAL, u.Real.sel, u.Real.off, " (", ")");
+                        rc = DBGCCmdHlpPrintf(pCmdHlp, "%04x %RTfp16%s\n", (unsigned)iInt, u.Real, pszSymbol ? pszSymbol : "");
+                        RTStrFree(pszSymbol);
                         break;
+                    }
                     case CPUMMODE_PROTECTED:
                         if (fAll || fSingle || u.Prot.Gen.u1Present)
-                            rc = dbgcCmdDumpDTWorker32(pCmdHlp, &u.Prot, iInt, false);
+                            rc = dbgcCmdDumpDTWorker32(pCmdHlp, &u.Prot, iInt, false, DBGF_AS_GLOBAL);
                         break;
                     case CPUMMODE_LONG:
                         if (fAll || fSingle || u.Long.Gen.u1Present)
-                            rc = dbgcCmdDumpDTWorker64(pCmdHlp, &u.Long, iInt, false, NULL);
+                            rc = dbgcCmdDumpDTWorker64(pCmdHlp, &u.Long, iInt, false, DBGF_AS_GLOBAL, NULL);
                         break;
                     default: break; /* to shut up gcc */
                 }
@@ -3314,7 +3411,8 @@ static DECLCALLBACK(int) dbgcCmdDumpIDT(PCDBGCCMD pCmd, PDBGCCMDHLP pCmdHlp, PUV
 
 /**
  * @callback_method_impl{FNDBGCCMD,
- *      The 'da'\, 'dq'\, 'dd'\, 'dw' and 'db' commands.}
+ *      The 'da'\, 'dq'\, 'dqs'\, 'dd'\, 'dds'\, 'dw'\, 'db'\, 'dp'\, 'dps'\,
+ *      and 'du' commands.}
  */
 static DECLCALLBACK(int) dbgcCmdDumpMem(PCDBGCCMD pCmd, PDBGCCMDHLP pCmdHlp, PUVM pUVM, PCDBGCVAR paArgs, unsigned cArgs)
 {
@@ -3328,11 +3426,20 @@ static DECLCALLBACK(int) dbgcCmdDumpMem(PCDBGCCMD pCmd, PDBGCCMDHLP pCmdHlp, PUV
         DBGC_CMDHLP_ASSERT_PARSER_RET(pCmdHlp, pCmd, 0, DBGCVAR_ISPOINTER(paArgs[0].enmType));
     DBGC_CMDHLP_REQ_UVM_RET(pCmdHlp, pCmd, pUVM);
 
+#define DBGC_DUMP_MEM_F_ASCII    RT_BIT_32(31)
+#define DBGC_DUMP_MEM_F_UNICODE  RT_BIT_32(30)
+#define DBGC_DUMP_MEM_F_FAR      RT_BIT_32(29)
+#define DBGC_DUMP_MEM_F_SYMBOLS  RT_BIT_32(28)
+#define DBGC_DUMP_MEM_F_SIZE     UINT32_C(0x0000ffff)
+
     /*
      * Figure out the element size.
      */
     unsigned    cbElement;
-    bool        fAscii = false;
+    bool        fAscii   = false;
+    bool        fUnicode = false;
+    bool        fFar     = false;
+    bool        fSymbols = pCmd->pszCmd[1] && pCmd->pszCmd[2] == 's';
     switch (pCmd->pszCmd[1])
     {
         default:
@@ -3344,13 +3451,33 @@ static DECLCALLBACK(int) dbgcCmdDumpMem(PCDBGCCMD pCmd, PDBGCCMDHLP pCmdHlp, PUV
             cbElement = 1;
             fAscii = true;
             break;
+        case 'F':
+            cbElement = 4;
+            fFar = true;
+            break;
+        case 'p':
+            cbElement = DBGFR3CpuIsIn64BitCode(pUVM, pDbgc->idCpu) ? 8 : 4;
+            break;
+        case 'u':
+            cbElement = 2;
+            fUnicode = true;
+            break;
         case '\0':
-            fAscii = !!(pDbgc->cbDumpElement & 0x80000000);
-            cbElement = pDbgc->cbDumpElement & 0x7fffffff;
+            fAscii    = RT_BOOL(pDbgc->cbDumpElement & DBGC_DUMP_MEM_F_ASCII);
+            fSymbols  = RT_BOOL(pDbgc->cbDumpElement & DBGC_DUMP_MEM_F_SYMBOLS);
+            fUnicode  = RT_BOOL(pDbgc->cbDumpElement & DBGC_DUMP_MEM_F_UNICODE);
+            fFar      = RT_BOOL(pDbgc->cbDumpElement & DBGC_DUMP_MEM_F_FAR);
+            cbElement = pDbgc->cbDumpElement & DBGC_DUMP_MEM_F_SIZE;
             if (!cbElement)
                 cbElement = 1;
             break;
     }
+    uint32_t const cbDumpElement = cbElement
+                                 | (fSymbols ? DBGC_DUMP_MEM_F_SYMBOLS : 0)
+                                 | (fFar     ? DBGC_DUMP_MEM_F_FAR     : 0)
+                                 | (fUnicode ? DBGC_DUMP_MEM_F_UNICODE : 0)
+                                 | (fAscii   ? DBGC_DUMP_MEM_F_ASCII   : 0);
+    pDbgc->cbDumpElement = cbDumpElement;
 
     /*
      * Find address.
@@ -3391,9 +3518,8 @@ static DECLCALLBACK(int) dbgcCmdDumpMem(PCDBGCCMD pCmd, PDBGCCMDHLP pCmdHlp, PUV
     /*
      * Do the dumping.
      */
-    pDbgc->cbDumpElement = cbElement | (fAscii << 31);
     int     cbLeft = (int)pDbgc->DumpPos.u64Range;
-    uint8_t u8Prev = '\0';
+    uint8_t u16Prev = '\0';
     for (;;)
     {
         /*
@@ -3405,7 +3531,7 @@ static DECLCALLBACK(int) dbgcCmdDumpMem(PCDBGCCMD pCmd, PDBGCCMDHLP pCmdHlp, PUV
         int rc = pCmdHlp->pfnMemRead(pCmdHlp, &achBuffer, cbReq, &pDbgc->DumpPos, &cb);
         if (RT_FAILURE(rc))
         {
-            if (u8Prev && u8Prev != '\n')
+            if (u16Prev && u16Prev != '\n')
                 DBGCCmdHlpPrintf(pCmdHlp, "\n");
             return pCmdHlp->pfnVBoxError(pCmdHlp, rc, "Reading memory at %DV.\n", &pDbgc->DumpPos);
         }
@@ -3414,26 +3540,80 @@ static DECLCALLBACK(int) dbgcCmdDumpMem(PCDBGCCMD pCmd, PDBGCCMDHLP pCmdHlp, PUV
          * Display it.
          */
         memset(&achBuffer[cb], 0, sizeof(achBuffer) - cb);
-        if (!fAscii)
+        if (!fAscii && !fUnicode)
         {
             DBGCCmdHlpPrintf(pCmdHlp, "%DV:", &pDbgc->DumpPos);
             unsigned i;
             for (i = 0; i < cb; i += cbElement)
             {
                 const char *pszSpace = " ";
-                if (cbElement <= 2 && i == 8 && !fAscii)
+                if (cbElement <= 2 && i == 8)
                     pszSpace = "-";
                 switch (cbElement)
                 {
-                    case 1: DBGCCmdHlpPrintf(pCmdHlp, "%s%02x",    pszSpace, *(uint8_t *)&achBuffer[i]); break;
-                    case 2: DBGCCmdHlpPrintf(pCmdHlp, "%s%04x",    pszSpace, *(uint16_t *)&achBuffer[i]); break;
-                    case 4: DBGCCmdHlpPrintf(pCmdHlp, "%s%08x",    pszSpace, *(uint32_t *)&achBuffer[i]); break;
-                    case 8: DBGCCmdHlpPrintf(pCmdHlp, "%s%016llx", pszSpace, *(uint64_t *)&achBuffer[i]); break;
+                    case 1:
+                        DBGCCmdHlpPrintf(pCmdHlp, "%s%02x",     pszSpace, *(uint8_t *)&achBuffer[i]);
+                        break;
+                    case 2:
+                        DBGCCmdHlpPrintf(pCmdHlp, "%s%04x",     pszSpace, *(uint16_t *)&achBuffer[i]);
+                        break;
+                    case 4:
+                        if (!fFar)
+                            DBGCCmdHlpPrintf(pCmdHlp, "%s%08x", pszSpace, *(uint32_t *)&achBuffer[i]);
+                        else
+                            DBGCCmdHlpPrintf(pCmdHlp, "%s%04x:%04x:",
+                                             pszSpace, *(uint16_t *)&achBuffer[i + 2], *(uint16_t *)&achBuffer[i]);
+                        break;
+                    case 8:
+                        DBGCCmdHlpPrintf(pCmdHlp, "%s%016llx",  pszSpace, *(uint64_t *)&achBuffer[i]);
+                        break;
+                }
+
+                if (fSymbols)
+                {
+                    /* Try lookup symbol for the above address. */
+                    DBGFADDRESS Addr;
+                    rc = VINF_SUCCESS;
+                    if (cbElement == 8)
+                        DBGFR3AddrFromFlat(pDbgc->pUVM, &Addr, *(uint64_t *)&achBuffer[i]);
+                    else if (!fFar)
+                        DBGFR3AddrFromFlat(pDbgc->pUVM, &Addr, *(uint32_t *)&achBuffer[i]);
+                    else
+                        rc = DBGFR3AddrFromSelOff(pDbgc->pUVM, pDbgc->idCpu, &Addr,
+                                                  *(uint16_t *)&achBuffer[i + 2], *(uint16_t *)&achBuffer[i]);
+                    if (RT_SUCCESS(rc))
+                    {
+                        RTINTPTR    offDisp;
+                        RTDBGSYMBOL Symbol;
+                        rc = DBGFR3AsSymbolByAddr(pUVM, pDbgc->hDbgAs, &Addr,
+                                                  RTDBGSYMADDR_FLAGS_LESS_OR_EQUAL | RTDBGSYMADDR_FLAGS_SKIP_ABS_IN_DEFERRED,
+                                                  &offDisp, &Symbol, NULL);
+                        if (RT_SUCCESS(rc))
+                        {
+                            if (!offDisp)
+                                rc = DBGCCmdHlpPrintf(pCmdHlp, " %s", Symbol.szName);
+                            else if (offDisp > 0)
+                                rc = DBGCCmdHlpPrintf(pCmdHlp, " %s + %RGv", Symbol.szName, offDisp);
+                            else
+                                rc = DBGCCmdHlpPrintf(pCmdHlp, " %s - %RGv", Symbol.szName, -offDisp);
+                            if (Symbol.cb > 0)
+                                rc = DBGCCmdHlpPrintf(pCmdHlp, " (LB %RGv)", Symbol.cb);
+                        }
+                    }
+
+                    /* Next line prefix. */
+                    unsigned iNext = i + cbElement;
+                    if (iNext < cb)
+                    {
+                        DBGCVAR TmpPos = pDbgc->DumpPos;
+                        DBGCCmdHlpEval(pCmdHlp, &TmpPos, "(%Dv) + %x", &pDbgc->DumpPos, iNext);
+                        DBGCCmdHlpPrintf(pCmdHlp, "\n%DV:", &pDbgc->DumpPos);
+                    }
                 }
             }
 
-            /* chars column */
-            if (pDbgc->cbDumpElement == 1)
+            /* Chars column. */
+            if (cbElement == 1)
             {
                 while (i++ < sizeof(achBuffer))
                     DBGCCmdHlpPrintf(pCmdHlp, "   ");
@@ -3455,27 +3635,30 @@ static DECLCALLBACK(int) dbgcCmdDumpMem(PCDBGCCMD pCmd, PDBGCCMDHLP pCmdHlp, PUV
              * We print up to the first zero and stop there.
              * Only printables + '\t' and '\n' are printed.
              */
-            if (!u8Prev)
+            if (!u16Prev)
                 DBGCCmdHlpPrintf(pCmdHlp, "%DV:\n", &pDbgc->DumpPos);
-            uint8_t u8 = '\0';
+            uint16_t u16 = '\0';
             unsigned i;
-            for (i = 0; i < cb; i++)
+            for (i = 0; i < cb; i += cbElement)
             {
-                u8Prev = u8;
-                u8 = *(uint8_t *)&achBuffer[i];
-                if (    u8 < 127
-                    && (    (RT_C_IS_PRINT(u8) && u8 >= 32)
-                        ||  u8 == '\t'
-                        ||  u8 == '\n'))
-                    DBGCCmdHlpPrintf(pCmdHlp, "%c", u8);
-                else if (!u8)
+                u16Prev = u16;
+                if (cbElement == 1)
+                    u16 = *(uint8_t *)&achBuffer[i];
+                else
+                    u16 = *(uint16_t *)&achBuffer[i];
+                if (    u16 < 127
+                    && (    (RT_C_IS_PRINT(u16) && u16 >= 32)
+                        ||  u16 == '\t'
+                        ||  u16 == '\n'))
+                    DBGCCmdHlpPrintf(pCmdHlp, "%c", (int)u16);
+                else if (!u16)
                     break;
                 else
-                    DBGCCmdHlpPrintf(pCmdHlp, "\\x%x", u8);
+                    DBGCCmdHlpPrintf(pCmdHlp, "\\x%0*x", cbElement * 2, u16);
             }
-            if (u8 == '\0')
+            if (u16 == '\0')
                 cb = cbLeft = i + 1;
-            if (cbLeft - cb <= 0 && u8Prev != '\n')
+            if (cbLeft - cb <= 0 && u16Prev != '\n')
                 DBGCCmdHlpPrintf(pCmdHlp, "\n");
         }
 
@@ -3597,9 +3780,7 @@ static DECLCALLBACK(int) dbgcCmdDumpPageDir(PCDBGCCMD pCmd, PDBGCCMDHLP pCmdHlp,
      */
     bool fGuest = pCmd->pszCmd[3] != 'h';
     if (!pCmd->pszCmd[3] || pCmd->pszCmd[3] == 'a')
-        fGuest = paArgs[0].enmType == DBGCVAR_TYPE_NUMBER
-               ? pDbgc->fRegCtxGuest
-               : DBGCVAR_ISGCPOINTER(paArgs[0].enmType);
+        fGuest = paArgs[0].enmType == DBGCVAR_TYPE_NUMBER ? true : DBGCVAR_ISGCPOINTER(paArgs[0].enmType);
 
     bool fPAE, fLME, fPSE, fPGE, fNXE;
     uint64_t cr3 = fGuest
@@ -3857,7 +4038,7 @@ static DECLCALLBACK(int) dbgcCmdDumpPageHierarchy(PCDBGCCMD pCmd, PDBGCCMDHLP pC
     if (pCmd->pszCmd[0] == 'm')
         fFlags |= DBGFPGDMP_FLAGS_GUEST | DBGFPGDMP_FLAGS_SHADOW;
     else if (pCmd->pszCmd[3] == '\0')
-        fFlags |= pDbgc->fRegCtxGuest ? DBGFPGDMP_FLAGS_GUEST : DBGFPGDMP_FLAGS_SHADOW;
+        fFlags |= DBGFPGDMP_FLAGS_GUEST;
     else if (pCmd->pszCmd[3] == 'g')
         fFlags |= DBGFPGDMP_FLAGS_GUEST;
     else if (pCmd->pszCmd[3] == 'h')
@@ -3981,9 +4162,7 @@ static DECLCALLBACK(int) dbgcCmdDumpPageTable(PCDBGCCMD pCmd, PDBGCCMDHLP pCmdHl
      */
     bool fGuest = pCmd->pszCmd[3] != 'h';
     if (!pCmd->pszCmd[3] || pCmd->pszCmd[3] == 'a')
-        fGuest = paArgs[0].enmType == DBGCVAR_TYPE_NUMBER
-               ? pDbgc->fRegCtxGuest
-               : DBGCVAR_ISGCPOINTER(paArgs[0].enmType);
+        fGuest = paArgs[0].enmType == DBGCVAR_TYPE_NUMBER ? true : DBGCVAR_ISGCPOINTER(paArgs[0].enmType);
 
     bool fPAE, fLME, fPSE, fPGE, fNXE;
     uint64_t cr3 = fGuest
@@ -4465,8 +4644,7 @@ static DECLCALLBACK(int) dbgcCmdDumpTSS(PCDBGCCMD pCmd, PDBGCCMDHLP pCmdHlp, PUV
                         iStart = i;
                     }
                 }
-                if (iStart != 255)
-                    DBGCCmdHlpPrintf(pCmdHlp, "%02x-%02x %s\n", iStart, 255, fPrev ? "Protected mode" : "Redirected");
+                DBGCCmdHlpPrintf(pCmdHlp, "%02x-%02x %s\n", iStart, 255, fPrev ? "Protected mode" : "Redirected");
             }
             else
                 DBGCCmdHlpPrintf(pCmdHlp, "Invalid interrupt redirection bitmap size: %u (%#x), expected 32 bytes.\n",
@@ -4479,12 +4657,15 @@ static DECLCALLBACK(int) dbgcCmdDumpTSS(PCDBGCCMD pCmd, PDBGCCMDHLP pCmdHlp, PUV
     }
 
     /*
-     * Dump the I/O permission bitmap if present. The IOPM cannot start below offset 0x64
+     * Dump the I/O permission bitmap if present. The IOPM cannot start below offset 0x68
      * (that applies to both 32-bit and 64-bit TSSs since their size is the same).
+     * Note that there is always one padding byte that is not technically part of the bitmap
+     * and "must have all bits set". It's not clear what happens when it doesn't. All ports
+     * not covered by the bitmap are considered to be not accessible.
      */
     if (enmTssType != kTss16)
     {
-        if (offIoBitmap < cbTss && offIoBitmap >= 0x64)
+        if (offIoBitmap < cbTss && offIoBitmap >= 0x68)
         {
             uint32_t        cPorts      = RT_MIN((cbTss - offIoBitmap) * 8, _64K);
             DBGCVAR         VarAddr;
@@ -4495,9 +4676,9 @@ static DECLCALLBACK(int) dbgcCmdDumpTSS(PCDBGCCMD pCmd, PDBGCCMDHLP pCmdHlp, PUV
             uint32_t        iStart      = 0;
             bool            fPrev       = ASMBitTest(pbIoBitmap, 0);
             uint32_t        cLine       = 0;
-            for (uint32_t i = 1; i < cPorts; i++)
+            for (uint32_t i = 1; i < _64K; i++)
             {
-                bool fThis = ASMBitTest(pbIoBitmap, i);
+                bool fThis = i < cPorts ? ASMBitTest(pbIoBitmap, i) : true;
                 if (fThis != fPrev)
                 {
                     cLine++;
@@ -4507,8 +4688,7 @@ static DECLCALLBACK(int) dbgcCmdDumpTSS(PCDBGCCMD pCmd, PDBGCCMDHLP pCmdHlp, PUV
                     iStart = i;
                 }
             }
-            if (iStart != _64K-1)
-                DBGCCmdHlpPrintf(pCmdHlp, "%04x-%04x %s\n", iStart, _64K-1, fPrev ? "GP" : "OK");
+            DBGCCmdHlpPrintf(pCmdHlp, "%04x-%04x %s\n", iStart, _64K-1, fPrev ? "GP" : "OK");
         }
         else if (offIoBitmap > 0)
             DBGCCmdHlpPrintf(pCmdHlp, "No I/O bitmap (-%#x)\n", cbTssMin - offIoBitmap);
@@ -5807,9 +5987,10 @@ static int dbgcDoListNear(PDBGCCMDHLP pCmdHlp, PUVM pUVM, PCDBGCVAR pArg)
         RTINTPTR    offDisp;
         DBGFADDRESS Addr;
         rc = DBGFR3AsSymbolByAddr(pUVM, pDbgc->hDbgAs, DBGFR3AddrFromFlat(pDbgc->pUVM, &Addr, AddrVar.u.GCFlat),
-                                  RTDBGSYMADDR_FLAGS_LESS_OR_EQUAL, &offDisp, &Symbol, NULL);
+                                  RTDBGSYMADDR_FLAGS_LESS_OR_EQUAL | RTDBGSYMADDR_FLAGS_SKIP_ABS_IN_DEFERRED,
+                                  &offDisp, &Symbol, NULL);
         if (RT_FAILURE(rc))
-            return pCmdHlp->pfnVBoxError(pCmdHlp, rc, "DBGFR3ASymbolByAddr(,,%RGv,,)\n", AddrVar.u.GCFlat);
+            return pCmdHlp->pfnVBoxError(pCmdHlp, rc, "DBGFR3AsSymbolByAddr(,,%RGv,,)\n", AddrVar.u.GCFlat);
 
         if (!offDisp)
             rc = DBGCCmdHlpPrintf(pCmdHlp, "%DV %s", &AddrVar, Symbol.szName);
@@ -5832,14 +6013,13 @@ static int dbgcDoListNear(PDBGCCMDHLP pCmdHlp, PUVM pUVM, PCDBGCVAR pArg)
  */
 static DECLCALLBACK(int) dbgcCmdListNear(PCDBGCCMD pCmd, PDBGCCMDHLP pCmdHlp, PUVM pUVM, PCDBGCVAR paArgs, unsigned cArgs)
 {
-    PDBGC pDbgc = DBGC_CMDHLP2DBGC(pCmdHlp);
     if (!cArgs)
     {
         /*
          * Current cs:eip symbol.
          */
         DBGCVAR AddrVar;
-        const char *pszFmtExpr = pDbgc->fRegCtxGuest ? "%%(cs:eip)" : "%%(.cs:.eip)";
+        const char *pszFmtExpr = "%%(cs:eip)";
         int rc = DBGCCmdHlpEval(pCmdHlp, &AddrVar, pszFmtExpr);
         if (RT_FAILURE(rc))
             return pCmdHlp->pfnVBoxError(pCmdHlp, rc, "%s\n", pszFmtExpr + 1);
@@ -5892,124 +6072,226 @@ static DECLCALLBACK(int) dbgcCmdListModules(PCDBGCCMD pCmd, PDBGCCMDHLP pCmdHlp,
      * Iterate the modules in the current address space and print info about
      * those matching the input.
      */
-    RTDBGAS     hAs         = DBGFR3AsResolveAndRetain(pUVM, pDbgc->hDbgAs);
-    uint32_t    cMods       = RTDbgAsModuleCount(hAs);
-    for (uint32_t iMod = 0; iMod < cMods; iMod++)
+    RTDBGAS hAsCurAlias = pDbgc->hDbgAs;
+    for (uint32_t iAs = 0;; iAs++)
     {
-        RTDBGMOD hMod = RTDbgAsModuleByIndex(hAs, iMod);
-        if (hMod != NIL_RTDBGMOD)
+        RTDBGAS     hAs         = DBGFR3AsResolveAndRetain(pUVM, hAsCurAlias);
+        uint32_t    cMods       = RTDbgAsModuleCount(hAs);
+        for (uint32_t iMod = 0; iMod < cMods; iMod++)
         {
-            bool const          fDeferred       = RTDbgModIsDeferred(hMod);
-            bool const          fExports        = RTDbgModIsExports(hMod);
-            uint32_t const      cSegs           = fDeferred ? 1 : RTDbgModSegmentCount(hMod);
-            const char * const  pszName         = RTDbgModName(hMod);
-            const char * const  pszImgFile      = RTDbgModImageFile(hMod);
-            const char * const  pszImgFileUsed  = RTDbgModImageFileUsed(hMod);
-            const char * const  pszDbgFile      = RTDbgModDebugFile(hMod);
-            if (    cArgs == 0
-                ||  dbgcCmdListModuleMatch(pszName, paArgs, cArgs))
+            RTDBGMOD hMod = RTDbgAsModuleByIndex(hAs, iMod);
+            if (hMod != NIL_RTDBGMOD)
             {
-                /*
-                 * Find the mapping with the lower address, preferring a full
-                 * image mapping, for the main line.
-                 */
-                RTDBGASMAPINFO  aMappings[128];
-                uint32_t        cMappings = RT_ELEMENTS(aMappings);
-                int rc = RTDbgAsModuleQueryMapByIndex(hAs, iMod, &aMappings[0], &cMappings, 0 /*fFlags*/);
-                if (RT_SUCCESS(rc))
+                bool const          fDeferred       = RTDbgModIsDeferred(hMod);
+                bool const          fExports        = RTDbgModIsExports(hMod);
+                uint32_t const      cSegs           = fDeferred ? 1 : RTDbgModSegmentCount(hMod);
+                const char * const  pszName         = RTDbgModName(hMod);
+                const char * const  pszImgFile      = RTDbgModImageFile(hMod);
+                const char * const  pszImgFileUsed  = RTDbgModImageFileUsed(hMod);
+                const char * const  pszDbgFile      = RTDbgModDebugFile(hMod);
+                if (    cArgs == 0
+                    ||  dbgcCmdListModuleMatch(pszName, paArgs, cArgs))
                 {
-                    bool        fFull = false;
-                    RTUINTPTR   uMin = RTUINTPTR_MAX;
-                    for (uint32_t iMap = 0; iMap < cMappings; iMap++)
-                        if (    aMappings[iMap].Address < uMin
-                            &&  (   !fFull
-                                 ||  aMappings[iMap].iSeg == NIL_RTDBGSEGIDX))
-                            uMin = aMappings[iMap].Address;
-                    if (!fVerbose || !pszImgFile)
-                        DBGCCmdHlpPrintf(pCmdHlp, "%RGv %04x %s%s\n", (RTGCUINTPTR)uMin, cSegs, pszName,
-                                         fExports ? " (exports)" : fDeferred ? " (deferred)" : "");
-                    else
-                        DBGCCmdHlpPrintf(pCmdHlp, "%RGv %04x %-12s  %s%s\n", (RTGCUINTPTR)uMin, cSegs, pszName, pszImgFile,
-                                         fExports ? "  (exports)" : fDeferred ? "  (deferred)" : "");
-                    if (fVerbose && pszImgFileUsed)
-                        DBGCCmdHlpPrintf(pCmdHlp, "    Local image: %s\n", pszImgFileUsed);
-                    if (fVerbose && pszDbgFile)
-                        DBGCCmdHlpPrintf(pCmdHlp, "    Debug file:  %s\n", pszDbgFile);
-
-                    if (fMappings)
+                    /*
+                     * Find the mapping with the lower address, preferring a full
+                     * image mapping, for the main line.
+                     */
+                    RTDBGASMAPINFO  aMappings[128];
+                    uint32_t        cMappings = RT_ELEMENTS(aMappings);
+                    int rc = RTDbgAsModuleQueryMapByIndex(hAs, iMod, &aMappings[0], &cMappings, 0 /*fFlags*/);
+                    if (RT_SUCCESS(rc))
                     {
-                        /* sort by address first - not very efficient. */
-                        for (uint32_t i = 0; i + 1 < cMappings; i++)
-                            for (uint32_t j = i + 1; j < cMappings; j++)
-                                if (aMappings[j].Address < aMappings[i].Address)
-                                {
-                                    RTDBGASMAPINFO Tmp = aMappings[j];
-                                    aMappings[j] = aMappings[i];
-                                    aMappings[i] = Tmp;
-                                }
-
-                        /* print */
-                        if (   cMappings == 1
-                            && aMappings[0].iSeg == NIL_RTDBGSEGIDX
-                            && !fDeferred)
-                        {
-                            for (uint32_t iSeg = 0; iSeg < cSegs; iSeg++)
-                            {
-                                RTDBGSEGMENT SegInfo;
-                                rc = RTDbgModSegmentByIndex(hMod, iSeg, &SegInfo);
-                                if (RT_SUCCESS(rc))
-                                {
-                                    if (SegInfo.uRva != RTUINTPTR_MAX)
-                                        DBGCCmdHlpPrintf(pCmdHlp, "    %RGv %RGv #%02x %s\n",
-                                                         (RTGCUINTPTR)(aMappings[0].Address + SegInfo.uRva),
-                                                         (RTGCUINTPTR)SegInfo.cb, iSeg, SegInfo.szName);
-                                    else
-                                        DBGCCmdHlpPrintf(pCmdHlp, "    %*s %RGv #%02x %s\n",
-                                                         sizeof(RTGCUINTPTR)*2, "noload",
-                                                         (RTGCUINTPTR)SegInfo.cb, iSeg, SegInfo.szName);
-                                }
-                                else
-                                    DBGCCmdHlpPrintf(pCmdHlp, "    Error query segment #%u: %Rrc\n", iSeg, rc);
-                            }
-                        }
+                        bool        fFull = false;
+                        RTUINTPTR   uMin = RTUINTPTR_MAX;
+                        for (uint32_t iMap = 0; iMap < cMappings; iMap++)
+                            if (    aMappings[iMap].Address < uMin
+                                &&  (   !fFull
+                                     ||  aMappings[iMap].iSeg == NIL_RTDBGSEGIDX))
+                                uMin = aMappings[iMap].Address;
+                        if (!fVerbose || !pszImgFile)
+                            DBGCCmdHlpPrintf(pCmdHlp, "%RGv %04x %s%s\n", (RTGCUINTPTR)uMin, cSegs, pszName,
+                                             fExports ? " (exports)" : fDeferred ? " (deferred)" : "");
                         else
+                            DBGCCmdHlpPrintf(pCmdHlp, "%RGv %04x %-12s  %s%s\n", (RTGCUINTPTR)uMin, cSegs, pszName, pszImgFile,
+                                             fExports ? "  (exports)" : fDeferred ? "  (deferred)" : "");
+                        if (fVerbose && pszImgFileUsed)
+                            DBGCCmdHlpPrintf(pCmdHlp, "    Local image: %s\n", pszImgFileUsed);
+                        if (fVerbose && pszDbgFile)
+                            DBGCCmdHlpPrintf(pCmdHlp, "    Debug file:  %s\n", pszDbgFile);
+
+                        if (fMappings)
                         {
-                            for (uint32_t iMap = 0; iMap < cMappings; iMap++)
-                                if (aMappings[iMap].iSeg == NIL_RTDBGSEGIDX)
-                                    DBGCCmdHlpPrintf(pCmdHlp, "    %RGv %RGv <everything>\n",
-                                                     (RTGCUINTPTR)aMappings[iMap].Address,
-                                                     (RTGCUINTPTR)RTDbgModImageSize(hMod));
-                                else if (!fDeferred)
+                            /* sort by address first - not very efficient. */
+                            for (uint32_t i = 0; i + 1 < cMappings; i++)
+                                for (uint32_t j = i + 1; j < cMappings; j++)
+                                    if (aMappings[j].Address < aMappings[i].Address)
+                                    {
+                                        RTDBGASMAPINFO Tmp = aMappings[j];
+                                        aMappings[j] = aMappings[i];
+                                        aMappings[i] = Tmp;
+                                    }
+
+                            /* print */
+                            if (   cMappings == 1
+                                && aMappings[0].iSeg == NIL_RTDBGSEGIDX
+                                && !fDeferred)
+                            {
+                                for (uint32_t iSeg = 0; iSeg < cSegs; iSeg++)
                                 {
                                     RTDBGSEGMENT SegInfo;
-                                    rc = RTDbgModSegmentByIndex(hMod, aMappings[iMap].iSeg, &SegInfo);
-                                    if (RT_FAILURE(rc))
+                                    rc = RTDbgModSegmentByIndex(hMod, iSeg, &SegInfo);
+                                    if (RT_SUCCESS(rc))
                                     {
-                                        RT_ZERO(SegInfo);
-                                        strcpy(SegInfo.szName, "error");
+                                        if (SegInfo.uRva != RTUINTPTR_MAX)
+                                            DBGCCmdHlpPrintf(pCmdHlp, "    %RGv %RGv #%02x %s\n",
+                                                             (RTGCUINTPTR)(aMappings[0].Address + SegInfo.uRva),
+                                                             (RTGCUINTPTR)SegInfo.cb, iSeg, SegInfo.szName);
+                                        else
+                                            DBGCCmdHlpPrintf(pCmdHlp, "    %*s %RGv #%02x %s\n",
+                                                             sizeof(RTGCUINTPTR)*2, "noload",
+                                                             (RTGCUINTPTR)SegInfo.cb, iSeg, SegInfo.szName);
                                     }
-                                    DBGCCmdHlpPrintf(pCmdHlp, "    %RGv %RGv #%02x %s\n",
-                                                     (RTGCUINTPTR)aMappings[iMap].Address,
-                                                     (RTGCUINTPTR)SegInfo.cb,
-                                                     aMappings[iMap].iSeg, SegInfo.szName);
+                                    else
+                                        DBGCCmdHlpPrintf(pCmdHlp, "    Error query segment #%u: %Rrc\n", iSeg, rc);
                                 }
-                                else
-                                    DBGCCmdHlpPrintf(pCmdHlp, "    %RGv #%02x\n",
-                                                     (RTGCUINTPTR)aMappings[iMap].Address, aMappings[iMap].iSeg);
+                            }
+                            else
+                            {
+                                for (uint32_t iMap = 0; iMap < cMappings; iMap++)
+                                    if (aMappings[iMap].iSeg == NIL_RTDBGSEGIDX)
+                                        DBGCCmdHlpPrintf(pCmdHlp, "    %RGv %RGv <everything>\n",
+                                                         (RTGCUINTPTR)aMappings[iMap].Address,
+                                                         (RTGCUINTPTR)RTDbgModImageSize(hMod));
+                                    else if (!fDeferred)
+                                    {
+                                        RTDBGSEGMENT SegInfo;
+                                        rc = RTDbgModSegmentByIndex(hMod, aMappings[iMap].iSeg, &SegInfo);
+                                        if (RT_FAILURE(rc))
+                                        {
+                                            RT_ZERO(SegInfo);
+                                            strcpy(SegInfo.szName, "error");
+                                        }
+                                        DBGCCmdHlpPrintf(pCmdHlp, "    %RGv %RGv #%02x %s\n",
+                                                         (RTGCUINTPTR)aMappings[iMap].Address,
+                                                         (RTGCUINTPTR)SegInfo.cb,
+                                                         aMappings[iMap].iSeg, SegInfo.szName);
+                                    }
+                                    else
+                                        DBGCCmdHlpPrintf(pCmdHlp, "    %RGv #%02x\n",
+                                                         (RTGCUINTPTR)aMappings[iMap].Address, aMappings[iMap].iSeg);
+                            }
                         }
                     }
+                    else
+                        DBGCCmdHlpPrintf(pCmdHlp, "%.*s %04x %s (rc=%Rrc)\n",
+                                         sizeof(RTGCPTR) * 2, "???????????", cSegs, pszName, rc);
+                    /** @todo missing address space API for enumerating the mappings. */
                 }
-                else
-                    DBGCCmdHlpPrintf(pCmdHlp, "%.*s %04x %s (rc=%Rrc)\n",
-                                     sizeof(RTGCPTR) * 2, "???????????", cSegs, pszName, rc);
-                /** @todo missing address space API for enumerating the mappings. */
+                RTDbgModRelease(hMod);
             }
-            RTDbgModRelease(hMod);
         }
+        RTDbgAsRelease(hAs);
+
+        /* For DBGF_AS_RC_AND_GC_GLOBAL we're required to do more work. */
+        if (hAsCurAlias != DBGF_AS_RC_AND_GC_GLOBAL)
+            break;
+        AssertBreak(iAs == 0);
+        hAsCurAlias = DBGF_AS_GLOBAL;
     }
-    RTDbgAsRelease(hAs);
 
     NOREF(pCmd);
+    return VINF_SUCCESS;
+}
+
+
+
+/**
+ * @callback_method_impl{FNDBGCCMD, The 'x' (examine symbols) command.}
+ */
+static DECLCALLBACK(int) dbgcCmdListSymbols(PCDBGCCMD pCmd, PDBGCCMDHLP pCmdHlp, PUVM pUVM, PCDBGCVAR paArgs, unsigned cArgs)
+{
+    AssertReturn(cArgs == 1, VERR_DBGC_PARSE_BUG);
+    AssertReturn(paArgs[0].enmType == DBGCVAR_TYPE_STRING, VERR_DBGC_PARSE_BUG);
+
+    PDBGC pDbgc = DBGC_CMDHLP2DBGC(pCmdHlp);
+
+    /*
+     * Allowed is either a single * to match everything or the Module!Symbol style
+     * which requiresa ! to separate module and symbol.
+     */
+    bool fDumpAll = strcmp(paArgs[0].u.pszString, "*") == 0;
+    const char *pszModule = NULL;
+    size_t cchModule = 0;
+    const char *pszSymbol = NULL;
+    if (!fDumpAll)
+    {
+        const char *pszDelimiter = strchr(paArgs[0].u.pszString, '!');
+        if (!pszDelimiter)
+            return DBGCCmdHlpFail(pCmdHlp, pCmd, "Invalid search string '%s' for '%s'. Valid are either '*' or the form <Module>!<Symbol> where the <Module> and <Symbol> can contain wildcards",
+                              paArgs[0].u.pszString, pCmd->pszCmd);
+
+        pszModule = paArgs[0].u.pszString;
+        cchModule = pszDelimiter - pszModule;
+        pszSymbol = pszDelimiter + 1;
+    }
+
+    /*
+     * Iterate the modules in the current address space and print info about
+     * those matching the input.
+     */
+    RTDBGAS hAsCurAlias = pDbgc->hDbgAs;
+    for (uint32_t iAs = 0;; iAs++)
+    {
+        RTDBGAS     hAs         = DBGFR3AsResolveAndRetain(pUVM, hAsCurAlias);
+        uint32_t    cMods       = RTDbgAsModuleCount(hAs);
+        for (uint32_t iMod = 0; iMod < cMods; iMod++)
+        {
+            RTDBGMOD hMod = RTDbgAsModuleByIndex(hAs, iMod);
+            if (hMod != NIL_RTDBGMOD)
+            {
+                const char *pszModName = RTDbgModName(hMod);
+                if (   fDumpAll
+                    || RTStrSimplePatternNMatch(pszModule, cchModule, pszModName, strlen(pszModName)))
+                {
+                    RTDBGASMAPINFO  aMappings[128];
+                    uint32_t        cMappings = RT_ELEMENTS(aMappings);
+                    RTUINTPTR       uMapping = 0;
+
+                    /* Get the minimum mapping address of the module so we can print absolute values for the symbol later on. */
+                    int rc = RTDbgAsModuleQueryMapByIndex(hAs, iMod, &aMappings[0], &cMappings, 0 /*fFlags*/);
+                    if (RT_SUCCESS(rc))
+                    {
+                        uMapping = RTUINTPTR_MAX;
+                        for (uint32_t iMap = 0; iMap < cMappings; iMap++)
+                            if (aMappings[iMap].Address < uMapping)
+                                uMapping = aMappings[iMap].Address;
+                    }
+
+                    /* Go through the symbols and print any matches. */
+                    uint32_t cSyms = RTDbgModSymbolCount(hMod);
+                    for (uint32_t iSym = 0; iSym < cSyms; iSym++)
+                    {
+                        RTDBGSYMBOL SymInfo;
+                        rc = RTDbgModSymbolByOrdinal(hMod, iSym, &SymInfo);
+                        if (   RT_SUCCESS(rc)
+                            && (   fDumpAll
+                                || RTStrSimplePatternMatch(pszSymbol, &SymInfo.szName[0])))
+                            DBGCCmdHlpPrintf(pCmdHlp, "%RGv    %s!%s\n", uMapping + (RTGCUINTPTR)SymInfo.Value, pszModName, &SymInfo.szName[0]);
+                    }
+                }
+                RTDbgModRelease(hMod);
+            }
+        }
+        RTDbgAsRelease(hAs);
+
+        /* For DBGF_AS_RC_AND_GC_GLOBAL we're required to do more work. */
+        if (hAsCurAlias != DBGF_AS_RC_AND_GC_GLOBAL)
+            break;
+        AssertBreak(iAs == 0);
+        hAsCurAlias = DBGF_AS_GLOBAL;
+    }
+
+    RT_NOREF(pCmd);
     return VINF_SUCCESS;
 }
 

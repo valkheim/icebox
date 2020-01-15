@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -15,6 +15,11 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
+
+/*********************************************************************************************************************************
+*   Header Files                                                                                                                 *
+*********************************************************************************************************************************/
+#define LOG_GROUP LOG_GROUP_SHARED_FOLDERS
 #ifdef UNITTEST
 # include "testcase/tstSharedFolderService.h"
 #endif
@@ -24,6 +29,8 @@
 #include "vbsf.h"
 #include "shflhandle.h"
 
+#include <VBox/AssertGuest.h>
+#include <VBox/param.h>
 #include <iprt/alloc.h>
 #include <iprt/assert.h>
 #include <iprt/asm.h>
@@ -43,12 +50,134 @@
 # include "teststubs.h"
 #endif
 
+
+/*********************************************************************************************************************************
+*   Defined Constants And Macros                                                                                                 *
+*********************************************************************************************************************************/
 #define SHFL_RT_LINK(pClient) ((pClient)->fu32Flags & SHFL_CF_SYMLINKS ? RTPATH_F_ON_LINK : RTPATH_F_FOLLOW_LINK)
 
 /**
  * @todo find a better solution for supporting the execute bit for non-windows
  * guests on windows host. Search for "0111" to find all the relevant places.
  */
+
+
+#ifndef RT_OS_WINDOWS
+
+/**
+ * Helps to check if pszPath deserves a VERR_PATH_NOT_FOUND status when catering
+ * to windows guests.
+ */
+static bool vbsfErrorStyleIsWindowsPathNotFound(char *pszPath)
+{
+    /*
+     * Check if the parent directory actually exists.  We temporarily modify the path here.
+     */
+    size_t cchParent = RTPathParentLength(pszPath);
+    char chSaved = pszPath[cchParent];
+    pszPath[cchParent] = '\0';
+    RTFSOBJINFO ObjInfo;
+    int vrc = RTPathQueryInfoEx(pszPath, &ObjInfo, RTFSOBJATTRADD_NOTHING, RTPATH_F_FOLLOW_LINK);
+    pszPath[cchParent] = chSaved;
+    if (RT_SUCCESS(vrc))
+    {
+        if (RTFS_IS_DIRECTORY(ObjInfo.Attr.fMode))
+            return false;
+        return true;
+    }
+    if (vrc == VERR_FILE_NOT_FOUND || vrc == VERR_PATH_NOT_FOUND)
+        return true;
+    return false;
+}
+
+/**
+ * Helps to check if pszPath deserves a VERR_PATH_NOT_FOUND status when catering
+ * to windows guests.
+ */
+static bool vbsfErrorStyleIsWindowsPathNotFound2(char *pszSrcPath, char *pszDstPath)
+{
+    /*
+     * Do the source parent first.
+     */
+    size_t cchParent = RTPathParentLength(pszSrcPath);
+    char chSaved = pszSrcPath[cchParent];
+    pszSrcPath[cchParent] = '\0';
+    RTFSOBJINFO ObjInfo;
+    int vrc = RTPathQueryInfoEx(pszSrcPath, &ObjInfo, RTFSOBJATTRADD_NOTHING, RTPATH_F_FOLLOW_LINK);
+    pszSrcPath[cchParent] = chSaved;
+    if (   (RT_SUCCESS(vrc) && !RTFS_IS_DIRECTORY(ObjInfo.Attr.fMode))
+        || vrc == VERR_FILE_NOT_FOUND
+        || vrc == VERR_PATH_NOT_FOUND)
+        return true;
+    if (RT_FAILURE(vrc))
+        return false;
+
+    /*
+     * The source itself.
+     */
+    vrc = RTPathQueryInfoEx(pszSrcPath, &ObjInfo, RTFSOBJATTRADD_NOTHING, RTPATH_F_FOLLOW_LINK);
+    if (RT_SUCCESS(vrc))
+    {
+        /*
+         * The source is fine, continue with the destination.
+         */
+        cchParent = RTPathParentLength(pszDstPath);
+        chSaved = pszDstPath[cchParent];
+        pszDstPath[cchParent] = '\0';
+        vrc = RTPathQueryInfoEx(pszDstPath, &ObjInfo, RTFSOBJATTRADD_NOTHING, RTPATH_F_FOLLOW_LINK);
+        pszDstPath[cchParent] = chSaved;
+        if (   (RT_SUCCESS(vrc) && !RTFS_IS_DIRECTORY(ObjInfo.Attr.fMode))
+            || vrc == VERR_FILE_NOT_FOUND
+            || vrc == VERR_PATH_NOT_FOUND)
+            return true;
+    }
+    return false;
+}
+
+/**
+ * Helps checking if the specified path happens to exist but not be a directory.
+ */
+static bool vbsfErrorStyleIsWindowsNotADirectory(const char *pszPath)
+{
+    RTFSOBJINFO ObjInfo;
+    int vrc = RTPathQueryInfoEx(pszPath, &ObjInfo, RTFSOBJATTRADD_NOTHING, RTPATH_F_FOLLOW_LINK);
+    if (RT_SUCCESS(vrc))
+    {
+        if (RTFS_IS_DIRECTORY(ObjInfo.Attr.fMode))
+            return false;
+        return true;
+    }
+    return false;
+}
+
+/**
+ * Helps to check if pszPath deserves a VERR_INVALID_NAME status when catering
+ * to windows guests.
+ */
+static bool vbsfErrorStyleIsWindowsInvalidNameForNonDir(char *pszPath)
+{
+    /*
+     * This only applies to paths with trailing slashes.
+     */
+    size_t const cchPath = strlen(pszPath);
+    if (cchPath > 0 && RTPATH_IS_SLASH(pszPath[cchPath - 1]))
+    {
+        /*
+         * However it doesn't if an earlier path component is missing or not a file.
+         */
+        size_t cchParent = RTPathParentLength(pszPath);
+        char chSaved = pszPath[cchParent];
+        pszPath[cchParent] = '\0';
+        RTFSOBJINFO ObjInfo;
+        int vrc = RTPathQueryInfoEx(pszPath, &ObjInfo, RTFSOBJATTRADD_NOTHING, RTPATH_F_FOLLOW_LINK);
+        pszPath[cchParent] = chSaved;
+        if (RT_SUCCESS(vrc) && RTFS_IS_DIRECTORY(ObjInfo.Attr.fMode))
+            return true;
+    }
+    return false;
+}
+
+#endif /* RT_OS_WINDOWS */
 
 void vbsfStripLastComponent(char *pszFullPath, uint32_t cbFullPathRoot)
 {
@@ -108,7 +237,7 @@ void vbsfStripLastComponent(char *pszFullPath, uint32_t cbFullPathRoot)
     LogFlowFunc(("%s, %s, %s\n", pszFullPath, delimLast, delimSecondLast));
 }
 
-static int vbsfBuildFullPath(SHFLCLIENTDATA *pClient, SHFLROOT root, PSHFLSTRING pPath,
+static int vbsfBuildFullPath(SHFLCLIENTDATA *pClient, SHFLROOT root, PCSHFLSTRING pPath,
                              uint32_t cbPath, char **ppszFullPath, uint32_t *pcbFullPathRoot,
                              bool fWildCard = false, bool fPreserveLastComponent = false)
 {
@@ -196,11 +325,11 @@ static int vbsfCheckHandleAccess(SHFLCLIENTDATA *pClient, SHFLROOT root,
  * @param  fShflFlags shared folder create flags
  * @param  fMode      file attributes
  * @param  handleInitial initial handle
- * @retval pfOpen     iprt create flags
+ * @param  pfOpen     Where to return iprt create flags
  */
-static int vbsfConvertFileOpenFlags(bool fWritable, unsigned fShflFlags, RTFMODE fMode, SHFLHANDLE handleInitial, uint32_t *pfOpen)
+static int vbsfConvertFileOpenFlags(bool fWritable, unsigned fShflFlags, RTFMODE fMode, SHFLHANDLE handleInitial, uint64_t *pfOpen)
 {
-    uint32_t fOpen = 0;
+    uint64_t fOpen = 0;
     int rc = VINF_SUCCESS;
 
     if (   (fMode & RTFS_DOS_MASK) != 0
@@ -319,97 +448,97 @@ static int vbsfConvertFileOpenFlags(bool fWritable, unsigned fShflFlags, RTFMODE
     /* Sharing mask */
     switch (BIT_FLAG(fShflFlags, SHFL_CF_ACCESS_MASK_DENY))
     {
-    default:
-    case SHFL_CF_ACCESS_DENYNONE:
-        fOpen |= RTFILE_O_DENY_NONE;
-        Log(("FLAG: SHFL_CF_ACCESS_DENYNONE\n"));
-        break;
+        default:
+        case SHFL_CF_ACCESS_DENYNONE:
+            fOpen |= RTFILE_O_DENY_NONE;
+            Log(("FLAG: SHFL_CF_ACCESS_DENYNONE\n"));
+            break;
 
-    case SHFL_CF_ACCESS_DENYREAD:
-        fOpen |= RTFILE_O_DENY_READ;
-        Log(("FLAG: SHFL_CF_ACCESS_DENYREAD\n"));
-        break;
+        case SHFL_CF_ACCESS_DENYREAD:
+            fOpen |= RTFILE_O_DENY_READ;
+            Log(("FLAG: SHFL_CF_ACCESS_DENYREAD\n"));
+            break;
 
-    case SHFL_CF_ACCESS_DENYWRITE:
-        fOpen |= RTFILE_O_DENY_WRITE;
-        Log(("FLAG: SHFL_CF_ACCESS_DENYWRITE\n"));
-        break;
+        case SHFL_CF_ACCESS_DENYWRITE:
+            fOpen |= RTFILE_O_DENY_WRITE;
+            Log(("FLAG: SHFL_CF_ACCESS_DENYWRITE\n"));
+            break;
 
-    case SHFL_CF_ACCESS_DENYALL:
-        fOpen |= RTFILE_O_DENY_ALL;
-        Log(("FLAG: SHFL_CF_ACCESS_DENYALL\n"));
-        break;
+        case SHFL_CF_ACCESS_DENYALL:
+            fOpen |= RTFILE_O_DENY_ALL;
+            Log(("FLAG: SHFL_CF_ACCESS_DENYALL\n"));
+            break;
     }
 
     /* Open/Create action mask */
     switch (BIT_FLAG(fShflFlags, SHFL_CF_ACT_MASK_IF_EXISTS))
     {
-    case SHFL_CF_ACT_OPEN_IF_EXISTS:
-        if (SHFL_CF_ACT_CREATE_IF_NEW == BIT_FLAG(fShflFlags, SHFL_CF_ACT_MASK_IF_NEW))
-        {
-            fOpen |= RTFILE_O_OPEN_CREATE;
-            Log(("FLAGS: SHFL_CF_ACT_OPEN_IF_EXISTS and SHFL_CF_ACT_CREATE_IF_NEW\n"));
-        }
-        else if (SHFL_CF_ACT_FAIL_IF_NEW == BIT_FLAG(fShflFlags, SHFL_CF_ACT_MASK_IF_NEW))
-        {
-            fOpen |= RTFILE_O_OPEN;
-            Log(("FLAGS: SHFL_CF_ACT_OPEN_IF_EXISTS and SHFL_CF_ACT_FAIL_IF_NEW\n"));
-        }
-        else
-        {
-            Log(("FLAGS: invalid open/create action combination\n"));
+        case SHFL_CF_ACT_OPEN_IF_EXISTS:
+            if (SHFL_CF_ACT_CREATE_IF_NEW == BIT_FLAG(fShflFlags, SHFL_CF_ACT_MASK_IF_NEW))
+            {
+                fOpen |= RTFILE_O_OPEN_CREATE;
+                Log(("FLAGS: SHFL_CF_ACT_OPEN_IF_EXISTS and SHFL_CF_ACT_CREATE_IF_NEW\n"));
+            }
+            else if (SHFL_CF_ACT_FAIL_IF_NEW == BIT_FLAG(fShflFlags, SHFL_CF_ACT_MASK_IF_NEW))
+            {
+                fOpen |= RTFILE_O_OPEN;
+                Log(("FLAGS: SHFL_CF_ACT_OPEN_IF_EXISTS and SHFL_CF_ACT_FAIL_IF_NEW\n"));
+            }
+            else
+            {
+                Log(("FLAGS: invalid open/create action combination\n"));
+                rc = VERR_INVALID_PARAMETER;
+            }
+            break;
+        case SHFL_CF_ACT_FAIL_IF_EXISTS:
+            if (SHFL_CF_ACT_CREATE_IF_NEW == BIT_FLAG(fShflFlags, SHFL_CF_ACT_MASK_IF_NEW))
+            {
+                fOpen |= RTFILE_O_CREATE;
+                Log(("FLAGS: SHFL_CF_ACT_FAIL_IF_EXISTS and SHFL_CF_ACT_CREATE_IF_NEW\n"));
+            }
+            else
+            {
+                Log(("FLAGS: invalid open/create action combination\n"));
+                rc = VERR_INVALID_PARAMETER;
+            }
+            break;
+        case SHFL_CF_ACT_REPLACE_IF_EXISTS:
+            if (SHFL_CF_ACT_CREATE_IF_NEW == BIT_FLAG(fShflFlags, SHFL_CF_ACT_MASK_IF_NEW))
+            {
+                fOpen |= RTFILE_O_CREATE_REPLACE;
+                Log(("FLAGS: SHFL_CF_ACT_REPLACE_IF_EXISTS and SHFL_CF_ACT_CREATE_IF_NEW\n"));
+            }
+            else if (SHFL_CF_ACT_FAIL_IF_NEW == BIT_FLAG(fShflFlags, SHFL_CF_ACT_MASK_IF_NEW))
+            {
+                fOpen |= RTFILE_O_OPEN | RTFILE_O_TRUNCATE;
+                Log(("FLAGS: SHFL_CF_ACT_REPLACE_IF_EXISTS and SHFL_CF_ACT_FAIL_IF_NEW\n"));
+            }
+            else
+            {
+                Log(("FLAGS: invalid open/create action combination\n"));
+                rc = VERR_INVALID_PARAMETER;
+            }
+            break;
+        case SHFL_CF_ACT_OVERWRITE_IF_EXISTS:
+            if (SHFL_CF_ACT_CREATE_IF_NEW == BIT_FLAG(fShflFlags, SHFL_CF_ACT_MASK_IF_NEW))
+            {
+                fOpen |= RTFILE_O_CREATE_REPLACE;
+                Log(("FLAGS: SHFL_CF_ACT_OVERWRITE_IF_EXISTS and SHFL_CF_ACT_CREATE_IF_NEW\n"));
+            }
+            else if (SHFL_CF_ACT_FAIL_IF_NEW == BIT_FLAG(fShflFlags, SHFL_CF_ACT_MASK_IF_NEW))
+            {
+                fOpen |= RTFILE_O_OPEN | RTFILE_O_TRUNCATE;
+                Log(("FLAGS: SHFL_CF_ACT_OVERWRITE_IF_EXISTS and SHFL_CF_ACT_FAIL_IF_NEW\n"));
+            }
+            else
+            {
+                Log(("FLAGS: invalid open/create action combination\n"));
+                rc = VERR_INVALID_PARAMETER;
+            }
+            break;
+        default:
             rc = VERR_INVALID_PARAMETER;
-        }
-        break;
-    case SHFL_CF_ACT_FAIL_IF_EXISTS:
-        if (SHFL_CF_ACT_CREATE_IF_NEW == BIT_FLAG(fShflFlags, SHFL_CF_ACT_MASK_IF_NEW))
-        {
-            fOpen |= RTFILE_O_CREATE;
-            Log(("FLAGS: SHFL_CF_ACT_FAIL_IF_EXISTS and SHFL_CF_ACT_CREATE_IF_NEW\n"));
-        }
-        else
-        {
-            Log(("FLAGS: invalid open/create action combination\n"));
-            rc = VERR_INVALID_PARAMETER;
-        }
-        break;
-    case SHFL_CF_ACT_REPLACE_IF_EXISTS:
-        if (SHFL_CF_ACT_CREATE_IF_NEW == BIT_FLAG(fShflFlags, SHFL_CF_ACT_MASK_IF_NEW))
-        {
-            fOpen |= RTFILE_O_CREATE_REPLACE;
-            Log(("FLAGS: SHFL_CF_ACT_REPLACE_IF_EXISTS and SHFL_CF_ACT_CREATE_IF_NEW\n"));
-        }
-        else if (SHFL_CF_ACT_FAIL_IF_NEW == BIT_FLAG(fShflFlags, SHFL_CF_ACT_MASK_IF_NEW))
-        {
-            fOpen |= RTFILE_O_OPEN | RTFILE_O_TRUNCATE;
-            Log(("FLAGS: SHFL_CF_ACT_REPLACE_IF_EXISTS and SHFL_CF_ACT_FAIL_IF_NEW\n"));
-        }
-        else
-        {
-            Log(("FLAGS: invalid open/create action combination\n"));
-            rc = VERR_INVALID_PARAMETER;
-        }
-        break;
-    case SHFL_CF_ACT_OVERWRITE_IF_EXISTS:
-        if (SHFL_CF_ACT_CREATE_IF_NEW == BIT_FLAG(fShflFlags, SHFL_CF_ACT_MASK_IF_NEW))
-        {
-            fOpen |= RTFILE_O_CREATE_REPLACE;
-            Log(("FLAGS: SHFL_CF_ACT_OVERWRITE_IF_EXISTS and SHFL_CF_ACT_CREATE_IF_NEW\n"));
-        }
-        else if (SHFL_CF_ACT_FAIL_IF_NEW == BIT_FLAG(fShflFlags, SHFL_CF_ACT_MASK_IF_NEW))
-        {
-            fOpen |= RTFILE_O_OPEN | RTFILE_O_TRUNCATE;
-            Log(("FLAGS: SHFL_CF_ACT_OVERWRITE_IF_EXISTS and SHFL_CF_ACT_FAIL_IF_NEW\n"));
-        }
-        else
-        {
-            Log(("FLAGS: invalid open/create action combination\n"));
-            rc = VERR_INVALID_PARAMETER;
-        }
-        break;
-    default:
-        rc = VERR_INVALID_PARAMETER;
-        Log(("FLAG: SHFL_CF_ACT_MASK_IF_EXISTS - invalid parameter\n"));
+            Log(("FLAG: SHFL_CF_ACT_MASK_IF_EXISTS - invalid parameter\n"));
     }
 
     if (RT_SUCCESS(rc))
@@ -426,29 +555,28 @@ static int vbsfConvertFileOpenFlags(bool fWritable, unsigned fShflFlags, RTFMODE
  * Open a file or create and open a new one.
  *
  * @returns IPRT status code
- * @param  pClient               Data structure describing the client accessing the shared folder
- * @param  root                  The index of the shared folder in the table of mappings.
- * @param  pszPath               Path to the file or folder on the host.
- * @param  pParms @a CreateFlags Creation or open parameters, see include/VBox/shflsvc.h
- * @param  pParms @a Info        When a new file is created this specifies the initial parameters.
- *                               When a file is created or overwritten, it also specifies the
- *                               initial size.
- * @retval pParms @a Resulte     Shared folder status code, see include/VBox/shflsvc.h
- * @retval pParms @a Handle      On success the (shared folder) handle of the file opened or
- *                               created
- * @retval pParms @a Info        On success the parameters of the file opened or created
+ * @param  pClient  Data structure describing the client accessing the shared folder
+ * @param  root     The index of the shared folder in the table of mappings.
+ * @param  pszPath  Path to the file or folder on the host.
+ * @param  pParms   Input:
+ *                    - @a CreateFlags: Creation or open parameters, see include/VBox/shflsvc.h
+ *                    - @a Info:        When a new file is created this specifies the initial parameters.
+ *                                      When a file is created or overwritten, it also specifies the
+ *                                      initial size.
+ *                  Output:
+ *                    - @a Result:      Shared folder status code, see include/VBox/shflsvc.h
+ *                    - @a Handle:      On success the (shared folder) handle of the file opened or
+ *                                      created
+ *                    - @a Info:        On success the parameters of the file opened or created
  */
-static int vbsfOpenFile(SHFLCLIENTDATA *pClient, SHFLROOT root, const char *pszPath, SHFLCREATEPARMS *pParms)
+static int vbsfOpenFile(SHFLCLIENTDATA *pClient, SHFLROOT root, char *pszPath, SHFLCREATEPARMS *pParms)
 {
     LogFlow(("vbsfOpenFile: pszPath = %s, pParms = %p\n", pszPath, pParms));
     Log(("SHFL create flags %08x\n", pParms->CreateFlags));
 
-    SHFLHANDLE      handle = SHFL_HANDLE_NIL;
-    SHFLFILEHANDLE *pHandle = 0;
-    /* Open or create a file. */
-    uint32_t fOpen = 0;
-    bool fNoError = false;
-    static int cErrors;
+    RTFILEACTION    enmActionTaken = RTFILEACTION_INVALID;
+    SHFLHANDLE      handle         = SHFL_HANDLE_NIL;
+    SHFLFILEHANDLE *pHandle        = NULL;
 
     /* is the guest allowed to write to this share? */
     bool fWritable;
@@ -456,6 +584,7 @@ static int vbsfOpenFile(SHFLCLIENTDATA *pClient, SHFLROOT root, const char *pszP
     if (RT_FAILURE(rc))
         fWritable = false;
 
+    uint64_t fOpen = 0;
     rc = vbsfConvertFileOpenFlags(fWritable, pParms->CreateFlags, pParms->Info.Attr.fMode, pParms->Handle, &fOpen);
     if (RT_SUCCESS(rc))
     {
@@ -467,84 +596,111 @@ static int vbsfOpenFile(SHFLCLIENTDATA *pClient, SHFLROOT root, const char *pszP
             if (pHandle)
             {
                 pHandle->root = root;
-                rc = RTFileOpen(&pHandle->file.Handle, pszPath, fOpen);
+                pHandle->file.fOpenFlags = fOpen;
+                rc = RTFileOpenEx(pszPath, fOpen, &pHandle->file.Handle, &enmActionTaken);
             }
         }
     }
+    bool fNoError = false;
     if (RT_FAILURE(rc))
     {
         switch (rc)
         {
-        case VERR_FILE_NOT_FOUND:
-            pParms->Result = SHFL_FILE_NOT_FOUND;
+            case VERR_FILE_NOT_FOUND:
+                pParms->Result = SHFL_FILE_NOT_FOUND;
+#ifndef RT_OS_WINDOWS
+                if (   SHFL_CLIENT_NEED_WINDOWS_ERROR_STYLE_ADJUST_ON_POSIX(pClient)
+                    && vbsfErrorStyleIsWindowsPathNotFound(pszPath))
+                    pParms->Result = SHFL_PATH_NOT_FOUND;
+#endif
+                /* This actually isn't an error, so correct the rc before return later,
+                   because the driver (VBoxSF.sys) expects rc = VINF_SUCCESS and checks the result code. */
+                fNoError = true;
+                break;
 
-            /* This actually isn't an error, so correct the rc before return later,
-               because the driver (VBoxSF.sys) expects rc = VINF_SUCCESS and checks the result code. */
-            fNoError = true;
-            break;
-        case VERR_PATH_NOT_FOUND:
-            pParms->Result = SHFL_PATH_NOT_FOUND;
+            case VERR_PATH_NOT_FOUND:
+#ifndef RT_OS_WINDOWS
+                if (   SHFL_CLIENT_NEED_WINDOWS_ERROR_STYLE_ADJUST_ON_POSIX(pClient)
+                    && vbsfErrorStyleIsWindowsInvalidNameForNonDir(pszPath))
+                {
+                    rc = VERR_INVALID_NAME;
+                    pParms->Result = SHFL_NO_RESULT;
+                    break;
+                }
+#endif
+                pParms->Result = SHFL_PATH_NOT_FOUND;
+                fNoError = true; /* Not an error either (see above). */
+                break;
 
-            /* This actually isn't an error, so correct the rc before return later,
-               because the driver (VBoxSF.sys) expects rc = VINF_SUCCESS and checks the result code. */
-            fNoError = true;
-            break;
-        case VERR_ALREADY_EXISTS:
-            RTFSOBJINFO info;
-
-            /** @todo Possible race left here. */
-            if (RT_SUCCESS(RTPathQueryInfoEx(pszPath, &info, RTFSOBJATTRADD_NOTHING, SHFL_RT_LINK(pClient))))
+            case VERR_ALREADY_EXISTS:
             {
+                RTFSOBJINFO info;
+
+                /** @todo Possible race left here. */
+                if (RT_SUCCESS(RTPathQueryInfoEx(pszPath, &info, RTFSOBJATTRADD_NOTHING, SHFL_RT_LINK(pClient))))
+                {
 #ifdef RT_OS_WINDOWS
-                info.Attr.fMode |= 0111;
+                    info.Attr.fMode |= 0111;
 #endif
-                vbfsCopyFsObjInfoFromIprt(&pParms->Info, &info);
-            }
-            pParms->Result = SHFL_FILE_EXISTS;
+                    vbfsCopyFsObjInfoFromIprt(&pParms->Info, &info);
+                }
+                pParms->Result = SHFL_FILE_EXISTS;
 
-            /* This actually isn't an error, so correct the rc before return later,
-               because the driver (VBoxSF.sys) expects rc = VINF_SUCCESS and checks the result code. */
-            fNoError = true;
-            break;
-        case VERR_TOO_MANY_OPEN_FILES:
-            if (cErrors < 32)
-            {
-                LogRel(("SharedFolders host service: Cannot open '%s' -- too many open files.\n", pszPath));
-#if defined RT_OS_LINUX || defined(RT_OS_SOLARIS)
-                if (cErrors < 1)
-                    LogRel(("SharedFolders host service: Try to increase the limit for open files (ulimit -n)\n"));
-#endif
-                cErrors++;
+                /* This actually isn't an error, so correct the rc before return later,
+                   because the driver (VBoxSF.sys) expects rc = VINF_SUCCESS and checks the result code. */
+                fNoError = true;
+                break;
             }
-            pParms->Result = SHFL_NO_RESULT;
-            break;
-        default:
-            pParms->Result = SHFL_NO_RESULT;
+
+            case VERR_TOO_MANY_OPEN_FILES:
+            {
+                static int s_cErrors;
+                if (s_cErrors < 32)
+                {
+                    LogRel(("SharedFolders host service: Cannot open '%s' -- too many open files.\n", pszPath));
+#if defined RT_OS_LINUX || defined(RT_OS_SOLARIS)
+                    if (s_cErrors < 1)
+                        LogRel(("SharedFolders host service: Try to increase the limit for open files (ulimit -n)\n"));
+#endif
+                    s_cErrors++;
+                }
+                pParms->Result = SHFL_NO_RESULT;
+                break;
+            }
+
+            default:
+                pParms->Result = SHFL_NO_RESULT;
         }
     }
     else
     {
-        /** @note The shared folder status code is very approximate, as the runtime
-          *       does not really provide this information. */
-        pParms->Result = SHFL_FILE_EXISTS;  /* We lost the information as to whether it was
-                                               created when we eliminated the race. */
-        if (   (   SHFL_CF_ACT_REPLACE_IF_EXISTS
-                == BIT_FLAG(pParms->CreateFlags, SHFL_CF_ACT_MASK_IF_EXISTS))
-            || (   SHFL_CF_ACT_OVERWRITE_IF_EXISTS
-                == BIT_FLAG(pParms->CreateFlags, SHFL_CF_ACT_MASK_IF_EXISTS)))
+        switch (enmActionTaken)
+        {
+            default:
+                AssertFailed();
+                RT_FALL_THRU();
+            case RTFILEACTION_OPENED:
+                pParms->Result = SHFL_FILE_EXISTS;
+                break;
+            case RTFILEACTION_CREATED:
+                pParms->Result = SHFL_FILE_CREATED;
+                break;
+            case RTFILEACTION_REPLACED:
+            case RTFILEACTION_TRUNCATED: /* not quite right */
+                pParms->Result = SHFL_FILE_REPLACED;
+                break;
+        }
+
+        if (   (pParms->CreateFlags & SHFL_CF_ACT_MASK_IF_EXISTS) == SHFL_CF_ACT_REPLACE_IF_EXISTS
+            || (pParms->CreateFlags & SHFL_CF_ACT_MASK_IF_EXISTS) == SHFL_CF_ACT_OVERWRITE_IF_EXISTS)
         {
             /* For now, we do not treat a failure here as fatal. */
-            /** @todo Also set the size for SHFL_CF_ACT_CREATE_IF_NEW if
-                     SHFL_CF_ACT_FAIL_IF_EXISTS is set. */
+            /** @todo Also set the size for SHFL_CF_ACT_CREATE_IF_NEW if SHFL_CF_ACT_FAIL_IF_EXISTS is set. */
+            /** @todo r=bird: Exactly document cbObject usage and see what we can get
+             *        away with here.  I suspect it is only needed for windows and only
+             *        with SHFL_FILE_CREATED and SHFL_FILE_REPLACED, and only if
+             *        cbObject is non-zero. */
             RTFileSetSize(pHandle->file.Handle, pParms->Info.cbObject);
-            pParms->Result = SHFL_FILE_REPLACED;
-        }
-        if (   (   SHFL_CF_ACT_FAIL_IF_EXISTS
-                == BIT_FLAG(pParms->CreateFlags, SHFL_CF_ACT_MASK_IF_EXISTS))
-            || (   SHFL_CF_ACT_CREATE_IF_NEW
-                == BIT_FLAG(pParms->CreateFlags, SHFL_CF_ACT_MASK_IF_NEW)))
-        {
-            pParms->Result = SHFL_FILE_CREATED;
         }
 #if 0
         /** @todo */
@@ -609,18 +765,21 @@ static int vbsfOpenFile(SHFLCLIENTDATA *pClient, SHFLROOT root, const char *pszP
  * Open a folder or create and open a new one.
  *
  * @returns IPRT status code
- * @param  pClient               Data structure describing the client accessing the shared folder
- * @param  root                  The index of the shared folder in the table of mappings.
- * @param  pszPath               Path to the file or folder on the host.
- * @param  pParms @a CreateFlags Creation or open parameters, see include/VBox/shflsvc.h
- * @retval pParms @a Result      Shared folder status code, see include/VBox/shflsvc.h
- * @retval pParms @a Handle      On success the (shared folder) handle of the folder opened or
- *                               created
- * @retval pParms @a Info        On success the parameters of the folder opened or created
+ * @param  pClient  Data structure describing the client accessing the shared
+ *                  folder
+ * @param  root     The index of the shared folder in the table of mappings.
+ * @param  pszPath  Path to the file or folder on the host.
+ * @param  pParms   Input: @a CreateFlags Creation or open parameters, see
+ *                  include/VBox/shflsvc.h
+ *                  Output:
+ *                    - @a Result: Shared folder status code, see include/VBox/shflsvc.h
+ *                    - @a Handle: On success the (shared folder) handle of the folder opened or
+ *                                 created
+ *                    - @a Info:   On success the parameters of the folder opened or created
  *
  * @note folders are created with fMode = 0777
  */
-static int vbsfOpenDir(SHFLCLIENTDATA *pClient, SHFLROOT root, const char *pszPath,
+static int vbsfOpenDir(SHFLCLIENTDATA *pClient, SHFLROOT root, char *pszPath,
                        SHFLCREATEPARMS *pParms)
 {
     LogFlow(("vbsfOpenDir: pszPath = %s, pParms = %p\n", pszPath, pParms));
@@ -632,7 +791,6 @@ static int vbsfOpenDir(SHFLCLIENTDATA *pClient, SHFLROOT root, const char *pszPa
     if (0 != pHandle)
     {
         pHandle->root = root;
-        rc = VINF_SUCCESS;
         pParms->Result = SHFL_FILE_EXISTS;  /* May be overwritten with SHFL_FILE_CREATED. */
         /** @todo Can anyone think of a sensible, race-less way to do this?  Although
                   I suspect that the race is inherent, due to the API available... */
@@ -650,19 +808,33 @@ static int vbsfOpenDir(SHFLCLIENTDATA *pClient, SHFLROOT root, const char *pszPa
             rc = RTDirCreate(pszPath, fMode, 0);
             if (RT_FAILURE(rc))
             {
+                /** @todo we still return 'rc' as failure here, so this is mostly pointless.  */
                 switch (rc)
                 {
-                case VERR_ALREADY_EXISTS:
-                    pParms->Result = SHFL_FILE_EXISTS;
-                    break;
-                case VERR_PATH_NOT_FOUND:
-                    pParms->Result = SHFL_PATH_NOT_FOUND;
-                    break;
-                default:
-                    pParms->Result = SHFL_NO_RESULT;
+                    case VERR_ALREADY_EXISTS:
+                        pParms->Result = SHFL_FILE_EXISTS;
+                        break;
+                    case VERR_PATH_NOT_FOUND:
+                        pParms->Result = SHFL_PATH_NOT_FOUND;
+                        break;
+                    case VERR_FILE_NOT_FOUND: /* may happen on posix */
+                        pParms->Result = SHFL_FILE_NOT_FOUND;
+#ifndef RT_OS_WINDOWS
+                        if (   SHFL_CLIENT_NEED_WINDOWS_ERROR_STYLE_ADJUST_ON_POSIX(pClient)
+                            && vbsfErrorStyleIsWindowsPathNotFound(pszPath))
+                        {
+                            pParms->Result = SHFL_PATH_NOT_FOUND;
+                            rc = VERR_PATH_NOT_FOUND;
+                        }
+#endif
+                        break;
+                    default:
+                        pParms->Result = SHFL_NO_RESULT;
                 }
             }
         }
+        else
+            rc = VINF_SUCCESS;
         if (   RT_SUCCESS(rc)
             || (SHFL_CF_ACT_OPEN_IF_EXISTS == BIT_FLAG(pParms->CreateFlags, SHFL_CF_ACT_MASK_IF_EXISTS)))
         {
@@ -680,19 +852,37 @@ static int vbsfOpenDir(SHFLCLIENTDATA *pClient, SHFLROOT root, const char *pszPa
             }
             else
             {
+                /** @todo we still return 'rc' as failure here, so this is mostly pointless.  */
                 switch (rc)
                 {
-                case VERR_FILE_NOT_FOUND:  /* Does this make sense? */
-                    pParms->Result = SHFL_FILE_NOT_FOUND;
-                    break;
-                case VERR_PATH_NOT_FOUND:
-                    pParms->Result = SHFL_PATH_NOT_FOUND;
-                    break;
-                case VERR_ACCESS_DENIED:
-                    pParms->Result = SHFL_FILE_EXISTS;
-                    break;
-                default:
-                    pParms->Result = SHFL_NO_RESULT;
+                    case VERR_FILE_NOT_FOUND:
+                        pParms->Result = SHFL_FILE_NOT_FOUND;
+#ifndef RT_OS_WINDOWS
+                        if (   SHFL_CLIENT_NEED_WINDOWS_ERROR_STYLE_ADJUST_ON_POSIX(pClient)
+                            && vbsfErrorStyleIsWindowsPathNotFound(pszPath))
+                        {
+                            pParms->Result = SHFL_PATH_NOT_FOUND;
+                            rc = VERR_PATH_NOT_FOUND;
+                        }
+#endif
+                        break;
+                    case VERR_PATH_NOT_FOUND:
+                        pParms->Result = SHFL_PATH_NOT_FOUND;
+#ifndef RT_OS_WINDOWS
+                        if (   SHFL_CLIENT_NEED_WINDOWS_ERROR_STYLE_ADJUST_ON_POSIX(pClient)
+                            && vbsfErrorStyleIsWindowsNotADirectory(pszPath))
+                        {
+                            pParms->Result = SHFL_FILE_EXISTS;
+                            rc = VERR_NOT_A_DIRECTORY;
+                            break;
+                        }
+#endif
+                        break;
+                    case VERR_ACCESS_DENIED:
+                        pParms->Result = SHFL_FILE_EXISTS;
+                        break;
+                    default:
+                        pParms->Result = SHFL_NO_RESULT;
                 }
             }
         }
@@ -763,8 +953,10 @@ static int vbsfCloseFile(SHFLFILEHANDLE *pHandle)
  * @returns iprt status code (currently VINF_SUCCESS)
  * @param   pClient    client data
  * @param   pszPath    The path of the file to be looked up
- * @retval  pParms->Result Status of the operation (success or error)
- * @retval  pParms->Info   On success, information returned about the file
+ * @param   pParms     Output:
+ *                      - @a Result: Status of the operation (success or error)
+ *                      - @a Info:   On success, information returned about the
+ *                                   file
  */
 static int vbsfLookupFile(SHFLCLIENTDATA *pClient, char *pszPath, SHFLCREATEPARMS *pParms)
 {
@@ -826,19 +1018,21 @@ void testCreate(RTTEST hTest)
  * conversion on the file name if necessary.
  *
  * @returns IPRT status code, but see note below
- * @param   pClient        Data structure describing the client accessing the shared
- *                         folder
- * @param   root           The index of the shared folder in the table of mappings.
- *                         The host path of the shared folder is found using this.
- * @param   pPath          The path of the file or folder relative to the host path
- *                         indexed by root.
- * @param   cbPath         Presumably the length of the path in pPath.  Actually
- *                         ignored, as pPath contains a length parameter.
- * @param   pParms @a Info If a new file is created or an old one overwritten, set
- *                         these attributes
- * @retval  pParms @a Result Shared folder result code, see include/VBox/shflsvc.h
- * @retval  pParms @a Handle Shared folder handle to the newly opened file
- * @retval  pParms @a Info Attributes of the file or folder opened
+ * @param   pClient     Data structure describing the client accessing the
+ *                      shared folder
+ * @param   root        The index of the shared folder in the table of mappings.
+ *                      The host path of the shared folder is found using this.
+ * @param   pPath       The path of the file or folder relative to the host path
+ *                      indexed by root.
+ * @param   cbPath      Presumably the length of the path in pPath. Actually
+ *                      ignored, as pPath contains a length parameter.
+ * @param   pParms      Input: If a new file is created or an old one
+ *                      overwritten, set the @a Info attribute.
+ *
+ *                      Output:
+ *                        - @a Result Shared folder result code, see include/VBox/shflsvc.h
+ *                        - @a Handle Shared folder handle to the newly opened file
+ *                        - @a Info Attributes of the file or folder opened
  *
  * @note This function returns success if a "non-exceptional" error occurred,
  *       such as "no such file".  In this case, the caller should check the
@@ -1005,6 +1199,60 @@ int vbsfClose(SHFLCLIENTDATA *pClient, SHFLROOT root, SHFLHANDLE Handle)
     return rc;
 }
 
+/**
+ * Helper for vbsfReadPages and vbsfWritePages that creates a S/G buffer from a
+ * pages parameter.
+ */
+static int vbsfPagesToSgBuf(VBOXHGCMSVCPARMPAGES const *pPages, uint32_t cbLeft, PRTSGBUF pSgBuf)
+{
+    PRTSGSEG paSegs = (PRTSGSEG)RTMemTmpAlloc(sizeof(paSegs[0]) * pPages->cPages);
+    if (paSegs)
+    {
+        /*
+         * Convert the pages to segments.
+         */
+        uint32_t iSeg  = 0;
+        uint32_t iPage = 0;
+        for (;;)
+        {
+            Assert(iSeg < pPages->cPages);
+            Assert(iPage < pPages->cPages);
+
+            /* Current page. */
+            void *pvSeg;
+            paSegs[iSeg].pvSeg = pvSeg = pPages->papvPages[iPage];
+            uint32_t cbSeg = PAGE_SIZE - (uint32_t)((uintptr_t)pvSeg & PAGE_OFFSET_MASK);
+            iPage++;
+
+            /* Adjacent to the next page? */
+            while (   iPage < pPages->cPages
+                   && (uintptr_t)pvSeg + cbSeg == (uintptr_t)pPages->papvPages[iPage])
+            {
+                iPage++;
+                cbSeg += PAGE_SIZE;
+            }
+
+            /* Adjust for max size. */
+            if (cbLeft <= cbSeg)
+            {
+                paSegs[iSeg++].cbSeg = cbLeft;
+                break;
+            }
+            paSegs[iSeg++].cbSeg = cbSeg;
+            cbLeft -= cbSeg;
+        }
+
+        /*
+         * Initialize the s/g buffer and execute the read.
+         */
+        RTSgBufInit(pSgBuf, paSegs, iSeg);
+        return VINF_SUCCESS;
+    }
+    pSgBuf->paSegs = NULL;
+    return VERR_NO_TMP_MEMORY;
+}
+
+
 #ifdef UNITTEST
 /** Unit test the SHFL_FN_READ API.  Located here as a form of API
  * documentation. */
@@ -1027,30 +1275,97 @@ int vbsfRead(SHFLCLIENTDATA *pClient, SHFLROOT root, SHFLHANDLE Handle, uint64_t
     SHFLFILEHANDLE *pHandle = vbsfQueryFileHandle(pClient, Handle);
     int rc = vbsfCheckHandleAccess(pClient, root, pHandle, VBSF_CHECK_ACCESS_READ);
     if (RT_SUCCESS(rc))
-    { /* likely */ }
-    else
-        return rc;
-
-    if (RT_LIKELY(*pcbBuffer != 0))
     {
-        rc = RTFileSeek(pHandle->file.Handle, offset, RTFILE_SEEK_BEGIN, NULL);
-        if (RT_SUCCESS(rc))
+        size_t const cbToRead = *pcbBuffer;
+        if (RT_LIKELY(cbToRead > 0))
         {
-            size_t count = 0;
-            rc = RTFileRead(pHandle->file.Handle, pBuffer, *pcbBuffer, &count);
-            *pcbBuffer = (uint32_t)count;
+            size_t cbActual = 0;
+            rc = RTFileReadAt(pHandle->file.Handle, offset, pBuffer, cbToRead, &cbActual);
+            *pcbBuffer = (uint32_t)cbActual;
         }
         else
-            AssertRC(rc);
+        {
+            /* Reading zero bytes always succeeds. */
+            rc = VINF_SUCCESS;
+        }
     }
     else
-    {
-        /* Reading zero bytes always succeeds. */
-        rc = VINF_SUCCESS;
-    }
+        *pcbBuffer = 0;
 
     LogFunc(("%Rrc bytes read 0x%RX32\n", rc, *pcbBuffer));
     return rc;
+}
+
+/**
+ * SHFL_FN_READ w/o bounce buffering.
+ */
+int vbsfReadPages(SHFLCLIENTDATA *pClient, SHFLROOT idRoot, SHFLHANDLE hFile, uint64_t offFile,
+                  uint32_t *pcbRead, PVBOXHGCMSVCPARMPAGES pPages)
+{
+    LogFunc(("pClient %p, idRoot %#RX32, hFile %#RX64, offFile %#RX64, cbRead %#RX32, cPages %#x\n",
+             pClient, idRoot, hFile, offFile, *pcbRead, pPages->cPages));
+
+    AssertPtrReturn(pClient, VERR_INVALID_PARAMETER);
+
+    size_t          cbTotal = 0;
+    SHFLFILEHANDLE *pHandle = vbsfQueryFileHandle(pClient, hFile);
+    int rc = vbsfCheckHandleAccess(pClient, idRoot, pHandle, VBSF_CHECK_ACCESS_READ);
+    if (RT_SUCCESS(rc))
+    {
+        uint32_t const cbToRead = *pcbRead;
+        if (cbToRead > 0)
+        {
+            ASSERT_GUEST_RETURN(pPages->cPages > 0, VERR_INTERNAL_ERROR_3);
+
+            /*
+             * Convert to a scatter-gather buffer.
+             *
+             * We need not do any platform specific code here as the RTSGBUF
+             * segment array maps directly onto the posix iovec structure.
+             * Windows does currently benefit much from this conversion, but
+             * so be it.
+             */
+            RTSGBUF SgBuf;
+            rc = vbsfPagesToSgBuf(pPages, cbToRead, &SgBuf);
+            if (RT_SUCCESS(rc))
+            {
+                rc = RTFileSgReadAt(pHandle->file.Handle, offFile, &SgBuf, cbToRead, &cbTotal);
+                while (rc == VERR_INTERRUPTED)
+                {
+                    RTSgBufReset(&SgBuf);
+                    rc = RTFileSgReadAt(pHandle->file.Handle, offFile, &SgBuf, cbToRead, &cbTotal);
+                }
+
+                RTMemTmpFree((void *)SgBuf.paSegs);
+            }
+            else
+                rc = VERR_NO_TMP_MEMORY;
+
+            *pcbRead = (uint32_t)cbTotal;
+        }
+        else
+        {
+            /* Reading zero bytes always succeeds. */
+            rc = VINF_SUCCESS;
+        }
+    }
+    else
+        *pcbRead = 0;
+
+    LogFunc(("%Rrc bytes read %#zx\n", rc, cbTotal));
+    return rc;
+}
+
+/**
+ * Helps with writes to RTFILE_O_APPEND files.
+ */
+static uint64_t vbsfWriteCalcPostAppendFilePosition(RTFILE hFile, uint64_t offGuessed)
+{
+    RTFSOBJINFO ObjInfo;
+    int rc2 = RTFileQueryInfo(hFile, &ObjInfo, RTFSOBJATTRADD_NOTHING);
+    if (RT_SUCCESS(rc2) && (uint64_t)ObjInfo.cbObject >= offGuessed)
+        return ObjInfo.cbObject;
+    return offGuessed;
 }
 
 #ifdef UNITTEST
@@ -1065,42 +1380,201 @@ void testWrite(RTTEST hTest)
     /* Add tests as required... */
 }
 #endif
-int vbsfWrite(SHFLCLIENTDATA *pClient, SHFLROOT root, SHFLHANDLE Handle, uint64_t offset, uint32_t *pcbBuffer, uint8_t *pBuffer)
+int vbsfWrite(SHFLCLIENTDATA *pClient, SHFLROOT idRoot, SHFLHANDLE hFile, uint64_t *poffFile,
+              uint32_t *pcbBuffer, uint8_t *pBuffer)
 {
-    LogFunc(("pClient %p, root 0x%RX32, Handle 0x%RX64, offset 0x%RX64, bytes 0x%RX32\n",
-             pClient, root, Handle, offset, pcbBuffer? *pcbBuffer: 0));
+    uint64_t offFile = *poffFile;
+    LogFunc(("pClient %p, root 0x%RX32, Handle 0x%RX64, offFile 0x%RX64, bytes 0x%RX32\n",
+             pClient, idRoot, hFile, offFile, *pcbBuffer));
 
     AssertPtrReturn(pClient, VERR_INVALID_PARAMETER);
 
-    SHFLFILEHANDLE *pHandle = vbsfQueryFileHandle(pClient, Handle);
-    int rc = vbsfCheckHandleAccess(pClient, root, pHandle, VBSF_CHECK_ACCESS_WRITE);
+    SHFLFILEHANDLE *pHandle = vbsfQueryFileHandle(pClient, hFile);
+    int rc = vbsfCheckHandleAccess(pClient, idRoot, pHandle, VBSF_CHECK_ACCESS_WRITE);
     if (RT_SUCCESS(rc))
-    { /* likely */ }
-    else
-        return rc;
-
-    if (RT_LIKELY(*pcbBuffer != 0))
     {
-        rc = RTFileSeek(pHandle->file.Handle, offset, RTFILE_SEEK_BEGIN, NULL);
-        if (RT_SUCCESS(rc))
+        size_t const cbToWrite = *pcbBuffer;
+        if (RT_LIKELY(cbToWrite != 0))
         {
-            size_t count = 0;
-            rc = RTFileWrite(pHandle->file.Handle, pBuffer, *pcbBuffer, &count);
-            *pcbBuffer = (uint32_t)count;
+            size_t cbWritten = 0;
+            if (!(pHandle->file.fOpenFlags & RTFILE_O_APPEND))
+                rc = RTFileWriteAt(pHandle->file.Handle, offFile, pBuffer, cbToWrite, &cbWritten);
+            else
+            {
+                rc = RTFileSeek(pHandle->file.Handle, offFile, RTFILE_SEEK_BEGIN, NULL);
+                AssertRC(rc);
+                if (RT_SUCCESS(rc))
+                {
+                    rc = RTFileWrite(pHandle->file.Handle, pBuffer, cbToWrite, &cbWritten);
+                    *pcbBuffer = (uint32_t)cbWritten;
+                }
+            }
+
+            /* Update the file offset (mainly for RTFILE_O_APPEND), */
+            if (RT_SUCCESS(rc))
+            {
+                offFile += cbWritten;
+                if (!(pHandle->file.fOpenFlags & RTFILE_O_APPEND))
+                    *poffFile = offFile;
+                else
+                    *poffFile = vbsfWriteCalcPostAppendFilePosition(pHandle->file.Handle, offFile);
+            }
         }
         else
-            AssertRC(rc);
+        {
+            /** @todo What writing zero bytes should do? */
+            rc = VINF_SUCCESS;
+        }
     }
     else
-    {
-        /** @todo What writing zero bytes should do? */
-        rc = VINF_SUCCESS;
-    }
-
+        *pcbBuffer = 0;
     LogFunc(("%Rrc bytes written 0x%RX32\n", rc, *pcbBuffer));
     return rc;
 }
 
+/**
+ * SHFL_FN_WRITE w/o bounce buffering.
+ */
+int vbsfWritePages(SHFLCLIENTDATA *pClient, SHFLROOT idRoot, SHFLHANDLE hFile, uint64_t *poffFile,
+                   uint32_t *pcbWrite, PVBOXHGCMSVCPARMPAGES pPages)
+{
+    uint64_t offFile = *poffFile;
+    LogFunc(("pClient %p, idRoot %#RX32, hFile %#RX64, offFile %#RX64, cbWrite %#RX32, cPages %#x\n",
+             pClient, idRoot, hFile, offFile, *pcbWrite, pPages->cPages));
+
+    AssertPtrReturn(pClient, VERR_INVALID_PARAMETER);
+
+    size_t          cbTotal = 0;
+    SHFLFILEHANDLE *pHandle = vbsfQueryFileHandle(pClient, hFile);
+    int rc = vbsfCheckHandleAccess(pClient, idRoot, pHandle, VBSF_CHECK_ACCESS_WRITE);
+    if (RT_SUCCESS(rc))
+    {
+        uint32_t const cbToWrite = *pcbWrite;
+        if (cbToWrite > 0)
+        {
+            ASSERT_GUEST_RETURN(pPages->cPages > 0, VERR_INTERNAL_ERROR_3);
+
+            /*
+             * Convert to a scatter-gather buffer.
+             *
+             * We need not do any platform specific code here as the RTSGBUF
+             * segment array maps directly onto the posix iovec structure.
+             * Windows does currently benefit much from this conversion, but
+             * so be it.
+             */
+            RTSGBUF SgBuf;
+            rc = vbsfPagesToSgBuf(pPages, cbToWrite, &SgBuf);
+            if (RT_SUCCESS(rc))
+            {
+#ifndef RT_OS_LINUX
+                /* Cannot use RTFileSgWriteAt or RTFileWriteAt when opened with
+                   RTFILE_O_APPEND, except for on linux where the offset is
+                   then ignored by the low level kernel API. */
+                if (pHandle->file.fOpenFlags & RTFILE_O_APPEND)
+                {
+                    /* paranoia */
+                    RTFileSeek(pHandle->file.Handle, 0, RTFILE_SEEK_END, NULL);
+
+                    for (size_t iSeg = 0; iSeg < SgBuf.cSegs; iSeg++)
+                    {
+                        size_t cbWrittenNow = 0;
+                        do
+                            rc = RTFileWrite(pHandle->file.Handle, SgBuf.paSegs[iSeg].pvSeg,
+                                             SgBuf.paSegs[iSeg].cbSeg, &cbWrittenNow);
+                        while (rc == VERR_INTERRUPTED);
+                        if (RT_SUCCESS(rc))
+                        {
+                            cbTotal += cbWrittenNow;
+                            if (cbWrittenNow < SgBuf.paSegs[iSeg].cbSeg)
+                                break;
+                        }
+                        else
+                        {
+                            if (cbTotal > 0)
+                                rc = VINF_SUCCESS;
+                            break;
+                        }
+                    }
+                }
+                else
+#endif
+                {
+                    rc = RTFileSgWriteAt(pHandle->file.Handle, offFile, &SgBuf, cbToWrite, &cbTotal);
+                    while (rc == VERR_INTERRUPTED)
+                    {
+                        RTSgBufReset(&SgBuf);
+                        rc = RTFileSgWriteAt(pHandle->file.Handle, offFile, &SgBuf, cbToWrite, &cbTotal);
+                    }
+                }
+
+                RTMemTmpFree((void *)SgBuf.paSegs);
+
+                /* Update the file offset (mainly for RTFILE_O_APPEND), */
+                if (RT_SUCCESS(rc))
+                {
+                    offFile += cbTotal;
+                    if (!(pHandle->file.fOpenFlags & RTFILE_O_APPEND))
+                        *poffFile = offFile;
+                    else
+                        *poffFile = vbsfWriteCalcPostAppendFilePosition(pHandle->file.Handle, offFile);
+                }
+            }
+            else
+                rc = VERR_NO_TMP_MEMORY;
+
+            *pcbWrite = (uint32_t)cbTotal;
+        }
+        else
+        {
+            /* Writing zero bytes always succeeds. */
+            rc = VINF_SUCCESS;
+        }
+    }
+    else
+        *pcbWrite = 0;
+
+    LogFunc(("%Rrc bytes written %#zx\n", rc, cbTotal));
+    return rc;
+}
+
+/**
+ * Implements SHFL_FN_COPY_FILE_PART (wrapping RTFileCopyPart).
+ */
+int vbsfCopyFilePart(SHFLCLIENTDATA *pClient, SHFLROOT idRootSrc, SHFLHANDLE hFileSrc, uint64_t offSrc,
+                     SHFLROOT idRootDst, SHFLHANDLE hFileDst, uint64_t offDst, uint64_t *pcbToCopy, uint32_t fFlags)
+{
+    /*
+     * Validate and translates handles.
+     */
+    uint64_t const cbToCopy = *pcbToCopy;
+    *pcbToCopy = 0;
+    LogFunc(("pClient %p, idRootSrc %#RX32, hFileSrc %#RX64, offSrc %#RX64, idRootSrc %#RX32, hFileSrc %#RX64, offSrc %#RX64, cbToCopy %#RX64, fFlags %#x\n",
+             pClient, idRootSrc, hFileSrc, offSrc, idRootDst, hFileDst, offDst, cbToCopy, fFlags));
+
+    AssertPtrReturn(pClient, VERR_INVALID_PARAMETER);
+
+    uint64_t cbTotal = 0;
+
+    SHFLFILEHANDLE *pHandleSrc = vbsfQueryFileHandle(pClient, hFileSrc);
+    int rc = vbsfCheckHandleAccess(pClient, idRootSrc, pHandleSrc, VBSF_CHECK_ACCESS_READ);
+    if (RT_SUCCESS(rc))
+    {
+        SHFLFILEHANDLE *pHandleDst = vbsfQueryFileHandle(pClient, hFileDst);
+        rc = vbsfCheckHandleAccess(pClient, idRootDst, pHandleDst, VBSF_CHECK_ACCESS_WRITE);
+        if (RT_SUCCESS(rc))
+        {
+            /*
+             * Do the job.
+             */
+            rc = RTFileCopyPart(pHandleSrc->file.Handle, offSrc, pHandleDst->file.Handle, offDst, cbToCopy, 0, &cbTotal);
+            *pcbToCopy = cbTotal;
+        }
+    }
+
+    RT_NOREF(fFlags);
+    LogFunc(("%Rrc bytes written %#zx\n", rc, cbTotal));
+    return rc;
+}
 
 #ifdef UNITTEST
 /** Unit test the SHFL_FN_FLUSH API.  Located here as a form of API
@@ -1167,7 +1641,6 @@ int vbsfDirList(SHFLCLIENTDATA *pClient, SHFLROOT root, SHFLHANDLE Handle, SHFLS
         return rc;
 
     Assert(*pIndex == 0);
-    hDir = pHandle->dir.Handle;
 
     cbDirEntry = 4096;
     pDirEntryOrg = pDirEntry  = (PRTDIRENTRYEX)RTMemAlloc(cbDirEntry);
@@ -1184,7 +1657,9 @@ int vbsfDirList(SHFLCLIENTDATA *pClient, SHFLROOT root, SHFLHANDLE Handle, SHFLS
     *pIndex = 1; /* not yet complete */
     *pcFiles = 0;
 
-    if (pPath)
+    if (!pPath)
+        hDir = pHandle->dir.Handle;
+    else
     {
         if (pHandle->dir.SearchHandle == 0)
         {
@@ -1209,9 +1684,17 @@ int vbsfDirList(SHFLCLIENTDATA *pClient, SHFLROOT root, SHFLHANDLE Handle, SHFLS
             }
             else
                 goto end;
+            flags &= ~SHFL_LIST_RESTART;
         }
         Assert(pHandle->dir.SearchHandle);
         hDir = pHandle->dir.SearchHandle;
+    }
+
+    if (flags & SHFL_LIST_RESTART)
+    {
+        rc = RTDirRewind(hDir);
+        if (RT_FAILURE(rc))
+            goto end;
     }
 
     while (cbBufferOrg)
@@ -1389,10 +1872,14 @@ int vbsfReadLink(SHFLCLIENTDATA *pClient, SHFLROOT root, SHFLSTRING *pPath, uint
         if (RT_SUCCESS(rc))
         {
             /* Convert the slashes in the link target to the guest path separator characters. */
+            /** @todo r=bird: for some messed up reason, we return UTF-8 here rather than
+             * the character set selected by the client.  We also don't return the
+             * length, so the clients are paranoid about the zero termination behavior. */
+            char ch;
             char *psz = (char *)pBuffer;
-            while (*psz != '\0')
+            while ((ch = *psz) != '\0')
             {
-                if (*psz == RTPATH_DELIMITER)
+                if (RTPATH_IS_SLASH(ch))
                     *psz = pClient->PathDelimiter;
                 psz++;
             }
@@ -1476,56 +1963,69 @@ static int vbsfSetFileInfo(SHFLCLIENTDATA *pClient, SHFLROOT root, SHFLHANDLE Ha
 
     Assert(flags == (SHFL_INFO_SET | SHFL_INFO_FILE));
 
-    /* Change only the time values that are not zero */
-    if (type == SHFL_HF_TYPE_DIR)
+    /*
+     * Get the handle.
+     */
+    SHFLFILEHANDLE *pHandle;
+    if (type == SHFL_HF_TYPE_FILE)
     {
-        SHFLFILEHANDLE *pHandle = vbsfQueryDirHandle(pClient, Handle);
+        pHandle = vbsfQueryFileHandle(pClient, Handle);
         rc = vbsfCheckHandleAccess(pClient, root, pHandle, VBSF_CHECK_ACCESS_WRITE);
-        if (RT_SUCCESS(rc))
-            rc = RTDirSetTimes(pHandle->dir.Handle,
-                                (RTTimeSpecGetNano(&pSFDEntry->AccessTime)) ?       &pSFDEntry->AccessTime : NULL,
-                                (RTTimeSpecGetNano(&pSFDEntry->ModificationTime)) ? &pSFDEntry->ModificationTime: NULL,
-                                (RTTimeSpecGetNano(&pSFDEntry->ChangeTime)) ?       &pSFDEntry->ChangeTime: NULL,
-                                (RTTimeSpecGetNano(&pSFDEntry->BirthTime)) ?        &pSFDEntry->BirthTime: NULL
-                                );
     }
     else
     {
-        SHFLFILEHANDLE *pHandle = vbsfQueryFileHandle(pClient, Handle);
+        Assert(type == SHFL_HF_TYPE_DIR);
+        pHandle = vbsfQueryDirHandle(pClient, Handle);
         rc = vbsfCheckHandleAccess(pClient, root, pHandle, VBSF_CHECK_ACCESS_WRITE);
-        if (RT_SUCCESS(rc))
-            rc = RTFileSetTimes(pHandle->file.Handle,
-                                 (RTTimeSpecGetNano(&pSFDEntry->AccessTime)) ?       &pSFDEntry->AccessTime : NULL,
-                                 (RTTimeSpecGetNano(&pSFDEntry->ModificationTime)) ? &pSFDEntry->ModificationTime: NULL,
-                                 (RTTimeSpecGetNano(&pSFDEntry->ChangeTime)) ?       &pSFDEntry->ChangeTime: NULL,
-                                 (RTTimeSpecGetNano(&pSFDEntry->BirthTime)) ?        &pSFDEntry->BirthTime: NULL
-                                 );
     }
-    if (rc != VINF_SUCCESS)
+    if (RT_SUCCESS(rc))
     {
-        Log(("RTFileSetTimes failed with %Rrc\n", rc));
-        Log(("AccessTime       %RX64\n", RTTimeSpecGetNano(&pSFDEntry->AccessTime)));
-        Log(("ModificationTime %RX64\n", RTTimeSpecGetNano(&pSFDEntry->ModificationTime)));
-        Log(("ChangeTime       %RX64\n", RTTimeSpecGetNano(&pSFDEntry->ChangeTime)));
-        Log(("BirthTime        %RX64\n", RTTimeSpecGetNano(&pSFDEntry->BirthTime)));
-        /* temporary hack */
-        rc = VINF_SUCCESS;
-    }
-
-    if (type == SHFL_HF_TYPE_FILE)
-    {
-        SHFLFILEHANDLE *pHandle = vbsfQueryFileHandle(pClient, Handle);
-        rc = vbsfCheckHandleAccess(pClient, root, pHandle, VBSF_CHECK_ACCESS_WRITE);
-        if (RT_SUCCESS(rc))
+        /*
+         * Any times to set?
+         */
+        if (   RTTimeSpecGetNano(&pSFDEntry->AccessTime)
+            || RTTimeSpecGetNano(&pSFDEntry->ModificationTime)
+            || RTTimeSpecGetNano(&pSFDEntry->ChangeTime)
+            || RTTimeSpecGetNano(&pSFDEntry->BirthTime))
         {
-            /* Change file attributes if necessary */
-            if (pSFDEntry->Attr.fMode)
-            {
-                RTFMODE fMode = pSFDEntry->Attr.fMode;
 
+            /* Change only the time values that are not zero */
+            if (type == SHFL_HF_TYPE_FILE)
+                rc = RTFileSetTimes(pHandle->file.Handle,
+                                    RTTimeSpecGetNano(&pSFDEntry->AccessTime)       ? &pSFDEntry->AccessTime         : NULL,
+                                    RTTimeSpecGetNano(&pSFDEntry->ModificationTime) ? &pSFDEntry->ModificationTime   : NULL,
+                                    RTTimeSpecGetNano(&pSFDEntry->ChangeTime)       ? &pSFDEntry->ChangeTime         : NULL,
+                                    RTTimeSpecGetNano(&pSFDEntry->BirthTime)        ? &pSFDEntry->BirthTime          : NULL);
+            else
+                rc = RTDirSetTimes( pHandle->dir.Handle,
+                                    RTTimeSpecGetNano(&pSFDEntry->AccessTime)       ? &pSFDEntry->AccessTime         : NULL,
+                                    RTTimeSpecGetNano(&pSFDEntry->ModificationTime) ? &pSFDEntry->ModificationTime   : NULL,
+                                    RTTimeSpecGetNano(&pSFDEntry->ChangeTime)       ? &pSFDEntry->ChangeTime         : NULL,
+                                    RTTimeSpecGetNano(&pSFDEntry->BirthTime)        ? &pSFDEntry->BirthTime          : NULL);
+            if (RT_FAILURE(rc))
+            {
+                Log(("RT%sSetTimes failed with %Rrc\n", type == SHFL_HF_TYPE_FILE ? "File" : "Dir", rc));
+                Log(("AccessTime       %#RX64\n", RTTimeSpecGetNano(&pSFDEntry->AccessTime)));
+                Log(("ModificationTime %#RX64\n", RTTimeSpecGetNano(&pSFDEntry->ModificationTime)));
+                Log(("ChangeTime       %#RX64\n", RTTimeSpecGetNano(&pSFDEntry->ChangeTime)));
+                Log(("BirthTime        %#RX64\n", RTTimeSpecGetNano(&pSFDEntry->BirthTime)));
+                /* "temporary" hack */
+                rc = VINF_SUCCESS;
+            }
+        }
+
+        /*
+         * Any mode changes?
+         */
+        if (pSFDEntry->Attr.fMode)
+        {
+            RTFMODE fMode = pSFDEntry->Attr.fMode;
+
+            if (type == SHFL_HF_TYPE_FILE)
+            {
 #ifndef RT_OS_WINDOWS
-                /* Don't allow the guest to clear the own bit, otherwise the guest wouldn't be
-                 * able to access this file anymore. Only for guests, which set the UNIX mode.
+                /* Don't allow the guest to clear the read own bit, otherwise the guest wouldn't
+                 * be able to access this file anymore. Only for guests, which set the UNIX mode.
                  * Also, clear bits which we don't pass through for security reasons. */
                 if (fMode & RTFS_UNIX_MASK)
                 {
@@ -1533,32 +2033,67 @@ static int vbsfSetFileInfo(SHFLCLIENTDATA *pClient, SHFLROOT root, SHFLHANDLE Ha
                     fMode &= ~(RTFS_UNIX_ISUID | RTFS_UNIX_ISGID | RTFS_UNIX_ISTXT);
                 }
 #endif
-
                 rc = RTFileSetMode(pHandle->file.Handle, fMode);
-                if (rc != VINF_SUCCESS)
+            }
+            else
+            {
+#ifndef RT_OS_WINDOWS
+                /* Don't allow the guest to clear the read+execute own bits, otherwise the guest
+                 * wouldn't be able to access this directory anymore.  Only for guests, which set
+                 * the UNIX mode.  Also, clear bits which we don't pass through for security reasons. */
+                if (fMode & RTFS_UNIX_MASK)
                 {
-                    Log(("RTFileSetMode %x failed with %Rrc\n", fMode, rc));
-                    /* silent failure, because this tends to fail with e.g. windows guest & linux host */
-                    rc = VINF_SUCCESS;
+                    fMode |= RTFS_UNIX_IRUSR | RTFS_UNIX_IXUSR;
+                    fMode &= ~(RTFS_UNIX_ISUID | RTFS_UNIX_ISGID | RTFS_UNIX_ISTXT /*?*/);
                 }
+#endif
+                rc = RTDirSetMode(pHandle->dir.Handle, fMode);
+            }
+            if (RT_FAILURE(rc))
+            {
+                Log(("RT%sSetMode %#x (%#x) failed with %Rrc\n", type == SHFL_HF_TYPE_FILE ? "File" : "Dir",
+                     fMode, pSFDEntry->Attr.fMode, rc));
+                /* silent failure, because this tends to fail with e.g. windows guest & linux host */
+                rc = VINF_SUCCESS;
             }
         }
-    }
-    /** @todo mode for directories */
 
-    if (rc == VINF_SUCCESS)
-    {
-        uint32_t bufsize = sizeof(*pSFDEntry);
-
-        rc = vbsfQueryFileInfo(pClient, root, Handle, SHFL_INFO_GET|SHFL_INFO_FILE, &bufsize, (uint8_t *)pSFDEntry);
-        if (rc == VINF_SUCCESS)
+        /*
+         * Return the current file info on success.
+         */
+        if (RT_SUCCESS(rc))
         {
-            *pcbBuffer = sizeof(SHFLFSOBJINFO);
+            uint32_t bufsize = sizeof(*pSFDEntry);
+            rc = vbsfQueryFileInfo(pClient, root, Handle, SHFL_INFO_GET | SHFL_INFO_FILE, &bufsize, (uint8_t *)pSFDEntry);
+            if (RT_SUCCESS(rc))
+                *pcbBuffer = sizeof(SHFLFSOBJINFO);
+            else
+                AssertFailed();
         }
-        else
-            AssertFailed();
     }
+    return rc;
+}
 
+
+/**
+ * Handles SHFL_FN_SET_FILE_SIZE.
+ */
+int vbsfSetFileSize(SHFLCLIENTDATA *pClient, SHFLROOT idRoot, SHFLHANDLE hHandle, uint64_t cbNewSize)
+{
+    /*
+     * Resolve handle and validate write access.
+     */
+    SHFLFILEHANDLE *pHandle = vbsfQueryFileHandle(pClient, hHandle);
+    ASSERT_GUEST_RETURN(pHandle, VERR_INVALID_HANDLE);
+
+    int rc = vbsfCheckHandleAccess(pClient, idRoot, pHandle, VBSF_CHECK_ACCESS_WRITE);
+    if (RT_SUCCESS(rc))
+    {
+        /*
+         * Execute the request.
+         */
+        rc = RTFileSetSize(pHandle->file.Handle, cbNewSize);
+    }
     return rc;
 }
 
@@ -1840,49 +2375,71 @@ void testRemove(RTTEST hTest)
     /* Add tests as required... */
 }
 #endif
-int vbsfRemove(SHFLCLIENTDATA *pClient, SHFLROOT root, SHFLSTRING *pPath, uint32_t cbPath, uint32_t flags)
+int vbsfRemove(SHFLCLIENTDATA *pClient, SHFLROOT root, PCSHFLSTRING pPath, uint32_t cbPath, uint32_t flags, SHFLHANDLE hToClose)
 {
-    int rc = VINF_SUCCESS;
 
     /* Validate input */
-    if (   flags & ~(SHFL_REMOVE_FILE|SHFL_REMOVE_DIR|SHFL_REMOVE_SYMLINK)
-        || cbPath == 0
-        || pPath == 0)
-    {
-        AssertFailed();
-        return VERR_INVALID_PARAMETER;
-    }
+    Assert(pPath);
+    AssertReturn(pPath->u16Size > 0, VERR_INVALID_PARAMETER);
 
-    /* Build a host full path for the given path
-     * and convert ucs2 to utf8 if necessary.
+    /*
+     * Close the handle if specified.
      */
-    char *pszFullPath = NULL;
-
-    rc = vbsfBuildFullPath(pClient, root, pPath, cbPath, &pszFullPath, NULL);
+    int rc = VINF_SUCCESS;
+    if (hToClose != SHFL_HANDLE_NIL)
+        rc = vbsfClose(pClient, root, hToClose);
     if (RT_SUCCESS(rc))
     {
-        /* is the guest allowed to write to this share? */
-        bool fWritable;
-        rc = vbsfMappingsQueryWritable(pClient, root, &fWritable);
-        if (RT_FAILURE(rc) || !fWritable)
-            rc = VERR_WRITE_PROTECT;
-
+        /*
+         * Build a host full path for the given path and convert ucs2 to utf8 if necessary.
+         */
+        char *pszFullPath = NULL;
+        rc = vbsfBuildFullPath(pClient, root, pPath, cbPath, &pszFullPath, NULL);
         if (RT_SUCCESS(rc))
         {
-            if (flags & SHFL_REMOVE_SYMLINK)
-                rc = RTSymlinkDelete(pszFullPath, 0);
-            else if (flags & SHFL_REMOVE_FILE)
-                rc = RTFileDelete(pszFullPath);
-            else
-                rc = RTDirRemove(pszFullPath);
-        }
+            /*
+             * Is the guest allowed to write to this share?
+             */
+            bool fWritable;
+            rc = vbsfMappingsQueryWritable(pClient, root, &fWritable);
+            if (RT_SUCCESS(rc) && fWritable)
+            {
+                /*
+                 * Do the removal/deletion according to the type flags.
+                 */
+                if (flags & SHFL_REMOVE_SYMLINK)
+                    rc = RTSymlinkDelete(pszFullPath, 0);
+                else if (flags & SHFL_REMOVE_FILE)
+                    rc = RTFileDelete(pszFullPath);
+                else
+                    rc = RTDirRemove(pszFullPath);
 
-#ifndef DEBUG_dmik
-        // VERR_ACCESS_DENIED for example?
-        // Assert(rc == VINF_SUCCESS || rc == VERR_DIR_NOT_EMPTY);
+#if 0 //ndef RT_OS_WINDOWS
+                /* There are a few adjustments to be made here: */
+                if (   rc == VERR_FILE_NOT_FOUND
+                    && SHFL_CLIENT_NEED_WINDOWS_ERROR_STYLE_ADJUST_ON_POSIX(pClient)
+                    && vbsfErrorStyleIsWindowsPathNotFound(pszFullPath))
+                    rc = VERR_PATH_NOT_FOUND;
+                else if (   rc == VERR_PATH_NOT_FOUND
+                         && SHFL_CLIENT_NEED_WINDOWS_ERROR_STYLE_ADJUST_ON_POSIX(pClient))
+                {
+                    if (flags & (SHFL_REMOVE_FILE | SHFL_REMOVE_SYMLINK))
+                    {
+                        size_t cchFullPath = strlen(pszFullPath);
+                        if (cchFullPath > 0 && RTPATH_IS_SLASH(pszFullPath[cchFullPath - 1]))
+                            rc = VERR_INVALID_NAME;
+                    }
+                    else if (vbsfErrorStyleIsWindowsNotADirectory(pszFullPath))
+                        rc = VERR_NOT_A_DIRECTORY;
+                }
 #endif
-        /* free the path string */
-        vbsfFreeFullPath(pszFullPath);
+            }
+            else
+                rc = VERR_WRITE_PROTECT;
+
+            /* free the path string */
+            vbsfFreeFullPath(pszFullPath);
+        }
     }
     return rc;
 }
@@ -1903,7 +2460,7 @@ int vbsfRename(SHFLCLIENTDATA *pClient, SHFLROOT root, SHFLSTRING *pSrc, SHFLSTR
     int rc = VINF_SUCCESS;
 
     /* Validate input */
-    if (   flags & ~(SHFL_REMOVE_FILE|SHFL_REMOVE_DIR|SHFL_RENAME_REPLACE_IF_EXISTS)
+    if (   flags & ~(SHFL_RENAME_FILE|SHFL_RENAME_DIR|SHFL_RENAME_REPLACE_IF_EXISTS)
         || pSrc == 0
         || pDest == 0)
     {
@@ -1934,17 +2491,28 @@ int vbsfRename(SHFLCLIENTDATA *pClient, SHFLROOT root, SHFLSTRING *pSrc, SHFLSTR
 
         if (RT_SUCCESS(rc))
         {
-            if (flags & SHFL_RENAME_FILE)
+            if ((flags & (SHFL_RENAME_FILE | SHFL_RENAME_DIR)) == (SHFL_RENAME_FILE | SHFL_RENAME_DIR))
+            {
+                rc = RTPathRename(pszFullPathSrc, pszFullPathDest,
+                                  flags & SHFL_RENAME_REPLACE_IF_EXISTS ? RTPATHRENAME_FLAGS_REPLACE : 0);
+            }
+            else if (flags & SHFL_RENAME_FILE)
             {
                 rc = RTFileMove(pszFullPathSrc, pszFullPathDest,
-                                  ((flags & SHFL_RENAME_REPLACE_IF_EXISTS) ? RTFILEMOVE_FLAGS_REPLACE : 0));
+                                ((flags & SHFL_RENAME_REPLACE_IF_EXISTS) ? RTFILEMOVE_FLAGS_REPLACE : 0));
             }
             else
             {
                 /* NT ignores the REPLACE flag and simply return and already exists error. */
                 rc = RTDirRename(pszFullPathSrc, pszFullPathDest,
-                                   ((flags & SHFL_RENAME_REPLACE_IF_EXISTS) ? RTPATHRENAME_FLAGS_REPLACE : 0));
+                                 ((flags & SHFL_RENAME_REPLACE_IF_EXISTS) ? RTPATHRENAME_FLAGS_REPLACE : 0));
             }
+#ifndef RT_OS_WINDOWS
+            if (   rc == VERR_FILE_NOT_FOUND
+                && SHFL_CLIENT_NEED_WINDOWS_ERROR_STYLE_ADJUST_ON_POSIX(pClient)
+                && vbsfErrorStyleIsWindowsPathNotFound2(pszFullPathSrc, pszFullPathDest))
+                rc = VERR_PATH_NOT_FOUND;
+#endif
         }
 
         /* free the path string */
@@ -1952,6 +2520,47 @@ int vbsfRename(SHFLCLIENTDATA *pClient, SHFLROOT root, SHFLSTRING *pSrc, SHFLSTR
     }
     /* free the path string */
     vbsfFreeFullPath(pszFullPathSrc);
+    return rc;
+}
+
+/**
+ * Implements SHFL_FN_COPY_FILE (wrapping RTFileCopy).
+ */
+int vbsfCopyFile(SHFLCLIENTDATA *pClient, SHFLROOT idRootSrc, PCSHFLSTRING pStrPathSrc,
+                 SHFLROOT idRootDst, PCSHFLSTRING pStrPathDst, uint32_t fFlags)
+{
+    AssertPtrReturn(pClient, VERR_INVALID_PARAMETER);
+    if (pClient->fu32Flags & SHFL_CF_UTF8)
+        LogFunc(("pClient %p, idRootSrc %#RX32, '%.*s', idRootSrc %#RX32, '%.*s', fFlags %#x\n", pClient, idRootSrc,
+                 pStrPathSrc->u16Length, pStrPathSrc->String.ach, idRootDst, pStrPathDst->u16Length, pStrPathDst->String.ach, fFlags));
+    else
+        LogFunc(("pClient %p, idRootSrc %#RX32, '%.*ls', idRootSrc %#RX32, '%.*ls', fFlags %#x\n", pClient,
+                 idRootSrc, pStrPathSrc->u16Length / sizeof(RTUTF16), pStrPathSrc->String.ach,
+                 idRootDst, pStrPathDst->u16Length / sizeof(RTUTF16), pStrPathDst->String.ach, fFlags));
+
+    /*
+     * Build host paths.
+     */
+    char *pszPathSrc = NULL;
+    int rc = vbsfBuildFullPath(pClient, idRootSrc, pStrPathSrc, pStrPathSrc->u16Size + SHFLSTRING_HEADER_SIZE, &pszPathSrc, NULL);
+    if (RT_SUCCESS(rc))
+    {
+        char *pszPathDst = NULL;
+        rc = vbsfBuildFullPath(pClient, idRootDst, pStrPathDst, pStrPathDst->u16Size + SHFLSTRING_HEADER_SIZE, &pszPathDst, NULL);
+        if (RT_SUCCESS(rc))
+        {
+            /*
+             * Do the job.
+             */
+            rc = RTFileCopy(pszPathSrc, pszPathDst);
+
+            vbsfFreeFullPath(pszPathDst);
+        }
+        vbsfFreeFullPath(pszPathSrc);
+    }
+
+    RT_NOREF(fFlags);
+    LogFunc(("returns %Rrc\n", rc));
     return rc;
 }
 
@@ -1996,12 +2605,15 @@ int vbsfSymlink(SHFLCLIENTDATA *pClient, SHFLROOT root, SHFLSTRING *pNewPath, SH
         return rc;
     }
 
+    /** @todo r=bird: We _must_ perform slash conversion on the target (what this
+     *        code calls 'pOldPath' for some peculiar reason)! */
+
     rc = RTSymlinkCreate(pszFullNewPath, (const char *)pOldPath->String.utf8,
                          RTSYMLINKTYPE_UNKNOWN, 0);
     if (RT_SUCCESS(rc))
     {
         RTFSOBJINFO info;
-        rc = RTPathQueryInfoEx(pszFullNewPath, &info, RTFSOBJATTRADD_NOTHING, SHFL_RT_LINK(pClient));
+        rc = RTPathQueryInfoEx(pszFullNewPath, &info, RTFSOBJATTRADD_NOTHING, RTPATH_F_ON_LINK);
         if (RT_SUCCESS(rc))
             vbfsCopyFsObjInfoFromIprt(pInfo, &info);
     }
@@ -2046,5 +2658,15 @@ int vbsfDisconnect(SHFLCLIENTDATA *pClient)
             vbsfClose(pClient, pHandle->root, Handle);
         }
     }
+
+    for (uint32_t i = 0; i < RT_ELEMENTS(pClient->acMappings); i++)
+        if (pClient->acMappings[i])
+        {
+            uint16_t cMappings = pClient->acMappings[i];
+            while (cMappings-- > 0)
+                vbsfUnmapFolder(pClient, i);
+        }
+
     return VINF_SUCCESS;
 }
+

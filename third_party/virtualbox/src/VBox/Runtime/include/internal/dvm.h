@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -24,8 +24,11 @@
  * terms and conditions of either the GPL or the CDDL or both.
  */
 
-#ifndef ___internal_dvm_h
-#define ___internal_dvm_h
+#ifndef IPRT_INCLUDED_INTERNAL_dvm_h
+#define IPRT_INCLUDED_INTERNAL_dvm_h
+#ifndef RT_WITHOUT_PRAGMA_ONCE
+# pragma once
+#endif
 
 #include <iprt/types.h>
 #include <iprt/err.h>
@@ -212,6 +215,18 @@ typedef struct RTDVMFMTOPS
     DECLCALLBACKMEMBER(uint64_t, pfnVolumeGetFlags)(RTDVMVOLUMEFMT hVolFmt);
 
     /**
+     * Queries the range of the given volume on the underyling medium.
+     *
+     * @returns IPRT status code.
+     * @param   hVolFmt         The format specific volume handle.
+     * @param   poffStart       Where to store the start byte offset on the
+     *                          underlying medium.
+     * @param   poffLast        Where to store the last byte offset on the
+     *                          underlying medium (inclusive).
+     */
+    DECLCALLBACKMEMBER(int, pfnVolumeQueryRange)(RTDVMVOLUMEFMT hVolFmt, uint64_t *poffStart, uint64_t *poffLast);
+
+    /**
      * Returns whether the supplied range is at least partially intersecting
      * with the given volume.
      *
@@ -316,5 +331,5 @@ DECLINLINE(int) rtDvmDiskWrite(PCRTDVMDISK pDisk, uint64_t off, const void *pvBu
 
 RT_C_DECLS_END
 
-#endif
+#endif /* !IPRT_INCLUDED_INTERNAL_dvm_h */
 

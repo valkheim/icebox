@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -33,9 +33,12 @@
 
 #include <iprt/assert.h>
 #include <iprt/thread.h>
-#include <iprt/err.h>
+#include <iprt/errcore.h>
 #include "internal/thread.h"
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 11, 0)
+    #include <uapi/linux/sched/types.h>
+#endif /* >= KERNEL_VERSION(4, 11, 0) */
 
 RTDECL(RTTHREAD) RTThreadSelf(void)
 {

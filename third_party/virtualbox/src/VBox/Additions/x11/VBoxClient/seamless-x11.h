@@ -1,12 +1,10 @@
 /* $Id: seamless-x11.h $ */
 /** @file
- *
- * Seamless mode:
- * Linux guest.
+ * Seamless mode - X11 guests.
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -17,11 +15,18 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
-#ifndef __Additions_linux_seamless_x11_h
-# define __Additions_linux_seamless_x11_h
+#ifndef GA_INCLUDED_SRC_x11_VBoxClient_seamless_x11_h
+#define GA_INCLUDED_SRC_x11_VBoxClient_seamless_x11_h
+#ifndef RT_WITHOUT_PRAGMA_ONCE
+# pragma once
+#endif
 
 #include <VBox/log.h>
 #include <iprt/avl.h>
+#ifdef RT_NEED_NEW_AND_DELETE
+# include <iprt/mem.h>
+# include <new>
+#endif
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -71,6 +76,9 @@ public:
         if (mpRects)
             XFree(mpRects);
     }
+#ifdef RT_NEED_NEW_AND_DELETE
+    RTMEM_IMPLEMENT_NEW_AND_DELETE();
+#endif
 
 private:
     // We don't want a copy constructor or assignment operator
@@ -117,6 +125,10 @@ public:
         doWithAll(VBoxGuestWinCleanup, NULL);
     }
 
+#ifdef RT_NEED_NEW_AND_DELETE
+    RTMEM_IMPLEMENT_NEW_AND_DELETE();
+#endif
+
     // Standard operations
     VBoxGuestWinInfo *find(Window hWin)
     {
@@ -142,13 +154,13 @@ public:
         VBoxGuestWinInfo *pInfo = new VBoxGuestWinInfo(isMapped, x, y, w, h, cRects,
                                                        pRects);
         pInfo->Core.Key = hWin;
-        LogRelFlowFunc(("returning\n"));
+        LogRelFlowFuncLeave();
         return RTAvlU32Insert(&mWindows, &pInfo->Core);
     }
 
     VBoxGuestWinInfo *removeWindow(Window hWin)
     {
-        LogRelFlowFunc(("called\n"));
+        LogRelFlowFuncEnter();
         return (VBoxGuestWinInfo *)RTAvlU32Remove(&mWindows, hWin);
     }
 };
@@ -253,6 +265,10 @@ public:
     {
         uninit();
     }
+
+#ifdef RT_NEED_NEW_AND_DELETE
+    RTMEM_IMPLEMENT_NEW_AND_DELETE();
+#endif
 };
 
-#endif /* __Additions_linux_seamless_x11_h not defined */
+#endif /* !GA_INCLUDED_SRC_x11_VBoxClient_seamless_x11_h */

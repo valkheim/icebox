@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -31,12 +31,14 @@
 #include "the-linux-kernel.h"
 
 #include <iprt/memobj.h>
-#include <iprt/alloc.h>
 #include <iprt/assert.h>
+#include <iprt/err.h>
 #include <iprt/log.h>
+#include <iprt/mem.h>
 #include <iprt/process.h>
 #include <iprt/string.h>
 #include "internal/memobj.h"
+#include "internal/iprt.h"
 
 
 /*********************************************************************************************************************************
@@ -65,6 +67,11 @@
 # define VBOX_USE_PAE_HACK
 #endif
 
+/* gfp_t was introduced in 2.6.14, define it for earlier. */
+#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 14)
+# define gfp_t  unsigned
+#endif
+
 
 /*********************************************************************************************************************************
 *   Structures and Typedefs                                                                                                      *
@@ -79,6 +86,8 @@ typedef struct RTR0MEMOBJLNX
     /** Set if the allocation is contiguous.
      * This means it has to be given back as one chunk. */
     bool                fContiguous;
+    /** Set if executable allocation. */
+    bool                fExecutable;
     /** Set if we've vmap'ed the memory into ring-0. */
     bool                fMappedToRing0;
     /** The pages in the apPages array. */
@@ -137,7 +146,7 @@ static pgprot_t rtR0MemObjLinuxConvertProt(unsigned fProt, bool fKernel)
     switch (fProt)
     {
         default:
-            AssertMsgFailed(("%#x %d\n", fProt, fKernel));
+            AssertMsgFailed(("%#x %d\n", fProt, fKernel)); RT_FALL_THRU();
         case RTMEM_PROT_NONE:
             return PAGE_NONE;
 
@@ -282,10 +291,11 @@ static void rtR0MemObjLinuxDoMunmap(void *pv, size_t cb, struct task_struct *pTa
  *                      Only valid if fContiguous == true, ignored otherwise.
  * @param   fFlagsLnx   The page allocation flags (GPFs).
  * @param   fContiguous Whether the allocation must be contiguous.
+ * @param   fExecutable Whether the memory must be executable.
  * @param   rcNoMem     What to return when we're out of pages.
  */
 static int rtR0MemObjLinuxAllocPages(PRTR0MEMOBJLNX *ppMemLnx, RTR0MEMOBJTYPE enmType, size_t cb,
-                                     size_t uAlignment, unsigned fFlagsLnx, bool fContiguous, int rcNoMem)
+                                     size_t uAlignment, gfp_t fFlagsLnx, bool fContiguous, bool fExecutable, int rcNoMem)
 {
     size_t          iPage;
     size_t const    cPages = cb >> PAGE_SHIFT;
@@ -364,7 +374,8 @@ static int rtR0MemObjLinuxAllocPages(PRTR0MEMOBJLNX *ppMemLnx, RTR0MEMOBJTYPE en
     for (iPage = 0; iPage < cPages; iPage++)
     {
         pMemLnx->apPages[iPage] = &paPages[iPage];
-        MY_SET_PAGES_EXEC(pMemLnx->apPages[iPage], 1);
+        if (fExecutable)
+            MY_SET_PAGES_EXEC(pMemLnx->apPages[iPage], 1);
         if (PageHighMem(pMemLnx->apPages[iPage]))
             BUG();
     }
@@ -372,6 +383,7 @@ static int rtR0MemObjLinuxAllocPages(PRTR0MEMOBJLNX *ppMemLnx, RTR0MEMOBJTYPE en
     fContiguous = true;
 #endif /* < 2.4.22 */
     pMemLnx->fContiguous = fContiguous;
+    pMemLnx->fExecutable = fExecutable;
 
 #if LINUX_VERSION_CODE < KERNEL_VERSION(4, 5, 0)
     /*
@@ -402,7 +414,7 @@ static int rtR0MemObjLinuxAllocPages(PRTR0MEMOBJLNX *ppMemLnx, RTR0MEMOBJTYPE en
              * This should never happen!
              */
             printk("rtR0MemObjLinuxAllocPages(cb=0x%lx, uAlignment=0x%lx): alloc_pages(..., %d) returned physical memory at 0x%lx!\n",
-                    (unsigned long)cb, (unsigned long)uAlignment, rtR0MemObjLinuxOrder(cPages), (unsigned long)page_to_phys(pMemLnx->apPages[0]));
+                   (unsigned long)cb, (unsigned long)uAlignment, rtR0MemObjLinuxOrder(cPages), (unsigned long)page_to_phys(pMemLnx->apPages[0]));
             rtR0MemObjLinuxFreePages(pMemLnx);
             return rcNoMem;
         }
@@ -431,14 +443,12 @@ static void rtR0MemObjLinuxFreePages(PRTR0MEMOBJLNX pMemLnx)
         while (iPage-- > 0)
         {
 #if LINUX_VERSION_CODE < KERNEL_VERSION(4, 5, 0)
-            /*
-             * See SetPageReserved() in rtR0MemObjLinuxAllocPages()
-             */
+            /* See SetPageReserved() in rtR0MemObjLinuxAllocPages() */
             ClearPageReserved(pMemLnx->apPages[iPage]);
 #endif
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 4, 22)
-#else
-            MY_SET_PAGES_NOEXEC(pMemLnx->apPages[iPage], 1);
+#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 4, 22)
+            if (pMemLnx->fExecutable)
+                MY_SET_PAGES_NOEXEC(pMemLnx->apPages[iPage], 1);
 #endif
         }
 
@@ -655,10 +665,10 @@ DECLHIDDEN(int) rtR0MemObjNativeAllocPage(PPRTR0MEMOBJINTERNAL ppMem, size_t cb,
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 4, 22)
     rc = rtR0MemObjLinuxAllocPages(&pMemLnx, RTR0MEMOBJTYPE_PAGE, cb, PAGE_SIZE, GFP_HIGHUSER,
-                                   false /* non-contiguous */, VERR_NO_MEMORY);
+                                   false /* non-contiguous */, fExecutable, VERR_NO_MEMORY);
 #else
     rc = rtR0MemObjLinuxAllocPages(&pMemLnx, RTR0MEMOBJTYPE_PAGE, cb, PAGE_SIZE, GFP_USER,
-                                   false /* non-contiguous */, VERR_NO_MEMORY);
+                                   false /* non-contiguous */, fExecutable, VERR_NO_MEMORY);
 #endif
     if (RT_SUCCESS(rc))
     {
@@ -689,19 +699,19 @@ DECLHIDDEN(int) rtR0MemObjNativeAllocLow(PPRTR0MEMOBJINTERNAL ppMem, size_t cb, 
 #if (defined(RT_ARCH_AMD64) || defined(CONFIG_X86_PAE)) && defined(GFP_DMA32)
     /* ZONE_DMA32: 0-4GB */
     rc = rtR0MemObjLinuxAllocPages(&pMemLnx, RTR0MEMOBJTYPE_LOW, cb, PAGE_SIZE, GFP_DMA32,
-                                   false /* non-contiguous */, VERR_NO_LOW_MEMORY);
+                                   false /* non-contiguous */, fExecutable, VERR_NO_LOW_MEMORY);
     if (RT_FAILURE(rc))
 #endif
 #ifdef RT_ARCH_AMD64
         /* ZONE_DMA: 0-16MB */
         rc = rtR0MemObjLinuxAllocPages(&pMemLnx, RTR0MEMOBJTYPE_LOW, cb, PAGE_SIZE, GFP_DMA,
-                                       false /* non-contiguous */, VERR_NO_LOW_MEMORY);
+                                       false /* non-contiguous */, fExecutable, VERR_NO_LOW_MEMORY);
 #else
 # ifdef CONFIG_X86_PAE
 # endif
         /* ZONE_NORMAL: 0-896MB */
         rc = rtR0MemObjLinuxAllocPages(&pMemLnx, RTR0MEMOBJTYPE_LOW, cb, PAGE_SIZE, GFP_USER,
-                                       false /* non-contiguous */, VERR_NO_LOW_MEMORY);
+                                       false /* non-contiguous */, fExecutable, VERR_NO_LOW_MEMORY);
 #endif
     if (RT_SUCCESS(rc))
     {
@@ -731,17 +741,17 @@ DECLHIDDEN(int) rtR0MemObjNativeAllocCont(PPRTR0MEMOBJINTERNAL ppMem, size_t cb,
 #if (defined(RT_ARCH_AMD64) || defined(CONFIG_X86_PAE)) && defined(GFP_DMA32)
     /* ZONE_DMA32: 0-4GB */
     rc = rtR0MemObjLinuxAllocPages(&pMemLnx, RTR0MEMOBJTYPE_CONT, cb, PAGE_SIZE, GFP_DMA32,
-                                   true /* contiguous */, VERR_NO_CONT_MEMORY);
+                                   true /* contiguous */, fExecutable, VERR_NO_CONT_MEMORY);
     if (RT_FAILURE(rc))
 #endif
 #ifdef RT_ARCH_AMD64
         /* ZONE_DMA: 0-16MB */
         rc = rtR0MemObjLinuxAllocPages(&pMemLnx, RTR0MEMOBJTYPE_CONT, cb, PAGE_SIZE, GFP_DMA,
-                                       true /* contiguous */, VERR_NO_CONT_MEMORY);
+                                       true /* contiguous */, fExecutable, VERR_NO_CONT_MEMORY);
 #else
         /* ZONE_NORMAL (32-bit hosts): 0-896MB */
         rc = rtR0MemObjLinuxAllocPages(&pMemLnx, RTR0MEMOBJTYPE_CONT, cb, PAGE_SIZE, GFP_USER,
-                                       true /* contiguous */, VERR_NO_CONT_MEMORY);
+                                       true /* contiguous */, fExecutable, VERR_NO_CONT_MEMORY);
 #endif
     if (RT_SUCCESS(rc))
     {
@@ -781,14 +791,14 @@ DECLHIDDEN(int) rtR0MemObjNativeAllocCont(PPRTR0MEMOBJINTERNAL ppMem, size_t cb,
  * @param   fGfp        The Linux GFP flags to use for the allocation.
  */
 static int rtR0MemObjLinuxAllocPhysSub2(PPRTR0MEMOBJINTERNAL ppMem, RTR0MEMOBJTYPE enmType,
-                                        size_t cb, size_t uAlignment, RTHCPHYS PhysHighest, unsigned fGfp)
+                                        size_t cb, size_t uAlignment, RTHCPHYS PhysHighest, gfp_t fGfp)
 {
     PRTR0MEMOBJLNX pMemLnx;
     int rc;
 
     rc = rtR0MemObjLinuxAllocPages(&pMemLnx, enmType, cb, uAlignment, fGfp,
                                    enmType == RTR0MEMOBJTYPE_PHYS /* contiguous / non-contiguous */,
-                                   VERR_NO_PHYS_MEMORY);
+                                   false /*fExecutable*/, VERR_NO_PHYS_MEMORY);
     if (RT_FAILURE(rc))
         return rc;
 
@@ -893,7 +903,7 @@ static int rtR0MemObjLinuxAllocPhysSub(PPRTR0MEMOBJINTERNAL ppMem, RTR0MEMOBJTYP
  * @returns Pointer to the page structur or NULL if it could not be found.
  * @param   pv      The kernel virtual address.
  */
-static struct page *rtR0MemObjLinuxVirtToPage(void *pv)
+RTDECL(struct page *) rtR0MemObjLinuxVirtToPage(void *pv)
 {
     unsigned long   ulAddr = (unsigned long)pv;
     unsigned long   pfn;
@@ -983,6 +993,7 @@ static struct page *rtR0MemObjLinuxVirtToPage(void *pv)
         return NULL;
     return pte_page(u.Entry);
 }
+RT_EXPORT_SYMBOL(rtR0MemObjLinuxVirtToPage);
 
 
 DECLHIDDEN(int) rtR0MemObjNativeAllocPhys(PPRTR0MEMOBJINTERNAL ppMem, size_t cb, RTHCPHYS PhysHighest, size_t uAlignment)
@@ -1070,6 +1081,7 @@ DECLHIDDEN(int) rtR0MemObjNativeLockUser(PPRTR0MEMOBJINTERNAL ppMem, RTR3PTR R3P
         /*
          * Get user pages.
          */
+/** @todo r=bird: Should we not force read access too? */
 #if GET_USER_PAGES_API >= KERNEL_VERSION(4, 6, 0)
         if (R0Process == RTR0ProcHandleSelf())
             rc = get_user_pages(R3Ptr,                  /* Where from. */
@@ -1147,7 +1159,7 @@ DECLHIDDEN(int) rtR0MemObjNativeLockUser(PPRTR0MEMOBJINTERNAL ppMem, RTR3PTR R3P
             while (rc-- > 0)
             {
                 flush_dcache_page(pMemLnx->apPages[rc]);
-                papVMAs[rc]->vm_flags |= (VM_DONTCOPY | VM_LOCKED);
+                papVMAs[rc]->vm_flags |= VM_DONTCOPY | VM_LOCKED;
             }
 
             up_read(&pTask->mm->mmap_sem);
@@ -1391,7 +1403,6 @@ DECLHIDDEN(int) rtR0MemObjNativeMapKernel(PPRTR0MEMOBJINTERNAL ppMem, RTR0MEMOBJ
     IPRT_LINUX_SAVE_EFL_AC();
 
     /* Fail if requested to do something we can't. */
-    AssertMsgReturn(!offSub && !cbSub, ("%#x %#x\n", offSub, cbSub), VERR_NOT_SUPPORTED);
     AssertMsgReturn(pvFixed == (void *)-1, ("%p\n", pvFixed), VERR_NOT_SUPPORTED);
     if (uAlignment > PAGE_SIZE)
         return VERR_NOT_SUPPORTED;
@@ -1399,7 +1410,9 @@ DECLHIDDEN(int) rtR0MemObjNativeMapKernel(PPRTR0MEMOBJINTERNAL ppMem, RTR0MEMOBJ
     /*
      * Create the IPRT memory object.
      */
-    pMemLnx = (PRTR0MEMOBJLNX)rtR0MemObjNew(sizeof(*pMemLnx), RTR0MEMOBJTYPE_MAPPING, NULL, pMemLnxToMap->Core.cb);
+    if (!cbSub)
+        cbSub = pMemLnxToMap->Core.cb - offSub;
+    pMemLnx = (PRTR0MEMOBJLNX)rtR0MemObjNew(sizeof(*pMemLnx), RTR0MEMOBJTYPE_MAPPING, NULL, cbSub);
     if (pMemLnx)
     {
         if (pMemLnxToMap->cPages)
@@ -1409,10 +1422,11 @@ DECLHIDDEN(int) rtR0MemObjNativeMapKernel(PPRTR0MEMOBJINTERNAL ppMem, RTR0MEMOBJ
              * Use vmap - 2.4.22 and later.
              */
             pgprot_t fPg = rtR0MemObjLinuxConvertProt(fProt, true /* kernel */);
+            Assert(((offSub + cbSub) >> PAGE_SHIFT) <= pMemLnxToMap->cPages);
 # ifdef VM_MAP
-            pMemLnx->Core.pv = vmap(&pMemLnxToMap->apPages[0], pMemLnxToMap->cPages, VM_MAP, fPg);
+            pMemLnx->Core.pv = vmap(&pMemLnxToMap->apPages[offSub >> PAGE_SHIFT], cbSub >> PAGE_SHIFT, VM_MAP, fPg);
 # else
-            pMemLnx->Core.pv = vmap(&pMemLnxToMap->apPages[0], pMemLnxToMap->cPages, VM_ALLOC, fPg);
+            pMemLnx->Core.pv = vmap(&pMemLnxToMap->apPages[offSub >> PAGE_SHIFT], cbSub >> PAGE_SHIFT, VM_ALLOC, fPg);
 # endif
             if (pMemLnx->Core.pv)
             {
@@ -1436,7 +1450,7 @@ DECLHIDDEN(int) rtR0MemObjNativeMapKernel(PPRTR0MEMOBJINTERNAL ppMem, RTR0MEMOBJ
                 if (RT_SUCCESS(rc))
                 {
                     Assert(pMemLnxToMap->Core.pv);
-                    pMemLnx->Core.pv = pMemLnxToMap->Core.pv;
+                    pMemLnx->Core.pv = (uint8_t *)pMemLnxToMap->Core.pv + offSub;
                 }
             }
 #endif
@@ -1448,8 +1462,8 @@ DECLHIDDEN(int) rtR0MemObjNativeMapKernel(PPRTR0MEMOBJINTERNAL ppMem, RTR0MEMOBJ
              */
             Assert(pMemLnxToMap->Core.enmType == RTR0MEMOBJTYPE_PHYS && !pMemLnxToMap->Core.u.Phys.fAllocated);
             pMemLnx->Core.pv = pMemLnxToMap->Core.u.Phys.uCachePolicy == RTMEM_CACHE_POLICY_MMIO
-                             ? ioremap_nocache(pMemLnxToMap->Core.u.Phys.PhysBase, pMemLnxToMap->Core.cb)
-                             : ioremap(pMemLnxToMap->Core.u.Phys.PhysBase, pMemLnxToMap->Core.cb);
+                             ? ioremap_nocache(pMemLnxToMap->Core.u.Phys.PhysBase + offSub, cbSub)
+                             : ioremap(pMemLnxToMap->Core.u.Phys.PhysBase + offSub, cbSub);
             if (pMemLnx->Core.pv)
             {
                 /** @todo fix protection. */
@@ -1520,8 +1534,8 @@ static int rtR0MemObjLinuxFixPte(struct mm_struct *mm, unsigned long ulAddr, RTH
 #endif /* VBOX_USE_PAE_HACK */
 
 
-DECLHIDDEN(int) rtR0MemObjNativeMapUser(PPRTR0MEMOBJINTERNAL ppMem, RTR0MEMOBJ pMemToMap, RTR3PTR R3PtrFixed,
-                                        size_t uAlignment, unsigned fProt, RTR0PROCESS R0Process)
+DECLHIDDEN(int) rtR0MemObjNativeMapUser(PPRTR0MEMOBJINTERNAL ppMem, RTR0MEMOBJ pMemToMap, RTR3PTR R3PtrFixed, size_t uAlignment,
+                                        unsigned fProt, RTR0PROCESS R0Process, size_t offSub, size_t cbSub)
 {
     struct task_struct *pTask        = rtR0ProcessToLinuxTask(R0Process);
     PRTR0MEMOBJLNX      pMemLnxToMap = (PRTR0MEMOBJLNX)pMemToMap;
@@ -1558,23 +1572,26 @@ DECLHIDDEN(int) rtR0MemObjNativeMapUser(PPRTR0MEMOBJINTERNAL ppMem, RTR0MEMOBJ p
     /*
      * Create the IPRT memory object.
      */
-    pMemLnx = (PRTR0MEMOBJLNX)rtR0MemObjNew(sizeof(*pMemLnx), RTR0MEMOBJTYPE_MAPPING, NULL, pMemLnxToMap->Core.cb);
+    Assert(!offSub || cbSub);
+    if (cbSub == 0)
+        cbSub = pMemLnxToMap->Core.cb;
+    pMemLnx = (PRTR0MEMOBJLNX)rtR0MemObjNew(sizeof(*pMemLnx), RTR0MEMOBJTYPE_MAPPING, NULL, cbSub);
     if (pMemLnx)
     {
         /*
          * Allocate user space mapping.
          */
         void *pv;
-        pv = rtR0MemObjLinuxDoMmap(R3PtrFixed, pMemLnxToMap->Core.cb, uAlignment, pTask, fProt);
+        pv = rtR0MemObjLinuxDoMmap(R3PtrFixed, cbSub, uAlignment, pTask, fProt);
         if (pv != (void *)-1)
         {
             /*
              * Map page by page into the mmap area.
              * This is generic, paranoid and not very efficient.
              */
-            pgprot_t        fPg = rtR0MemObjLinuxConvertProt(fProt, false /* user */);
+            pgprot_t        fPg       = rtR0MemObjLinuxConvertProt(fProt, false /* user */);
             unsigned long   ulAddrCur = (unsigned long)pv;
-            const size_t    cPages = pMemLnxToMap->Core.cb >> PAGE_SHIFT;
+            const size_t    cPages    = (offSub + cbSub) >> PAGE_SHIFT;
             size_t          iPage;
 
             down_write(&pTask->mm->mmap_sem);
@@ -1582,7 +1599,7 @@ DECLHIDDEN(int) rtR0MemObjNativeMapUser(PPRTR0MEMOBJINTERNAL ppMem, RTR0MEMOBJ p
             rc = VINF_SUCCESS;
             if (pMemLnxToMap->cPages)
             {
-                for (iPage = 0; iPage < cPages; iPage++, ulAddrCur += PAGE_SIZE)
+                for (iPage = offSub >> PAGE_SHIFT; iPage < cPages; iPage++, ulAddrCur += PAGE_SIZE)
                 {
 #if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 11)
                     RTHCPHYS Phys = page_to_phys(pMemLnxToMap->apPages[iPage]);
@@ -1637,7 +1654,7 @@ DECLHIDDEN(int) rtR0MemObjNativeMapUser(PPRTR0MEMOBJINTERNAL ppMem, RTR0MEMOBJ p
                 }
                 if (Phys != NIL_RTHCPHYS)
                 {
-                    for (iPage = 0; iPage < cPages; iPage++, ulAddrCur += PAGE_SIZE, Phys += PAGE_SIZE)
+                    for (iPage = offSub >> PAGE_SHIFT; iPage < cPages; iPage++, ulAddrCur += PAGE_SIZE, Phys += PAGE_SIZE)
                     {
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 0) || defined(HAVE_26_STYLE_REMAP_PAGE_RANGE)
                         struct vm_area_struct *vma = find_vma(pTask->mm, ulAddrCur); /* this is probably the same for all the pages... */
@@ -1711,7 +1728,7 @@ DECLHIDDEN(int) rtR0MemObjNativeMapUser(PPRTR0MEMOBJINTERNAL ppMem, RTR0MEMOBJ p
             /*
              * Bail out.
              */
-            rtR0MemObjLinuxDoMunmap(pv, pMemLnxToMap->Core.cb, pTask);
+            rtR0MemObjLinuxDoMunmap(pv, cbSub, pTask);
         }
         rtR0MemObjDelete(&pMemLnx->Core);
     }

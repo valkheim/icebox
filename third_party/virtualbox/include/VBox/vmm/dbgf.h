@@ -3,7 +3,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -23,8 +23,11 @@
  * terms and conditions of either the GPL or the CDDL or both.
  */
 
-#ifndef ___VBox_vmm_dbgf_h
-#define ___VBox_vmm_dbgf_h
+#ifndef VBOX_INCLUDED_vmm_dbgf_h
+#define VBOX_INCLUDED_vmm_dbgf_h
+#ifndef RT_WITHOUT_PRAGMA_ONCE
+# pragma once
+#endif
 
 #include <VBox/types.h>
 #include <VBox/log.h>                   /* LOG_ENABLED */
@@ -94,10 +97,6 @@ typedef const DBGFADDRESS *PCDBGFADDRESS;
 /** Set if the address is valid. */
 #define DBGFADDRESS_FLAGS_VALID         RT_BIT(3)
 
-/** The address is within the hypervisor memoary area (HMA).
- * If not set, the address can be assumed to be a guest address. */
-#define DBGFADDRESS_FLAGS_HMA           RT_BIT(4)
-
 /** Checks if the mixed address is flat or not. */
 #define DBGFADDRESS_IS_FLAT(pAddress)    ( ((pAddress)->fFlags & DBGFADDRESS_FLAGS_TYPE_MASK) == DBGFADDRESS_FLAGS_FLAT )
 /** Checks if the mixed address is flat or not. */
@@ -108,20 +107,21 @@ typedef const DBGFADDRESS *PCDBGFADDRESS;
 #define DBGFADDRESS_IS_FAR32(pAddress)   ( ((pAddress)->fFlags & DBGFADDRESS_FLAGS_TYPE_MASK) == DBGFADDRESS_FLAGS_FAR32 )
 /** Checks if the mixed address is far 16:64 or not. */
 #define DBGFADDRESS_IS_FAR64(pAddress)   ( ((pAddress)->fFlags & DBGFADDRESS_FLAGS_TYPE_MASK) == DBGFADDRESS_FLAGS_FAR64 )
+/** Checks if the mixed address is any kind of far address. */
+#define DBGFADDRESS_IS_FAR(pAddress)     ( ((pAddress)->fFlags & DBGFADDRESS_FLAGS_TYPE_MASK) <= DBGFADDRESS_FLAGS_FAR64 )
 /** Checks if the mixed address host context ring-0 (special). */
 #define DBGFADDRESS_IS_R0_HC(pAddress)   ( ((pAddress)->fFlags & DBGFADDRESS_FLAGS_TYPE_MASK) == DBGFADDRESS_FLAGS_RING0 )
 /** Checks if the mixed address a virtual guest context address (incl HMA). */
 #define DBGFADDRESS_IS_VIRT_GC(pAddress) ( ((pAddress)->fFlags & DBGFADDRESS_FLAGS_TYPE_MASK) <= DBGFADDRESS_FLAGS_FLAT )
 /** Checks if the mixed address is valid. */
 #define DBGFADDRESS_IS_VALID(pAddress)   RT_BOOL((pAddress)->fFlags & DBGFADDRESS_FLAGS_VALID)
-/** Checks if the address is flagged as within the HMA. */
-#define DBGFADDRESS_IS_HMA(pAddress)     RT_BOOL((pAddress)->fFlags & DBGFADDRESS_FLAGS_HMA)
 /** @} */
 
 VMMR3DECL(int)          DBGFR3AddrFromSelOff(PUVM pUVM, VMCPUID idCpu, PDBGFADDRESS pAddress, RTSEL Sel, RTUINTPTR off);
 VMMR3DECL(int)          DBGFR3AddrFromSelInfoOff(PUVM pUVM, PDBGFADDRESS pAddress, PCDBGFSELINFO pSelInfo, RTUINTPTR off);
 VMMR3DECL(PDBGFADDRESS) DBGFR3AddrFromFlat(PUVM pUVM, PDBGFADDRESS pAddress, RTGCUINTPTR FlatPtr);
 VMMR3DECL(PDBGFADDRESS) DBGFR3AddrFromPhys(PUVM pUVM, PDBGFADDRESS pAddress, RTGCPHYS PhysAddr);
+VMMR3_INT_DECL(PDBGFADDRESS) DBGFR3AddrFromHostR0(PDBGFADDRESS pAddress, RTR0UINTPTR R0Ptr);
 VMMR3DECL(bool)         DBGFR3AddrIsValid(PUVM pUVM, PCDBGFADDRESS pAddress);
 VMMR3DECL(int)          DBGFR3AddrToPhys(PUVM pUVM, VMCPUID idCpu, PCDBGFADDRESS pAddress, PRTGCPHYS pGCPhys);
 VMMR3DECL(int)          DBGFR3AddrToHostPhys(PUVM pUVM, VMCPUID idCpu, PDBGFADDRESS pAddress, PRTHCPHYS pHCPhys);
@@ -170,6 +170,7 @@ typedef enum DBGFEVENTTYPE
     /** Breakpoint Hit in the Hypervisor.
      * This notifies that a breakpoint installed by the debugger was hit. The
      * identifier of the breakpoint can be found in the DBGFEVENT::u::Bp::iBp member.
+     * @todo raw-mode: remove this
      */
     DBGFEVENT_BREAKPOINT_HYPER,
     /** Assertion in the Hypervisor (breakpoint instruction).
@@ -418,6 +419,8 @@ typedef enum DBGFEVENTTYPE
     DBGFEVENT_BSOD_MSR,
     /** Windows guest reported BSOD via EFI variables. */
     DBGFEVENT_BSOD_EFI,
+    /** Windows guest reported BSOD via VMMDev. */
+    DBGFEVENT_BSOD_VMMDEV,
 
     /** End of valid event values. */
     DBGFEVENT_END,
@@ -499,12 +502,16 @@ typedef struct DBGFEVENT
         /** Generic debug event. */
         struct DBGFEVENTGENERIC
         {
-            /** Argument. */
-            uint64_t                uArg;
+            /** Number of arguments. */
+            uint8_t                 cArgs;
+            /** Alignmnet padding. */
+            uint8_t                 uPadding[7];
+            /** Arguments. */
+            uint64_t                auArgs[6];
         } Generic;
 
         /** Padding for ensuring that the structure is 8 byte aligned. */
-        uint64_t        au64Padding[4];
+        uint64_t        au64Padding[7];
     } u;
 } DBGFEVENT;
 AssertCompileSizeAlignment(DBGFEVENT, 8);
@@ -531,6 +538,7 @@ VMMR3_INT_DECL(int)     DBGFR3Init(PVM pVM);
 VMMR3_INT_DECL(int)     DBGFR3Term(PVM pVM);
 VMMR3_INT_DECL(void)    DBGFR3PowerOff(PVM pVM);
 VMMR3_INT_DECL(void)    DBGFR3Relocate(PVM pVM, RTGCINTPTR offDelta);
+
 VMMR3_INT_DECL(int)     DBGFR3VMMForcedAction(PVM pVM, PVMCPU pVCpu);
 VMMR3_INT_DECL(VBOXSTRICTRC)    DBGFR3EventHandlePending(PVM pVM, PVMCPU pVCpu);
 VMMR3DECL(int)          DBGFR3Event(PVM pVM, DBGFEVENTTYPE enmEvent);
@@ -540,6 +548,7 @@ VMMR3DECL(int)          DBGFR3EventSrcV(PVM pVM, DBGFEVENTTYPE enmEvent, const c
                                         const char *pszFunction, const char *pszFormat, va_list args) RT_IPRT_FORMAT_ATTR_MAYBE_NULL(6, 0);
 VMMR3_INT_DECL(int)     DBGFR3EventAssertion(PVM pVM, DBGFEVENTTYPE enmEvent, const char *pszMsg1, const char *pszMsg2);
 VMMR3_INT_DECL(int)     DBGFR3EventBreakpoint(PVM pVM, DBGFEVENTTYPE enmEvent);
+
 VMMR3_INT_DECL(int)     DBGFR3PrgStep(PVMCPU pVCpu);
 
 VMMR3DECL(int)          DBGFR3Attach(PUVM pUVM);
@@ -884,8 +893,8 @@ VMM_INT_DECL(bool)          DBGFBpIsHwIoArmed(PVM pVM);
 VMM_INT_DECL(bool)          DBGFBpIsInt3Armed(PVM pVM);
 VMM_INT_DECL(bool)          DBGFIsStepping(PVMCPU pVCpu);
 VMM_INT_DECL(VBOXSTRICTRC)  DBGFBpCheckIo(PVM pVM, PVMCPU pVCpu, PCPUMCTX pCtx, RTIOPORT uIoPort, uint8_t cbValue);
-VMM_INT_DECL(VBOXSTRICTRC)  DBGFEventGenericWithArg(PVM pVM, PVMCPU pVCpu, DBGFEVENTTYPE enmEvent, uint64_t uEventArg,
-                                                    DBGFEVENTCTX enmCtx);
+VMM_INT_DECL(VBOXSTRICTRC)  DBGFEventGenericWithArgs(PVM pVM, PVMCPU pVCpu, DBGFEVENTTYPE enmEvent, DBGFEVENTCTX enmCtx,
+                                                     unsigned cArgs, ...);
 
 
 #ifdef IN_RING3 /* The CPU mode API only works in ring-3. */
@@ -898,6 +907,9 @@ VMMR3DECL(bool)             DBGFR3CpuIsInV86Code(PUVM pUVM, VMCPUID idCpu);
 
 
 #ifdef IN_RING3 /* The info callbacks API only works in ring-3. */
+
+struct RTGETOPTSTATE;
+union RTGETOPTUNION;
 
 /**
  * Info helper callback structure.
@@ -921,6 +933,17 @@ typedef struct DBGFINFOHLP
      * @param   args        Argument list.
      */
     DECLCALLBACKMEMBER(void, pfnPrintfV)(PCDBGFINFOHLP pHlp, const char *pszFormat, va_list args) RT_IPRT_FORMAT_ATTR(2, 0);
+
+    /**
+     * Report getopt parsing trouble
+     *
+     * @param   pHlp        Pointer to this structure.
+     * @param   rc          The RTGetOpt return value.
+     * @param   pValueUnion The value union.
+     * @param   pState      The getopt state.
+     */
+    DECLCALLBACKMEMBER(void, pfnGetOptError)(PCDBGFINFOHLP pHlp, int rc, union RTGETOPTUNION *pValueUnion,
+                                             struct RTGETOPTSTATE *pState);
 } DBGFINFOHLP;
 
 
@@ -934,17 +957,6 @@ typedef struct DBGFINFOHLP
 typedef DECLCALLBACK(void) FNDBGFHANDLERDEV(PPDMDEVINS pDevIns, PCDBGFINFOHLP pHlp, const char *pszArgs);
 /** Pointer to a FNDBGFHANDLERDEV function. */
 typedef FNDBGFHANDLERDEV  *PFNDBGFHANDLERDEV;
-
-/**
- * Info handler, USB device version.
- *
- * @param   pUsbIns     The USB device instance which registered the info.
- * @param   pHlp        Callback functions for doing output.
- * @param   pszArgs     Argument string. Optional and specific to the handler.
- */
-typedef DECLCALLBACK(void) FNDBGFHANDLERUSB(PPDMUSBINS pUsbIns, PCDBGFINFOHLP pHlp, const char *pszArgs);
-/** Pointer to a FNDBGFHANDLERUSB function. */
-typedef FNDBGFHANDLERUSB  *PFNDBGFHANDLERUSB;
 
 /**
  * Info handler, driver version.
@@ -979,6 +991,66 @@ typedef DECLCALLBACK(void) FNDBGFHANDLEREXT(void *pvUser, PCDBGFINFOHLP pHlp, co
 /** Pointer to a FNDBGFHANDLEREXT function. */
 typedef FNDBGFHANDLEREXT  *PFNDBGFHANDLEREXT;
 
+/**
+ * Info handler, device version with argv.
+ *
+ * @param   pDevIns     The device instance which registered the info.
+ * @param   pHlp        Callback functions for doing output.
+ * @param   cArgs       Number of arguments.
+ * @param   papszArgs   Argument vector.
+ */
+typedef DECLCALLBACK(void) FNDBGFINFOARGVDEV(PPDMDEVINS pDevIns, PCDBGFINFOHLP pHlp, int cArgs, char **papszArgs);
+/** Pointer to a FNDBGFINFOARGVDEV function. */
+typedef FNDBGFINFOARGVDEV *PFNDBGFINFOARGVDEV;
+
+/**
+ * Info handler, USB device version with argv.
+ *
+ * @param   pUsbIns     The USB device instance which registered the info.
+ * @param   pHlp        Callback functions for doing output.
+ * @param   cArgs       Number of arguments.
+ * @param   papszArgs   Argument vector.
+ */
+typedef DECLCALLBACK(void) FNDBGFINFOARGVUSB(PPDMUSBINS pUsbIns, PCDBGFINFOHLP pHlp, int cArgs, char **papszArgs);
+/** Pointer to a FNDBGFINFOARGVUSB function. */
+typedef FNDBGFINFOARGVUSB *PFNDBGFINFOARGVUSB;
+
+/**
+ * Info handler, driver version with argv.
+ *
+ * @param   pDrvIns     The driver instance which registered the info.
+ * @param   pHlp        Callback functions for doing output.
+ * @param   cArgs       Number of arguments.
+ * @param   papszArgs   Argument vector.
+ */
+typedef DECLCALLBACK(void) FNDBGFINFOARGVDRV(PPDMDRVINS pDrvIns, PCDBGFINFOHLP pHlp, int cArgs, char **papszArgs);
+/** Pointer to a FNDBGFINFOARGVDRV function. */
+typedef FNDBGFINFOARGVDRV *PFNDBGFINFOARGVDRV;
+
+/**
+ * Info handler, internal version with argv.
+ *
+ * @param   pVM         The cross context VM structure.
+ * @param   pHlp        Callback functions for doing output.
+ * @param   cArgs       Number of arguments.
+ * @param   papszArgs   Argument vector.
+ */
+typedef DECLCALLBACK(void) FNDBGFINFOARGVINT(PVM pVM, PCDBGFINFOHLP pHlp, int cArgs, char **papszArgs);
+/** Pointer to a FNDBGFINFOARGVINT function. */
+typedef FNDBGFINFOARGVINT *PFNDBGFINFOARGVINT;
+
+/**
+ * Info handler, external version with argv.
+ *
+ * @param   pvUser      User argument.
+ * @param   pHlp        Callback functions for doing output.
+ * @param   cArgs       Number of arguments.
+ * @param   papszArgs   Argument vector.
+ */
+typedef DECLCALLBACK(void) FNDBGFINFOARGVEXT(void *pvUser, PCDBGFINFOHLP pHlp, int cArgs, char **papszArgs);
+/** Pointer to a FNDBGFINFOARGVEXT function. */
+typedef FNDBGFINFOARGVEXT *PFNDBGFINFOARGVEXT;
+
 
 /** @name Flags for the info registration functions.
  * @{ */
@@ -993,10 +1065,19 @@ VMMR3_INT_DECL(int) DBGFR3InfoRegisterDriver(PVM pVM, const char *pszName, const
 VMMR3_INT_DECL(int) DBGFR3InfoRegisterInternal(PVM pVM, const char *pszName, const char *pszDesc, PFNDBGFHANDLERINT pfnHandler);
 VMMR3_INT_DECL(int) DBGFR3InfoRegisterInternalEx(PVM pVM, const char *pszName, const char *pszDesc, PFNDBGFHANDLERINT pfnHandler, uint32_t fFlags);
 VMMR3DECL(int)      DBGFR3InfoRegisterExternal(PUVM pUVM, const char *pszName, const char *pszDesc, PFNDBGFHANDLEREXT pfnHandler, void *pvUser);
+
+VMMR3_INT_DECL(int) DBGFR3InfoRegisterDeviceArgv(PVM pVM, const char *pszName, const char *pszDesc, PFNDBGFINFOARGVDEV pfnHandler, PPDMDEVINS pDevIns);
+VMMR3_INT_DECL(int) DBGFR3InfoRegisterDriverArgv(PVM pVM, const char *pszName, const char *pszDesc, PFNDBGFINFOARGVDRV pfnHandler, PPDMDRVINS pDrvIns);
+VMMR3_INT_DECL(int) DBGFR3InfoRegisterUsbArgv(PVM pVM, const char *pszName, const char *pszDesc, PFNDBGFINFOARGVUSB pfnHandler, PPDMUSBINS pUsbIns);
+VMMR3_INT_DECL(int) DBGFR3InfoRegisterInternalArgv(PVM pVM, const char *pszName, const char *pszDesc, PFNDBGFINFOARGVINT pfnHandler, uint32_t fFlags);
+VMMR3DECL(int)      DBGFR3InfoRegisterExternalArgv(PUVM pUVM, const char *pszName, const char *pszDesc, PFNDBGFINFOARGVEXT pfnHandler, void *pvUser);
+
 VMMR3_INT_DECL(int) DBGFR3InfoDeregisterDevice(PVM pVM, PPDMDEVINS pDevIns, const char *pszName);
 VMMR3_INT_DECL(int) DBGFR3InfoDeregisterDriver(PVM pVM, PPDMDRVINS pDrvIns, const char *pszName);
+VMMR3_INT_DECL(int) DBGFR3InfoDeregisterUsb(PVM pVM, PPDMUSBINS pDrvIns, const char *pszName);
 VMMR3_INT_DECL(int) DBGFR3InfoDeregisterInternal(PVM pVM, const char *pszName);
 VMMR3DECL(int)      DBGFR3InfoDeregisterExternal(PUVM pUVM, const char *pszName);
+
 VMMR3DECL(int)      DBGFR3Info(PUVM pUVM, const char *pszName, const char *pszArgs, PCDBGFINFOHLP pHlp);
 VMMR3DECL(int)      DBGFR3InfoEx(PUVM pUVM, VMCPUID idCpu, const char *pszName, const char *pszArgs, PCDBGFINFOHLP pHlp);
 VMMR3DECL(int)      DBGFR3InfoLogRel(PUVM pUVM, const char *pszName, const char *pszArgs);
@@ -1063,6 +1144,8 @@ typedef FNDBGFINFOENUM *PFNDBGFINFOENUM;
 VMMR3DECL(int)              DBGFR3InfoEnum(PUVM pUVM, PFNDBGFINFOENUM pfnCallback, void *pvUser);
 VMMR3DECL(PCDBGFINFOHLP)    DBGFR3InfoLogHlp(void);
 VMMR3DECL(PCDBGFINFOHLP)    DBGFR3InfoLogRelHlp(void);
+VMMR3DECL(void)             DBGFR3InfoGenricGetOptError(PCDBGFINFOHLP pHlp, int rc, union RTGETOPTUNION *pValueUnion,
+                                                        struct RTGETOPTSTATE *pState);
 
 #endif /* IN_RING3 */
 
@@ -1180,71 +1263,24 @@ VMMR3DECL(int)          DBGFR3AsLineByAddr(PUVM pUVM, RTDBGAS hDbgAs, PCDBGFADDR
 VMMR3DECL(PRTDBGLINE)   DBGFR3AsLineByAddrA(PUVM pUVM, RTDBGAS hDbgAs, PCDBGFADDRESS pAddress,
                                             PRTGCINTPTR poffDisp, PRTDBGMOD phMod);
 
+/** @name DBGFMOD_PE_F_XXX - flags for
+ * @{  */
+/** NT 3.1 images were a little different, so make allowances for that. */
+#define DBGFMODINMEM_F_PE_NT31                  RT_BIT_32(0)
+/** No container fallback. */
+#define DBGFMODINMEM_F_NO_CONTAINER_FALLBACK    RT_BIT_32(1)
+/** No in-memory reader fallback. */
+#define DBGFMODINMEM_F_NO_READER_FALLBACK       RT_BIT_32(2)
+/** Valid flags. */
+#define DBGFMODINMEM_F_VALID_MASK               UINT32_C(0x00000007)
+/** @} */
+VMMR3DECL(int)          DBGFR3ModInMem(PUVM pUVM, PCDBGFADDRESS pImageAddr, uint32_t fFlags, const char *pszName,
+                                       const char *pszFilename, RTLDRARCH enmArch, uint32_t cbImage,
+                                       PRTDBGMOD phDbgMod, PRTERRINFO pErrInfo);
+
 #endif /* IN_RING3 */
 
 #ifdef IN_RING3 /* The stack API only works in ring-3. */
-
-/**
- * Return type.
- */
-typedef enum DBGFRETRUNTYPE
-{
-    /** The usual invalid 0 value. */
-    DBGFRETURNTYPE_INVALID = 0,
-    /** Near 16-bit return. */
-    DBGFRETURNTYPE_NEAR16,
-    /** Near 32-bit return. */
-    DBGFRETURNTYPE_NEAR32,
-    /** Near 64-bit return. */
-    DBGFRETURNTYPE_NEAR64,
-    /** Far 16:16 return. */
-    DBGFRETURNTYPE_FAR16,
-    /** Far 16:32 return. */
-    DBGFRETURNTYPE_FAR32,
-    /** Far 16:64 return. */
-    DBGFRETURNTYPE_FAR64,
-    /** 16-bit iret return (e.g. real or 286 protect mode). */
-    DBGFRETURNTYPE_IRET16,
-    /** 32-bit iret return. */
-    DBGFRETURNTYPE_IRET32,
-    /** 32-bit iret return. */
-    DBGFRETURNTYPE_IRET32_PRIV,
-    /** 32-bit iret return to V86 mode. */
-    DBGFRETURNTYPE_IRET32_V86,
-    /** @todo 64-bit iret return. */
-    DBGFRETURNTYPE_IRET64,
-    /** The end of the valid return types. */
-    DBGFRETURNTYPE_END,
-    /** The usual 32-bit blowup. */
-    DBGFRETURNTYPE_32BIT_HACK = 0x7fffffff
-} DBGFRETURNTYPE;
-
-/**
- * Figures the size of the return state on the stack.
- *
- * @returns number of bytes. 0 if invalid parameter.
- * @param   enmRetType  The type of return.
- */
-DECLINLINE(unsigned) DBGFReturnTypeSize(DBGFRETURNTYPE enmRetType)
-{
-    switch (enmRetType)
-    {
-        case DBGFRETURNTYPE_NEAR16:         return 2;
-        case DBGFRETURNTYPE_NEAR32:         return 4;
-        case DBGFRETURNTYPE_NEAR64:         return 8;
-        case DBGFRETURNTYPE_FAR16:          return 4;
-        case DBGFRETURNTYPE_FAR32:          return 4;
-        case DBGFRETURNTYPE_FAR64:          return 8;
-        case DBGFRETURNTYPE_IRET16:         return 6;
-        case DBGFRETURNTYPE_IRET32:         return 4*3;
-        case DBGFRETURNTYPE_IRET32_PRIV:    return 4*5;
-        case DBGFRETURNTYPE_IRET32_V86:     return 4*9;
-        case DBGFRETURNTYPE_IRET64:
-        default:
-            return 0;
-    }
-}
-
 
 /** Pointer to stack frame info. */
 typedef struct DBGFSTACKFRAME *PDBGFSTACKFRAME;
@@ -1257,11 +1293,8 @@ typedef struct DBGFSTACKFRAME
 {
     /** Frame number. */
     uint32_t        iFrame;
-    /** Frame flags. */
+    /** Frame flags (DBGFSTACKFRAME_FLAGS_XXX). */
     uint32_t        fFlags;
-    /** The frame address.
-     * The off member is [e|r]bp and the Sel member is ss. */
-    DBGFADDRESS     AddrFrame;
     /** The stack address of the frame.
      * The off member is [e|r]sp and the Sel member is ss. */
     DBGFADDRESS     AddrStack;
@@ -1270,24 +1303,30 @@ typedef struct DBGFSTACKFRAME
     DBGFADDRESS     AddrPC;
     /** Pointer to the symbol nearest the program counter (PC). NULL if not found. */
     PRTDBGSYMBOL    pSymPC;
-    /** Pointer to the linnumber nearest the program counter (PC). NULL if not found. */
+    /** Pointer to the linenumber nearest the program counter (PC). NULL if not found. */
     PRTDBGLINE      pLinePC;
+    /** The frame address.
+     * The off member is [e|r]bp and the Sel member is ss. */
+    DBGFADDRESS     AddrFrame;
+    /** The way this frame returns to the next one. */
+    RTDBGRETURNTYPE enmReturnType;
 
+    /** The way the next frame returns.
+     * Only valid when DBGFSTACKFRAME_FLAGS_UNWIND_INFO_RET is set. */
+    RTDBGRETURNTYPE enmReturnFrameReturnType;
     /** The return frame address.
      * The off member is [e|r]bp and the Sel member is ss. */
     DBGFADDRESS     AddrReturnFrame;
     /** The return stack address.
      * The off member is [e|r]sp and the Sel member is ss. */
     DBGFADDRESS     AddrReturnStack;
-    /** The way this frame returns to the next one. */
-    DBGFRETURNTYPE  enmReturnType;
 
     /** The program counter (PC) address which the frame returns to.
      * The off member is [e|r]ip and the Sel member is cs. */
     DBGFADDRESS     AddrReturnPC;
     /** Pointer to the symbol nearest the return PC. NULL if not found. */
     PRTDBGSYMBOL    pSymReturnPC;
-    /** Pointer to the linnumber nearest the return PC. NULL if not found. */
+    /** Pointer to the linenumber nearest the return PC. NULL if not found. */
     PRTDBGLINE      pLineReturnPC;
 
     /** 32-bytes of stack arguments. */
@@ -1303,6 +1342,12 @@ typedef struct DBGFSTACKFRAME
         uint8_t     au8[32];
     } Args;
 
+    /** Number of registers values we can be sure about.
+     * @note This is generally zero in the first frame.  */
+    uint32_t                cSureRegs;
+    /** Registers we can be sure about (length given by cSureRegs). */
+    struct DBGFREGVALEX    *paSureRegs;
+
     /** Pointer to the next frame.
      * Might not be used in some cases, so consider it internal. */
     PCDBGFSTACKFRAME pNextInternal;
@@ -1311,26 +1356,32 @@ typedef struct DBGFSTACKFRAME
     PCDBGFSTACKFRAME pFirstInternal;
 } DBGFSTACKFRAME;
 
-/** @name DBGFSTACKFRAME Flags.
+/** @name DBGFSTACKFRAME_FLAGS_XXX - DBGFSTACKFRAME Flags.
  * @{ */
-/** Set if the content of the frame is filled in by DBGFR3StackWalk() and can be used
- * to construct the next frame. */
-# define DBGFSTACKFRAME_FLAGS_ALL_VALID     RT_BIT(0)
 /** This is the last stack frame we can read.
  * This flag is not set if the walk stop because of max dept or recursion. */
-# define DBGFSTACKFRAME_FLAGS_LAST          RT_BIT(1)
+# define DBGFSTACKFRAME_FLAGS_LAST              RT_BIT(1)
 /** This is the last record because we detected a loop. */
-# define DBGFSTACKFRAME_FLAGS_LOOP          RT_BIT(2)
+# define DBGFSTACKFRAME_FLAGS_LOOP              RT_BIT(2)
 /** This is the last record because we reached the maximum depth. */
-# define DBGFSTACKFRAME_FLAGS_MAX_DEPTH     RT_BIT(3)
+# define DBGFSTACKFRAME_FLAGS_MAX_DEPTH         RT_BIT(3)
 /** 16-bit frame. */
-# define DBGFSTACKFRAME_FLAGS_16BIT         RT_BIT(4)
+# define DBGFSTACKFRAME_FLAGS_16BIT             RT_BIT(4)
 /** 32-bit frame. */
-# define DBGFSTACKFRAME_FLAGS_32BIT         RT_BIT(5)
+# define DBGFSTACKFRAME_FLAGS_32BIT             RT_BIT(5)
 /** 64-bit frame. */
-# define DBGFSTACKFRAME_FLAGS_64BIT         RT_BIT(6)
+# define DBGFSTACKFRAME_FLAGS_64BIT             RT_BIT(6)
+/** Real mode or V86 frame. */
+# define DBGFSTACKFRAME_FLAGS_REAL_V86          RT_BIT(7)
+/** Is a trap frame (NT term). */
+# define DBGFSTACKFRAME_FLAGS_TRAP_FRAME        RT_BIT(8)
+
 /** Used Odd/even heuristics for far/near return. */
-# define DBGFSTACKFRAME_FLAGS_USED_ODD_EVEN RT_BIT(7)
+# define DBGFSTACKFRAME_FLAGS_USED_ODD_EVEN     RT_BIT(29)
+/** Set if we used unwind info to construct the frame. (Kind of internal.) */
+# define DBGFSTACKFRAME_FLAGS_USED_UNWIND_INFO  RT_BIT(30)
+/** Internal: Unwind info used for the return frame.  */
+# define DBGFSTACKFRAME_FLAGS_UNWIND_INFO_RET   RT_BIT(31)
 /** @} */
 
 /** @name DBGFCODETYPE
@@ -1354,7 +1405,7 @@ VMMR3DECL(int)              DBGFR3StackWalkBegin(PUVM pUVM, VMCPUID idCpu, DBGFC
                                                  PCDBGFSTACKFRAME *ppFirstFrame);
 VMMR3DECL(int)              DBGFR3StackWalkBeginEx(PUVM pUVM, VMCPUID idCpu, DBGFCODETYPE enmCodeType, PCDBGFADDRESS pAddrFrame,
                                                    PCDBGFADDRESS pAddrStack,PCDBGFADDRESS pAddrPC,
-                                                   DBGFRETURNTYPE enmReturnType, PCDBGFSTACKFRAME *ppFirstFrame);
+                                                   RTDBGRETURNTYPE enmReturnType, PCDBGFSTACKFRAME *ppFirstFrame);
 VMMR3DECL(PCDBGFSTACKFRAME) DBGFR3StackWalkNext(PCDBGFSTACKFRAME pCurrent);
 VMMR3DECL(void)             DBGFR3StackWalkEnd(PCDBGFSTACKFRAME pFirstFrame);
 
@@ -1367,8 +1418,6 @@ VMMR3DECL(void)             DBGFR3StackWalkEnd(PCDBGFSTACKFRAME pFirstFrame);
  * @{ */
 /** Disassemble the current guest instruction, with annotations. */
 #define DBGF_DISAS_FLAGS_CURRENT_GUEST      RT_BIT(0)
-/** Disassemble the current hypervisor instruction, with annotations. */
-#define DBGF_DISAS_FLAGS_CURRENT_HYPER      RT_BIT(1)
 /** No annotations for current context. */
 #define DBGF_DISAS_FLAGS_NO_ANNOTATION      RT_BIT(2)
 /** No symbol lookup. */
@@ -1377,8 +1426,6 @@ VMMR3DECL(void)             DBGFR3StackWalkEnd(PCDBGFSTACKFRAME pFirstFrame);
 #define DBGF_DISAS_FLAGS_NO_BYTES           RT_BIT(4)
 /** No address in the output. */
 #define DBGF_DISAS_FLAGS_NO_ADDRESS         RT_BIT(5)
-/** Probably a hypervisor instruction. */
-#define DBGF_DISAS_FLAGS_HYPER              RT_BIT(6)
 /** Disassemble original unpatched bytes (PATM). */
 #define DBGF_DISAS_FLAGS_UNPATCHED_BYTES    RT_BIT(7)
 /** Annotate patched instructions. */
@@ -1496,11 +1543,9 @@ VMMDECL(int) DBGFR3PagingDumpEx(PUVM pUVM, VMCPUID idCpu, uint32_t fFlags, uint6
 
 /** @name DBGFR3SelQueryInfo flags.
  * @{ */
-/** Get the info from the guest descriptor table. */
+/** Get the info from the guest descriptor table.
+ * @note This is more or less a given now when raw-mode was kicked out. */
 #define DBGFSELQI_FLAGS_DT_GUEST            UINT32_C(0)
-/** Get the info from the shadow descriptor table.
- * Only works in raw-mode.  */
-#define DBGFSELQI_FLAGS_DT_SHADOW           UINT32_C(1)
 /** If currently executing in in 64-bit mode, blow up data selectors. */
 #define DBGFSELQI_FLAGS_DT_ADJ_64BIT_MODE   UINT32_C(2)
 /** @} */
@@ -1822,7 +1867,7 @@ typedef union DBGFREGVAL
         /** The table address. */
         uint64_t u64Base;
         /** The table limit (length minus 1). */
-        uint32_t u32Limit;
+        uint32_t u32Limit; /**< @todo Limit should be uint16_t */
     }           dtr;
 } DBGFREGVAL;
 /** Pointer to a generic register value type. */
@@ -1834,6 +1879,27 @@ typedef DBGFREGVAL const *PCDBGFREGVAL;
 #define DBGFREGVAL_INITIALIZE_ZERO { { 0, 0, 0, 0, 0, 0, 0, 0 } }
 /** Initialize a DBGFREGVAL variable to all bits set .  */
 #define DBGFREGVAL_INITIALIZE_FFFF { { UINT64_MAX, UINT64_MAX, UINT64_MAX, UINT64_MAX, UINT64_MAX, UINT64_MAX, UINT64_MAX, UINT64_MAX } }
+
+/**
+ * Extended register value, including register ID and type.
+ *
+ * This is currently only used by the stack walker.
+ */
+typedef struct DBGFREGVALEX
+{
+    /** The register value. */
+    DBGFREGVAL          Value;
+    /** The register value type. */
+    DBGFREGVALTYPE      enmType;
+    /** The register ID, DBGFREG_END if not applicable. */
+    DBGFREG             enmReg;
+    /** Pointer to read-only register name string if no register ID could be found. */
+    const char         *pszName;
+} DBGFREGVALEX;
+/** Pointer to an extended register value struct. */
+typedef DBGFREGVALEX *PDBGFREGVALEX;
+/** Pointer to a const extended register value struct. */
+typedef DBGFREGVALEX const *PCDBGFREGVALEX;
 
 
 VMMDECL(ssize_t) DBGFR3RegFormatValue(char *pszBuf, size_t cbBuf, PCDBGFREGVAL pValue, DBGFREGVALTYPE enmType, bool fSpecial);
@@ -2053,6 +2119,8 @@ VMMR3DECL(int) DBGFR3RegPrintf( PUVM pUVM, VMCPUID idDefCpu, char *pszBuf, size_
 VMMR3DECL(int) DBGFR3RegPrintfV(PUVM pUVM, VMCPUID idDefCpu, char *pszBuf, size_t cbBuf, const char *pszFormat, va_list va);
 
 
+#ifdef IN_RING3
+
 /**
  * Guest OS digger interface identifier.
  *
@@ -2186,6 +2254,25 @@ typedef struct DBGFOSREG
      */
     DECLCALLBACKMEMBER(void *, pfnQueryInterface)(PUVM pUVM, void *pvData, DBGFOSINTERFACE enmIf);
 
+    /**
+     * Stack unwind assist callback.
+     *
+     * This is only called after pfnInit().
+     *
+     * @returns VBox status code (allocation error or something of  similar fatality).
+     * @param   pUVM            The user mode VM handle.
+     * @param   pvData          Pointer to the instance data.
+     * @param   idCpu           The CPU that's unwinding it's stack.
+     * @param   pFrame          The current frame. Okay to modify it a little.
+     * @param   pState          The unwind state.  Okay to modify it.
+     * @param   pInitialCtx     The initial register context.
+     * @param   hAs             The address space being used for the unwind.
+     * @param   puScratch       Scratch area (initialized to zero, no dtor).
+     */
+    DECLCALLBACKMEMBER(int, pfnStackUnwindAssist)(PUVM pUVM, void *pvData, VMCPUID idCpu, PDBGFSTACKFRAME pFrame,
+                                                  PRTDBGUNWINDSTATE pState, PCCPUMCTX pInitialCtx, RTDBGAS hAs,
+                                                  uint64_t *puScratch);
+
     /** Trailing magic (DBGFOSREG_MAGIC). */
     uint32_t u32EndMagic;
 } DBGFOSREG;
@@ -2250,7 +2337,6 @@ VMMR3DECL(void *)   DBGFR3OSQueryInterface(PUVM pUVM, DBGFOSINTERFACE enmIf);
 VMMR3DECL(int)      DBGFR3CoreWrite(PUVM pUVM, const char *pszFilename, bool fReplaceFile);
 
 
-#ifdef IN_RING3
 
 /** @defgroup grp_dbgf_plug_in      The DBGF Plug-in Interface
  * @{
@@ -2692,6 +2778,14 @@ VMMR3DECL(int)               DBGFR3FlowBranchTblItReset(DBGFFLOWBRANCHTBLIT hFlo
 
 /** @} */
 
+
+/** @defgroup grp_dbgf_misc  Misc DBGF interfaces.
+ * @{ */
+VMMR3DECL(VBOXSTRICTRC)      DBGFR3ReportBugCheck(PVM pVM, PVMCPU pVCpu, DBGFEVENTTYPE enmEvent, uint64_t uBugCheck,
+                                                  uint64_t uP1, uint64_t uP2, uint64_t uP3, uint64_t uP4);
+VMMR3DECL(int)               DBGFR3FormatBugCheck(PUVM pUVM, char *pszDetails, size_t cbDetails,
+                                                  uint64_t uP0, uint64_t uP1, uint64_t uP2, uint64_t uP3, uint64_t uP4);
+/** @} */
 #endif /* IN_RING3 */
 
 /** @} */
@@ -2699,5 +2793,5 @@ VMMR3DECL(int)               DBGFR3FlowBranchTblItReset(DBGFFLOWBRANCHTBLIT hFlo
 
 RT_C_DECLS_END
 
-#endif
+#endif /* !VBOX_INCLUDED_vmm_dbgf_h */
 

@@ -18,7 +18,7 @@
 #include <iprt/assert.h>
 #include <iprt/ldr.h>
 #include <VBox/log.h>
-#include <iprt/err.h>
+#include <iprt/errcore.h>
 
 #include <alsa/asoundlib.h>
 
@@ -240,3 +240,4 @@ int audioLoadAlsaLib(void)
     isLibLoaded = YES;
     return rc;
 }
+

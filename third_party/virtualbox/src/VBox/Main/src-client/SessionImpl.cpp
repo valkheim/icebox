@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2006-2017 Oracle Corporation
+ * Copyright (C) 2006-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -25,7 +25,7 @@
 
 #include "AutoCaller.h"
 
-#include <VBox/err.h>
+#include <iprt/errcore.h>
 #include <iprt/process.h>
 
 
@@ -639,7 +639,7 @@ HRESULT Session::onParallelPortChange(const ComPtr<IParallelPort> &aParallelPort
 #endif
 }
 
-HRESULT Session::onStorageControllerChange()
+HRESULT Session::onStorageControllerChange(const Guid &aMachineId, const Utf8Str &aControllerName)
 {
     LogFlowThisFunc(("\n"));
 
@@ -649,8 +649,10 @@ HRESULT Session::onStorageControllerChange()
 #ifndef VBOX_COM_INPROC_API_CLIENT
     AssertReturn(mConsole, VBOX_E_INVALID_OBJECT_STATE);
 
-    return mConsole->i_onStorageControllerChange();
+    return mConsole->i_onStorageControllerChange(aMachineId, aControllerName);
 #else
+    NOREF(aMachineId);
+    NOREF(aControllerName);
     return S_OK;
 #endif
 }
@@ -669,6 +671,23 @@ HRESULT Session::onMediumChange(const ComPtr<IMediumAttachment> &aMediumAttachme
     return mConsole->i_onMediumChange(aMediumAttachment, aForce);
 #else
     RT_NOREF(aMediumAttachment, aForce);
+    return S_OK;
+#endif
+}
+
+HRESULT Session::onVMProcessPriorityChange(VMProcPriority_T priority)
+{
+    LogFlowThisFunc(("\n"));
+
+    AutoReadLock alock(this COMMA_LOCKVAL_SRC_POS);
+    AssertReturn(mState == SessionState_Locked, VBOX_E_INVALID_VM_STATE);
+    AssertReturn(mType == SessionType_WriteLock, VBOX_E_INVALID_OBJECT_STATE);
+#ifndef VBOX_COM_INPROC_API_CLIENT
+    AssertReturn(mConsole, VBOX_E_INVALID_OBJECT_STATE);
+
+    return mConsole->i_onVMProcessPriorityChange(priority);
+#else
+    RT_NOREF(priority);
     return S_OK;
 #endif
 }
@@ -724,7 +743,7 @@ HRESULT Session::onVRDEServerChange(BOOL aRestart)
 #endif
 }
 
-HRESULT Session::onVideoCaptureChange()
+HRESULT Session::onRecordingChange(BOOL aEnable)
 {
     LogFlowThisFunc(("\n"));
 
@@ -734,8 +753,9 @@ HRESULT Session::onVideoCaptureChange()
 #ifndef VBOX_COM_INPROC_API_CLIENT
     AssertReturn(mConsole, VBOX_E_INVALID_OBJECT_STATE);
 
-    return mConsole->i_onVideoCaptureChange();
+    return mConsole->i_onRecordingChange(aEnable);
 #else
+    RT_NOREF(aEnable);
     return S_OK;
 #endif
 }
@@ -786,6 +806,23 @@ HRESULT Session::onClipboardModeChange(ClipboardMode_T aClipboardMode)
     return mConsole->i_onClipboardModeChange(aClipboardMode);
 #else
     RT_NOREF(aClipboardMode);
+    return S_OK;
+#endif
+}
+
+HRESULT Session::onClipboardFileTransferModeChange(BOOL aEnabled)
+{
+    LogFlowThisFunc(("\n"));
+
+    AutoReadLock alock(this COMMA_LOCKVAL_SRC_POS);
+    AssertReturn(mState == SessionState_Locked, VBOX_E_INVALID_VM_STATE);
+    AssertReturn(mType == SessionType_WriteLock, VBOX_E_INVALID_OBJECT_STATE);
+#ifndef VBOX_COM_INPROC_API_CLIENT
+    AssertReturn(mConsole, VBOX_E_INVALID_OBJECT_STATE);
+
+    return mConsole->i_onClipboardFileTransferModeChange(RT_BOOL(aEnabled));
+#else
+    RT_NOREF(aEnabled);
     return S_OK;
 #endif
 }

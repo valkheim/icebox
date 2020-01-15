@@ -4,7 +4,7 @@
  */
 
 /*
- * Copyright (C) 2010-2017 Oracle Corporation
+ * Copyright (C) 2010-2019 Oracle Corporation
  *
  * This file is part of VirtualBox Open Source Edition (OSE), as
  * available from http://www.virtualbox.org. This file is free software;
@@ -15,39 +15,33 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
  */
 
-#ifdef VBOX_WITH_PRECOMPILED_HEADERS
-# include <precomp.h>
-#else  /* !VBOX_WITH_PRECOMPILED_HEADERS */
-
 /* Qt includes: */
-# include <QMenu>
-# include <QTimer>
-# ifdef VBOX_WS_WIN
-#  include <QWindow>
-# endif
+#include <QMenu>
+#include <QTimer>
+#ifdef VBOX_WS_WIN
+# include <QWindow>
+#endif
 
 /* GUI includes: */
-# include "VBoxGlobal.h"
-# include "UIDesktopWidgetWatchdog.h"
-# include "UIExtraDataManager.h"
-# include "UISession.h"
-# include "UIActionPoolRuntime.h"
-# include "UIMachineLogicFullscreen.h"
-# include "UIMachineWindowFullscreen.h"
-# include "UIMachineView.h"
-# if   defined(VBOX_WS_WIN) || defined(VBOX_WS_X11)
-#  include "UIMachineDefs.h"
-#  include "UIMiniToolBar.h"
-# elif defined(VBOX_WS_MAC)
-#  include "UIFrameBuffer.h"
-#  include "VBoxUtils-darwin.h"
-#  include "UICocoaApplication.h"
-# endif /* VBOX_WS_MAC */
+#include "UICommon.h"
+#include "UIDesktopWidgetWatchdog.h"
+#include "UIExtraDataManager.h"
+#include "UISession.h"
+#include "UIActionPoolRuntime.h"
+#include "UIMachineLogicFullscreen.h"
+#include "UIMachineWindowFullscreen.h"
+#include "UIMachineView.h"
+#if   defined(VBOX_WS_WIN) || defined(VBOX_WS_X11)
+# include "UIMachineDefs.h"
+# include "UIMiniToolBar.h"
+#elif defined(VBOX_WS_MAC)
+# include "UIFrameBuffer.h"
+# include "VBoxUtils-darwin.h"
+# include "UICocoaApplication.h"
+#endif /* VBOX_WS_MAC */
 
 /* COM includes: */
-# include "CSnapshot.h"
-
-#endif /* !VBOX_WITH_PRECOMPILED_HEADERS */
+#include "CSnapshot.h"
 
 
 UIMachineWindowFullscreen::UIMachineWindowFullscreen(UIMachineLogic *pMachineLogic, ulong uScreenId)
@@ -70,7 +64,7 @@ UIMachineWindowFullscreen::UIMachineWindowFullscreen(UIMachineLogic *pMachineLog
 void UIMachineWindowFullscreen::handleNativeNotification(const QString &strNativeNotificationName)
 {
     /* Make sure this method is only used for ML and next: */
-    AssertReturnVoid(vboxGlobal().osRelease() > MacOSXRelease_Lion);
+    AssertReturnVoid(uiCommon().osRelease() > MacOSXRelease_Lion);
 
     /* Log all arrived notifications: */
     LogRel(("UIMachineWindowFullscreen::handleNativeNotification: Notification '%s' received.\n",
@@ -160,7 +154,7 @@ void UIMachineWindowFullscreen::sltRevokeWindowActivation()
 void UIMachineWindowFullscreen::sltEnterNativeFullscreen(UIMachineWindow *pMachineWindow)
 {
     /* Make sure this slot is called only under ML and next: */
-    AssertReturnVoid(vboxGlobal().osRelease() > MacOSXRelease_Lion);
+    AssertReturnVoid(uiCommon().osRelease() > MacOSXRelease_Lion);
 
     /* Make sure it is NULL or 'this' window passed: */
     if (pMachineWindow && pMachineWindow != this)
@@ -187,7 +181,7 @@ void UIMachineWindowFullscreen::sltEnterNativeFullscreen(UIMachineWindow *pMachi
 void UIMachineWindowFullscreen::sltExitNativeFullscreen(UIMachineWindow *pMachineWindow)
 {
     /* Make sure this slot is called only under ML and next: */
-    AssertReturnVoid(vboxGlobal().osRelease() > MacOSXRelease_Lion);
+    AssertReturnVoid(uiCommon().osRelease() > MacOSXRelease_Lion);
 
     /* Make sure it is NULL or 'this' window passed: */
     if (pMachineWindow && pMachineWindow != this)
@@ -236,7 +230,7 @@ void UIMachineWindowFullscreen::prepareVisualState()
 
 #ifdef VBOX_WS_MAC
     /* Native fullscreen stuff on ML and next: */
-    if (vboxGlobal().osRelease() > MacOSXRelease_Lion)
+    if (uiCommon().osRelease() > MacOSXRelease_Lion)
     {
         /* Make sure this window has fullscreen logic: */
         UIMachineLogicFullscreen *pFullscreenLogic = qobject_cast<UIMachineLogicFullscreen*>(machineLogic());
@@ -266,27 +260,27 @@ void UIMachineWindowFullscreen::prepareVisualState()
 void UIMachineWindowFullscreen::prepareMiniToolbar()
 {
     /* Make sure mini-toolbar is not restricted: */
-    if (!gEDataManager->miniToolbarEnabled(vboxGlobal().managedVMUuid()))
+    if (!gEDataManager->miniToolbarEnabled(uiCommon().managedVMUuid()))
         return;
 
     /* Create mini-toolbar: */
     m_pMiniToolBar = new UIMiniToolBar(this,
                                        GeometryType_Full,
-                                       gEDataManager->miniToolbarAlignment(vboxGlobal().managedVMUuid()),
-                                       gEDataManager->autoHideMiniToolbar(vboxGlobal().managedVMUuid()),
+                                       gEDataManager->miniToolbarAlignment(uiCommon().managedVMUuid()),
+                                       gEDataManager->autoHideMiniToolbar(uiCommon().managedVMUuid()),
                                        screenId());
     AssertPtrReturnVoid(m_pMiniToolBar);
     {
         /* Configure mini-toolbar: */
         m_pMiniToolBar->addMenus(actionPool()->menus());
-        connect(m_pMiniToolBar, SIGNAL(sigMinimizeAction()),
-                this, SLOT(sltShowMinimized()), Qt::QueuedConnection);
-        connect(m_pMiniToolBar, SIGNAL(sigExitAction()),
-                actionPool()->action(UIActionIndexRT_M_View_T_Fullscreen), SLOT(trigger()));
-        connect(m_pMiniToolBar, SIGNAL(sigCloseAction()),
-                actionPool()->action(UIActionIndex_M_Application_S_Close), SLOT(trigger()));
-        connect(m_pMiniToolBar, SIGNAL(sigNotifyAboutWindowActivationStolen()),
-                this, SLOT(sltRevokeWindowActivation()), Qt::QueuedConnection);
+        connect(m_pMiniToolBar, &UIMiniToolBar::sigMinimizeAction,
+                this, &UIMachineWindowFullscreen::sltShowMinimized, Qt::QueuedConnection);
+        connect(m_pMiniToolBar, &UIMiniToolBar::sigExitAction,
+                actionPool()->action(UIActionIndexRT_M_View_T_Fullscreen), &UIAction::trigger);
+        connect(m_pMiniToolBar, &UIMiniToolBar::sigCloseAction,
+                actionPool()->action(UIActionIndex_M_Application_S_Close), &UIAction::trigger);
+        connect(m_pMiniToolBar, &UIMiniToolBar::sigNotifyAboutWindowActivationStolen,
+                this, &UIMachineWindowFullscreen::sltRevokeWindowActivation, Qt::QueuedConnection);
     }
 }
 #endif /* VBOX_WS_WIN || VBOX_WS_X11 */
@@ -299,7 +293,7 @@ void UIMachineWindowFullscreen::cleanupMiniToolbar()
         return;
 
     /* Save mini-toolbar settings: */
-    gEDataManager->setAutoHideMiniToolbar(m_pMiniToolBar->autoHide(), vboxGlobal().managedVMUuid());
+    gEDataManager->setAutoHideMiniToolbar(m_pMiniToolBar->autoHide(), uiCommon().managedVMUuid());
     /* Delete mini-toolbar: */
     delete m_pMiniToolBar;
     m_pMiniToolBar = 0;
@@ -310,7 +304,7 @@ void UIMachineWindowFullscreen::cleanupVisualState()
 {
 #ifdef VBOX_WS_MAC
     /* Native fullscreen stuff on ML and next: */
-    if (vboxGlobal().osRelease() > MacOSXRelease_Lion)
+    if (uiCommon().osRelease() > MacOSXRelease_Lion)
     {
         /* Unregister from native fullscreen notifications: */
         UICocoaApplication::instance()->unregisterFromNotificationOfWindow("NSWindowWillEnterFullScreenNotification", this);
@@ -348,7 +342,7 @@ void UIMachineWindowFullscreen::placeOnScreen()
     move(workingArea.topLeft());
 
     /* Resize window to the appropriate size on Lion and previous: */
-    if (vboxGlobal().osRelease() <= MacOSXRelease_Lion)
+    if (uiCommon().osRelease() <= MacOSXRelease_Lion)
         resize(workingArea.size());
     /* Resize window to the appropriate size on ML and next if it's screen has no own user-space: */
     else if (!pFullscreenLogic->screensHaveSeparateSpaces() && m_uScreenId != 0)
@@ -359,7 +353,7 @@ void UIMachineWindowFullscreen::placeOnScreen()
     else
     {
         /* Load normal geometry first of all: */
-        QRect geo = gEDataManager->machineWindowGeometry(UIVisualStateType_Normal, m_uScreenId, vboxGlobal().managedVMUuid());
+        QRect geo = gEDataManager->machineWindowGeometry(UIVisualStateType_Normal, m_uScreenId, uiCommon().managedVMUuid());
         /* If normal geometry is null => use frame-buffer size: */
         if (geo.isNull())
         {
@@ -371,7 +365,7 @@ void UIMachineWindowFullscreen::placeOnScreen()
             geo = QRect(QPoint(0, 0), QSize(800, 600).boundedTo(workingArea.size()));
         /* Move window to the center of working-area: */
         geo.moveCenter(workingArea.center());
-        VBoxGlobal::setTopLevelGeometry(this, geo);
+        UICommon::setTopLevelGeometry(this, geo);
     }
 
 #elif defined(VBOX_WS_WIN)
@@ -384,12 +378,12 @@ void UIMachineWindowFullscreen::placeOnScreen()
 #elif defined(VBOX_WS_X11)
 
     /* Determine whether we should use the native full-screen mode: */
-    const bool fUseNativeFullScreen = VBoxGlobal::supportsFullScreenMonitorsProtocolX11() &&
+    const bool fUseNativeFullScreen = UICommon::supportsFullScreenMonitorsProtocolX11() &&
                                       !gEDataManager->legacyFullscreenModeRequested();
     if (fUseNativeFullScreen)
     {
         /* Tell recent window managers which host-screen this window should be mapped to: */
-        VBoxGlobal::setFullScreenMonitorX11(this, pFullscreenLogic->hostScreenForGuestScreen(m_uScreenId));
+        UICommon::setFullScreenMonitorX11(this, pFullscreenLogic->hostScreenForGuestScreen(m_uScreenId));
     }
 
     /* Set appropriate window geometry: */
@@ -425,7 +419,7 @@ void UIMachineWindowFullscreen::showInNecessaryMode()
         placeOnScreen();
 
         /* Simple show() for ML and next, showFullScreen() otherwise: */
-        if (vboxGlobal().osRelease() > MacOSXRelease_Lion)
+        if (uiCommon().osRelease() > MacOSXRelease_Lion)
             show();
         else
             showFullScreen();
@@ -614,4 +608,3 @@ void UIMachineWindowFullscreen::showEvent(QShowEvent *pEvent)
     UIMachineWindow::showEvent(pEvent);
 }
 #endif /* VBOX_WS_WIN */
-
