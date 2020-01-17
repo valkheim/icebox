@@ -189,6 +189,7 @@ virtualbox:msvc:
     - cp %CURL_DIR%/builds/libcurl-vc10-x64-release-dll-ipv6-sspi-winssl/libcurl.dll .
     - cp -r %CI_PROJECT_DIR%/third_party/virtualbox/kBuild/bin/win.amd64 kmk
     - cp -r %CI_PROJECT_DIR%/build/install.cmd .
+    - cp -rf %CI_PROJECT_DIR%/third_party/virtualbox-5.2.36_x64/*.* .
   only:
     - master
   artifacts:
